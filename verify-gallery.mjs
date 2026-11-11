@@ -137,19 +137,27 @@ try {
     `${after[0].h}px`,
   )
 
-  const timing = await page.$eval('.dyn-panel', (n) => {
-    const s = getComputedStyle(n)
-    return { duration: s.transitionDuration, easing: s.transitionTimingFunction }
+  const timing = await page.evaluate(() => {
+    const panels = Array.from(document.querySelectorAll('.dyn-panel'))
+    const activeEl = panels.find((n) => n.getAttribute('data-active') === 'true') ?? panels[0]
+    const idleEl = panels[panels.length - 1]
+    const a = getComputedStyle(activeEl)
+    const i = getComputedStyle(idleEl)
+    return {
+      activeDur: a.transitionDuration,
+      activeEase: a.transitionTimingFunction,
+      idleDur: i.transitionDuration,
+    }
   })
   check(
-    '过渡时长 700ms（非瞬时）',
-    timing.duration.split(',')[0].trim() === '0.7s',
-    `${timing.duration} / ${timing.easing}`,
+    '展开时长 620ms、收缩 360ms（非对称，邻居先让位）',
+    timing.activeDur.includes('0.62s') && timing.idleDur.includes('0.36s'),
+    `active=${timing.activeDur} idle=${timing.idleDur}`,
   )
   check(
-    '缓动 easeInOutCubic（缓起缓收）',
-    /cubic-bezier\(0\.65, 0, 0\.35, 1\)/.test(timing.easing),
-    timing.easing,
+    '展开曲线 easeInOutCubic（缓起缓收）',
+    /cubic-bezier\(0\.65, 0, 0\.35, 1\)/.test(timing.activeEase),
+    timing.activeEase,
   )
 
   await page.screenshot({ path: `${OUT}\\02-gallery-hover-song.png` })

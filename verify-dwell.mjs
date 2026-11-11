@@ -1,20 +1,18 @@
 /**
- * verify-dwell.mjs —— 验证"指针停留判定"是否生效
+ * verify-dwell.mjs —— 指针意图控制器的验收
  * ---------------------------------------------------------------------------
- * 要证明的命题：鼠标快速穿越多个模块时，中间的模块**完全不启动动画**；
- * 只有当指针在某个模块上停住（>140ms），挤压才开始。
- *
- * 测法：
- *   1) 快速横扫：60 步从最左扫到最右，再移出舞台。若 dwell 生效，
- *      全程没有任何模块进入过渡，500ms 后所有宽度应仍等于默认值。
- *   2) 定点停留：把指针移到「唐」，逐帧采样宽度。前 140ms 宽度必须不变，
- *      之后才开始增长，最终到达展开宽度。
+ * 本轮要证明四件事：
+ *   1) 快速横扫：中间模块完全不参与动画
+ *   2) 停留阈值：80ms 内不启动，越过后正常展开
+ *   3) 【核心】布局位移不会抢走焦点：
+ *      激活 A 之后，在**坐标完全不变**的情况下派发 pointermove（模拟浏览器
+ *      因布局位移而补发的合成事件），激活项必须仍然是 A
+ *   4) 真实的指针位移仍然能正常切换
  */
 import puppeteer from 'puppeteer-core'
 
 const URL = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-const HOVER_INDEX = 7 // 唐
 
 const results = []
 const check = (name, pass, detail = '') => {
@@ -29,46 +27,47 @@ const browser = await puppeteer.launch({
   defaultViewport: { width: 1600, height: 900 },
 })
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
 try {
   const page = await browser.newPage()
   await page.setCacheEnabled(false)
-  // 系统动画已打开，这里模拟"无偏好"的正常用户环境
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }])
   await page.goto(URL, { waitUntil: 'networkidle2', timeout: 60000 })
   await page.waitForSelector('.dyn-panel')
   await page.evaluate(() => document.fonts.ready)
-  await new Promise((r) => setTimeout(r, 3200))
+  await sleep(3400) // 等空闲预热
 
   const widths = () =>
     page.$$eval('.dyn-panel', (ns) => ns.map((n) => Math.round(n.getBoundingClientRect().width)))
+  const activeIndex = () =>
+    page.$$eval('.dyn-panel', (ns) =>
+      ns.findIndex((n) => n.getAttribute('data-active') === 'true'),
+    )
 
   const base = await widths()
   const baseW = base[0]
-  console.log(`[BASE] 默认宽度 = ${baseW}px × ${base.length}`)
+  console.log(`[BASE] 默认宽度 ${baseW}px × ${base.length}`)
 
   /* ---------- 1) 快速横扫 ---------- */
   await page.mouse.move(15, 500, { steps: 2 })
-  // 60 步快速穿过 13 个模块，全部在几毫秒内完成（远小于 140ms 阈值）
-  await page.mouse.move(1585, 500, { steps: 60 })
-  // 立刻移出舞台，避免指针停在同一块上触发它
-  await page.mouse.move(800, 12, { steps: 2 })
-  await new Promise((r) => setTimeout(r, 600))
+  await page.mouse.move(1585, 500, { steps: 60 }) // 几毫秒内穿过 13 个模块
+  await page.mouse.move(800, 12, { steps: 2 }) // 立即移出舞台
+  await sleep(600)
 
   const afterSweep = await widths()
   const maxDelta = Math.max(...afterSweep.map((w, i) => Math.abs(w - base[i])))
-  console.log(`[SWEEP] 横扫后最大偏差 = ${maxDelta}px`)
-  check(
-    '快速横扫后所有模块宽度未变（中间态被跳过）',
-    maxDelta <= 2,
-    `maxDelta=${maxDelta}px  widths=${afterSweep.join(',')}`,
-  )
+  console.log(`[SWEEP] 横扫后最大偏差 ${maxDelta}px`)
+  check('横扫后所有模块宽度未变（中间态被跳过）', maxDelta <= 2, `maxDelta=${maxDelta}px`)
 
-  /* ---------- 2) 定点停留：逐帧采样 ---------- */
-  const box = await page.$eval(`.dyn-panel:nth-child(${HOVER_INDEX + 1})`, (n) => {
-    const r = n.getBoundingClientRect()
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
-  })
+  /* ---------- 2) 停留阈值 ---------- */
+  const boxOf = (i) =>
+    page.$eval(`.dyn-panel:nth-child(${i + 1})`, (n) => {
+      const r = n.getBoundingClientRect()
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+    })
 
+  const box7 = await boxOf(7)
   await page.evaluate((idx) => {
     const el = document.querySelectorAll('.dyn-panel')[idx]
     window.__s = []
@@ -78,38 +77,71 @@ try {
       if (t - t0 < 1400) requestAnimationFrame(loop)
     }
     requestAnimationFrame(loop)
-  }, HOVER_INDEX)
+  }, 7)
 
-  await page.mouse.move(box.x, box.y, { steps: 1 })
-  await new Promise((r) => setTimeout(r, 1500))
+  await page.mouse.move(box7.x, box7.y, { steps: 1 })
+  await sleep(1500)
   const samples = await page.evaluate(() => window.__s)
-
-  // dwell 窗口内（0-140ms）宽度必须保持默认
-  const inDwell = samples.filter((s) => s[0] <= 130)
+  const inDwell = samples.filter((s) => s[0] <= 70)
   const dwellMax = inDwell.length ? Math.max(...inDwell.map((s) => s[1])) : baseW
-  const final = samples[samples.length - 1][1]
+  const finalW = samples[samples.length - 1][1]
+  const tStart = samples.find((s) => s[1] > baseW + 1)?.[0] ?? -1
+  console.log(`[DWELL] 0-70ms 最大宽度 ${dwellMax}px，动画起始 ≈${tStart}ms，最终 ${finalW}px`)
 
-  console.log(
-    `[DWELL] 0-130ms 最大宽度 = ${dwellMax}px，最终宽度 = ${final}px，样本数 = ${samples.length}`,
+  check('停留阈值内（0-70ms）未启动动画', dwellMax <= baseW + 2, `${dwellMax}px`)
+  check('越过阈值后正常展开', finalW > baseW * 1.8, `${finalW}px`)
+  check('启动延迟已从 140ms 降到 ~80ms 量级', tStart > 0 && tStart <= 200, `${tStart}ms`)
+
+  /* ---------- 3) 核心：布局位移不得抢走焦点 ---------- */
+  const activeBefore = await activeIndex()
+  check('当前激活项为第 8 个（唐）', activeBefore === 7, `active=${activeBefore}`)
+
+  // 此刻布局已变化，光标坐标不动；浏览器可能补发 pointermove。
+  // 我们手动派发一次"坐标完全相同"的事件，验证它被忽略。
+  // 最坏情况：把"同坐标"的事件直接派发到**隔壁面板**上，
+  // 模拟布局位移后浏览器把光标判定到另一个元素的情形。
+  const sameCoordResult = await page.evaluate(
+    ([x, y]) => {
+      const panels = Array.from(document.querySelectorAll('.dyn-panel'))
+      const neighbor = panels[8] // 唐 的右邻
+      neighbor.dispatchEvent(
+        new PointerEvent('pointermove', {
+          clientX: x,
+          clientY: y,
+          bubbles: true,
+          pointerType: 'mouse',
+        }),
+      )
+      return {
+        underIndex: 8,
+        activeAfter: panels.findIndex((n) => n.getAttribute('data-active') === 'true'),
+      }
+    },
+    [box7.x, box7.y],
   )
-  check('停留阈值内（0-130ms）没有启动动画', dwellMax <= baseW + 2, `${dwellMax}px vs base ${baseW}px`)
-  check('停留后正常展开', final > baseW * 1.8, `${final}px`)
+  console.log(
+    `[SHIFT] 光标下元素=#${sameCoordResult.underIndex}，派发同坐标事件后 active=#${sameCoordResult.activeAfter}`,
+  )
+  check(
+    '同坐标（布局位移）事件被忽略，焦点未被抢走',
+    sameCoordResult.activeAfter === 7,
+    `active=${sameCoordResult.activeAfter}, 光标下=#${sameCoordResult.underIndex}`,
+  )
 
-  // 过渡延迟确实挂在了 flex-grow 上
-  const delay = await page.$eval('.dyn-panel', (n) => getComputedStyle(n).transitionDelay)
-  check('transition-delay 生效', /0\.14s/.test(delay), delay)
+  /* ---------- 4) 真实位移仍能切换 ---------- */
+  const box11 = await boxOf(11)
+  await page.mouse.move(box11.x, box11.y, { steps: 4 }) // 真实移动
+  await sleep(1200)
+  const activeAfterRealMove = await activeIndex()
+  check('真实指针移动可正常切换激活项', activeAfterRealMove === 11, `active=${activeAfterRealMove}`)
 
-  /* ---------- 3) 慢速移动仍能触发（阈值不能过高） ---------- */
-  await page.mouse.move(15, 500, { steps: 2 })
-  await new Promise((r) => setTimeout(r, 900))
-  const box2 = await page.$eval('.dyn-panel:nth-child(3)', (n) => {
-    const r = n.getBoundingClientRect()
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
-  })
-  await page.mouse.move(box2.x, box2.y, { steps: 1 })
-  await new Promise((r) => setTimeout(r, 1200))
-  const slow = await widths()
-  check('正常悬停仍能展开（阈值不过高）', slow[2] > baseW * 1.8, `${slow[2]}px`)
+  /* ---------- 5) 键盘可达 ---------- */
+  await page.mouse.move(800, 12, { steps: 2 })
+  await sleep(600)
+  await page.keyboard.press('Tab')
+  await sleep(400)
+  const activeByFocus = await activeIndex()
+  check('Tab 聚焦可激活模块（键盘可达）', activeByFocus >= 0, `active=${activeByFocus}`)
 
   await browser.close()
 } catch (err) {

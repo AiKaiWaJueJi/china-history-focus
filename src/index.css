@@ -7,7 +7,6 @@
    --------------------------------------------------------------------------
    全部用 Google Fonts 的 text= 子集接口，只打包 13 个朝代名用到的 17 个字，
    四款合计约 30KB，完全离线可用。
-   商业字体（方正瘦金书、汉仪篆书）需自行授权，替换方式见 src/lib/fonts.ts。
    ========================================================================== */
 @font-face {
   font-family: 'Ma Shan Zheng';
@@ -45,30 +44,20 @@
     --font-thin: 'ZCOOL XiaoWei', 'STKaiti', 'KaiTi', serif;
     --font-ui: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
 
-    /*
-      挤压曲线：easeInOutCubic。
-      上一版用 cubic-bezier(0.16,1,0.3,1)（expo-out），80% 的位移挤在最初
-      20% 的时间里，观感就是"啪一下弹开"。现在换成缓起—加速—缓收，
-      700ms 内均匀铺开，才是需求要的"逐渐变大"。
-    */
+    /* 展开曲线：缓起—加速—缓收 */
     --ease-squeeze: cubic-bezier(0.65, 0, 0.35, 1);
-    --dur-squeeze: 700ms;
-
-    /* 微交互仍用较快的缓出，避免细节动作拖沓 */
+    /* 收缩曲线：快出，让邻居尽早让位 */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
     /*
-      指针停留阈值（dwell）。
-      问题：鼠标横向划过多个模块时，:hover 会依次命中每一块，
-      每命中一次都启动一条 700ms 的挤压过渡，于是同时有好几条动画在抢布局，
-      观感就是"卡一下才轮到最终那一块"。
-
-      解法：给所有 hover 驱动的过渡加 transition-delay。
-      若指针在 140ms 内就离开了该模块，属性的变化会在延迟结束前被下一次变化覆盖，
-      过渡根本不会启动 —— 快速穿越时中间模块完全不参与动画。
-      指针一旦停留超过 140ms，动画正常开始（140ms 的启动延迟低于人眼可察觉的"卡顿"阈值）。
+      展开 / 收缩采用**非对称时长**：
+      收缩 360ms（快），展开 620ms（慢）。
+      原因：聚焦模块被推移的距离，取决于邻居让位有多快。
+      若邻居收缩与新模块展开一样慢，新模块会长时间被"推着走"，
+      光标下就会不断换元素 —— 这正是"焦点跑到隔壁"的成因之一。
     */
-    --dwell: 140ms;
+    --dur-open: 620ms;
+    --dur-close: 360ms;
   }
 
   html,
@@ -95,8 +84,10 @@
   /* ======================================================================
      视图1：朝代主页 —— 13 个纵向模块的横向挤压
      ----------------------------------------------------------------------
-     hover 完全不进 React：CSS :has() 让浏览器自行决定"谁被悬停、谁收缩"，
-     鼠标移动期间没有任何 setState / 重渲染。这是丝滑的前提。
+     激活状态由 useHoverIntent 写入 data-active，**不再使用 CSS :hover**。
+     原因：挤压本身会移动布局，而 :hover 在布局位移后会在静止光标下改判，
+     导致"没动鼠标，焦点却跳到隔壁"。JS 才能判断"指针是否真的移动"。
+     控制器只改属性，不触发 React 渲染。
      ====================================================================== */
 
   .gallery {
@@ -119,42 +110,46 @@
     cursor: pointer;
     text-align: center;
     isolation: isolate;
-
-    /*
-      container-type 让面板内部样式按"面板自身宽度"响应（容器查询）：
-      窄态只显示朝代名与年代，宽态才铺开子时期/都城/代表器物。
-      比用 JS 监听宽度便宜得多，也不会在挤压过程中抖动。
-    */
     container-type: inline-size;
-
     will-change: flex-grow;
 
+    /* 默认态 = "离开中"：用较短时长快速收缩 */
     transition:
-      flex-grow var(--dur-squeeze) var(--ease-squeeze) var(--dwell),
-      border-color 420ms var(--ease-out) var(--dwell);
+      flex-grow var(--dur-close) var(--ease-out),
+      border-color 300ms var(--ease-out);
   }
 
-  .gallery:has(.dyn-panel:hover) .dyn-panel,
-  .gallery:has(.dyn-panel:focus-visible) .dyn-panel {
+  /* 被激活的那一块：用较长时长缓缓展开 */
+  .dyn-panel[data-active='true'] {
+    transition:
+      flex-grow var(--dur-open) var(--ease-squeeze),
+      border-color 300ms var(--ease-out);
+  }
+
+  /* 有人激活时，其余模块收缩 */
+  .gallery[data-has-active='true'] .dyn-panel {
     flex-grow: 0.8;
   }
 
-  .gallery:has(.dyn-panel:hover) .dyn-panel:hover,
-  .gallery:has(.dyn-panel:focus-visible) .dyn-panel:focus-visible {
-    /* 13 个模块并存时，2.6:0.8 的比例能让悬停项从 ~110px 展开到 ~270px */
+  /* 激活项覆盖上面的收缩规则（特异性更高） */
+  .gallery[data-has-active='true'] .dyn-panel[data-active='true'] {
     flex-grow: 2.6;
   }
 
-  .dyn-panel:hover,
-  .dyn-panel:focus-visible {
+  .dyn-panel[data-active='true'] {
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
-    outline: none;
+  }
+
+  /* 键盘可达：保留焦点轮廓 */
+  .dyn-panel:focus-visible {
+    outline: 1px solid color-mix(in srgb, var(--accent-soft) 60%, transparent);
+    outline-offset: -3px;
   }
 
   /* —— 文物背景 ——
-     宽度用 vw 固定，而不是百分比：百分比会随面板变宽而变，
-     导致 background-size:cover 每帧重新栅格化整张图（实测 20-60ms/帧）。 */
+     宽度用 vw 固定：百分比会随面板变宽而变，导致 background-size:cover
+     每帧重新栅格化整张图（实测 20-60ms/帧）。 */
   .dyn-media {
     position: absolute;
     top: 0;
@@ -166,14 +161,13 @@
     background-size: cover;
     background-position: 50% 44%;
     filter: saturate(1.08) brightness(0.92);
-    transition: transform var(--dur-squeeze) var(--ease-squeeze) var(--dwell);
+    transition: transform var(--dur-close) var(--ease-out);
     will-change: transform;
   }
 
-  .dyn-panel:hover .dyn-media,
-  .dyn-panel:focus-visible .dyn-media {
-    /* 需求：hover 时背景图 scale(1.05)，只动 transform */
+  .dyn-panel[data-active='true'] .dyn-media {
     transform: translateX(-50%) scale(1.05);
+    transition: transform var(--dur-open) var(--ease-squeeze);
   }
 
   /* —— 静态压暗遮罩（不参与过渡，避免每帧重画渐变）—— */
@@ -193,7 +187,7 @@
     );
   }
 
-  /* —— 悬浮提亮：纯 opacity，合成器友好 —— */
+  /* —— 激活提亮：纯 opacity，合成器友好 —— */
   .dyn-light {
     position: absolute;
     top: 0;
@@ -207,13 +201,13 @@
       transparent 72%
     );
     opacity: 0;
-    transition: opacity 460ms ease var(--dwell);
+    transition: opacity 300ms ease;
     pointer-events: none;
   }
 
-  .dyn-panel:hover .dyn-light,
-  .dyn-panel:focus-visible .dyn-light {
+  .dyn-panel[data-active='true'] .dyn-light {
     opacity: 1;
+    transition: opacity 420ms ease;
   }
 
   /* 顶部展签线 */
@@ -229,15 +223,15 @@
       transparent
     );
     opacity: 0.4;
-    transition: opacity 420ms ease var(--dwell);
+    transition: opacity 300ms ease;
   }
 
-  .dyn-panel:hover .dyn-edge {
+  .dyn-panel[data-active='true'] .dyn-edge {
     opacity: 1;
   }
 
   /* 空闲预热态（见 DynastyGallery.useIdlePrewarm）：
-     提前把"放大后的合成层"栅格化，避免首次悬停出现一次性卡顿。 */
+     提前把"放大后的合成层"栅格化，避免首次激活出现一次性卡顿。 */
   .dyn-panel[data-prewarm='true'],
   .dyn-panel[data-prewarm='true'] .dyn-media,
   .dyn-panel[data-prewarm='true'] .dyn-light {
@@ -268,23 +262,20 @@
     font-size: 9px;
     letter-spacing: 0.2em;
     color: rgba(255, 255, 255, 0.34);
-    transition: color 420ms ease;
+    transition: color 300ms ease;
   }
 
-  .dyn-panel:hover .dyn-ord {
+  .dyn-panel[data-active='true'] .dyn-ord {
     color: var(--accent-soft);
   }
 
   /*
-    竖排朝代名。
-    字体由 --font-dynasty 注入（按数据的 fontStyle 字段解析，见 src/lib/fonts.ts），
-    于是"字体随朝代演变"本身成了信息的一部分：
-    周用毛笔、秦小篆笔意、汉隶偏瘦劲、三国楷、晋行书、唐瘦金……
+    竖排朝代名。字体由 --font-dynasty 注入（按 fontStyle 解析，见 lib/fonts.ts），
+    于是"字体随朝代演变"本身成为信息的一部分。
   */
   .dyn-name {
     writing-mode: vertical-rl;
     text-orientation: upright;
-    /* 名字落在上三分之一：下方留给器物，形成"展签在上、器物在下"的展柜构图 */
     margin-top: 13vh;
     font-family: var(--font-dynasty, var(--font-brush));
     font-size: clamp(1.8rem, 2.5vw, 2.9rem);
@@ -296,18 +287,19 @@
       0 0 40px color-mix(in srgb, var(--accent) 24%, transparent);
     transform: scale(1);
     transition:
-      transform var(--dur-squeeze) var(--ease-squeeze) var(--dwell),
-      color 420ms ease var(--dwell);
+      transform var(--dur-close) var(--ease-out),
+      color 300ms ease;
   }
 
-  .dyn-panel:hover .dyn-name,
-  .dyn-panel:focus-visible .dyn-name {
+  .dyn-panel[data-active='true'] .dyn-name {
     transform: scale(1.06);
     color: #ffffff;
+    transition:
+      transform var(--dur-open) var(--ease-squeeze),
+      color 300ms ease;
   }
 
   .dyn-meta {
-    /* 沉到底部，与名字分开 */
     margin-top: auto;
     display: flex;
     flex-direction: column;
@@ -327,8 +319,8 @@
 
   /*
     宽态才出现的信息（子时期 / 都城 / 代表器物）。
-    窄态用 opacity 隐藏而不是 display:none：
-    保留占位意味着悬停变宽时内部不发生布局跳动，动画更稳。
+    窄态用 opacity 隐藏而不是 display:none：保留占位，
+    变宽过程中内部不发生布局跳动。
   */
   .dyn-detail {
     display: flex;
@@ -338,10 +330,16 @@
     opacity: 0;
     transform: translateY(4px);
     transition:
-      opacity 320ms ease var(--dwell),
-      transform 460ms var(--ease-out) var(--dwell);
+      opacity 240ms ease,
+      transform 300ms var(--ease-out);
     white-space: nowrap;
     pointer-events: none;
+  }
+
+  .dyn-panel[data-active='true'] .dyn-detail {
+    transition:
+      opacity 360ms ease 80ms,
+      transform 460ms var(--ease-out) 80ms;
   }
 
   .dyn-detail-line {
@@ -357,7 +355,7 @@
     opacity: 0.9;
   }
 
-  /* 容器查询：面板宽度 ≥ 176px 才展开细节（即悬停态） */
+  /* 容器查询：面板宽度 ≥ 176px 才展开细节（即激活态） */
   @container (min-width: 176px) {
     .dyn-detail {
       opacity: 1;
@@ -463,30 +461,20 @@
 }
 
 /* ==========================================================================
-   "减少动效"偏好
-   --------------------------------------------------------------------------
-   上一版在这里把 transition-duration 设成 1ms，等于把整个挤压动画删掉了。
-   这是过度降级：很多 Windows 用户为了性能关闭系统动画，浏览器就会上报
-   prefers-reduced-motion: reduce，于是核心交互变成"啪"一下跳变——
-   本项目的用户正好踩到了这个坑。
-
-   正确做法是**降低强度而非取消**：
-   · 保留宽度挤压（这是操作反馈，不是装饰）
-   · 去掉背景放大与文字缩放（大幅位移才是前庭不适的来源）
-   · 时长压缩到 260ms，变化更克制
+   "减少动效"偏好：降低强度而非取消
+   （保留挤压这个操作反馈，去掉缩放与背景推近）
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .dyn-panel {
-    transition-duration: 260ms !important;
+  .dyn-panel,
+  .dyn-panel[data-active='true'] {
+    transition-duration: 220ms !important;
   }
 
-  .dyn-panel:hover .dyn-media,
-  .dyn-panel:focus-visible .dyn-media {
+  .dyn-panel[data-active='true'] .dyn-media {
     transform: translateX(-50%);
   }
 
-  .dyn-panel:hover .dyn-name,
-  .dyn-panel:focus-visible .dyn-name {
+  .dyn-panel[data-active='true'] .dyn-name {
     transform: none;
   }
 }
