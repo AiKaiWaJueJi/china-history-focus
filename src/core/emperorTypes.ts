@@ -79,9 +79,19 @@ export interface Lord {
   title: string
   personalName: string
   era: LordEra
+  /** 在位起止（负数＝公元前） */
   startYear: number
   endYear: number
-  period: string
+  reign: string
+  /**
+   * 称霸（强势）期起止。
+   * 时间联动以**称霸期**为准，而不是在位期：
+   * 齐桓公前685年即位，但前679年鄄之会之后才算真正称霸。
+   */
+  hegemonyStart: number
+  hegemonyEnd: number
+  /** 称霸起点的事件描述，如「鄄之会始霸」 */
+  hegemonyNote?: string
   segmentId: string
   accent: string
   portrait: string

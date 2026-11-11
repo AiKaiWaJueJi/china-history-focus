@@ -90,11 +90,17 @@ export function DynastyDetail() {
     return lords
       .map((lord) => ({
         lord,
-        // 区间交集长度（公元前为负数，相减仍得到正的持续年数）
-        overlap: Math.min(lord.endYear, pageEndYear) - Math.max(lord.startYear, pageStartYear),
+        /*
+          用**称霸期**求交，而不是在位期。
+          齐桓公前685年即位，前679年鄄之会才始霸 —— 若用在位期，
+          前685-前680 这几年会被误判成"齐桓称霸中"。
+          区间交集长度：公元前为负数，相减仍得到正的持续年数。
+        */
+        overlap:
+          Math.min(lord.hegemonyEnd, pageEndYear) - Math.max(lord.hegemonyStart, pageStartYear),
       }))
       .filter((item) => item.overlap > 0)
-      // 在本页停留更久的诸侯排前面
+      // 在本页称霸更久的诸侯排前面
       .sort((a, b) => b.overlap - a.overlap)
       .map((item) => item.lord)
   }, [lords, pageStartYear, pageEndYear])

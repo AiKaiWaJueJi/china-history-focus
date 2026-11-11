@@ -624,9 +624,19 @@
 .lord-period {
   font-size: 9.5px;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.42);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+/* 称霸期：与"在位"区分，用主题色标出，这是时代主线 */
+.lord-hegemony {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--accent) 72%, white);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0.92;
 }
 
 /* ==========================================================================

@@ -110,11 +110,20 @@ try {
 
   await gotoTail()
 
+  // 期望值按**称霸期**求交得出（不是在位期）：
+  //   第 5 页 前770–前682：齐桓前679才始霸 → 0
+  //   第 6 页 前681–前619：齐桓(679-643)、晋文(632-628) → 2
+  //   第 7 页 前618–前586：楚庄(606-591) → 1
+  //   第 8 页 前585–前520：楚庄已终、吴越未兴 → 0
+  //   第 9 页 前520–前469：吴(506-496)、越(473-465) → 2
+  //   第10 页 前468–前441：越霸尾声(465) → 1
   const expectations = [
-    { index: 4, page: 5, lords: 1, note: '齐桓公在任' },
+    { index: 4, page: 5, lords: 0, note: '齐桓尚未始霸' },
     { index: 5, page: 6, lords: 2, note: '齐桓、晋文' },
-    { index: 7, page: 8, lords: 0, note: '无霸主空窗期' },
+    { index: 6, page: 7, lords: 1, note: '楚庄问鼎' },
+    { index: 7, page: 8, lords: 0, note: '霸业空窗期' },
     { index: 8, page: 9, lords: 2, note: '吴阖闾、越勾践' },
+    { index: 9, page: 10, lords: 1, note: '越霸尾声' },
   ]
 
   for (const exp of expectations) {
@@ -191,6 +200,10 @@ try {
   )
   const visible = float.filter((f) => f.opacity > 0.9)
   console.log(`[FLOAT] ${visible.map((f) => f.name).join(' / ')}`)
+  const hegemonyText = await page.$eval('.lord-card:nth-child(2) .lord-hegemony', (n) => n.textContent?.trim())
+  console.log(`[HEGEMONY] ${hegemonyText}`)
+  check('卡片标出称霸期（与在位区分）', /称霸 前\d+—前\d+/.test(hegemonyText ?? ''), hegemonyText)
+
   check('诸侯浮层出现事迹节点', visible.length >= 2, `${visible.length} 个`)
   check('浮层底为不透明黑', /rgba\(0, 0, 0, 0\.8/.test(visible[0]?.bg ?? ''), visible[0]?.bg)
   check('事件文字加粗且有投影', visible.every((f) => Number(f.fontWeight) >= 600 && f.textShadow))
