@@ -277,6 +277,12 @@
   .dyn-name {
     writing-mode: vertical-rl;
     text-orientation: upright;
+    /*
+      竖排文字里 text-align 管的是"垂直方向"的对齐，
+      水平方向由块级方向（vertical-rl 是从右往左）决定，会贴到面板右缘。
+      面板变宽后这个偏移非常明显，所以必须用 align-self 在交叉轴上居中。
+    */
+    align-self: center;
     margin-top: 13vh;
     font-family: var(--font-dynasty, var(--font-brush));
     font-size: clamp(1.8rem, 2.5vw, 2.9rem);
