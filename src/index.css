@@ -56,6 +56,19 @@
 
     /* 微交互仍用较快的缓出，避免细节动作拖沓 */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /*
+      指针停留阈值（dwell）。
+      问题：鼠标横向划过多个模块时，:hover 会依次命中每一块，
+      每命中一次都启动一条 700ms 的挤压过渡，于是同时有好几条动画在抢布局，
+      观感就是"卡一下才轮到最终那一块"。
+
+      解法：给所有 hover 驱动的过渡加 transition-delay。
+      若指针在 140ms 内就离开了该模块，属性的变化会在延迟结束前被下一次变化覆盖，
+      过渡根本不会启动 —— 快速穿越时中间模块完全不参与动画。
+      指针一旦停留超过 140ms，动画正常开始（140ms 的启动延迟低于人眼可察觉的"卡顿"阈值）。
+    */
+    --dwell: 140ms;
   }
 
   html,
@@ -117,8 +130,8 @@
     will-change: flex-grow;
 
     transition:
-      flex-grow var(--dur-squeeze) var(--ease-squeeze),
-      border-color 420ms var(--ease-out);
+      flex-grow var(--dur-squeeze) var(--ease-squeeze) var(--dwell),
+      border-color 420ms var(--ease-out) var(--dwell);
   }
 
   .gallery:has(.dyn-panel:hover) .dyn-panel,
@@ -153,7 +166,7 @@
     background-size: cover;
     background-position: 50% 44%;
     filter: saturate(1.08) brightness(0.92);
-    transition: transform var(--dur-squeeze) var(--ease-squeeze);
+    transition: transform var(--dur-squeeze) var(--ease-squeeze) var(--dwell);
     will-change: transform;
   }
 
@@ -194,7 +207,7 @@
       transparent 72%
     );
     opacity: 0;
-    transition: opacity 460ms ease;
+    transition: opacity 460ms ease var(--dwell);
     pointer-events: none;
   }
 
@@ -216,7 +229,7 @@
       transparent
     );
     opacity: 0.4;
-    transition: opacity 420ms ease;
+    transition: opacity 420ms ease var(--dwell);
   }
 
   .dyn-panel:hover .dyn-edge {
@@ -282,7 +295,9 @@
       0 2px 18px rgba(0, 0, 0, 0.8),
       0 0 40px color-mix(in srgb, var(--accent) 24%, transparent);
     transform: scale(1);
-    transition: transform var(--dur-squeeze) var(--ease-squeeze), color 420ms ease;
+    transition:
+      transform var(--dur-squeeze) var(--ease-squeeze) var(--dwell),
+      color 420ms ease var(--dwell);
   }
 
   .dyn-panel:hover .dyn-name,
@@ -323,8 +338,8 @@
     opacity: 0;
     transform: translateY(4px);
     transition:
-      opacity 320ms ease 60ms,
-      transform 460ms var(--ease-out) 60ms;
+      opacity 320ms ease var(--dwell),
+      transform 460ms var(--ease-out) var(--dwell);
     white-space: nowrap;
     pointer-events: none;
   }
