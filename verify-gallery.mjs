@@ -136,6 +136,21 @@ try {
     drift <= 3,
     `${Math.round(centerBefore)} → ${Math.round(centerAfter)}（漂移 ${Math.round(drift)}px）`,
   )
+  // 背景层必须完整覆盖面板（含展开态），否则两侧会露出底色
+  const mediaW = await page.$$eval('.dyn-panel', (ns) =>
+    ns.map((n) => Math.round(n.querySelector('.dyn-media').getBoundingClientRect().width)),
+  )
+  check(
+    '展开态背景层完整覆盖面板',
+    mediaW[HOVER_INDEX] >= activeAfter.w + 2,
+    `media=${mediaW[HOVER_INDEX]}px / panel=${activeAfter.w}px`,
+  )
+  check(
+    '所有面板的背景层都不小于自身宽度',
+    mediaW.every((w, i) => w >= after[i].w),
+    `最小覆盖余量 ${Math.min(...mediaW.map((w, i) => w - after[i].w))}px`,
+  )
+
   check(
     '挤压过程中面板高度不变',
     (await page.$$eval('.dyn-panel', (ns) => ns.map((n) => Math.round(n.getBoundingClientRect().height)))).every(
