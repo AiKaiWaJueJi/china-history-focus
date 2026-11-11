@@ -1,17 +1,17 @@
-﻿/**
+/**
  * 领域模型（Domain Model）
- * ---------------------------------------------------------------------------
- * 设计原则：
- * 1. 数据**扁平化**：四张表各自独立，绝不嵌套，便于阶段 2 的增量编辑与阶段 3 的
- *    AI 局部扩充（只重写某一条记录，不必解析整棵树）。
- * 2. 关系**用 ID 表达**：皇帝持有 eventIds、事件持有 characterIds。
- *    单向权威 + 运行时派生反向索引（见 data/index.ts），避免双向冗余导致数据漂移。
- * 3. 每个实体都带 `dynastyId` 外键，使「按朝代切片」成为 O(1) 查询。
+ * ===========================================================================
+ * 三视图共享同一套扁平数据：
+ *   视图1 朝代主页  ← dynasties
+ *   视图2 帝王时间轴 ← emperors（按 dynastyId 过滤）
+ *   视图3 帝王详情  ← events / figures（阶段二、三启用）
+ *
+ * 扁平化 + ID 关联的理由：阶段三的 AI 扩充只会新增/修改单条记录，
+ * 不需要读改写整棵树；分页、筛选也都能在 O(1) 索引上完成。
  */
 
-/** 焦点层级：与四个固定容器一一对应 */
-export type FocusLevel = 'dynasty' | 'emperor' | 'event' | 'character'
-
+/** 三个视图标识，与状态机的 view 字段一一对应 */
+export type ViewId = 'gallery' | 'timeline' | 'detail'
 
 export interface Dynasty {
   id: string
@@ -20,35 +20,44 @@ export interface Dynasty {
   period: string
   startYear: number
   endYear: number
-  /** 该朝代的主题色，供时间轴色带与卡片描边使用 */
+  /** 主色：用于标题、描边、光晕 */
   accent: string
+  /** 辅色：用于说明文字与高光，保证在暗底上可读 */
+  accentSoft: string
+  /** 文物背景图（占位图由 scripts/gen-placeholders.mjs 生成） */
+  artifact: string
+  artifactName: string
   summary: string
-  /** 向下关联：本朝皇帝 */
+  /** 向下关联：本朝帝王 */
   emperorIds: string[]
 }
 
 export interface Emperor {
   id: string
   dynastyId: string
-  name: string
+  /** 谥号 / 庙号，如「周武王」 */
   title: string
+  /** 本名，如「姬发」 */
+  name: string
   reign: string
+  portrait: string
   summary: string
-  /** 多对多关联：参与的史事（权威方向） */
+  /** 关联的史事（阶段二填充） */
   eventIds: string[]
 }
 
 export interface HistoryEvent {
   id: string
+  emperorId: string
   dynastyId: string
   name: string
   year: number
   summary: string
-  /** 多对多关联：涉及的人物（权威方向） */
-  characterIds: string[]
+  /** 参与人物 */
+  figureIds: string[]
 }
 
-export interface Character {
+export interface Figure {
   id: string
   dynastyId: string
   name: string
@@ -56,20 +65,12 @@ export interface Character {
   summary: string
 }
 
-/** 数据集整体结构，与 history.data.json 一一对应 */
 export interface HistoryDataset {
   dynasties: Dynasty[]
   emperors: Emperor[]
   events: HistoryEvent[]
-  characters: Character[]
+  figures: Figure[]
 }
 
-/** 层级 → 实体类型的映射，供泛型函数使用 */
-export interface EntityByLevel {
-  dynasty: Dynasty
-  emperor: Emperor
-  event: HistoryEvent
-  character: Character
-}
-
-export type AnyEntity = EntityByLevel[FocusLevel]
+/** 状态机守卫用：某一层级存在某 ID */
+export type EntityLevel = 'dynasty' | 'emperor' | 'event' | 'figure'

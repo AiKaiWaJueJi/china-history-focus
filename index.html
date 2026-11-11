@@ -4,7 +4,14 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>中国历史多维学习 · 焦点引擎</title>
+
+    <!--
+      字体预加载：毛笔字是视图1的首屏主角，提前发起请求可避免 FOUT 时
+      竖排大字先以楷体闪现、再跳成笔锋字形。
+    -->
+    <link rel="preload" href="/fonts/ma-shan-zheng.woff2" as="font" type="font/woff2" crossorigin />
+
+    <title>中国历史 · 多维学习</title>
   </head>
   <body>
     <div id="root"></div>
