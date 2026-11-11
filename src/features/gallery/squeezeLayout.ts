@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 挤压布局计算（居中对称展开）
  * ===========================================================================
  * 交互语义：激活的模块**从自身中心向两边展开**，左右邻居等量收缩。
@@ -48,35 +48,23 @@ export function computeSqueeze(
   const target = Math.min(Math.max(available * 0.235, base * 2.2), available * 0.34)
 
   /*
-    左右两侧**各自分摊一半的收缩量**，而不是所有模块等量收缩。
-    因为激活项左右两侧的模块数量通常不等（如 13 块里第 8 块，左 7 右 5）：
-    若等量收缩，左侧总让位比右侧多，激活项中心会向一侧漂移约 20px，
-    面板就会在光标下轻微滑动。
-    平分收缩量后，激活项的左右边缘等量外扩，**中心严格不动**，
-    在视觉上依然是"从中心向两边展开"。
+    其余模块**平均分摊**收缩量。
+
+    这里曾尝试过"让激活项中心严格不动"（左右两侧各承担一半收缩量），
+    但那在靠近两端时会失效：例如聚焦「明」（第 12 块），右侧只有「清」1 块，
+    却要独自吞掉一半收缩量（约 116px），超过它自身的宽度 —— 被压到下限后
+    总宽度又对不上容器，flex 直接溢出，把「清」顶出了屏幕。
+
+    平均分摊则天然安全：widths 之和恒等于 available，
+    容器永不溢出，邻居宽度也统一。代价是激活项靠近两端时中心会有所漂移，
+    这是"均匀分摊"的几何必然，视觉上可以接受（且有指针意图控制兜底，
+    面板不会因为漂移而抢走焦点）。
   */
-  const totalShrink = target - base
-  const leftCount = activeIndex
-  const rightCount = count - 1 - activeIndex
-  const half = totalShrink / 2
+  const collapse = count > 1 ? (available - target) / (count - 1) : base
 
-  let leftPer = leftCount > 0 ? half / leftCount : 0
-  let rightPer = rightCount > 0 ? half / rightCount : 0
-  // 一侧没有邻居时，全部收缩量由另一侧承担
-  if (leftCount === 0 && rightCount > 0) rightPer = totalShrink / rightCount
-  if (rightCount === 0 && leftCount > 0) leftPer = totalShrink / leftCount
+  const widths = Array.from({ length: count }, (_, i) => (i === activeIndex ? target : collapse))
 
-  // 防止极端尺寸下把邻居压到不可用
-  const minWidth = Math.max(base * 0.35, 28)
-  leftPer = Math.min(leftPer, base - minWidth)
-  rightPer = Math.min(rightPer, base - minWidth)
-
-  const widths = Array.from({ length: count }, (_, i) => {
-    if (i === activeIndex) return target
-    return i < activeIndex ? base - leftPer : base - rightPer
-  })
-
-  return { base, target, collapse: base - (leftPer + rightPer) / 2, widths }
+  return { base, target, collapse, widths }
 }
 
 /** 记录哪些容器已经被"钉"成像素宽度布局 */
