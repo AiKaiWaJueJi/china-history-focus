@@ -1,21 +1,24 @@
 /**
  * EmperorPager —— 一页 3 个帝王模块的横向滑动分页
  * ===========================================================================
- * 用 Framer Motion 的 AnimatePresence + mode="wait"：
- *   · 旧页先滑出，新页再滑入，避免两页同时占位导致宽度跳动；
- *   · custom 传入方向，实现「下一页从右进、上一页从左进」的对称过渡。
+ * 用 AnimatePresence 的 popLayout 模式：新旧两页**重叠过渡**，
+ * 新页滑入的同时旧页滑出，全程没有黑场（早先用 mode="wait" 会先清空再进场）。
  *
+ * custom 传入方向，实现「下一页从右进、上一页从左进」的对称过渡。
  * 不足 3 个时补空槽位，保证卡片宽度始终一致（末页只有 1 位时不会突然变宽）。
  */
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import type { EmperorRecord } from '../../core/emperorTypes'
 import { EmperorCard } from './EmperorCard'
+import type { EmperorCardLayout } from './EmperorCard'
 
 interface EmperorPagerProps {
   emperors: EmperorRecord[]
   pageIndex: number
   direction: number
   pageSize: number
+  layout?: EmperorCardLayout
+  compact?: boolean
 }
 
 const variants = {
@@ -24,7 +27,14 @@ const variants = {
   exit: (dir: number) => ({ x: dir >= 0 ? '-38%' : '38%', opacity: 0 }),
 }
 
-export function EmperorPager({ emperors, pageIndex, direction, pageSize }: EmperorPagerProps) {
+export function EmperorPager({
+  emperors,
+  pageIndex,
+  direction,
+  pageSize,
+  layout = 'split',
+  compact = false,
+}: EmperorPagerProps) {
   const prefersReducedMotion = useReducedMotion()
   const start = pageIndex * pageSize
   const pageEmperors = emperors.slice(start, start + pageSize)
@@ -48,7 +58,13 @@ export function EmperorPager({ emperors, pageIndex, direction, pageSize }: Emper
           }
         >
           {pageEmperors.map((emperor, index) => (
-            <EmperorCard key={emperor.id} emperor={emperor} index={index} />
+            <EmperorCard
+              key={emperor.id}
+              emperor={emperor}
+              index={index}
+              layout={layout}
+              compact={compact}
+            />
           ))}
           {Array.from({ length: emptySlots }, (_, i) => (
             <div key={`empty-${i}`} className="emp-slot" aria-hidden="true" />

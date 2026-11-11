@@ -29,7 +29,10 @@
           "dimension": "political",
           "year": -1045
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -1046,
+      "endYear": -1043
     },
     {
       "id": "zhou_cheng",
@@ -56,7 +59,10 @@
           "dimension": "political",
           "year": -1038
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -1042,
+      "endYear": -1021
     },
     {
       "id": "zhou_kang",
@@ -77,7 +83,10 @@
           "dimension": "political",
           "year": -1015
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -1020,
+      "endYear": -996
     },
     {
       "id": "zhou_zhao",
@@ -98,7 +107,10 @@
           "dimension": "military",
           "year": -977
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -995,
+      "endYear": -977
     },
     {
       "id": "zhou_mu",
@@ -125,7 +137,10 @@
           "dimension": "political",
           "year": -950
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -976,
+      "endYear": -922
     },
     {
       "id": "zhou_gong",
@@ -140,7 +155,10 @@
           "dimension": "military",
           "year": -910
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -922,
+      "endYear": -900
     },
     {
       "id": "zhou_yi",
@@ -161,7 +179,10 @@
           "dimension": "military",
           "year": -890
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -899,
+      "endYear": -892
     },
     {
       "id": "zhou_xiao",
@@ -182,7 +203,10 @@
           "dimension": "political",
           "year": -889
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -891,
+      "endYear": -886
     },
     {
       "id": "zhou_yi_wai",
@@ -203,7 +227,10 @@
           "dimension": "political",
           "year": -878
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -885,
+      "endYear": -878
     },
     {
       "id": "zhou_li",
@@ -230,7 +257,10 @@
           "dimension": "political",
           "year": -841
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -877,
+      "endYear": -841
     },
     {
       "id": "zhou_xuan",
@@ -257,7 +287,10 @@
           "dimension": "military",
           "year": -789
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -827,
+      "endYear": -782
     },
     {
       "id": "zhou_you",
@@ -284,7 +317,10 @@
           "dimension": "political",
           "year": -771
         }
-      ]
+      ],
+      "segmentId": "seg_xizhou",
+      "startYear": -781,
+      "endYear": -771
     },
     {
       "id": "zhou_ping",
@@ -305,7 +341,10 @@
           "dimension": "political",
           "year": -750
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -770,
+      "endYear": -720
     },
     {
       "id": "zhou_huan",
@@ -320,7 +359,10 @@
           "dimension": "military",
           "year": -707
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -719,
+      "endYear": -697
     },
     {
       "id": "zhou_zhuang",
@@ -335,7 +377,10 @@
           "dimension": "military",
           "year": -675
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -696,
+      "endYear": -682
     },
     {
       "id": "zhou_xi",
@@ -356,7 +401,10 @@
           "dimension": "political",
           "year": -679
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -681,
+      "endYear": -677
     },
     {
       "id": "zhou_hui",
@@ -377,7 +425,10 @@
           "dimension": "political",
           "year": -660
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -676,
+      "endYear": -652
     },
     {
       "id": "zhou_xiang",
@@ -404,7 +455,10 @@
           "dimension": "political",
           "year": -632
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -651,
+      "endYear": -619
     },
     {
       "id": "zhou_qing",
@@ -419,7 +473,10 @@
           "dimension": "military",
           "year": -615
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -618,
+      "endYear": -613
     },
     {
       "id": "zhou_kuang",
@@ -434,7 +491,10 @@
           "dimension": "military",
           "year": -610
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -612,
+      "endYear": -607
     },
     {
       "id": "zhou_ding",
@@ -455,7 +515,10 @@
           "dimension": "military",
           "year": -597
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -606,
+      "endYear": -586
     },
     {
       "id": "zhou_jian",
@@ -476,7 +539,10 @@
           "dimension": "political",
           "year": -579
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -585,
+      "endYear": -572
     },
     {
       "id": "zhou_ling",
@@ -497,7 +563,10 @@
           "dimension": "political",
           "year": -538
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -571,
+      "endYear": -545
     },
     {
       "id": "zhou_jing",
@@ -518,7 +587,10 @@
           "dimension": "military",
           "year": -520
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -544,
+      "endYear": -520
     },
     {
       "id": "zhou_dao",
@@ -539,7 +611,10 @@
           "dimension": "military",
           "year": -520
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -520,
+      "endYear": -520
     },
     {
       "id": "zhou_jing_2",
@@ -566,7 +641,10 @@
           "dimension": "culture",
           "year": -479
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -519,
+      "endYear": -476
     },
     {
       "id": "zhou_yuan",
@@ -587,7 +665,10 @@
           "dimension": "military",
           "year": -473
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -475,
+      "endYear": -469
     },
     {
       "id": "zhou_zhending",
@@ -608,7 +689,10 @@
           "dimension": "military",
           "year": -453
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -468,
+      "endYear": -441
     },
     {
       "id": "zhou_ai",
@@ -623,7 +707,10 @@
           "dimension": "political",
           "year": -441
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -441,
+      "endYear": -441
     },
     {
       "id": "zhou_si",
@@ -638,7 +725,10 @@
           "dimension": "political",
           "year": -441
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -441,
+      "endYear": -441
     },
     {
       "id": "zhou_kao",
@@ -659,7 +749,10 @@
           "dimension": "political",
           "year": -440
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -440,
+      "endYear": -426
     },
     {
       "id": "zhou_weilie",
@@ -680,7 +773,10 @@
           "dimension": "political",
           "year": -402
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -425,
+      "endYear": -402
     },
     {
       "id": "zhou_an",
@@ -701,7 +797,10 @@
           "dimension": "military",
           "year": -380
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -401,
+      "endYear": -376
     },
     {
       "id": "zhou_lie",
@@ -722,7 +821,10 @@
           "dimension": "political",
           "year": -369
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -375,
+      "endYear": -369
     },
     {
       "id": "zhou_xian",
@@ -749,7 +851,10 @@
           "dimension": "military",
           "year": -341
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -368,
+      "endYear": -321
     },
     {
       "id": "zhou_shenjing",
@@ -770,7 +875,10 @@
           "dimension": "political",
           "year": -316
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -320,
+      "endYear": -315
     },
     {
       "id": "zhou_nan",
@@ -797,7 +905,10 @@
           "dimension": "military",
           "year": -256
         }
-      ]
+      ],
+      "segmentId": "seg_dongzhou",
+      "startYear": -314,
+      "endYear": -256
     }
   ]
 }

@@ -1,0 +1,216 @@
+{
+  "dynastyId": "zhou",
+  "note": "春秋五霸取『齐桓、晋文、楚庄、吴阖闾、越勾践』一说；战国七雄各取一位代表君主。events 为要点摘录。",
+  "lords": [
+    {
+      "id": "lord_qi",
+      "state": "齐",
+      "title": "齐桓公",
+      "personalName": "姜小白",
+      "era": "春秋",
+      "startYear": -685,
+      "endYear": -643,
+      "period": "前685 — 前643",
+      "segmentId": "seg_dongzhou",
+      "accent": "#7a9e6f",
+      "portrait": "/portraits/lord-qi.svg",
+      "events": [
+        { "id": "l_qi_zunwang", "name": "尊王攘夷", "dimension": "political", "year": -681 },
+        { "id": "l_qi_kuqiu", "name": "葵丘会盟", "dimension": "political", "year": -651 },
+        { "id": "l_qi_shanrong", "name": "北伐山戎", "dimension": "military", "year": -664 }
+      ]
+    },
+    {
+      "id": "lord_jin",
+      "state": "晋",
+      "title": "晋文公",
+      "personalName": "姬重耳",
+      "era": "春秋",
+      "startYear": -636,
+      "endYear": -628,
+      "period": "前636 — 前628",
+      "segmentId": "seg_dongzhou",
+      "accent": "#a07a4f",
+      "portrait": "/portraits/lord-jin.svg",
+      "events": [
+        { "id": "l_jin_chengpu", "name": "城濮之战", "dimension": "military", "year": -632 },
+        { "id": "l_jin_jiantu", "name": "践土之盟", "dimension": "political", "year": -632 },
+        { "id": "l_jin_sanjun", "name": "作三军", "dimension": "political", "year": -633 }
+      ]
+    },
+    {
+      "id": "lord_chu",
+      "state": "楚",
+      "title": "楚庄王",
+      "personalName": "熊侣",
+      "era": "春秋",
+      "startYear": -613,
+      "endYear": -591,
+      "period": "前613 — 前591",
+      "segmentId": "seg_dongzhou",
+      "accent": "#8c6a8f",
+      "portrait": "/portraits/lord-chu.svg",
+      "events": [
+        { "id": "l_chu_wending", "name": "问鼎中原", "dimension": "political", "year": -606 },
+        { "id": "l_chu_bizhi", "name": "邲之战", "dimension": "military", "year": -597 },
+        { "id": "l_chu_mie_ruoao", "name": "灭若敖氏", "dimension": "political", "year": -605 }
+      ]
+    },
+    {
+      "id": "lord_wu",
+      "state": "吴",
+      "title": "吴王阖闾",
+      "personalName": "姬光",
+      "era": "春秋",
+      "startYear": -514,
+      "endYear": -496,
+      "period": "前514 — 前496",
+      "segmentId": "seg_dongzhou",
+      "accent": "#5f8f86",
+      "portrait": "/portraits/lord-wu.svg",
+      "events": [
+        { "id": "l_wu_boju", "name": "柏举之战", "dimension": "military", "year": -506 },
+        { "id": "l_wu_ruying", "name": "破楚入郢", "dimension": "military", "year": -506 }
+      ]
+    },
+    {
+      "id": "lord_yue",
+      "state": "越",
+      "title": "越王勾践",
+      "personalName": "姒勾践",
+      "era": "春秋",
+      "startYear": -496,
+      "endYear": -465,
+      "period": "前496 — 前465",
+      "segmentId": "seg_dongzhou",
+      "accent": "#6f8a9e",
+      "portrait": "/portraits/lord-yue.svg",
+      "events": [
+        { "id": "l_yue_kuiji", "name": "会稽之耻", "dimension": "military", "year": -494 },
+        { "id": "l_yue_woxin", "name": "卧薪尝胆", "dimension": "political", "year": -493 },
+        { "id": "l_yue_mie_wu", "name": "越灭吴", "dimension": "military", "year": -473 }
+      ]
+    },
+    {
+      "id": "lord_qin_sg",
+      "state": "秦",
+      "title": "秦孝公",
+      "personalName": "嬴渠梁",
+      "era": "战国",
+      "startYear": -361,
+      "endYear": -338,
+      "period": "前361 — 前338",
+      "segmentId": "seg_dongzhou",
+      "accent": "#a05a3a",
+      "portrait": "/portraits/lord-qin-sg.svg",
+      "events": [
+        { "id": "l_qin_shangyang", "name": "商鞅变法", "dimension": "political", "year": -356 },
+        { "id": "l_qin_hexi", "name": "河西之战", "dimension": "military", "year": -340 }
+      ]
+    },
+    {
+      "id": "lord_chu_sg",
+      "state": "楚",
+      "title": "楚悼王",
+      "personalName": "熊疑",
+      "era": "战国",
+      "startYear": -401,
+      "endYear": -381,
+      "period": "前401 — 前381",
+      "segmentId": "seg_dongzhou",
+      "accent": "#8c6a8f",
+      "portrait": "/portraits/lord-chu-sg.svg",
+      "events": [
+        { "id": "l_chu_wuqi", "name": "吴起变法", "dimension": "political", "year": -386 },
+        { "id": "l_chu_jiuzhao", "name": "救赵攻魏", "dimension": "military", "year": -381 }
+      ]
+    },
+    {
+      "id": "lord_qi_sg",
+      "state": "齐",
+      "title": "齐威王",
+      "personalName": "田因齐",
+      "era": "战国",
+      "startYear": -356,
+      "endYear": -320,
+      "period": "前356 — 前320",
+      "segmentId": "seg_dongzhou",
+      "accent": "#7a9e6f",
+      "portrait": "/portraits/lord-qi-sg.svg",
+      "events": [
+        { "id": "l_qi_guiling", "name": "桂陵之战", "dimension": "military", "year": -353 },
+        { "id": "l_qi_maling", "name": "马陵之战", "dimension": "military", "year": -341 },
+        { "id": "l_qi_xuzhou", "name": "徐州相王", "dimension": "political", "year": -334 }
+      ]
+    },
+    {
+      "id": "lord_yan",
+      "state": "燕",
+      "title": "燕昭王",
+      "personalName": "姬职",
+      "era": "战国",
+      "startYear": -311,
+      "endYear": -279,
+      "period": "前311 — 前279",
+      "segmentId": "seg_dongzhou",
+      "accent": "#5f7f9e",
+      "portrait": "/portraits/lord-yan.svg",
+      "events": [
+        { "id": "l_yan_huangjin", "name": "黄金台招贤", "dimension": "political", "year": -310 },
+        { "id": "l_yan_fa_qi", "name": "五国伐齐", "dimension": "military", "year": -284 },
+        { "id": "l_yan_yueyi", "name": "乐毅破齐", "dimension": "military", "year": -284 }
+      ]
+    },
+    {
+      "id": "lord_zhao",
+      "state": "赵",
+      "title": "赵武灵王",
+      "personalName": "赵雍",
+      "era": "战国",
+      "startYear": -325,
+      "endYear": -299,
+      "period": "前325 — 前299",
+      "segmentId": "seg_dongzhou",
+      "accent": "#6b8f7a",
+      "portrait": "/portraits/lord-zhao.svg",
+      "events": [
+        { "id": "l_zhao_hufu", "name": "胡服骑射", "dimension": "political", "year": -307 },
+        { "id": "l_zhao_zhongshan", "name": "灭中山", "dimension": "military", "year": -296 }
+      ]
+    },
+    {
+      "id": "lord_wei",
+      "state": "魏",
+      "title": "魏文侯",
+      "personalName": "魏斯",
+      "era": "战国",
+      "startYear": -445,
+      "endYear": -396,
+      "period": "前445 — 前396",
+      "segmentId": "seg_dongzhou",
+      "accent": "#9a7a9e",
+      "portrait": "/portraits/lord-wei.svg",
+      "events": [
+        { "id": "l_wei_likui", "name": "李悝变法", "dimension": "political", "year": -406 },
+        { "id": "l_wei_xihe", "name": "西河之战", "dimension": "military", "year": -409 }
+      ]
+    },
+    {
+      "id": "lord_han",
+      "state": "韩",
+      "title": "韩昭侯",
+      "personalName": "韩武",
+      "era": "战国",
+      "startYear": -362,
+      "endYear": -333,
+      "period": "前362 — 前333",
+      "segmentId": "seg_dongzhou",
+      "accent": "#8f8a5f",
+      "portrait": "/portraits/lord-han.svg",
+      "events": [
+        { "id": "l_han_shenbuhai", "name": "申不害变法", "dimension": "political", "year": -351 },
+        { "id": "l_han_yiyang", "name": "宜阳之战", "dimension": "military", "year": -335 }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
    阶段二：帝王时间轴视图
    --------------------------------------------------------------------------
    与阶段一共用暗色博物馆基调，但这是**独立样式表**，只在 DynastyDetail 内 import。
+   本文件包含三块新能力：时代分段轴、双层（天子 + 诸侯）布局、诸侯卡片。
    ========================================================================== */
 
 .timeline-page {
@@ -12,13 +13,157 @@
   box-sizing: border-box;
 }
 
+/* ==========================================================================
+   1. 时代分段轴
+   --------------------------------------------------------------------------
+   按真实年份比例铺开：西周 275 年、东周 514 年 —— 宽度比例本身就是历史信息。
+   ========================================================================== */
+.seg-axis {
+  flex: 0 0 auto;
+  /* 上方留出段名的空间 */
+  padding: 18px 0 8px;
+}
+
+.seg-track {
+  position: relative;
+  height: 46px;
+  margin: 0 2px;
+}
+
+/* 段带：可点击，跳到该时期的第一位君主 */
+.seg-band {
+  position: absolute;
+  top: 0;
+  height: 46px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.seg-band-bar {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 30%, transparent),
+    color-mix(in srgb, var(--accent) 78%, transparent)
+  );
+  transition: height 260ms var(--ease-out), box-shadow 260ms ease;
+}
+
+.seg-band:hover .seg-band-bar {
+  height: 9px;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.seg-band-label {
+  position: absolute;
+  /* 段名在色带上方，标志点标签在下方 —— 两者不会在「春秋」起点处撞在一起 */
+  top: -17px;
+  left: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.seg-band-name {
+  font-family: var(--font-thin);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  color: color-mix(in srgb, var(--accent) 78%, white);
+}
+
+.seg-band-range {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.34);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 段内标志点（春秋 / 战国）：竖线 + 圆点 + 标签 */
+.seg-marker {
+  position: absolute;
+  top: 0;
+  height: 46px;
+  width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.seg-marker-line {
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 1px;
+  height: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.06));
+}
+
+.seg-marker-dot {
+  position: absolute;
+  left: -3px;
+  top: 14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f0dca6;
+  box-shadow: 0 0 10px 2px rgba(240, 220, 166, 0.45);
+  transition: transform 240ms var(--ease-out);
+}
+
+.seg-marker:hover .seg-marker-dot {
+  transform: scale(1.5);
+}
+
+.seg-marker-label {
+  position: absolute;
+  left: 10px;
+  top: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: #f0dca6;
+  white-space: nowrap;
+}
+
+.seg-marker-label em {
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.38);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 播放头：当前页覆盖的时间窗 */
+.seg-playhead {
+  position: absolute;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, rgba(226, 200, 125, 0), #e2c87d, rgba(226, 200, 125, 0));
+  transition: left 360ms var(--ease-out), width 360ms var(--ease-out);
+  pointer-events: none;
+}
+
 /* ---------- 顶部信息条 ---------- */
 .timeline-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0 10px;
+  padding: 12px 0 6px;
   flex: 0 0 auto;
 }
 
@@ -86,25 +231,57 @@
   cursor: not-allowed;
 }
 
-/* ---------- 舞台 ---------- */
+/* ==========================================================================
+   2. 舞台：单层 / 双层
+   ========================================================================== */
 .timeline-stage {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 单层：天子独占 */
+.timeline-stage[data-layout='single'] {
   padding: 4px 0;
 }
 
+.timeline-stage[data-layout='single'] .pager {
+  height: clamp(280px, 52vh, 560px);
+}
+
 /*
-  分页容器：必须显式给高度并 position: relative。
-  因为翻页用的是 AnimatePresence 的 popLayout 模式（新页滑入的同时旧页滑出），
-  退场页会被绝对定位叠在上面，容器需要提供稳定的尺寸基准。
+  双层：天子（上，矮）+ 诸侯（下，高）
+  上下各留 84px —— 天子浮层只向上、诸侯浮层只向下，
+  两层朝相反方向展开，永远不会互相压住。
 */
+.timeline-stage[data-layout='dual'] {
+  display: grid;
+  /* 必须显式写列宽：父级 flex 的 justify-content: center 会让 grid 的自动列收缩成内容宽 */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 162px minmax(0, 1fr);
+  row-gap: 10px;
+  padding: 80px 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.zhou-layer {
+  min-height: 0;
+  display: flex;
+}
+
+.zhou-layer .pager {
+  height: 100%;
+}
+
+/* ==========================================================================
+   3. 分页容器
+   ========================================================================== */
 .pager {
   position: relative;
   width: 100%;
-  height: clamp(280px, 52vh, 560px);
 }
 
 .pager-track {
@@ -115,7 +292,9 @@
   will-change: transform, opacity;
 }
 
-/* ---------- 帝王模块 ---------- */
+/* ==========================================================================
+   4. 帝王模块
+   ========================================================================== */
 .emp-card {
   position: relative;
   flex: 1 1 0;
@@ -123,6 +302,12 @@
   outline: none;
   /* 只改透明度，不做整体缩放 —— 缩放会让卡片内文字重新采样而发虚 */
   transition: opacity 300ms ease;
+}
+
+.emp-card:hover,
+.lord-card:hover {
+  /* 让浮层盖在相邻卡片之上 */
+  z-index: 8;
 }
 
 .emp-clip {
@@ -177,7 +362,6 @@
   text-align: center;
 }
 
-/* 谥号：瘦金体，字号明显放大 */
 .emp-title {
   font-family: var(--font-thin);
   font-size: clamp(1.9rem, 2.7vw, 2.9rem);
@@ -190,7 +374,6 @@
     0 0 40px rgba(0, 0, 0, 0.5);
 }
 
-/* 姓名：放大 + 提高对比，解决"看不清" */
 .emp-name {
   font-family: var(--font-thin);
   font-size: 15px;
@@ -222,7 +405,26 @@
   z-index: 2;
 }
 
-/* ---------- 悬浮：聚焦 / 变暗 ---------- */
+/* 紧凑态（东周天子层）：整体弱化，把视觉重心让给诸侯 */
+.emp-card--compact .emp-content {
+  gap: 4px;
+  padding: 0 10px 14px;
+}
+
+.emp-card--compact .emp-title {
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+}
+
+.emp-card--compact .emp-name {
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+}
+
+.emp-card--compact .emp-reign {
+  font-size: 10px;
+}
+
+/* 悬浮：聚焦 / 变暗 */
 .pager-track:has(.emp-card:hover) .emp-card:not(:hover),
 .pager-track:has(.emp-card:focus-visible) .emp-card:not(:focus-visible) {
   opacity: 0.3;
@@ -239,14 +441,12 @@
   box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
 }
 
-/* 需求：悬停时背景轻微缩放 1.05（只有图片缩放，文字不缩放） */
 .emp-card:hover .emp-media,
 .emp-card:focus-visible .emp-media {
   transform: scale(1.05);
   filter: saturate(1.05) brightness(1);
 }
 
-/* 需求：遮罩层加深 */
 .emp-card:hover .emp-shade,
 .emp-card:focus-visible .emp-shade {
   background: linear-gradient(
@@ -265,10 +465,174 @@
 }
 
 /* ==========================================================================
-   事件浮层（思维导图）
+   5. 诸侯层
+   ========================================================================== */
+.lords-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.lords-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-left: 2px;
+  flex: 0 0 auto;
+}
+
+.lords-title {
+  font-family: var(--font-thin);
+  font-size: 12.5px;
+  letter-spacing: 0.22em;
+  color: rgba(226, 200, 125, 0.9);
+}
+
+.lords-count {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lords-hint {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.24);
+  margin-left: auto;
+}
+
+.lords-row {
+  display: flex;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.lord-card {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  outline: none;
+  transition:
+    flex-grow 420ms var(--ease-out),
+    opacity 300ms ease;
+}
+
+/* 诸侯挤压：与阶段一同一套交互语言，用户不需要重新学习 */
+.lords-row:has(.lord-card:hover) .lord-card:not(:hover),
+.lords-row:has(.lord-card:focus-visible) .lord-card:not(:focus-visible) {
+  opacity: 0.42;
+  flex-grow: 0.86;
+}
+
+.lords-row:has(.lord-card:hover) .lord-card:hover,
+.lords-row:has(.lord-card:focus-visible) .lord-card:focus-visible {
+  flex-grow: 1.95;
+  opacity: 1;
+}
+
+.lord-clip {
+  position: relative;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #090b0f;
+  isolation: isolate;
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.lord-card:hover .lord-clip {
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+  box-shadow: 0 20px 46px -24px rgba(0, 0, 0, 0.95);
+}
+
+.lord-media {
+  position: absolute;
+  inset: 0;
+  background-image: var(--portrait);
+  background-size: cover;
+  background-position: 50% 30%;
+  transform: scale(1);
+  filter: saturate(0.9) brightness(0.78);
+  transition: transform 560ms var(--ease-out), filter 400ms ease;
+}
+
+.lord-card:hover .lord-media {
+  transform: scale(1.05);
+  filter: saturate(1.05) brightness(0.95);
+}
+
+.lord-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 10, 0.5) 0%,
+    rgba(6, 8, 10, 0.28) 38%,
+    rgba(6, 8, 10, 0.86) 82%,
+    rgba(6, 8, 10, 0.97) 100%
+  );
+  pointer-events: none;
+}
+
+.lord-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 10px 8px 14px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.lord-era {
+  position: absolute;
+  top: 10px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 国名：竖排大字，毛笔字体 */
+.lord-state {
+  font-family: var(--font-brush);
+  font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+  line-height: 1;
+  color: #f6f1e4;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+}
+
+.lord-title {
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.86);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.lord-period {
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   6. 事件浮层（思维导图）
    --------------------------------------------------------------------------
-   上半区：军事成就；下半区：政治 · 文教。
-   同侧事件横向排列、用满卡片宽度；每个节点朝卡片方向引一条竖线。
+   清晰度是这一段的核心：半透明黑底、加粗、双层 text-shadow、置顶 z-index。
    ========================================================================== */
 .emp-events {
   position: absolute;
@@ -278,19 +642,20 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  /* 不占文档流：出现/消失不会引起三块卡片重排 */
+  /* 不占文档流：出现/消失不会引起卡片重排 */
   pointer-events: none;
   opacity: 0;
   transition: opacity 260ms ease;
-  z-index: 3;
+  /* 必须压在卡片与相邻卡片之上 */
+  z-index: 20;
 }
 
 .emp-events--top {
-  bottom: calc(100% + 16px);
+  bottom: calc(100% + 14px);
 }
 
 .emp-events--bottom {
-  top: calc(100% + 16px);
+  top: calc(100% + 14px);
 }
 
 /* 下半区的分组标题放到节点下方，让两组的节点都紧贴卡片 */
@@ -299,7 +664,9 @@
 }
 
 .emp-card:hover .emp-events,
-.emp-card:focus-visible .emp-events {
+.emp-card:focus-visible .emp-events,
+.lord-card:hover .emp-events,
+.lord-card:focus-visible .emp-events {
   opacity: 1;
 }
 
@@ -311,13 +678,15 @@
   font-size: 11.5px;
   letter-spacing: 0.3em;
   text-indent: 0.3em;
-  color: rgba(232, 208, 138, 0.92);
+  color: rgba(236, 214, 148, 0.95);
   margin: 0;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  /* 背景可能是浅色city墙/旗帜，加投影保证可读 */
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 1),
+    0 0 12px rgba(0, 0, 0, 0.9);
   transition: opacity 300ms ease;
 }
 
-/* 分组标题两侧的细线，让它像一个"分区标题"而不是漂浮的小字 */
 .emp-group-label::before,
 .emp-group-label::after {
   content: '';
@@ -332,7 +701,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   max-width: 100%;
 }
 
@@ -343,9 +712,10 @@
   gap: 9px;
   padding: 8px 15px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(10, 13, 18, 0.88);
-  box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.9);
+  /* 高对比底：不透明黑，避免被背景图/遮罩影响 */
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 30px -14px rgba(0, 0, 0, 0.95);
   opacity: 0;
   transition:
     opacity 300ms ease,
@@ -364,12 +734,16 @@
 .emp-card:hover .emp-events--top .emp-event,
 .emp-card:hover .emp-events--bottom .emp-event,
 .emp-card:focus-visible .emp-events--top .emp-event,
-.emp-card:focus-visible .emp-events--bottom .emp-event {
+.emp-card:focus-visible .emp-events--bottom .emp-event,
+.lord-card:hover .emp-events--top .emp-event,
+.lord-card:hover .emp-events--bottom .emp-event,
+.lord-card:focus-visible .emp-events--top .emp-event,
+.lord-card:focus-visible .emp-events--bottom .emp-event {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* 连线：从节点朝卡片方向引出 */
+/* 连线 */
 .emp-events--top .emp-event::after {
   content: '';
   position: absolute;
@@ -377,7 +751,7 @@
   top: 100%;
   width: 1px;
   height: 14px;
-  background: linear-gradient(180deg, rgba(226, 200, 125, 0.6), rgba(226, 200, 125, 0));
+  background: linear-gradient(180deg, rgba(226, 200, 125, 0.65), rgba(226, 200, 125, 0));
 }
 
 .emp-events--bottom .emp-event::before {
@@ -387,19 +761,18 @@
   bottom: 100%;
   width: 1px;
   height: 14px;
-  background: linear-gradient(0deg, rgba(226, 200, 125, 0.6), rgba(226, 200, 125, 0));
+  background: linear-gradient(0deg, rgba(226, 200, 125, 0.65), rgba(226, 200, 125, 0));
 }
 
-/* 军事与政治用不同点色，强化"分组"语义 */
 .emp-event[data-dimension='military'] .emp-event-dot {
-  background: #d98b5f;
-  box-shadow: 0 0 8px 1px rgba(217, 139, 95, 0.4);
+  background: #e09a6a;
+  box-shadow: 0 0 8px 1px rgba(224, 154, 106, 0.45);
 }
 
 .emp-event[data-dimension='political'] .emp-event-dot,
 .emp-event[data-dimension='culture'] .emp-event-dot {
-  background: #8fb7a6;
-  box-shadow: 0 0 8px 1px rgba(143, 183, 166, 0.35);
+  background: #94c4b0;
+  box-shadow: 0 0 8px 1px rgba(148, 196, 176, 0.4);
 }
 
 .emp-event-dot {
@@ -416,24 +789,48 @@
   min-width: 0;
 }
 
-/* 字号放大：11.5 → 13.5，年份 9.5 → 11 */
 .emp-event-name {
   font-family: var(--font-thin);
-  font-size: 13.5px;
-  letter-spacing: 0.06em;
-  color: #f2ecdf;
+  font-size: 14px;
+  /* 瘦金体只有 400 字重，这里让浏览器合成加粗，提升小字可读性 */
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #fffdf6;
   white-space: nowrap;
+  /* 双层投影：一层贴边压暗、一层扩散，任何背景下都不糊 */
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 1),
+    0 0 10px rgba(0, 0, 0, 0.85);
 }
 
 .emp-event-year {
-  font-size: 11px;
+  font-size: 11.5px;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.68);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 1);
 }
 
-/* 末页补位槽：保证卡片宽度恒定 */
+/* 诸侯卡片较窄，浮层要比卡片宽并向两侧溢出，否则挤成一列 */
+.lord-card .emp-events {
+  left: 50%;
+  right: auto;
+  /*
+    诸侯卡片很窄（未悬浮时约 90-300px），事迹节点必须横向铺在卡片下方。
+    给一个远大于卡片的最小宽度，配合 .emp-event-row 的 flex-wrap，
+    3 个节点也只占一行，不会向下排成三行顶穿视口。
+  */
+  width: max(430px, 118%);
+  transform: translateX(-50%);
+}
+
+.lord-card .emp-event-row {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+/* 末页补位槽 */
 .emp-slot {
   flex: 1 1 0;
   min-width: 0;
@@ -441,14 +838,14 @@
   border: 1px dashed rgba(255, 255, 255, 0.05);
 }
 
-/* ---------- 底部：进度点 + 翻页按钮 ---------- */
+/* ---------- 底部 ---------- */
 .timeline-foot {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 10px;
+  padding-top: 8px;
 }
 
 .timeline-progress {
@@ -512,11 +909,14 @@
   .emp-card,
   .emp-media,
   .emp-events,
-  .emp-event {
+  .emp-event,
+  .lord-card,
+  .lord-media {
     transition-duration: 120ms !important;
   }
 
-  .emp-card:hover .emp-media {
+  .emp-card:hover .emp-media,
+  .lord-card:hover .lord-media {
     transform: none;
   }
 }

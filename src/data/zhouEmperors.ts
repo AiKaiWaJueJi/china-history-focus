@@ -1,23 +1,47 @@
 /**
- * 帝王数据仓库（阶段二）
+ * 帝王 / 分段 / 诸侯 数据仓库（阶段二）
  * ---------------------------------------------------------------------------
- * 目前只提供「周」一个朝代用于验证 UI 与交互；批量导入其它朝代时，
- * 在这里注册新的 JSON 即可，组件层不需要任何改动。
+ * 目前只注册「周」；批量导入其它朝代时在这里加一条即可，组件层零改动。
  */
 import zhouRaw from './emperors.zhou.json'
-import type { DynastyEmperors } from '../core/emperorTypes'
+import segmentsRaw from './segments.zhou.json'
+import lordsRaw from './lords.zhou.json'
+import type { DynastyEmperors, DynastyLords, DynastySegments } from '../core/emperorTypes'
 
-const REGISTRY: Record<string, DynastyEmperors> = {
+const EMPERORS: Record<string, DynastyEmperors> = {
   zhou: zhouRaw as DynastyEmperors,
 }
 
-/** 取某个朝代的帝王序列（按数据文件中的即位顺序） */
-export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {
-  if (!dynastyId) return null
-  return REGISTRY[dynastyId] ?? null
+const SEGMENTS: Record<string, DynastySegments> = {
+  zhou: segmentsRaw as DynastySegments,
 }
 
-/** 是否已有该朝代的帝王数据 */
+const LORDS: Record<string, DynastyLords> = {
+  zhou: lordsRaw as DynastyLords,
+}
+
+export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {
+  if (!dynastyId) return null
+  return EMPERORS[dynastyId] ?? null
+}
+
+/** 时代分段（西周 / 东周 …），没有则返回 null */
+export function getDynastySegments(dynastyId: string | undefined): DynastySegments | null {
+  if (!dynastyId) return null
+  return SEGMENTS[dynastyId] ?? null
+}
+
+/** 诸侯（春秋五霸 / 战国七雄），没有则返回 null */
+export function getDynastyLords(dynastyId: string | undefined): DynastyLords | null {
+  if (!dynastyId) return null
+  return LORDS[dynastyId] ?? null
+}
+
 export function hasDynastyEmperors(dynastyId: string | undefined): boolean {
-  return Boolean(dynastyId && REGISTRY[dynastyId])
+  return Boolean(dynastyId && EMPERORS[dynastyId])
+}
+
+/** 年份格式化：-475 → 前475 */
+export function formatYear(year: number): string {
+  return year < 0 ? `前${Math.abs(year)}` : `${year}`
 }

@@ -1,27 +1,28 @@
 /**
  * DynastyDetail —— 阶段二独立页面：某朝代的帝王时间轴
  * ===========================================================================
- * 隔离原则：
- *   · 本文件与 features/emperor-timeline/* 全部新建，不改动阶段一的
- *     DynastyGallery / DynastyPanel / squeezeLayout 任何一行；
- *   · 页面只依赖 `dynastyById`（读朝代基本信息）与 `getDynastyEmperors`（读帝王数据）；
- *   · 入口由路由 /dynasty/:dynastyId 提供，阶段一主页的点击通过
- *     store.openDynasty → navigateTo 完成跳转（store 里只加了一行）。
+ * 三层结构：
+ *   SegmentAxis      时代分段轴（西周 / 东周，含春秋、战国标志点）
+ *   timeline-stage   按当前页所属分段切换布局
+ *     single         单层：只有天子（3 卡一页）
+ *     dual           双层：天子层（紧凑）+ 诸侯层（春秋五霸 / 战国七雄）
  *
- * 交互：
- *   · 全局 wheel（带冷却）翻页，一页 3 位帝王，AnimatePresence 横向滑动；
- *   · 悬浮某位帝王：该模块聚焦、其余变暗，并上下延伸出事件浮层。
+ * 隔离原则：本文件与 features/emperor-timeline/* 全部独立，
+ * 不改动阶段一（DynastyGallery / DynastyPanel / squeezeLayout）。
  */
-import { useCallback, useMemo, useState } from 'react'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
-import { getDynastyEmperors } from '../../data/zhouEmperors'
+import { getDynastyEmperors, getDynastyLords, getDynastySegments } from '../../data/zhouEmperors'
 import { EmperorPager } from './EmperorPager'
+import { LordsRow } from './LordsRow'
+import { SegmentAxis } from './SegmentAxis'
 import { useWheelPaging } from './useWheelPaging'
 import './emperor-timeline.css'
 
 const PAGE_SIZE = 3
+/** 战国起始年：前475（与分段轴上的标志点一致） */
+const ZHANGUO_START = -475
 
 export function DynastyDetail() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
@@ -29,11 +30,17 @@ export function DynastyDetail() {
 
   const dynasty = dynastyId ? dynastyById.get(dynastyId) : undefined
   const data = getDynastyEmperors(dynastyId)
+  const segmentsData = getDynastySegments(dynastyId)
+  const lordsData = getDynastyLords(dynastyId)
 
   const [pageIndex, setPageIndex] = useState(0)
   const [direction, setDirection] = useState(1)
 
-  const pageCount = data ? Math.ceil(data.emperors.length / PAGE_SIZE) : 0
+  const emperors = useMemo(() => data?.emperors ?? [], [data])
+  const segments = segmentsData?.segments ?? []
+  const lords = lordsData?.lords ?? []
+
+  const pageCount = data ? Math.ceil(emperors.length / PAGE_SIZE) : 0
 
   const handleChange = useCallback((next: number) => {
     setPageIndex((current) => {
@@ -48,7 +55,7 @@ export function DynastyDetail() {
     onChange: handleChange,
   })
 
-  // ESC 返回主页；切换朝代时重置页码
+  // ESC 返回主页
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -65,7 +72,34 @@ export function DynastyDetail() {
     setDirection(1)
   }, [dynastyId])
 
-  const emperors = useMemo(() => data?.emperors ?? [], [data])
+  /* ---------------- 当前页所属分段 → 决定布局 ---------------- */
+  const pageEmperors = emperors.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE)
+  const pageSegmentId = pageEmperors[0]?.segmentId
+
+  /*
+    判断"春秋 / 战国"要看**页内最后一位**君主，而不是第一位。
+    原因：公元前年份是负数，-770 < -475，越靠近 0 越晚。
+    边界页（如「悼王 / 敬王 / 元王」）跨越了前 475 年，
+    若只看第一位会判成春秋，与页内已出现的战国君主矛盾。
+  */
+  const eraAnchor = pageEmperors[pageEmperors.length - 1] ?? pageEmperors[0]
+  const eraYear = eraAnchor?.startYear ?? 0
+
+  // 东周才出现"天子与诸侯并立"，并且需要真的有诸侯数据
+  const isDual = pageSegmentId === 'seg_dongzhou' && lords.length > 0
+  const era = eraYear >= ZHANGUO_START ? '战国' : '春秋'
+  const eraLords = useMemo(() => lords.filter((lord) => lord.era === era), [lords, era])
+
+  /** 点击分段轴上的某一年 → 跳到包含该年（或其后的第一位君主）的那一页 */
+  const jumpToYear = useCallback(
+    (year: number) => {
+      if (emperors.length === 0) return
+      let index = emperors.findIndex((emperor) => emperor.startYear >= year)
+      if (index < 0) index = emperors.length - 1
+      handleChange(Math.floor(index / PAGE_SIZE))
+    },
+    [emperors, handleChange],
+  )
 
   if (!dynasty) {
     return (
@@ -99,16 +133,38 @@ export function DynastyDetail() {
         </div>
       </header>
 
-      <div className="timeline-stage">
+      {segments.length > 0 ? (
+        <SegmentAxis
+          segments={segments}
+          emperors={emperors}
+          pageIndex={pageIndex}
+          pageSize={PAGE_SIZE}
+          onJumpToYear={jumpToYear}
+        />
+      ) : null}
+
+      <div className="timeline-stage" data-layout={isDual ? 'dual' : 'single'}>
         {emperors.length === 0 ? (
           <div className="timeline-empty">
-            <p className="timeline-empty-text">
-              「{dynasty.name}」的帝王数据尚未导入
-            </p>
+            <p className="timeline-empty-text">「{dynasty.name}」的帝王数据尚未导入</p>
             <p className="timeline-empty-sub">
               阶段二目前只提供「周」作为样例，其余朝代将在批量导入后开放
             </p>
           </div>
+        ) : isDual ? (
+          <>
+            <div className="zhou-layer">
+              <EmperorPager
+                emperors={emperors}
+                pageIndex={pageIndex}
+                direction={direction}
+                pageSize={PAGE_SIZE}
+                layout="stacked-top"
+                compact
+              />
+            </div>
+            <LordsRow lords={eraLords} era={era} />
+          </>
         ) : (
           <EmperorPager
             emperors={emperors}

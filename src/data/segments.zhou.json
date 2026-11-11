@@ -1,0 +1,25 @@
+{
+  "dynastyId": "zhou",
+  "segments": [
+    {
+      "id": "seg_xizhou",
+      "name": "西周",
+      "startYear": -1046,
+      "endYear": -771,
+      "accent": "#8d6b3f",
+      "desc": "镐京为都 · 礼乐初成"
+    },
+    {
+      "id": "seg_dongzhou",
+      "name": "东周",
+      "startYear": -770,
+      "endYear": -256,
+      "accent": "#c9a227",
+      "desc": "王纲解纽 · 诸侯争霸",
+      "markers": [
+        { "id": "m_chunqiu", "name": "春秋", "year": -770, "note": "五霸迭兴" },
+        { "id": "m_zhanguo", "name": "战国", "year": -475, "note": "七雄并立" }
+      ]
+    }
+  ]
+}
