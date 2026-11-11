@@ -14,20 +14,14 @@
       <stop offset="100%" stop-color="rgba(201,162,39,0.12)"/>
     </linearGradient>
   </defs>
-
   <rect width="420" height="520" fill="url(#pbg)"/>
   <ellipse cx="210" cy="170" rx="190" ry="170" fill="url(#pglow)"/>
-
   <g transform="translate(216 0)" opacity="0.9">
-    <!-- 冠 -->
     <rect x="-58" y="96" width="116" height="16" rx="4" fill="rgba(240,220,166,0.5)"/>
     <rect x="-34" y="80" width="68" height="18" rx="4" fill="rgba(240,220,166,0.34)"/>
-    <!-- 头 -->
     <ellipse cx="0" cy="152" rx="34" ry="42" fill="rgba(240,220,166,0.3)"/>
-    <!-- 肩与袍 -->
     <path d="M-96 300 Q-70 196 0 190 Q70 196 96 300 L104 520 L-104 520 Z" fill="url(#robe)"/>
     <path d="M-30 196 L0 300 L30 196" fill="none" stroke="rgba(240,220,166,0.35)" stroke-width="2"/>
   </g>
-
   <rect y="380" width="420" height="140" fill="rgba(6,8,10,0.86)"/>
 </svg>

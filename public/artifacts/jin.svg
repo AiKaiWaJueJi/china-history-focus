@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 700" width="400" height="700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#05070a"/>
+      <stop offset="38%" stop-color="rgba(95,143,134,0.42)"/>
+      <stop offset="72%" stop-color="rgba(95,143,134,0.16)"/>
+      <stop offset="100%" stop-color="#040506"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="48%">
+      <stop offset="0%" stop-color="rgba(185,219,210,0.3)"/>
+      <stop offset="60%" stop-color="rgba(95,143,134,0.1)"/>
+      <stop offset="100%" stop-color="rgba(95,143,134,0)"/>
+    </radialGradient>
+    <linearGradient id="vessel" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="rgba(185,219,210,0.7)"/>
+      <stop offset="45%" stop-color="rgba(95,143,134,0.5)"/>
+      <stop offset="100%" stop-color="rgba(95,143,134,0.1)"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="44%" r="62%">
+      <stop offset="52%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.86)"/>
+    </radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(5,7,10,0)"/>
+      <stop offset="100%" stop-color="rgba(5,7,10,0.96)"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="700" fill="url(#bg)"/>
+  <ellipse cx="200" cy="385" rx="240" ry="280" fill="url(#glow)"/>
+  <circle cx="176" cy="542" r="2.4" fill="rgba(185,219,210,0.05)"/><circle cx="330" cy="506" r="1.6" fill="rgba(185,219,210,0.09)"/><circle cx="138" cy="614" r="0.8" fill="rgba(185,219,210,0.09)"/><circle cx="360" cy="620" r="0.6" fill="rgba(185,219,210,0.04)"/><circle cx="136" cy="543" r="2.1" fill="rgba(185,219,210,0.04)"/><circle cx="287" cy="39" r="2.5" fill="rgba(185,219,210,0.06)"/><circle cx="311" cy="611" r="1.7" fill="rgba(185,219,210,0.1)"/><circle cx="359" cy="407" r="1.2" fill="rgba(185,219,210,0.12)"/><circle cx="261" cy="329" r="1.8" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="184" cy="640" r="1.4" fill="rgba(185,219,210,0.05)"/><circle cx="248" cy="459" r="1.3" fill="rgba(185,219,210,0.05)"/><circle cx="79" cy="623" r="2.1" fill="rgba(185,219,210,0.1)"/><circle cx="207" cy="107" r="1.3" fill="rgba(185,219,210,0.04)"/><circle cx="190" cy="406" r="1.5" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="305" cy="225" r="1.1" fill="rgba(185,219,210,0.04)"/><circle cx="8" cy="200" r="1.0" fill="rgba(185,219,210,0.08)"/><circle cx="3" cy="567" r="0.9" fill="rgba(185,219,210,0.09)"/><circle cx="115" cy="327" r="1.3" fill="rgba(185,219,210,0.1)"/><circle cx="318" cy="114" r="2.4" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="94" cy="181" r="1.5" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="373" cy="433" r="1.4" fill="rgba(185,219,210,0.1)"/><circle cx="144" cy="25" r="1.7" fill="rgba(185,219,210,0.04)"/><circle cx="318" cy="336" r="2.4" fill="rgba(185,219,210,0.08)"/><circle cx="322" cy="150" r="0.8" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="285" cy="305" r="1.1" fill="rgba(185,219,210,0.08)"/><circle cx="333" cy="213" r="1.9" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="280" cy="80" r="1.7" fill="rgba(185,219,210,0.07)"/><circle cx="210" cy="202" r="1.2" fill="rgba(185,219,210,0.12)"/><circle cx="18" cy="146" r="2.0" fill="rgba(185,219,210,0.04)"/><circle cx="369" cy="173" r="1.1" fill="rgba(185,219,210,0.05)"/><circle cx="97" cy="109" r="0.7" fill="rgba(185,219,210,0.06)"/><circle cx="172" cy="320" r="1.7" fill="rgba(185,219,210,0.04)"/><circle cx="143" cy="290" r="0.8" fill="rgba(185,219,210,0.11000000000000001)"/><circle cx="390" cy="426" r="1.1" fill="rgba(185,219,210,0.04)"/><circle cx="256" cy="355" r="1.7" fill="rgba(185,219,210,0.09)"/><circle cx="63" cy="251" r="0.9" fill="rgba(185,219,210,0.12)"/><circle cx="95" cy="248" r="1.8" fill="rgba(185,219,210,0.08)"/><circle cx="196" cy="544" r="0.6" fill="rgba(185,219,210,0.05)"/><circle cx="372" cy="380" r="2.2" fill="rgba(185,219,210,0.05)"/><circle cx="201" cy="583" r="0.9" fill="rgba(185,219,210,0.04)"/><circle cx="371" cy="254" r="2.4" fill="rgba(185,219,210,0.07)"/><circle cx="26" cy="589" r="2.3" fill="rgba(185,219,210,0.04)"/>
+
+  <g fill="none" stroke="rgba(185,219,210,0.12)" stroke-width="1">
+    <circle cx="200" cy="455" r="112"/>
+    <circle cx="200" cy="455" r="164"/>
+  </g>
+
+  <!-- 器物母题：缩放在 0.5 左右，保证窄幅裁切下仍能看全 -->
+  <g transform="translate(200 455) rotate(-5) scale(0.52)">
+    
+    <ellipse cx="0" cy="112" rx="52" ry="11" fill="rgba(0,0,0,0.6)" filter="url(#soft)"/>
+    <rect x="-13" y="-108" width="26" height="42" rx="8" fill="#b9dbd2" opacity="0.5"/>
+    <path d="M-13 -68 Q-62 -48 -52 28 Q-44 82 0 90 Q44 82 52 28 Q62 -48 13 -68 Z" fill="url(#vessel)" stroke="rgba(185,219,210,0.72)" stroke-width="1.5"/>
+    <path d="M-13 -66 Q0 -58 13 -66" fill="none" stroke="rgba(185,219,210,0.72)" stroke-width="1.4" opacity="0.7"/>
+    <path d="M-30 -30 Q-38 20 -22 66" fill="none" stroke="#b9dbd2" stroke-width="6" stroke-linecap="round" opacity="0.35" filter="url(#soft)"/>
+    <rect x="-22" y="90" width="44" height="12" rx="4" fill="#5f8f86" opacity="0.7"/>
+  </g>
+
+  <rect width="400" height="700" fill="url(#vig)"/>
+  <rect y="560" width="400" height="140" fill="url(#fade)"/>
+</svg>

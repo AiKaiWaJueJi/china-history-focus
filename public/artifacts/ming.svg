@@ -2,25 +2,25 @@
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
       <stop offset="0%" stop-color="#05070a"/>
-      <stop offset="38%" stop-color="rgba(63,90,140,0.42)"/>
-      <stop offset="72%" stop-color="rgba(63,90,140,0.16)"/>
+      <stop offset="38%" stop-color="rgba(47,111,159,0.42)"/>
+      <stop offset="72%" stop-color="rgba(47,111,159,0.16)"/>
       <stop offset="100%" stop-color="#040506"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="40%" r="52%">
-      <stop offset="0%" stop-color="rgba(168,188,224,0.34)"/>
-      <stop offset="58%" stop-color="rgba(63,90,140,0.1)"/>
-      <stop offset="100%" stop-color="rgba(63,90,140,0)"/>
+    <radialGradient id="glow" cx="50%" cy="42%" r="48%">
+      <stop offset="0%" stop-color="rgba(158,199,227,0.3)"/>
+      <stop offset="60%" stop-color="rgba(47,111,159,0.1)"/>
+      <stop offset="100%" stop-color="rgba(47,111,159,0)"/>
     </radialGradient>
     <linearGradient id="vessel" x1="0.15" y1="0" x2="0.85" y2="1">
-      <stop offset="0%" stop-color="rgba(168,188,224,0.72)"/>
-      <stop offset="42%" stop-color="rgba(63,90,140,0.52)"/>
-      <stop offset="100%" stop-color="rgba(63,90,140,0.1)"/>
+      <stop offset="0%" stop-color="rgba(158,199,227,0.7)"/>
+      <stop offset="45%" stop-color="rgba(47,111,159,0.5)"/>
+      <stop offset="100%" stop-color="rgba(47,111,159,0.1)"/>
     </linearGradient>
-    <radialGradient id="vig" cx="50%" cy="42%" r="66%">
-      <stop offset="55%" stop-color="rgba(0,0,0,0)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0.88)"/>
+    <radialGradient id="vig" cx="50%" cy="44%" r="62%">
+      <stop offset="52%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.86)"/>
     </radialGradient>
-    <filter id="soft"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
     <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="rgba(5,7,10,0)"/>
       <stop offset="100%" stop-color="rgba(5,7,10,0.96)"/>
@@ -28,36 +28,25 @@
   </defs>
 
   <rect width="400" height="700" fill="url(#bg)"/>
-  <ellipse cx="194" cy="266" rx="250" ry="280" fill="url(#glow)"/>
-  <circle cx="15" cy="671" r="0.9" fill="rgba(168,188,224,0.05)"/><circle cx="191" cy="363" r="0.8" fill="rgba(168,188,224,0.1)"/><circle cx="82" cy="306" r="0.6" fill="rgba(168,188,224,0.08)"/><circle cx="274" cy="122" r="1.4" fill="rgba(168,188,224,0.06)"/><circle cx="194" cy="346" r="1.7" fill="rgba(168,188,224,0.09)"/><circle cx="85" cy="72" r="1.1" fill="rgba(168,188,224,0.11000000000000001)"/><circle cx="375" cy="191" r="1.7" fill="rgba(168,188,224,0.12)"/><circle cx="180" cy="284" r="1.6" fill="rgba(168,188,224,0.08)"/><circle cx="207" cy="611" r="0.9" fill="rgba(168,188,224,0.11000000000000001)"/><circle cx="399" cy="67" r="1.9" fill="rgba(168,188,224,0.07)"/><circle cx="138" cy="444" r="2.2" fill="rgba(168,188,224,0.08)"/><circle cx="373" cy="240" r="2.0" fill="rgba(168,188,224,0.04)"/><circle cx="360" cy="592" r="1.3" fill="rgba(168,188,224,0.06)"/><circle cx="278" cy="70" r="1.2" fill="rgba(168,188,224,0.06)"/><circle cx="374" cy="510" r="1.8" fill="rgba(168,188,224,0.05)"/><circle cx="357" cy="453" r="1.8" fill="rgba(168,188,224,0.08)"/><circle cx="268" cy="668" r="1.2" fill="rgba(168,188,224,0.08)"/><circle cx="300" cy="488" r="2.6" fill="rgba(168,188,224,0.13)"/><circle cx="385" cy="263" r="1.3" fill="rgba(168,188,224,0.11000000000000001)"/><circle cx="395" cy="611" r="1.1" fill="rgba(168,188,224,0.08)"/><circle cx="330" cy="226" r="0.8" fill="rgba(168,188,224,0.12)"/><circle cx="58" cy="342" r="2.5" fill="rgba(168,188,224,0.13)"/><circle cx="136" cy="648" r="2.2" fill="rgba(168,188,224,0.04)"/><circle cx="182" cy="690" r="1.0" fill="rgba(168,188,224,0.04)"/><circle cx="230" cy="110" r="1.8" fill="rgba(168,188,224,0.06)"/><circle cx="98" cy="454" r="1.0" fill="rgba(168,188,224,0.06)"/><circle cx="386" cy="50" r="0.8" fill="rgba(168,188,224,0.06)"/><circle cx="173" cy="176" r="2.2" fill="rgba(168,188,224,0.12)"/><circle cx="200" cy="472" r="2.6" fill="rgba(168,188,224,0.1)"/><circle cx="24" cy="667" r="1.5" fill="rgba(168,188,224,0.07)"/><circle cx="111" cy="226" r="0.8" fill="rgba(168,188,224,0.12)"/><circle cx="374" cy="314" r="0.8" fill="rgba(168,188,224,0.12)"/><circle cx="374" cy="602" r="1.8" fill="rgba(168,188,224,0.06)"/><circle cx="49" cy="117" r="1.9" fill="rgba(168,188,224,0.1)"/><circle cx="256" cy="95" r="2.3" fill="rgba(168,188,224,0.09)"/><circle cx="103" cy="239" r="1.4" fill="rgba(168,188,224,0.04)"/><circle cx="14" cy="90" r="2.3" fill="rgba(168,188,224,0.13)"/><circle cx="300" cy="462" r="0.8" fill="rgba(168,188,224,0.1)"/><circle cx="204" cy="588" r="1.6" fill="rgba(168,188,224,0.04)"/><circle cx="4" cy="307" r="0.7" fill="rgba(168,188,224,0.07)"/><circle cx="379" cy="111" r="0.9" fill="rgba(168,188,224,0.11000000000000001)"/><circle cx="11" cy="375" r="2.4" fill="rgba(168,188,224,0.1)"/><circle cx="30" cy="122" r="2.6" fill="rgba(168,188,224,0.1)"/><circle cx="350" cy="37" r="1.9" fill="rgba(168,188,224,0.05)"/><circle cx="373" cy="581" r="2.0" fill="rgba(168,188,224,0.08)"/><circle cx="216" cy="480" r="2.6" fill="rgba(168,188,224,0.04)"/>
+  <ellipse cx="200" cy="385" rx="240" ry="280" fill="url(#glow)"/>
+  <circle cx="255" cy="327" r="2.0" fill="rgba(158,199,227,0.05)"/><circle cx="226" cy="402" r="1.2" fill="rgba(158,199,227,0.06)"/><circle cx="29" cy="401" r="1.9" fill="rgba(158,199,227,0.05)"/><circle cx="157" cy="588" r="1.0" fill="rgba(158,199,227,0.1)"/><circle cx="36" cy="200" r="1.0" fill="rgba(158,199,227,0.06)"/><circle cx="340" cy="164" r="2.5" fill="rgba(158,199,227,0.08)"/><circle cx="55" cy="303" r="1.2" fill="rgba(158,199,227,0.09)"/><circle cx="234" cy="250" r="0.8" fill="rgba(158,199,227,0.1)"/><circle cx="346" cy="122" r="1.2" fill="rgba(158,199,227,0.04)"/><circle cx="10" cy="405" r="0.7" fill="rgba(158,199,227,0.07)"/><circle cx="177" cy="520" r="2.2" fill="rgba(158,199,227,0.08)"/><circle cx="280" cy="300" r="1.0" fill="rgba(158,199,227,0.08)"/><circle cx="392" cy="68" r="0.6" fill="rgba(158,199,227,0.05)"/><circle cx="32" cy="576" r="2.1" fill="rgba(158,199,227,0.04)"/><circle cx="35" cy="195" r="0.9" fill="rgba(158,199,227,0.06)"/><circle cx="178" cy="141" r="2.3" fill="rgba(158,199,227,0.12)"/><circle cx="388" cy="544" r="1.0" fill="rgba(158,199,227,0.07)"/><circle cx="228" cy="355" r="2.1" fill="rgba(158,199,227,0.08)"/><circle cx="106" cy="422" r="0.8" fill="rgba(158,199,227,0.08)"/><circle cx="202" cy="366" r="0.8" fill="rgba(158,199,227,0.12)"/><circle cx="186" cy="482" r="2.0" fill="rgba(158,199,227,0.12)"/><circle cx="26" cy="298" r="0.9" fill="rgba(158,199,227,0.05)"/><circle cx="167" cy="351" r="2.5" fill="rgba(158,199,227,0.05)"/><circle cx="201" cy="305" r="1.9" fill="rgba(158,199,227,0.09)"/><circle cx="249" cy="313" r="1.5" fill="rgba(158,199,227,0.06)"/><circle cx="345" cy="581" r="1.0" fill="rgba(158,199,227,0.07)"/><circle cx="300" cy="0" r="2.2" fill="rgba(158,199,227,0.06)"/><circle cx="107" cy="42" r="1.6" fill="rgba(158,199,227,0.08)"/><circle cx="365" cy="524" r="2.2" fill="rgba(158,199,227,0.05)"/><circle cx="347" cy="61" r="1.3" fill="rgba(158,199,227,0.1)"/><circle cx="187" cy="179" r="2.1" fill="rgba(158,199,227,0.05)"/><circle cx="67" cy="295" r="2.1" fill="rgba(158,199,227,0.09)"/><circle cx="83" cy="95" r="1.7" fill="rgba(158,199,227,0.1)"/><circle cx="275" cy="491" r="2.1" fill="rgba(158,199,227,0.05)"/><circle cx="96" cy="560" r="1.4" fill="rgba(158,199,227,0.08)"/><circle cx="336" cy="55" r="2.1" fill="rgba(158,199,227,0.08)"/><circle cx="114" cy="506" r="2.4" fill="rgba(158,199,227,0.04)"/><circle cx="98" cy="522" r="0.8" fill="rgba(158,199,227,0.09)"/><circle cx="55" cy="481" r="2.5" fill="rgba(158,199,227,0.12)"/><circle cx="103" cy="247" r="2.1" fill="rgba(158,199,227,0.07)"/><circle cx="79" cy="151" r="0.9" fill="rgba(158,199,227,0.09)"/><circle cx="94" cy="586" r="0.8" fill="rgba(158,199,227,0.07)"/>
 
-  <!-- 同心环：展柜灯光 -->
-  <g fill="none" stroke="rgba(168,188,224,0.13)" stroke-width="1">
-    <circle cx="194" cy="326" r="118"/>
-    <circle cx="194" cy="326" r="168"/>
-    <circle cx="194" cy="326" r="232"/>
+  <g fill="none" stroke="rgba(158,199,227,0.12)" stroke-width="1">
+    <circle cx="200" cy="455" r="112"/>
+    <circle cx="200" cy="455" r="164"/>
   </g>
 
-  <!-- 器物剪影：鼎 / 罐 的抽象轮廓，强调边缘光 -->
-  <!-- 缩放 0.62：面板只露出背景图中间的窄条（未悬浮时约 30% 宽度），
-       器物必须在这么窄的裁切下依然完整可辨 -->
-  <g transform="translate(194 326) rotate(1.2) scale(0.62)">
-    <ellipse cx="0" cy="128" rx="104" ry="18" fill="rgba(0,0,0,0.72)" filter="url(#soft)"/>
-
-    <path d="M-80 -66 Q-96 44 -58 98 L58 98 Q96 44 80 -66 Z" fill="url(#vessel)"/>
-    <path d="M-80 -66 Q-96 44 -58 98 L58 98 Q96 44 80 -66 Z" fill="none" stroke="rgba(168,188,224,0.72)" stroke-width="1.8"/>
-    <!-- 腹部高光：一条竖向反光，制造金属/釉面的立体感 -->
-    <path d="M-40 -40 Q-30 30 -34 86" fill="none" stroke="rgba(168,188,224,0.38)" stroke-width="7" stroke-linecap="round" filter="url(#soft)"/>
-
-    <!-- 口沿 -->
-    <rect x="-92" y="-84" width="184" height="20" rx="7" fill="rgba(168,188,224,0.42)"/>
-    <rect x="-92" y="-84" width="184" height="5" rx="2.5" fill="rgba(168,188,224,0.72)"/>
-    <!-- 立耳 -->
-    <path d="M-56 -84 L-56 -124 Q-56 -132 -48 -132 M56 -84 L56 -124 Q56 -132 48 -132" fill="none" stroke="rgba(168,188,224,0.62)" stroke-width="8" stroke-linecap="round"/>
-    <!-- 三足 -->
-    <path d="M-38 98 L-33 140 M38 98 L33 140 M0 98 L0 146" stroke="rgba(168,188,224,0.55)" stroke-width="9" stroke-linecap="round"/>
+  <!-- 器物母题：缩放在 0.5 左右，保证窄幅裁切下仍能看全 -->
+  <g transform="translate(200 455) rotate(-1) scale(0.52)">
+    
+    <rect x="-38" y="-104" width="76" height="66" rx="8" fill="none" stroke="#9ec7e3" stroke-width="7" opacity="0.65"/>
+    <path d="M-20 -96 L-20 -46 M0 -96 L0 -46 M20 -96 L20 -46" stroke="#9ec7e3" stroke-width="3" opacity="0.4"/>
+    <rect x="-48" y="-38" width="96" height="12" rx="5" fill="#2f6f9f" opacity="0.85"/>
+    <path d="M-44 -26 L-40 108 M44 -26 L40 108 M-34 -26 L-30 108 M34 -26 L30 108"
+          stroke="#9ec7e3" stroke-width="7" stroke-linecap="round" opacity="0.6"/>
+    <path d="M-48 -30 L-58 -44 M48 -30 L58 -44" stroke="#9ec7e3" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
   </g>
 
   <rect width="400" height="700" fill="url(#vig)"/>
-  <rect y="430" width="400" height="270" fill="url(#fade)"/>
+  <rect y="560" width="400" height="140" fill="url(#fade)"/>
 </svg>

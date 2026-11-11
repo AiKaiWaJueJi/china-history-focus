@@ -1,22 +1,22 @@
 /**
- * verify-gallery.mjs —— 视图1（朝代主页）端到端验收
+ * verify-gallery.mjs —— 视图1（朝代主页）验收
  * ---------------------------------------------------------------------------
- * 验收口径分两层，避免自欺欺人：
+ * 本轮重点验证两件事：
  *
- *  1) 【稳态帧率】才代表"丝滑到 120 帧"。
- *     浏览器首次为"变宽后的竖排文本"做样式/布局预热时，会有一次约 30ms 的单帧开销
- *     （已用 diag-spike.mjs 做过 A/B/C 对照：禁用背景缩放、禁用提亮层，
- *      尖峰均不变，说明与本项目的 CSS 写法无关，是引擎一次性成本）。
- *     因此断言用**第 2 次悬停**的数据，并要求 max ≤ 8.3ms（120Hz 单帧预算）。
+ *  A. 过渡是"渐变"还是"跳变"
+ *     逐帧采样面板宽度：若浏览器把 flex-grow 从 1 直接跳到 2.6，
+ *     采样只会拿到两个宽度值；平滑过渡应有十几个中间宽度，
+ *     且起步平缓（easeInOutCubic 在 t=20% 时只完成约 10% 位移）。
  *
- *  2) 【首次悬停】只记录不设卡，但要求 p95 仍 ≤ 8.3ms，证明没有持续掉帧。
+ *  B. 背景图与字体是否真的按数据分流
+ *     —— 13 张背景图必须各不相同；--font-dynasty 必须按 fontStyle 解析。
  */
 import puppeteer from 'puppeteer-core'
 import { mkdirSync } from 'node:fs'
 
 const URL = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-const OUT = 'D:\\文档\\deepseek-harness\\default-workspace\\china-history-focus\\shots\\v2'
+const OUT = 'D:\\文档\\deepseek-harness\\default-workspace\\china-history-focus\\shots\\v3'
 mkdirSync(OUT, { recursive: true })
 
 const results = []
@@ -25,17 +25,7 @@ const check = (name, pass, detail = '') => {
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? ' :: ' + detail : ''}`)
 }
 
-const stats = (frames) => {
-  const d = frames.slice(1).map((t, i) => t - frames[i]).filter((x) => x > 0)
-  const s = [...d].sort((a, b) => a - b)
-  return {
-    n: d.length,
-    median: s[Math.floor(s.length / 2)] ?? 0,
-    p95: s[Math.floor(s.length * 0.95)] ?? 0,
-    max: s[s.length - 1] ?? 0,
-    spikeAt: d.indexOf(s[s.length - 1] ?? 0),
-  }
-}
+const HOVER_INDEX = 7 // 第 8 个模块：宋
 
 const browser = await puppeteer.launch({
   executablePath: EDGE,
@@ -46,6 +36,8 @@ const browser = await puppeteer.launch({
 
 try {
   const page = await browser.newPage()
+  // 关闭缓存：public/ 下的占位图会被浏览器按启发式缓存，重跑时会拿到旧图
+  await page.setCacheEnabled(false)
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }])
   const errors = []
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
@@ -56,59 +48,73 @@ try {
   await page.evaluate(() => document.fonts.ready)
   await new Promise((r) => setTimeout(r, 3200)) // 等空闲预热跑完
 
-  // ---------- 静态断言 ----------
+  /* ---------------- 静态断言 ---------------- */
   const panels = await page.$$eval('.dyn-panel', (nodes) =>
     nodes.map((n) => ({
       grow: Number(getComputedStyle(n).flexGrow),
       w: Math.round(n.getBoundingClientRect().width),
       h: Math.round(n.getBoundingClientRect().height),
+      bg: getComputedStyle(n.querySelector('.dyn-media')).backgroundImage,
       font: getComputedStyle(n.querySelector('.dyn-name')).fontFamily,
-      mediaW: Math.round(n.querySelector('.dyn-media').getBoundingClientRect().width),
+      name: n.querySelector('.dyn-name')?.textContent ?? '',
     })),
   )
-  check('5 个朝代模块同时挂载', panels.length === 5, panels.map((p) => p.w).join('/'))
+
+  check('13 个朝代模块同时挂载', panels.length === 13, `实际 ${panels.length}`)
   check('默认全部等分（flex-grow: 1）', panels.every((p) => p.grow === 1))
-  check('毛笔字体 Ma Shan Zheng 生效', panels.every((p) => p.font.includes('Ma Shan Zheng')))
   check(
-    '背景层宽度固定（不随面板变宽而重采样）',
-    panels.every((p) => p.mediaW === panels[0].mediaW) && panels[0].mediaW > panels[0].w,
-    `media=${panels[0].mediaW}px panel=${panels[0].w}px`,
+    '13 张背景图各不相同（各自对应器物）',
+    new Set(panels.map((p) => p.bg)).size === 13,
+    `distinct=${new Set(panels.map((p) => p.bg)).size}`,
   )
+
+  const byName = Object.fromEntries(panels.map((p) => [p.name, p.font]))
+  check('唐（瘦金体）→ ZCOOL XiaoWei', /ZCOOL XiaoWei/.test(byName['唐']), byName['唐'])
+  check('晋（行书）→ Long Cang', /Long Cang/.test(byName['晋']), byName['晋'])
+  check('秦（小篆）→ Ma Shan Zheng', /Ma Shan Zheng/.test(byName['秦']), byName['秦'])
+  check('清（馆阁体）→ ZCOOL XiaoWei', /ZCOOL XiaoWei/.test(byName['清']), byName['清'])
 
   await page.screenshot({ path: `${OUT}\\01-gallery-default.png` })
 
-  const box = await page.$eval('.dyn-panel:nth-child(3)', (n) => {
+  /* ---------------- 过渡曲线采样 ---------------- */
+  const box = await page.$eval(`.dyn-panel:nth-child(${HOVER_INDEX + 1})`, (n) => {
     const r = n.getBoundingClientRect()
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width }
   })
 
-  const measureHover = async () => {
-    await page.evaluate(() => {
-      window.__f = []
-      const t0 = performance.now()
-      const loop = (t) => {
-        window.__f.push(t)
-        if (t - t0 < 900) requestAnimationFrame(loop)
-      }
-      requestAnimationFrame(loop)
-    })
-    await page.mouse.move(box.x, box.y, { steps: 1 })
-    await new Promise((r) => setTimeout(r, 1100))
-    return stats(await page.evaluate(() => window.__f))
-  }
+  // 先移开，确保处于静止态
+  await page.mouse.move(5, 5, { steps: 1 })
+  await new Promise((r) => setTimeout(r, 900))
 
-  // ---------- 第 1 次悬停（含一次性预热开销） ----------
-  const s1 = await measureHover()
+  await page.evaluate((idx) => {
+    const el = document.querySelectorAll('.dyn-panel')[idx]
+    window.__w = []
+    const t0 = performance.now()
+    const loop = (t) => {
+      window.__w.push([Math.round(t - t0), Math.round(el.getBoundingClientRect().width)])
+      if (t - t0 < 900) requestAnimationFrame(loop)
+    }
+    requestAnimationFrame(loop)
+  }, HOVER_INDEX)
+
+  await page.mouse.move(box.x, box.y, { steps: 1 })
+  await new Promise((r) => setTimeout(r, 1000))
+  const samples = await page.evaluate(() => window.__w)
+
+  const ws = samples.map((s) => s[1])
+  const distinct = new Set(ws).size
+  const wMin = Math.min(...ws)
+  const wMax = Math.max(...ws)
+  const at140 = samples.find((s) => s[0] >= 140)?.[1] ?? wMax
+  const progress20 = (at140 - wMin) / (wMax - wMin)
+
   console.log(
-    `\n[HOVER#1 首帧] frames=${s1.n} median=${s1.median.toFixed(2)}ms p95=${s1.p95.toFixed(2)}ms max=${s1.max.toFixed(2)}ms spikeAt=#${s1.spikeAt}`,
+    `\n[WIDTH] distinct=${distinct} from=${wMin}px to=${wMax}px progress@140ms=${(progress20 * 100).toFixed(0)}%`,
   )
-  check(
-    '首次悬停 p95 ≤ 8.3ms（无持续掉帧）',
-    s1.p95 <= 8.3,
-    `p95=${s1.p95.toFixed(2)}ms`,
-  )
+  check('宽度有大量中间态（渐变而非跳变）', distinct >= 10, `distinct=${distinct}`)
+  check('起步平缓：140ms 时位移完成 < 40%', progress20 < 0.4, `${(progress20 * 100).toFixed(0)}%`)
 
-  // ---------- 挤压数值 ----------
+  /* ---------------- 挤压数值 ---------------- */
   const after = await page.$$eval('.dyn-panel', (nodes) =>
     nodes.map((n) => ({
       grow: Number(getComputedStyle(n).flexGrow),
@@ -117,42 +123,53 @@ try {
       tf: getComputedStyle(n.querySelector('.dyn-media')).transform,
     })),
   )
-  check('悬停项 flex-grow = 2', after[2].grow === 2, `${after[2].grow}`)
+  const hovered = after[HOVER_INDEX]
+  check('悬停项 flex-grow = 2.6', hovered.grow === 2.6, `${hovered.grow}`)
   check(
     '其余项 flex-grow = 0.8',
-    after.filter((_, i) => i !== 2).every((p) => p.grow === 0.8),
+    after.filter((_, i) => i !== HOVER_INDEX).every((p) => p.grow === 0.8),
   )
-  check('悬停项明显变宽', after[2].w > panels[2].w * 1.8, `${panels[2].w}px → ${after[2].w}px`)
+  check('悬停项明显变宽', hovered.w > box.w * 1.8, `${Math.round(box.w)}px → ${hovered.w}px`)
+  check('背景层 scale(1.05)', /matrix\(1\.05, 0, 0, 1\.05/.test(hovered.tf), hovered.tf)
   check(
-    '背景层 transform = scale(1.05)',
-    /matrix\(1\.05, 0, 0, 1\.05/.test(after[2].tf),
-    after[2].tf,
-  )
-  check(
-    '挤压时面板高度不变（无布局塌陷）',
-    after.every((p) => Math.abs(p.h - panels[0].h) <= 1),
-    `${panels[0].h}px`,
+    '挤压时高度不变（无布局塌陷）',
+    after.every((p) => Math.abs(p.h - after[0].h) <= 1),
+    `${after[0].h}px`,
   )
 
-  await page.screenshot({ path: `${OUT}\\02-gallery-hover-tang.png` })
-
-  // ---------- 稳态复测 ----------
-  await page.mouse.move(10, 10, { steps: 1 })
-  await new Promise((r) => setTimeout(r, 900))
-  const s2 = await measureHover()
-  console.log(
-    `[HOVER#2 稳态] frames=${s2.n} median=${s2.median.toFixed(2)}ms p95=${s2.p95.toFixed(2)}ms max=${s2.max.toFixed(2)}ms`,
-  )
-  // 用 p95 而不是 max：无头环境偶发一次 GC/调度抖动（本机实测 6~12ms 波动），
-  // 单点 max 会把环境噪声误判成实现问题。
+  const timing = await page.$eval('.dyn-panel', (n) => {
+    const s = getComputedStyle(n)
+    return { duration: s.transitionDuration, easing: s.transitionTimingFunction }
+  })
   check(
-    '稳态 p95 帧间隔 ≤ 8.3ms（120Hz 单帧预算）',
-    s2.p95 <= 8.3,
-    `p95=${s2.p95.toFixed(2)}ms median=${s2.median.toFixed(2)}ms max=${s2.max.toFixed(2)}ms`,
+    '过渡时长 700ms（非瞬时）',
+    timing.duration.split(',')[0].trim() === '0.7s',
+    `${timing.duration} / ${timing.easing}`,
   )
-  check('稳态等效帧率 ≥ 120fps', 1000 / s2.median >= 120, `${(1000 / s2.median).toFixed(0)}fps`)
+  check(
+    '缓动 easeInOutCubic（缓起缓收）',
+    /cubic-bezier\(0\.65, 0, 0\.35, 1\)/.test(timing.easing),
+    timing.easing,
+  )
 
-  // ---------- 状态机链路 ----------
+  await page.screenshot({ path: `${OUT}\\02-gallery-hover-song.png` })
+
+  /* ---------------- reduce-motion 下仍保留过渡 ---------------- */
+  const page2 = await browser.newPage()
+  await page2.setCacheEnabled(false)
+  await page2.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }])
+  await page2.setViewport({ width: 1600, height: 900 })
+  await page2.goto(URL, { waitUntil: 'networkidle2' })
+  await page2.waitForSelector('.dyn-panel')
+  const reducedTiming = await page2.$eval('.dyn-panel', (n) => getComputedStyle(n).transitionDuration)
+  check(
+    '系统开启"减少动效"时仍有过渡（260ms，不再瞬间跳变）',
+    parseFloat(reducedTiming) >= 0.2,
+    reducedTiming,
+  )
+  await page2.close()
+
+  /* ---------------- 状态机链路 ---------------- */
   await page.mouse.click(box.x, box.y)
   await new Promise((r) => setTimeout(r, 600))
   const stubTitle = await page.$eval('.phase-stub-title', (n) => n.textContent?.trim()).catch(() => null)

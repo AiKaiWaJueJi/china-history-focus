@@ -3,18 +3,16 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   字体：自托管的子集化 woff2
+   字体：4 款开源书法字体，按 fontStyle 字段动态切换
    --------------------------------------------------------------------------
-   只用 Google Fonts 的 text= 子集接口取本项目的用字，体积 12KB / 25KB。
-   这样既拿到了 Ma Shan Zheng 的毛笔笔锋，又不必依赖 fonts.gstatic.com
-   （国内经常不可达，会导致首屏退化成系统楷体）。
-   子集外的字会自动回落到系统楷体 STKaiti / KaiTi，视觉上不会突兀。
+   全部用 Google Fonts 的 text= 子集接口，只打包 13 个朝代名用到的 17 个字，
+   四款合计约 30KB，完全离线可用。
+   商业字体（方正瘦金书、汉仪篆书）需自行授权，替换方式见 src/lib/fonts.ts。
    ========================================================================== */
 @font-face {
   font-family: 'Ma Shan Zheng';
   src: url('/fonts/ma-shan-zheng.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
   font-display: swap;
 }
 
@@ -22,7 +20,20 @@
   font-family: 'ZCOOL XiaoWei';
   src: url('/fonts/zcool-xiaowei.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Long Cang';
+  src: url('/fonts/long-cang.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zhi Mang Xing';
+  src: url('/fonts/zhi-mang-xing.woff2') format('woff2');
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -30,14 +41,21 @@
   :root {
     color-scheme: dark;
 
-    /* 字体族：毛笔字 / 瘦金体替身 / 正文 */
-    --font-brush: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', serif;
+    --font-brush: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', serif;
     --font-thin: 'ZCOOL XiaoWei', 'STKaiti', 'KaiTi', serif;
     --font-ui: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
 
-    /* 挤压动画的统一曲线：expo-out，起步快、收尾极缓，是"丝滑"的观感来源 */
-    --ease-squeeze: cubic-bezier(0.16, 1, 0.3, 1);
-    --dur-squeeze: 620ms;
+    /*
+      挤压曲线：easeInOutCubic。
+      上一版用 cubic-bezier(0.16,1,0.3,1)（expo-out），80% 的位移挤在最初
+      20% 的时间里，观感就是"啪一下弹开"。现在换成缓起—加速—缓收，
+      700ms 内均匀铺开，才是需求要的"逐渐变大"。
+    */
+    --ease-squeeze: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-squeeze: 700ms;
+
+    /* 微交互仍用较快的缓出，避免细节动作拖沓 */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html,
@@ -62,69 +80,47 @@
 
 @layer components {
   /* ======================================================================
-     视图1：朝代主页 —— 5 个纵向模块的横向挤压
+     视图1：朝代主页 —— 13 个纵向模块的横向挤压
      ----------------------------------------------------------------------
-     【为什么 squeeze 不用 React state】
-     需求要求 hover 时"极致丝滑"。若把 hover 写进 Zustand，鼠标每移动一像素
-     都会 setState → 整棵树重渲染，React 与主线程争抢必然掉帧。
-     这里用 CSS :has() 让浏览器自己完成"谁被悬停 → 其余是谁"的选择，
-     整个过程 React 一次都不重渲染，只有合成器与布局在工作。
-
-     【为什么是 flex-grow 而不是 transform: scaleX】
-     scaleX 会横向拉伸文字与图片（变形），且无法产生"挤压邻居"的效果。
-     挤压在几何上就是分配宽度，flex-grow 是最直接的表达。
-     代价：flex-grow 属于布局属性，无法只走合成器线程。
-     因此尽量把每帧开销压到最低：
-       · contain: layout paint  → 把重排的影响范围限制在面板内部
-       · 面板内只做背景位移/缩放（合成器友好），不写 filter: blur
-       · 文字用 text-shadow 而非 filter: drop-shadow（后者每帧重绘）
+     hover 完全不进 React：CSS :has() 让浏览器自行决定"谁被悬停、谁收缩"，
+     鼠标移动期间没有任何 setState / 重渲染。这是丝滑的前提。
      ====================================================================== */
 
   .gallery {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     height: 100%;
-    padding: 0 18px 18px;
+    padding: 0 14px 14px;
     box-sizing: border-box;
   }
 
   .dyn-panel {
-    /* 默认等分 */
     flex: 1 1 0%;
     position: relative;
     min-width: 0;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 18px;
+    border-radius: 14px;
     background: #0a0c10;
     overflow: hidden;
     cursor: pointer;
     text-align: center;
     isolation: isolate;
-    contain: layout paint;
 
     /*
-      will-change: flex-grow —— 需求指定，但要说清楚：
-      它其实是个 no-op。will-change 只对能触发合成层提升的属性（transform /
-      opacity / filter）有效；flex-grow 是布局属性，浏览器会忽略这一条。
-      真正起作用的是 contain 与"纯 CSS 驱动"这两点。
-      保留它是因为需求明确要求，且无害。
+      container-type 让面板内部样式按"面板自身宽度"响应（容器查询）：
+      窄态只显示朝代名与年代，宽态才铺开子时期/都城/代表器物。
+      比用 JS 监听宽度便宜得多，也不会在挤压过程中抖动。
     */
+    container-type: inline-size;
+
     will-change: flex-grow;
 
-    /*
-      只过渡 flex-grow 与 border-color。
-      刻意**不**过渡 box-shadow：一个 580×820 的大面板，阴影模糊每帧都要重绘，
-      实测会把单帧从 6ms 拉到 30ms+。改成非过渡的 inset 描边（只在起止两帧各画一次）。
-    */
     transition:
       flex-grow var(--dur-squeeze) var(--ease-squeeze),
-      border-color 420ms ease;
+      border-color 420ms var(--ease-out);
   }
 
-  /* —— 挤压规则 ——
-     :has() 让 CSS 自行判断"是否有人被悬停"，从而让其余模块收缩。
-     键盘焦点同样触发，保证可访问性。 */
   .gallery:has(.dyn-panel:hover) .dyn-panel,
   .gallery:has(.dyn-panel:focus-visible) .dyn-panel {
     flex-grow: 0.8;
@@ -132,83 +128,69 @@
 
   .gallery:has(.dyn-panel:hover) .dyn-panel:hover,
   .gallery:has(.dyn-panel:focus-visible) .dyn-panel:focus-visible {
-    flex-grow: 2;
+    /* 13 个模块并存时，2.6:0.8 的比例能让悬停项从 ~110px 展开到 ~270px */
+    flex-grow: 2.6;
   }
 
   .dyn-panel:hover,
   .dyn-panel:focus-visible {
-    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-    /* 仅 inset 1px 描边：绘制面积可控，且不参与过渡 */
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
     outline: none;
   }
 
-  /* —— 文物背景 —— */
+  /* —— 文物背景 ——
+     宽度用 vw 固定，而不是百分比：百分比会随面板变宽而变，
+     导致 background-size:cover 每帧重新栅格化整张图（实测 20-60ms/帧）。 */
   .dyn-media {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
-    /*
-      关键优化：宽度用 vw 固定，而不是百分比。
-      百分比宽度会随面板一起变宽，导致 background-size:cover 每帧重新栅格化
-      整张图（我们的占位图还是 SVG，矢量重栅格化尤其贵，实测单帧 20-60ms）。
-      固定宽度后，面板变宽只是"露出更多像素"，图像本身不再重采样。
-    */
-    width: max(62vw, 460px);
+    width: max(20vw, 250px);
     transform: translateX(-50%) scale(1);
     background-image: var(--media);
     background-size: cover;
-    background-position: 50% 38%;
-    /* 静态滤镜：不参与过渡，避免每帧重绘整张图 */
-    filter: saturate(1.06) brightness(0.82);
-    /* 只动 transform → 合成器线程独立完成，不重排 */
+    background-position: 50% 44%;
+    filter: saturate(1.08) brightness(0.92);
     transition: transform var(--dur-squeeze) var(--ease-squeeze);
     will-change: transform;
   }
 
   .dyn-panel:hover .dyn-media,
   .dyn-panel:focus-visible .dyn-media {
-    /* 需求：hover 时背景图 scale(1.05)，仅 transform 参与动画 */
+    /* 需求：hover 时背景图 scale(1.05)，只动 transform */
     transform: translateX(-50%) scale(1.05);
   }
 
-  /* —— 压暗遮罩：保证竖排大字在任意背景上都可读 —— */
+  /* —— 静态压暗遮罩（不参与过渡，避免每帧重画渐变）—— */
   .dyn-shade {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
-    /* 与 .dyn-media 同宽，随面板宽度变化只需裁剪、不需重绘图像 */
-    width: max(62vw, 460px);
+    width: max(20vw, 250px);
     transform: translateX(-50%);
     background: linear-gradient(
       180deg,
-      rgba(6, 8, 10, 0.1) 0%,
-      rgba(6, 8, 10, 0.34) 42%,
-      rgba(6, 8, 10, 0.8) 82%,
-      rgba(6, 8, 10, 0.94) 100%
+      rgba(6, 8, 10, 0.12) 0%,
+      rgba(6, 8, 10, 0.38) 44%,
+      rgba(6, 8, 10, 0.82) 84%,
+      rgba(6, 8, 10, 0.95) 100%
     );
   }
 
-  /*
-    悬浮提亮层。
-    早先直接过渡 .dyn-shade 的 background 渐变——但 CSS 渐变无法真正插值，
-    浏览器只能每帧重画整块渐变，是实测里另一处卡顿来源。
-    改为：渐变保持静态，用一个纯色/径向高光层的 opacity 过渡（合成器线程可完成）。
-  */
+  /* —— 悬浮提亮：纯 opacity，合成器友好 —— */
   .dyn-light {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
-    /* 与 .dyn-media 一样用固定宽度：若让它跟随面板变宽，
-       首次悬浮到更宽状态时需要重新栅格化这块渐变，实测带来 ~30ms 的一次性尖峰 */
-    width: max(62vw, 460px);
+    width: max(20vw, 250px);
     transform: translateX(-50%);
     background: radial-gradient(
       70% 55% at 50% 42%,
-      color-mix(in srgb, var(--accent-soft) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent-soft) 20%, transparent) 0%,
       transparent 72%
     );
     opacity: 0;
@@ -221,12 +203,28 @@
     opacity: 1;
   }
 
-  /* ----------------------------------------------------------------------
-     空闲预热态：由 DynastyGallery 的 useIdlePrewarm 在浏览器空闲时逐面板
-     加上 data-prewarm，两帧后移除。目的不是视觉，而是提前完成"放大后的
-     合成层栅格化"，把首次悬停的 ~80ms 单帧尖峰挪到用户看不见的时候。
-     预热期间必须关掉过渡，否则会看到一次一闪而过的动画。
-     ---------------------------------------------------------------------- */
+  /* 顶部展签线 */
+  .dyn-edge {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--accent-soft) 70%, transparent),
+      transparent
+    );
+    opacity: 0.4;
+    transition: opacity 420ms ease;
+  }
+
+  .dyn-panel:hover .dyn-edge {
+    opacity: 1;
+  }
+
+  /* 空闲预热态（见 DynastyGallery.useIdlePrewarm）：
+     提前把"放大后的合成层"栅格化，避免首次悬停出现一次性卡顿。 */
   .dyn-panel[data-prewarm='true'],
   .dyn-panel[data-prewarm='true'] .dyn-media,
   .dyn-panel[data-prewarm='true'] .dyn-light {
@@ -241,26 +239,6 @@
     opacity: 1;
   }
 
-  /* 顶部一道主题色细线，作为"展签"的视觉锚点 */
-  .dyn-edge {
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--accent-soft) 70%, transparent),
-      transparent
-    );
-    opacity: 0.45;
-    transition: opacity 420ms ease;
-  }
-
-  .dyn-panel:hover .dyn-edge {
-    opacity: 1;
-  }
-
   /* —— 内容层 —— */
   .dyn-body {
     position: relative;
@@ -268,16 +246,15 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* 底部 44px：给绝对定位的进入提示留出空间，避免与年代文字叠字 */
-    padding: 20px 8px 44px;
+    padding: 14px 6px 16px;
     box-sizing: border-box;
   }
 
   .dyn-ord {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
-    font-size: 10px;
-    letter-spacing: 0.32em;
-    color: rgba(255, 255, 255, 0.38);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.34);
     transition: color 420ms ease;
   }
 
@@ -285,25 +262,27 @@
     color: var(--accent-soft);
   }
 
-  /* 竖排朝代名：writing-mode 让汉字自然竖立 */
+  /*
+    竖排朝代名。
+    字体由 --font-dynasty 注入（按数据的 fontStyle 字段解析，见 src/lib/fonts.ts），
+    于是"字体随朝代演变"本身成了信息的一部分：
+    周用毛笔、秦小篆笔意、汉隶偏瘦劲、三国楷、晋行书、唐瘦金……
+  */
   .dyn-name {
     writing-mode: vertical-rl;
     text-orientation: upright;
-    margin: auto;
-    font-family: var(--font-brush);
-    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    /* 名字落在上三分之一：下方留给器物，形成"展签在上、器物在下"的展柜构图 */
+    margin-top: 13vh;
+    font-family: var(--font-dynasty, var(--font-brush));
+    font-size: clamp(1.8rem, 2.5vw, 2.9rem);
     line-height: 1;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     color: #f4efe4;
-    /* 用 text-shadow 而非 filter：后者会强制每帧重绘 */
     text-shadow:
-      0 2px 18px rgba(0, 0, 0, 0.75),
-      0 0 42px color-mix(in srgb, var(--accent) 22%, transparent);
-    /* 缩放在悬停时轻微放大，强化"被推到跟前" */
+      0 2px 18px rgba(0, 0, 0, 0.8),
+      0 0 40px color-mix(in srgb, var(--accent) 24%, transparent);
     transform: scale(1);
-    transition:
-      transform var(--dur-squeeze) var(--ease-squeeze),
-      color 420ms ease;
+    transition: transform var(--dur-squeeze) var(--ease-squeeze), color 420ms ease;
   }
 
   .dyn-panel:hover .dyn-name,
@@ -313,61 +292,62 @@
   }
 
   .dyn-meta {
+    /* 沉到底部，与名字分开 */
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     font-family: var(--font-thin);
-  }
-
-  .dyn-alias {
-    font-size: 12px;
-    letter-spacing: 0.36em;
-    text-indent: 0.36em; /* 抵消末字后的字距，视觉上真正居中 */
-    color: var(--accent-soft);
-    opacity: 0.85;
-  }
-
-  .dyn-artifact {
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    color: rgba(255, 255, 255, 0.62);
+    width: 100%;
   }
 
   .dyn-period {
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.42);
+    font-size: 9.5px;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.62);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   /*
-    "进入"提示：绝对定位 + opacity 过渡。
-    刻意不用 max-height / auto 之类会改变盒高的写法，
-    否则 hover 时会触发面板内布局跳动，破坏丝滑感。
+    宽态才出现的信息（子时期 / 都城 / 代表器物）。
+    窄态用 opacity 隐藏而不是 display:none：
+    保留占位意味着悬停变宽时内部不发生布局跳动，动画更稳。
   */
-  .dyn-cta {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 12px;
-    z-index: 3;
-    font-family: var(--font-thin);
-    font-size: 11px;
-    letter-spacing: 0.24em;
-    color: var(--accent-soft);
+  .dyn-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
     transition:
-      opacity 380ms ease,
-      transform 520ms var(--ease-squeeze);
+      opacity 320ms ease 60ms,
+      transform 460ms var(--ease-out) 60ms;
+    white-space: nowrap;
     pointer-events: none;
   }
 
-  .dyn-panel:hover .dyn-cta,
-  .dyn-panel:focus-visible .dyn-cta {
-    opacity: 1;
-    transform: translateY(0);
+  .dyn-detail-line {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .dyn-detail-item {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    color: var(--accent-soft);
+    opacity: 0.9;
+  }
+
+  /* 容器查询：面板宽度 ≥ 176px 才展开细节（即悬停态） */
+  @container (min-width: 176px) {
+    .dyn-detail {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* ======================================================================
@@ -388,13 +368,13 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
-    padding: 18px 22px 14px;
+    padding: 16px 18px 12px;
     flex: 0 0 auto;
   }
 
   .app-title {
     font-family: var(--font-brush);
-    font-size: 20px;
+    font-size: 19px;
     letter-spacing: 0.16em;
     color: #efe9dc;
     margin: 0;
@@ -403,7 +383,7 @@
   .app-sub {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
     font-size: 9.5px;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.28em;
     color: #6f6752;
     text-transform: uppercase;
   }
@@ -411,7 +391,7 @@
   .app-hint {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
     font-size: 10px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: #565049;
   }
 
@@ -420,7 +400,7 @@
     min-height: 0;
   }
 
-  /* 阶段占位：让状态机在阶段一也能被真实验证 */
+  /* 阶段占位 */
   .phase-stub {
     height: 100%;
     display: flex;
@@ -458,9 +438,7 @@
     font-size: 12px;
     letter-spacing: 0.16em;
     cursor: pointer;
-    transition:
-      border-color 260ms ease,
-      color 260ms ease;
+    transition: border-color 260ms ease, color 260ms ease;
   }
 
   .phase-stub-btn:hover {
@@ -469,19 +447,31 @@
   }
 }
 
-/* 尊重"减少动效"偏好：取消缩放与挤压过渡，只保留即时状态切换 */
+/* ==========================================================================
+   "减少动效"偏好
+   --------------------------------------------------------------------------
+   上一版在这里把 transition-duration 设成 1ms，等于把整个挤压动画删掉了。
+   这是过度降级：很多 Windows 用户为了性能关闭系统动画，浏览器就会上报
+   prefers-reduced-motion: reduce，于是核心交互变成"啪"一下跳变——
+   本项目的用户正好踩到了这个坑。
+
+   正确做法是**降低强度而非取消**：
+   · 保留宽度挤压（这是操作反馈，不是装饰）
+   · 去掉背景放大与文字缩放（大幅位移才是前庭不适的来源）
+   · 时长压缩到 260ms，变化更克制
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .dyn-panel,
-  .dyn-media,
-  .dyn-name,
-  .dyn-shade,
-  .dyn-cta,
-  .dyn-edge {
-    transition-duration: 1ms !important;
+  .dyn-panel {
+    transition-duration: 260ms !important;
   }
 
   .dyn-panel:hover .dyn-media,
   .dyn-panel:focus-visible .dyn-media {
     transform: translateX(-50%);
+  }
+
+  .dyn-panel:hover .dyn-name,
+  .dyn-panel:focus-visible .dyn-name {
+    transform: none;
   }
 }
