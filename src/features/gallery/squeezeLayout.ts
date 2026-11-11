@@ -1,30 +1,28 @@
 /**
- * 挤压布局计算（锚定式 + 像素宽度驱动）
+ * 挤压布局计算（居中对称展开）
  * ===========================================================================
- * 需求：激活的模块**从一侧展开**，另一侧保持不动（以整排中轴线为界）。
+ * 交互语义：激活的模块**从自身中心向两边展开**，左右邻居等量收缩。
+ * （早前尝试过按中轴线做单侧锚定展开，实际手感不如对称展开自然，已回退。）
  *
- * 为什么不用 flex-grow 做动画：
- *   flex 的最终宽度是 `可用宽度 × grow_i / Σgrow`。
- *   动画时 13 个 grow 同时变化，**宽度与时间是强非线性的**。
- *   实测：时长 400ms 的曲线，前 140ms（35% 时间）就走完了 77% 的位移，
- *   尾巴拖得很长 —— 这就是"看起来展开很慢"的真正原因。
+ * 为什么用 width 而不是 flex-grow 做动画：
+ *   flex 的宽度是 `可用宽度 × grow_i / Σgrow`，13 个 grow 同时变化时，
+ *   宽度与时间是强非线性的：实测 360ms 的曲线里，前 140ms 就走完了大部分位移、
+ *   尾巴拖得很长 —— 这就是"看起来展开慢"的根源。
+ *   改成对 width（长度属性）插值后，位移随时间近似线性，观感匀速且利落。
  *
- * 所以这里改成：算出每块模块的**目标像素宽度**，直接对 width 做过渡。
- *   · width 是长度属性，插值随时间是线性的，观感匀速；
- *   · 锚定侧的宽度是常量，整个动画期间真正一动不动；
- *   · 收缩侧与激活侧分担全部宽度变化。
- *
- * 锚定方向（按中轴线划分）：
- *   index ≤ 中线 → 锚左：左侧不动，激活项向右展开；
- *   index >  中线 → 锚右：右侧不动，激活项向左展开。
- *   两者都朝中轴线打开，像一本从中间翻开的书。
+ * 为什么首次激活需要一次 FLIP：
+ *   默认布局是 `flex: 1 1 0`（宽度 auto），从 auto 到具体像素值无法插值，
+ *   会直接跳变。所以先把每块的"当前像素宽度"钉下来（禁用过渡 + 强制重排），
+ *   再恢复过渡并写入目标宽度。
  */
 
 export interface SqueezeMetrics {
+  /** 每块模块的默认等分宽度 */
   base: number
+  /** 激活项的目标宽度 */
   target: number
+  /** 其余模块的收缩宽度 */
   collapse: number
-  anchorLeft: boolean
   /** 期望宽度数组（像素） */
   widths: number[]
 }
@@ -42,41 +40,48 @@ export function computeSqueeze(
       base,
       target: base,
       collapse: base,
-      anchorLeft: true,
       widths: Array.from({ length: count }, () => base),
     }
   }
 
-  // 目标宽度 ≈ 可用宽度的 23.5%，但不小于等分的 2.2 倍、不超过 34%
+  // 目标宽度：约 23.5% 可用宽度，不小于等分的 2.2 倍、不超过 34%
   const target = Math.min(Math.max(available * 0.235, base * 2.2), available * 0.34)
 
-  const center = (count - 1) / 2
-  const anchorLeft = activeIndex <= center
-  const anchorCount = anchorLeft ? activeIndex : count - 1 - activeIndex
-  const collapseCount = count - 1 - anchorCount
+  /*
+    左右两侧**各自分摊一半的收缩量**，而不是所有模块等量收缩。
+    因为激活项左右两侧的模块数量通常不等（如 13 块里第 8 块，左 7 右 5）：
+    若等量收缩，左侧总让位比右侧多，激活项中心会向一侧漂移约 20px，
+    面板就会在光标下轻微滑动。
+    平分收缩量后，激活项的左右边缘等量外扩，**中心严格不动**，
+    在视觉上依然是"从中心向两边展开"。
+  */
+  const totalShrink = target - base
+  const leftCount = activeIndex
+  const rightCount = count - 1 - activeIndex
+  const half = totalShrink / 2
 
-  const remaining = available - target - anchorCount * base
-  const collapse = collapseCount > 0 ? Math.max(remaining / collapseCount, base * 0.35) : base
+  let leftPer = leftCount > 0 ? half / leftCount : 0
+  let rightPer = rightCount > 0 ? half / rightCount : 0
+  // 一侧没有邻居时，全部收缩量由另一侧承担
+  if (leftCount === 0 && rightCount > 0) rightPer = totalShrink / rightCount
+  if (rightCount === 0 && leftCount > 0) leftPer = totalShrink / leftCount
+
+  // 防止极端尺寸下把邻居压到不可用
+  const minWidth = Math.max(base * 0.35, 28)
+  leftPer = Math.min(leftPer, base - minWidth)
+  rightPer = Math.min(rightPer, base - minWidth)
 
   const widths = Array.from({ length: count }, (_, i) => {
     if (i === activeIndex) return target
-    if (anchorLeft) return i < activeIndex ? base : collapse
-    return i > activeIndex ? base : collapse
+    return i < activeIndex ? base - leftPer : base - rightPer
   })
 
-  return { base, target, collapse, anchorLeft, widths }
+  return { base, target, collapse: base - (leftPer + rightPer) / 2, widths }
 }
 
 /** 记录哪些容器已经被"钉"成像素宽度布局 */
 const pinned = new WeakSet<HTMLElement>()
 
-/**
- * 把布局写入 DOM。
- *
- * 首次运行需要一次 FLIP：先把每块面板按"当前实际像素宽度"固定下来
- * （此时禁用过渡），强制一次重排，再恢复过渡并写入目标宽度。
- * 否则从 `flex: 1`（宽度 auto）过渡到具体像素值是无法插值的，会直接跳变。
- */
 export function applySqueeze(
   root: HTMLElement,
   panels: HTMLElement[],
@@ -103,14 +108,6 @@ export function applySqueeze(
       p.style.transitionProperty = ''
     })
     pinned.add(root)
-
-    // 上面已经用 offsetWidth 强制过一次重排，起始宽度已被锁定；
-    // 因此这里可以直接写入目标宽度，无需再等一帧
-    // （早先用 requestAnimationFrame 会让动画起点整体后移约 16-30ms）。
-    panels.forEach((p, i) => {
-      p.style.width = `${metrics.widths[i]}px`
-    })
-    return metrics
   }
 
   panels.forEach((p, i) => {

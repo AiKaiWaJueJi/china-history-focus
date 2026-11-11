@@ -105,30 +105,36 @@ try {
   const activeAfter = after[HOVER_INDEX]
 
   /* ---------------- 锚定式展开 ---------------- */
-  const anchorSide = [8, 9, 10, 11, 12]
-  const collapseSide = [0, 1, 2, 3, 4, 5, 6]
+  const others = after.map((r, i) => ({ i, w: r.w })).filter((o) => o.i !== HOVER_INDEX)
+
+  const centerBefore = before[HOVER_INDEX].x + before[HOVER_INDEX].w / 2
+  const centerAfter = after[HOVER_INDEX].x + after[HOVER_INDEX].w / 2
 
   console.log(
-    `\n[ANCHOR] 激活项 ${before[HOVER_INDEX].w}px → ${activeAfter.w}px（右边缘 ${activeBefore.right} → ${activeAfter.right}）`,
+    `\n[EXPAND] 激活项 ${before[HOVER_INDEX].w}px → ${activeAfter.w}px（中心 ${Math.round(centerBefore)} → ${Math.round(centerAfter)}）`,
   )
-  console.log(`[ANCHOR] 右邻宽度: ${anchorSide.map((i) => after[i].w).join(',')}`)
-  console.log(`[ANCHOR] 左侧宽度: ${collapseSide.map((i) => after[i].w).join(',')}`)
+  console.log(`[EXPAND] 其余宽度: ${others.map((o) => o.w).join(',')}`)
 
   check('激活项展开（≥ 2.5 倍等分宽）', activeAfter.w > baseW * 2.5, `${activeAfter.w}px`)
+  // 左侧 7 块、右侧 5 块各自分摊一半收缩量 → 两组内部等宽，两组之间略有差异
+  const leftW = after.slice(0, HOVER_INDEX).map((r) => r.w)
+  const rightW = after.slice(HOVER_INDEX + 1).map((r) => r.w)
   check(
-    '锚定侧（右侧）宽度纹丝不动',
-    anchorSide.every((i) => Math.abs(after[i].w - baseW) <= 2),
-    `maxDelta=${Math.max(...anchorSide.map((i) => Math.abs(after[i].w - baseW)))}px`,
+    '左/右两组内部各自等宽（对称展开）',
+    Math.max(...leftW) - Math.min(...leftW) <= 1 && Math.max(...rightW) - Math.min(...rightW) <= 1,
+    `左 ${leftW[0]}px × ${leftW.length} / 右 ${rightW[0]}px × ${rightW.length}`,
   )
   check(
-    '收缩侧（左侧）确实变窄',
-    collapseSide.every((i) => after[i].w < baseW - 2),
-    `最大=${Math.max(...collapseSide.map((i) => after[i].w))}px`,
+    '其余模块确实变窄',
+    others.every((o) => o.w < baseW - 2),
+    `最大=${Math.max(...others.map((o) => o.w))}px`,
   )
+  // 左右分摊收缩量后，激活项中心应当严格不动 —— 面板不会在光标下滑动
+  const drift = Math.abs(centerAfter - centerBefore)
   check(
-    '激活项未被移动（右边缘保持不动）',
-    Math.abs(activeAfter.right - activeBefore.right) <= 2,
-    `${activeBefore.right} → ${activeAfter.right}`,
+    '激活项中心保持不动（不会滑离光标）',
+    drift <= 3,
+    `${Math.round(centerBefore)} → ${Math.round(centerAfter)}（漂移 ${Math.round(drift)}px）`,
   )
   check(
     '挤压过程中面板高度不变',
