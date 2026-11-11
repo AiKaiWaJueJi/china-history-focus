@@ -21,8 +21,6 @@ import { useWheelPaging } from './useWheelPaging'
 import './emperor-timeline.css'
 
 const PAGE_SIZE = 3
-/** 战国起始年：前475（与分段轴上的标志点一致） */
-const ZHANGUO_START = -475
 
 export function DynastyDetail() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
@@ -76,19 +74,30 @@ export function DynastyDetail() {
   const pageEmperors = emperors.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE)
   const pageSegmentId = pageEmperors[0]?.segmentId
 
-  /*
-    判断"春秋 / 战国"要看**页内最后一位**君主，而不是第一位。
-    原因：公元前年份是负数，-770 < -475，越靠近 0 越晚。
-    边界页（如「悼王 / 敬王 / 元王」）跨越了前 475 年，
-    若只看第一位会判成春秋，与页内已出现的战国君主矛盾。
-  */
-  const eraAnchor = pageEmperors[pageEmperors.length - 1] ?? pageEmperors[0]
-  const eraYear = eraAnchor?.startYear ?? 0
-
   // 东周才出现"天子与诸侯并立"，并且需要真的有诸侯数据
   const isDual = pageSegmentId === 'seg_dongzhou' && lords.length > 0
-  const era = eraYear >= ZHANGUO_START ? '战国' : '春秋'
-  const eraLords = useMemo(() => lords.filter((lord) => lord.era === era), [lords, era])
+
+  /*
+    当前页的时间窗：从本页第一位君主的即位年，到本页最后一位君主的驾崩年。
+    诸侯不再按"春秋/战国"整体筛选，而是**与该时间窗求交** ——
+    这样翻页时诸侯会随天子更替动态增删，形成"此刻谁在称霸"的联动记忆。
+  */
+  const pageStartYear = pageEmperors[0]?.startYear ?? 0
+  const pageEndYear = pageEmperors[pageEmperors.length - 1]?.endYear ?? pageStartYear
+
+  const activeLords = useMemo(() => {
+    if (lords.length === 0) return []
+    return lords
+      .map((lord) => ({
+        lord,
+        // 区间交集长度（公元前为负数，相减仍得到正的持续年数）
+        overlap: Math.min(lord.endYear, pageEndYear) - Math.max(lord.startYear, pageStartYear),
+      }))
+      .filter((item) => item.overlap > 0)
+      // 在本页停留更久的诸侯排前面
+      .sort((a, b) => b.overlap - a.overlap)
+      .map((item) => item.lord)
+  }, [lords, pageStartYear, pageEndYear])
 
   /** 点击分段轴上的某一年 → 跳到包含该年（或其后的第一位君主）的那一页 */
   const jumpToYear = useCallback(
@@ -163,7 +172,7 @@ export function DynastyDetail() {
                 compact
               />
             </div>
-            <LordsRow lords={eraLords} era={era} />
+            <LordsRow lords={activeLords} />
           </>
         ) : (
           <EmperorPager

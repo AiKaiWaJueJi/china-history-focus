@@ -15,6 +15,9 @@ import type { CSSProperties } from 'react'
 import type { EmperorRecord, TimelineSegment } from '../../core/emperorTypes'
 import { formatYear } from '../../data/zhouEmperors'
 
+/** 播放头固定宽度（百分比）：约等于一页平均跨度的视觉宽度 */
+const PLAYHEAD_WIDTH = 7.5
+
 interface SegmentAxisProps {
   segments: TimelineSegment[]
   emperors: EmperorRecord[]
@@ -93,13 +96,19 @@ export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToY
           )),
         )}
 
-        {/* 播放头：当前页的时间跨度 */}
+        {/*
+          播放头：标记"当前页大致落在哪一段"。
+          刻意用**固定宽度**（PLAYHEAD_WIDTH），只让位置随页移动。
+          早先是按当前页的年份跨度算宽度，而每页跨越的年数不同（有的 30 年、
+          有的 70 年），于是滚轮翻页时指示条一会宽一会细，视觉上很跳。
+          现在宽度恒定，动的是位置 —— 这类"位置指示器"本该如此。
+        */}
         {pageStart !== undefined ? (
           <div
             className="seg-playhead"
             style={{
-              left: `${pos(pageStart)}%`,
-              width: `${Math.max(pos(pageEnd) - pos(pageStart), 0.6)}%`,
+              left: `${Math.min(Math.max(pos((pageStart + pageEnd) / 2) - PLAYHEAD_WIDTH / 2, 0), 100 - PLAYHEAD_WIDTH)}%`,
+              width: `${PLAYHEAD_WIDTH}%`,
             }}
             aria-hidden="true"
           />
