@@ -1,0 +1,299 @@
+{
+  "dynasties": [
+    {
+      "id": "d_qin",
+      "name": "秦",
+      "alias": "赢秦",
+      "period": "前 221 — 前 207",
+      "startYear": -221,
+      "endYear": -207,
+      "accent": "#8a6a3a",
+      "summary": "中国历史上第一个大一统王朝，废分封、行郡县，书同文、车同轨。",
+      "emperorIds": ["e_qin_shihuang", "e_qin_er"]
+    },
+    {
+      "id": "d_han",
+      "name": "汉",
+      "alias": "刘汉",
+      "period": "前 202 — 220",
+      "startYear": -202,
+      "endYear": 220,
+      "accent": "#a63a2e",
+      "summary": "奠定汉民族与儒术正统的王朝，凿空西域，开通丝绸之路。",
+      "emperorIds": ["e_han_gaozu", "e_han_wudi"]
+    },
+    {
+      "id": "d_tang",
+      "name": "唐",
+      "alias": "李唐",
+      "period": "618 — 907",
+      "startYear": 618,
+      "endYear": 907,
+      "accent": "#c9a227",
+      "summary": "万国来朝的开元盛世，诗歌、书法、佛学与胡风交融的黄金时代。",
+      "emperorIds": ["e_tang_taizong", "e_tang_wuzetian", "e_tang_xuanzong"]
+    },
+    {
+      "id": "d_song",
+      "name": "宋",
+      "alias": "赵宋",
+      "period": "960 — 1279",
+      "startYear": 960,
+      "endYear": 1279,
+      "accent": "#4f8f7d",
+      "summary": "文治鼎盛、市井繁荣，理学、活字、纸币与山水画的高峰。",
+      "emperorIds": ["e_song_taizu", "e_song_shenzong"]
+    },
+    {
+      "id": "d_ming",
+      "name": "明",
+      "alias": "朱明",
+      "period": "1368 — 1644",
+      "startYear": 1368,
+      "endYear": 1644,
+      "accent": "#3f5a8c",
+      "summary": "布衣天子开国，内阁与厂卫并行，七下西洋的远洋时代。",
+      "emperorIds": ["e_ming_taizu", "e_ming_chengzu"]
+    }
+  ],
+
+  "emperors": [
+    {
+      "id": "e_qin_shihuang",
+      "dynastyId": "d_qin",
+      "name": "嬴政",
+      "title": "秦始皇",
+      "reign": "前 221 — 前 210",
+      "summary": "并六国、称皇帝、立郡县，统一文字度量衡。",
+      "eventIds": ["ev_unify", "ev_greatwall", "ev_daze"]
+    },
+    {
+      "id": "e_qin_er",
+      "dynastyId": "d_qin",
+      "name": "胡亥",
+      "title": "秦二世",
+      "reign": "前 210 — 前 207",
+      "summary": "继位三年而亡国，秦法严苛终致天下崩解。",
+      "eventIds": []
+    },
+    {
+      "id": "e_han_gaozu",
+      "dynastyId": "d_han",
+      "name": "刘邦",
+      "title": "汉高祖",
+      "reign": "前 202 — 前 195",
+      "summary": "起于亭长，楚汉相争胜出，定都长安，与民休息。",
+      "eventIds": ["ev_chu_han"]
+    },
+    {
+      "id": "e_han_wudi",
+      "dynastyId": "d_han",
+      "name": "刘彻",
+      "title": "汉武帝",
+      "reign": "前 141 — 前 87",
+      "summary": "独尊儒术、北击匈奴、通西域，汉家气象极盛。",
+      "eventIds": ["ev_xiongnu", "ev_silkroad"]
+    },
+    {
+      "id": "e_tang_taizong",
+      "dynastyId": "d_tang",
+      "name": "李世民",
+      "title": "唐太宗",
+      "reign": "626 — 649",
+      "summary": "以玄武门之变践祚，纳谏如流，开贞观之治。",
+      "eventIds": ["ev_xuanwu", "ev_zhenguan"]
+    },
+    {
+      "id": "e_tang_wuzetian",
+      "dynastyId": "d_tang",
+      "name": "武曌",
+      "title": "武则天",
+      "reign": "690 — 705",
+      "summary": "中国唯一正统女皇帝，改国号为周，开殿试、擢寒门。",
+      "eventIds": []
+    },
+    {
+      "id": "e_tang_xuanzong",
+      "dynastyId": "d_tang",
+      "name": "李隆基",
+      "title": "唐玄宗",
+      "reign": "712 — 756",
+      "summary": "开元盛世的开创者，亦因天宝怠政触发安史之乱。",
+      "eventIds": ["ev_anshi"]
+    },
+    {
+      "id": "e_song_taizu",
+      "dynastyId": "d_song",
+      "name": "赵匡胤",
+      "title": "宋太祖",
+      "reign": "960 — 976",
+      "summary": "陈桥兵变黄袍加身，杯酒释兵权，立崇文抑武之国策。",
+      "eventIds": ["ev_chenqiao"]
+    },
+    {
+      "id": "e_song_shenzong",
+      "dynastyId": "d_song",
+      "name": "赵顼",
+      "title": "宋神宗",
+      "reign": "1067 — 1085",
+      "summary": "锐意变法，信用王安石，新旧党争自此绵延数十年。",
+      "eventIds": ["ev_wanganshi"]
+    },
+    {
+      "id": "e_ming_taizu",
+      "dynastyId": "d_ming",
+      "name": "朱元璋",
+      "title": "明太祖",
+      "reign": "1368 — 1398",
+      "summary": "布衣起兵定天下，废丞相、设锦衣卫，重典治吏。",
+      "eventIds": ["ev_hongwu"]
+    },
+    {
+      "id": "e_ming_chengzu",
+      "dynastyId": "d_ming",
+      "name": "朱棣",
+      "title": "明成祖",
+      "reign": "1402 — 1424",
+      "summary": "靖难夺位，迁都北京，遣郑和七下西洋。",
+      "eventIds": ["ev_jingnan", "ev_zhenghe"]
+    }
+  ],
+
+  "events": [
+    {
+      "id": "ev_unify",
+      "dynastyId": "d_qin",
+      "name": "秦灭六国",
+      "year": -221,
+      "summary": "十年之间次第灭韩赵魏楚燕齐，天下一统，皇帝之名始立。",
+      "characterIds": ["c_li_si", "c_wang_jian"]
+    },
+    {
+      "id": "ev_greatwall",
+      "dynastyId": "d_qin",
+      "name": "修筑长城",
+      "year": -214,
+      "summary": "连缀燕赵旧城，西起临洮东至辽东，役夫百万。",
+      "characterIds": ["c_meng_tian"]
+    },
+    {
+      "id": "ev_daze",
+      "dynastyId": "d_qin",
+      "name": "大泽乡起义",
+      "year": -209,
+      "summary": "戍卒失期当斩，陈胜吴广揭竿，中国第一次大规模农民起义。",
+      "characterIds": ["c_chen_sheng", "c_wu_guang", "c_xiang_yu"]
+    },
+    {
+      "id": "ev_chu_han",
+      "dynastyId": "d_han",
+      "name": "楚汉之争",
+      "year": -206,
+      "summary": "四年争衡，鸿沟为界而终定垓下，项羽自刎乌江。",
+      "characterIds": ["c_xiang_yu", "c_han_xin"]
+    },
+    {
+      "id": "ev_xiongnu",
+      "dynastyId": "d_han",
+      "name": "北击匈奴",
+      "year": -119,
+      "summary": "卫青霍去病三路出塞，封狼居胥，漠南无王庭。",
+      "characterIds": ["c_wei_qing", "c_huo_qubing"]
+    },
+    {
+      "id": "ev_silkroad",
+      "dynastyId": "d_han",
+      "name": "张骞凿空西域",
+      "year": -138,
+      "summary": "两度出使，十三年方归，丝绸之路自此贯通欧亚。",
+      "characterIds": ["c_zhang_qian"]
+    },
+    {
+      "id": "ev_xuanwu",
+      "dynastyId": "d_tang",
+      "name": "玄武门之变",
+      "year": 626,
+      "summary": "李世民伏兵宫门，弑兄杀弟，旋受禅即位。",
+      "characterIds": ["c_wei_zheng", "c_fang_xuanling"]
+    },
+    {
+      "id": "ev_zhenguan",
+      "dynastyId": "d_tang",
+      "name": "贞观之治",
+      "year": 627,
+      "summary": "轻徭薄赋、任人唯贤，四夷宾服，史称治世典范。",
+      "characterIds": ["c_wei_zheng", "c_fang_xuanling"]
+    },
+    {
+      "id": "ev_anshi",
+      "dynastyId": "d_tang",
+      "name": "安史之乱",
+      "year": 755,
+      "summary": "八年兵燹，两京陷落，唐由盛转衰的分水岭。",
+      "characterIds": ["c_yang_guifei", "c_guo_ziyi"]
+    },
+    {
+      "id": "ev_chenqiao",
+      "dynastyId": "d_song",
+      "name": "陈桥兵变",
+      "year": 960,
+      "summary": "黄袍加身而代周，兵不血刃开三百年赵宋基业。",
+      "characterIds": ["c_zhao_pu"]
+    },
+    {
+      "id": "ev_wanganshi",
+      "dynastyId": "d_song",
+      "name": "王安石变法",
+      "year": 1069,
+      "summary": "青苗、免役、保甲诸法并出，富国强兵之志遭遇旧党激烈反弹。",
+      "characterIds": ["c_wang_anshi", "c_sima_guang"]
+    },
+    {
+      "id": "ev_hongwu",
+      "dynastyId": "d_ming",
+      "name": "洪武建制",
+      "year": 1368,
+      "summary": "废中书省与丞相，六部直隶天子，奠定明代政治格局。",
+      "characterIds": ["c_liu_bowen"]
+    },
+    {
+      "id": "ev_jingnan",
+      "dynastyId": "d_ming",
+      "name": "靖难之役",
+      "year": 1399,
+      "summary": "燕王朱棣以清君侧为名起兵，四年而入南京夺位。",
+      "characterIds": ["c_yao_guangxiao"]
+    },
+    {
+      "id": "ev_zhenghe",
+      "dynastyId": "d_ming",
+      "name": "郑和下西洋",
+      "year": 1405,
+      "summary": "宝船七下，最远抵东非，规模远超同期欧洲航海。",
+      "characterIds": ["c_zheng_he"]
+    }
+  ],
+
+  "characters": [
+    { "id": "c_li_si", "dynastyId": "d_qin", "name": "李斯", "role": "丞相", "summary": "法家代表，力主郡县制，统一文字，终腰斩于咸阳。" },
+    { "id": "c_wang_jian", "dynastyId": "d_qin", "name": "王翦", "role": "大将军", "summary": "灭赵破楚，秦并天下第一功将。" },
+    { "id": "c_meng_tian", "dynastyId": "d_qin", "name": "蒙恬", "role": "边将", "summary": "北逐匈奴、筑长城，相传改良毛笔。" },
+    { "id": "c_chen_sheng", "dynastyId": "d_qin", "name": "陈胜", "role": "起义领袖", "summary": "首倡『王侯将相宁有种乎』，虽败而天下响应。" },
+    { "id": "c_wu_guang", "dynastyId": "d_qin", "name": "吴广", "role": "起义领袖", "summary": "与陈胜同举大泽乡，后为部将所杀。" },
+    { "id": "c_xiang_yu", "dynastyId": "d_han", "name": "项羽", "role": "西楚霸王", "summary": "力能扛鼎，巨鹿破秦，终困于垓下四面楚歌。" },
+    { "id": "c_han_xin", "dynastyId": "d_han", "name": "韩信", "role": "大将军", "summary": "明修栈道暗度陈仓，背水一战，功高而见诛。" },
+    { "id": "c_wei_qing", "dynastyId": "d_han", "name": "卫青", "role": "大将军", "summary": "骑奴出身，七战七捷，收复河朔。" },
+    { "id": "c_huo_qubing", "dynastyId": "d_han", "name": "霍去病", "role": "骠骑将军", "summary": "十八岁封侯，封狼居胥，二十四岁早逝。" },
+    { "id": "c_zhang_qian", "dynastyId": "d_han", "name": "张骞", "role": "博望侯", "summary": "凿空西域第一人，丝路因之而开。" },
+    { "id": "c_wei_zheng", "dynastyId": "d_tang", "name": "魏征", "role": "谏议大夫", "summary": "前后陈谏二百余事，太宗称其为镜。" },
+    { "id": "c_fang_xuanling", "dynastyId": "d_tang", "name": "房玄龄", "role": "尚书左仆射", "summary": "贞观名相，善谋能断，主修国史。" },
+    { "id": "c_yang_guifei", "dynastyId": "d_tang", "name": "杨玉环", "role": "贵妃", "summary": "盛唐风华之象征，马嵬坡下香消玉殒。" },
+    { "id": "c_guo_ziyi", "dynastyId": "d_tang", "name": "郭子仪", "role": "朔方节度使", "summary": "平安史之乱，单骑退回纥，功盖天下而主不疑。" },
+    { "id": "c_zhao_pu", "dynastyId": "d_song", "name": "赵普", "role": "宰相", "summary": "半部论语治天下，佐太祖定集权之制。" },
+    { "id": "c_wang_anshi", "dynastyId": "d_song", "name": "王安石", "role": "参知政事", "summary": "熙宁变法主持者，唐宋八大家之一。" },
+    { "id": "c_sima_guang", "dynastyId": "d_song", "name": "司马光", "role": "史学家", "summary": "反对新法，主编《资治通鉴》。" },
+    { "id": "c_liu_bowen", "dynastyId": "d_ming", "name": "刘基", "role": "谋臣", "summary": "字伯温，佐朱元璋定天下，民间传说中的神机军师。" },
+    { "id": "c_yao_guangxiao", "dynastyId": "d_ming", "name": "姚广孝", "role": "谋臣", "summary": "僧而佐燕王，靖难之役的首席策划者。" },
+    { "id": "c_zheng_he", "dynastyId": "d_ming", "name": "郑和", "role": "航海家", "summary": "率宝船七下西洋，历三十余国，最远抵东非。" }
+  ]
+}
