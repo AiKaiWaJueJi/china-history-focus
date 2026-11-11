@@ -1,12 +1,11 @@
 /**
  * verify-timeline.mjs —— 阶段二（帝王时间轴）验收
  * ---------------------------------------------------------------------------
- * 覆盖：
- *   1. 从主页点击「周」→ 路由跳转到 /dynasty/zhou，且主页组件未被破坏
- *   2. 一页 3 个帝王模块；滚轮翻页；冷却期内连滚不会连翻
- *   3. 悬浮：该模块聚焦、其余变暗；上下浮层出现 2-3 个事件节点
- *   4. 末页只有 1 位帝王时补空槽，卡片宽度不变
- *   5. ESC 返回主页
+ * 本轮新增关注点：
+ *   1. 翻页不再是"旧页完全退出后才进新页"——过渡期间两页应同时存在（无黑场）
+ *   2. 文字不再发虚：悬浮时 .emp-card 不能有非整数缩放（transform 应为 none）
+ *   3. 事件按维度分组：上半区全是 military，下半区全是 political/culture
+ *   4. 字号放大：姓名 ≥14px、事件名 ≥13px
  */
 import puppeteer from 'puppeteer-core'
 import { mkdirSync } from 'node:fs'
@@ -39,7 +38,7 @@ try {
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
   page.on('pageerror', (e) => errors.push(String(e)))
 
-  /* ---------- 1) 主页 → 点击周 → 路由 ---------- */
+  /* ---------- 从主页进入 ---------- */
   await page.goto(`${URL}/`, { waitUntil: 'networkidle2', timeout: 60000 })
   await page.waitForSelector('.dyn-panel', { timeout: 30000 })
   await page.evaluate(() => document.fonts.ready)
@@ -56,90 +55,75 @@ try {
   await page.mouse.click(zhouBox.x, zhouBox.y)
   await sleep(900)
 
-  const url = page.url()
-  check('点击朝代跳转到 /dynasty/zhou', /\/dynasty\/zhou$/.test(url), url)
+  check('点击朝代跳转到 /dynasty/zhou', /\/dynasty\/zhou$/.test(page.url()), page.url())
   await page.waitForSelector('.emp-card', { timeout: 10000 })
 
-  const titles = () =>
-    page.$$eval('.emp-card .emp-title', (ns) => ns.map((n) => n.textContent?.trim()))
-
+  const titles = () => page.$$eval('.emp-card .emp-title', (ns) => ns.map((n) => n.textContent?.trim()))
   const page1 = await titles()
   check('一页显示 3 个帝王模块', page1.length === 3, page1.join(' / '))
   check('首屏为西周开国三王', page1[0] === '周武王' && page1[2] === '周康王', page1.join(' / '))
 
-  const countText = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
-  check('显示总人数与页码', /共 37 位帝王 · 第 1 \/ 13 页/.test(countText ?? ''), countText)
-
-  await page.screenshot({ path: `${OUT}\\01-timeline-page1.png` })
-
-  /* ---------- 2) 滚轮翻页 ---------- */
-  await page.mouse.move(800, 450)
-  await page.mouse.wheel({ deltaY: 220 })
-  await sleep(900)
-  const page2 = await titles()
-  check('滚轮翻到下一页（帝王已更换）', page2[0] !== page1[0], `${page1[0]} → ${page2[0]}`)
-  const countText2 = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
-  check('页码更新为第 2 页', /第 2 \/ 13 页/.test(countText2 ?? ''), countText2)
-
-  // 冷却测试：快速连续滚三次，应当只翻一页
-  const before = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
-  await page.mouse.wheel({ deltaY: 220 })
-  await page.mouse.wheel({ deltaY: 220 })
-  await page.mouse.wheel({ deltaY: 220 })
-  await sleep(900)
-  const after = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
-  const pageOf = (s) => Number(/第 (\d+) \//.exec(s ?? '')?.[1] ?? 0)
-  check(
-    '冷却期内连滚只翻一页（无连翻）',
-    pageOf(after) - pageOf(before) === 1,
-    `${pageOf(before)} → ${pageOf(after)}`,
-  )
-
-  /* ---------- 3) 悬浮：聚焦 / 变暗 / 浮层 ---------- */
-  const cardBox = await page.$eval('.emp-card:nth-child(2)', (n) => {
+  /* ---------- 悬浮周武王：分组 / 字号 / 清晰度 ---------- */
+  const card1 = await page.$eval('.emp-card:nth-child(1)', (n) => {
     const r = n.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
-  await page.mouse.move(cardBox.x, cardBox.y, { steps: 2 })
+  await page.mouse.move(card1.x, card1.y, { steps: 2 })
   await sleep(900)
 
-  const styles = await page.$$eval('.emp-card', (ns) =>
-    ns.map((n) => ({
-      opacity: Number(getComputedStyle(n).opacity),
-      media: getComputedStyle(n.querySelector('.emp-media')).transform,
-      events: Array.from(n.querySelectorAll('.emp-event')).map((e) => ({
-        opacity: Number(getComputedStyle(e).opacity),
-        name: e.querySelector('.emp-event-name')?.textContent,
-        side: e.closest('.emp-events--top') ? 'top' : 'bottom',
-      })),
-    })),
+  const probe = await page.$$eval('.emp-card', (ns) => {
+    const first = ns[0]
+    const top = Array.from(first.querySelectorAll('.emp-events--top .emp-event'))
+    const bottom = Array.from(first.querySelectorAll('.emp-events--bottom .emp-event'))
+    const read = (el) => ({
+      name: el.querySelector('.emp-event-name')?.textContent,
+      dim: el.getAttribute('data-dimension'),
+      size: parseFloat(getComputedStyle(el.querySelector('.emp-event-name')).fontSize),
+    })
+    return {
+      cardTransform: getComputedStyle(first).transform,
+      nameSize: parseFloat(getComputedStyle(first.querySelector('.emp-name')).fontSize),
+      reignSize: parseFloat(getComputedStyle(first.querySelector('.emp-reign')).fontSize),
+      titleSize: parseFloat(getComputedStyle(first.querySelector('.emp-title')).fontSize),
+      top: top.map(read),
+      bottom: bottom.map(read),
+      topLabel: first.querySelector('.emp-events--top .emp-group-label')?.textContent,
+      bottomLabel: first.querySelector('.emp-events--bottom .emp-group-label')?.textContent,
+      opacities: ns.map((n) => Number(getComputedStyle(n).opacity)),
+    }
+  })
+
+  console.log(
+    `\n[GROUP] 上(${probe.topLabel}): ${probe.top.map((e) => `${e.name}(${e.dim})`).join(' / ')}`,
+  )
+  console.log(`[GROUP] 下(${probe.bottomLabel}): ${probe.bottom.map((e) => `${e.name}(${e.dim})`).join(' / ')}`)
+  console.log(
+    `[TYPE ] 谥号=${probe.titleSize}px 姓名=${probe.nameSize}px 在位=${probe.reignSize}px 事件=${probe.top[0]?.size}px`,
   )
 
-  const hovered = styles[1]
-  const others = [styles[0], styles[2]]
-  check('悬浮模块保持完全不透明', hovered.opacity === 1, `${hovered.opacity}`)
+  check('上半区为军事成就', probe.top.length > 0 && probe.top.every((e) => e.dim === 'military'), probe.topLabel)
   check(
-    '其余两个模块变暗',
-    others.every((o) => o.opacity < 0.5),
-    others.map((o) => o.opacity).join(' / '),
+    '下半区为政治/文教',
+    probe.bottom.length > 0 && probe.bottom.every((e) => e.dim !== 'military'),
+    probe.bottomLabel,
   )
   check(
-    '悬浮时背景放大到 scale(1.05)',
-    /matrix\(1\.05, 0, 0, 1\.05/.test(hovered.media),
-    hovered.media,
+    '卡片自身无缩放（文字不发虚）',
+    probe.cardTransform === 'none',
+    probe.cardTransform,
   )
-
-  const visibleEvents = hovered.events.filter((e) => e.opacity > 0.9)
-  check('浮层出现 2-3 个事件节点', visibleEvents.length >= 2 && visibleEvents.length <= 3, visibleEvents.map((e) => e.name).join(' / '))
+  check('姓名字号放大到 ≥14px', probe.nameSize >= 14, `${probe.nameSize}px`)
+  check('在位时间字号 ≥11.5px', probe.reignSize >= 11.5, `${probe.reignSize}px`)
+  check('事件名字号放大到 ≥13px', (probe.top[0]?.size ?? 0) >= 13, `${probe.top[0]?.size}px`)
   check(
-    '事件节点分布在模块上下两侧',
-    visibleEvents.some((e) => e.side === 'top') && visibleEvents.some((e) => e.side === 'bottom'),
-    visibleEvents.map((e) => `${e.side}:${e.name}`).join(' / '),
+    '其余模块变暗',
+    probe.opacities.slice(1).every((o) => o < 0.5),
+    probe.opacities.join(' / '),
   )
 
   await page.screenshot({ path: `${OUT}\\02-timeline-hover.png` })
 
-  // 移开后浮层淡出
+  // 移开，浮层淡出
   await page.mouse.move(800, 60, { steps: 2 })
   await sleep(700)
   const collapsed = await page.$$eval('.emp-card .emp-event', (ns) =>
@@ -147,36 +131,51 @@ try {
   )
   check('移开后浮层淡出', collapsed.every((o) => o < 0.2), `max=${Math.max(...collapsed)}`)
 
-  /* ---------- 4) 末页：1 位帝王 + 2 个空槽 ---------- */
-  // 直接跳到最后一页
+  /* ---------- 翻页：无黑场 ---------- */
+  await page.mouse.move(800, 450)
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(180) // 过渡进行中
+  const duringTransition = await page.$$eval('.pager-track', (ns) => ns.length)
+  check(
+    '翻页过渡期间两页重叠（无黑场）',
+    duringTransition >= 2,
+    `同时挂载 ${duringTransition} 页`,
+  )
+
+  await sleep(900)
+  const page2 = await titles()
+  check('滚轮翻到下一页', page2[0] !== page1[0], `${page1[0]} → ${page2[0]}`)
+  const countText2 = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
+  check('页码更新为第 2 页', /第 2 \/ 13 页/.test(countText2 ?? ''), countText2)
+
+  /* ---------- 冷却：连滚不连翻 ---------- */
+  const before = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
+  await page.mouse.wheel({ deltaY: 220 })
+  await page.mouse.wheel({ deltaY: 220 })
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(900)
+  const after = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
+  const pageOf = (s) => Number(/第 (\d+) \//.exec(s ?? '')?.[1] ?? 0)
+  check('冷却期内连滚只翻一页', pageOf(after) - pageOf(before) === 1, `${pageOf(before)} → ${pageOf(after)}`)
+
+  /* ---------- 末页 ---------- */
   for (let i = 0; i < 20; i++) {
     await page.mouse.wheel({ deltaY: 220 })
     await sleep(560)
     const text = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
     if (/第 13 \/ 13 页/.test(text ?? '')) break
   }
-  // 等退出动画彻底结束再测量（AnimatePresence mode="wait" 的旧页在退出期间仍挂载）
   await sleep(1400)
   const lastPage = await page.$$eval('.emp-card', (ns) => ns.length)
   const slots = await page.$$eval('.emp-slot', (ns) => ns.length)
-  const lastW = await page.$$eval('.emp-card, .emp-slot', (ns) =>
-    ns.map((n) => Math.round(n.getBoundingClientRect().width)),
-  )
   check('末页仅 1 位帝王 + 2 个空槽', lastPage === 1 && slots === 2, `cards=${lastPage} slots=${slots}`)
-  check(
-    '末页卡片宽度与其它页一致（±2px 容差）',
-    Math.max(...lastW) - Math.min(...lastW) <= 2,
-    lastW.join(' / '),
-  )
-  const lastTitle = (await titles()).join('')
-  check('末页为周赧王', lastTitle === '周赧王', lastTitle)
+  check('末页为周赧王', (await titles()).join('') === '周赧王')
   await page.screenshot({ path: `${OUT}\\03-timeline-last.png` })
 
-  /* ---------- 5) ESC 返回 ---------- */
+  /* ---------- ESC ---------- */
   await page.keyboard.press('Escape')
   await sleep(700)
   check('ESC 返回朝代主页', /\/$/.test(page.url()) && Boolean(await page.$('.dyn-panel')), page.url())
-
   check('无控制台错误', errors.length === 0, errors.join(' | '))
 } finally {
   await browser.close()

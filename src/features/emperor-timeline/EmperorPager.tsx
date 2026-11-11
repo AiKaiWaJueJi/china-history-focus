@@ -19,9 +19,9 @@ interface EmperorPagerProps {
 }
 
 const variants = {
-  enter: (dir: number) => ({ x: dir >= 0 ? '52%' : '-52%', opacity: 0, scale: 0.98 }),
-  center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir: number) => ({ x: dir >= 0 ? '-52%' : '52%', opacity: 0, scale: 0.98 }),
+  enter: (dir: number) => ({ x: dir >= 0 ? '38%' : '-38%', opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir >= 0 ? '-38%' : '38%', opacity: 0 }),
 }
 
 export function EmperorPager({ emperors, pageIndex, direction, pageSize }: EmperorPagerProps) {
@@ -32,7 +32,7 @@ export function EmperorPager({ emperors, pageIndex, direction, pageSize }: Emper
 
   return (
     <div className="pager">
-      <AnimatePresence mode="wait" initial={false} custom={direction}>
+      <AnimatePresence mode="popLayout" initial={false} custom={direction}>
         <motion.div
           key={pageIndex}
           className="pager-track"
@@ -44,7 +44,7 @@ export function EmperorPager({ emperors, pageIndex, direction, pageSize }: Emper
           transition={
             prefersReducedMotion
               ? { duration: 0.12 }
-              : { type: 'spring', stiffness: 260, damping: 30, mass: 0.9 }
+              : { type: 'spring', stiffness: 320, damping: 34, mass: 0.85 }
           }
         >
           {pageEmperors.map((emperor, index) => (

@@ -1,8 +1,7 @@
 /* ==========================================================================
    阶段二：帝王时间轴视图
    --------------------------------------------------------------------------
-   视觉基调与阶段一保持一致（暗色博物馆 + 书法字），但这是**独立样式表**，
-   只在 DynastyDetail 内 import，不影响朝代主页。
+   与阶段一共用暗色博物馆基调，但这是**独立样式表**，只在 DynastyDetail 内 import。
    ========================================================================== */
 
 .timeline-page {
@@ -52,9 +51,9 @@
 }
 
 .timeline-count {
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.66);
   font-variant-numeric: tabular-nums;
 }
 
@@ -94,23 +93,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 上下留白供事件浮层伸出（浮层是 absolute，不占位） */
   padding: 4px 0;
 }
 
+/*
+  分页容器：必须显式给高度并 position: relative。
+  因为翻页用的是 AnimatePresence 的 popLayout 模式（新页滑入的同时旧页滑出），
+  退场页会被绝对定位叠在上面，容器需要提供稳定的尺寸基准。
+*/
 .pager {
+  position: relative;
   width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
+  height: clamp(280px, 52vh, 560px);
 }
 
 .pager-track {
+  position: absolute;
+  inset: 0;
   display: flex;
   gap: 16px;
-  width: 100%;
-  /* 高度决定卡片大小；留出的上下空间给思维导图浮层 */
-  height: clamp(280px, 52vh, 560px);
   will-change: transform, opacity;
 }
 
@@ -119,15 +120,11 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  /* 不裁剪：事件浮层要伸出上下边界 */
   outline: none;
-  transition:
-    transform 420ms var(--ease-out),
-    opacity 300ms ease;
-  will-change: transform, opacity;
+  /* 只改透明度，不做整体缩放 —— 缩放会让卡片内文字重新采样而发虚 */
+  transition: opacity 300ms ease;
 }
 
-/* 真正负责裁剪与圆角的是内层，这样悬停放大时背景不会溢出 */
 .emp-clip {
   position: relative;
   height: 100%;
@@ -136,6 +133,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: #0a0c10;
   isolation: isolate;
+  transition: border-color 320ms ease, box-shadow 320ms ease;
 }
 
 .emp-media {
@@ -143,10 +141,9 @@
   inset: 0;
   background-image: var(--portrait);
   background-size: cover;
-  background-position: 50% 28%;
+  background-position: 50% 26%;
   transform: scale(1);
-  filter: saturate(0.92) brightness(0.86);
-  /* 只动 transform：合成器线程可独立完成 */
+  filter: saturate(0.94) brightness(0.9);
   transition:
     transform 620ms var(--ease-out),
     filter 420ms ease;
@@ -157,9 +154,9 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(6, 8, 10, 0.12) 0%,
-    rgba(6, 8, 10, 0.4) 52%,
-    rgba(6, 8, 10, 0.88) 86%,
+    rgba(6, 8, 10, 0.14) 0%,
+    rgba(6, 8, 10, 0.38) 48%,
+    rgba(6, 8, 10, 0.86) 84%,
     rgba(6, 8, 10, 0.96) 100%
   );
   transition: background 420ms ease;
@@ -174,40 +171,45 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
-  padding: 0 14px 26px;
+  gap: 8px;
+  padding: 0 14px 28px;
   box-sizing: border-box;
   text-align: center;
 }
 
+/* 谥号：瘦金体，字号明显放大 */
 .emp-title {
   font-family: var(--font-thin);
-  font-size: clamp(1.5rem, 2.1vw, 2.3rem);
+  font-size: clamp(1.9rem, 2.7vw, 2.9rem);
   line-height: 1.1;
   letter-spacing: 0.06em;
-  color: #f4efe4;
+  color: #f7f2e6;
   margin: 0;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+  text-shadow:
+    0 2px 20px rgba(0, 0, 0, 0.9),
+    0 0 40px rgba(0, 0, 0, 0.5);
 }
 
+/* 姓名：放大 + 提高对比，解决"看不清" */
 .emp-name {
   font-family: var(--font-thin);
-  font-size: 12.5px;
-  letter-spacing: 0.24em;
-  text-indent: 0.24em;
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: rgba(255, 255, 255, 0.92);
   margin: 0;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
 }
 
 .emp-reign {
-  font-size: 10.5px;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
   margin: 0;
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
 }
 
-/* 角标：暗示可交互 */
 .emp-corner {
   position: absolute;
   top: 12px;
@@ -221,21 +223,14 @@
 }
 
 /* ---------- 悬浮：聚焦 / 变暗 ---------- */
-/* 用 :has() 让 CSS 自己判断"谁被悬浮"，React 全程不重渲染 */
 .pager-track:has(.emp-card:hover) .emp-card:not(:hover),
 .pager-track:has(.emp-card:focus-visible) .emp-card:not(:focus-visible) {
-  opacity: 0.32;
-  transform: scale(0.982);
+  opacity: 0.3;
 }
 
 .pager-track:has(.emp-card:hover) .emp-card:not(:hover) .emp-media,
 .pager-track:has(.emp-card:focus-visible) .emp-card:not(:focus-visible) .emp-media {
-  filter: saturate(0.35) brightness(0.6);
-}
-
-.emp-card:hover,
-.emp-card:focus-visible {
-  transform: scale(1.012);
+  filter: saturate(0.3) brightness(0.55);
 }
 
 .emp-card:hover .emp-clip,
@@ -244,21 +239,21 @@
   box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
 }
 
-/* 需求：悬停时背景轻微缩放 1.05 */
+/* 需求：悬停时背景轻微缩放 1.05（只有图片缩放，文字不缩放） */
 .emp-card:hover .emp-media,
 .emp-card:focus-visible .emp-media {
   transform: scale(1.05);
-  filter: saturate(1.04) brightness(0.96);
+  filter: saturate(1.05) brightness(1);
 }
 
-/* 需求：遮罩层加深（底部更暗，保证文字对比度更高） */
+/* 需求：遮罩层加深 */
 .emp-card:hover .emp-shade,
 .emp-card:focus-visible .emp-shade {
   background: linear-gradient(
     180deg,
-    rgba(6, 8, 10, 0.2) 0%,
-    rgba(6, 8, 10, 0.52) 46%,
-    rgba(6, 8, 10, 0.93) 84%,
+    rgba(6, 8, 10, 0.22) 0%,
+    rgba(6, 8, 10, 0.5) 44%,
+    rgba(6, 8, 10, 0.92) 82%,
     rgba(6, 8, 10, 0.99) 100%
   );
 }
@@ -269,7 +264,12 @@
   box-shadow: 0 0 10px 2px rgba(201, 162, 39, 0.45);
 }
 
-/* ---------- 事件浮层（思维导图节点） ---------- */
+/* ==========================================================================
+   事件浮层（思维导图）
+   --------------------------------------------------------------------------
+   上半区：军事成就；下半区：政治 · 文教。
+   同侧事件横向排列、用满卡片宽度；每个节点朝卡片方向引一条竖线。
+   ========================================================================== */
 .emp-events {
   position: absolute;
   left: 0;
@@ -277,8 +277,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  /* 不占文档流：出现/消失都不会引起相邻模块重排 */
+  gap: 8px;
+  /* 不占文档流：出现/消失不会引起三块卡片重排 */
   pointer-events: none;
   opacity: 0;
   transition: opacity 260ms ease;
@@ -286,12 +286,16 @@
 }
 
 .emp-events--top {
-  bottom: calc(100% + 14px);
-  flex-direction: column;
+  bottom: calc(100% + 16px);
 }
 
 .emp-events--bottom {
-  top: calc(100% + 14px);
+  top: calc(100% + 16px);
+}
+
+/* 下半区的分组标题放到节点下方，让两组的节点都紧贴卡片 */
+.emp-events--bottom .emp-group-label {
+  order: 2;
 }
 
 .emp-card:hover .emp-events,
@@ -299,17 +303,49 @@
   opacity: 1;
 }
 
+.emp-group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: rgba(232, 208, 138, 0.92);
+  margin: 0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  transition: opacity 300ms ease;
+}
+
+/* 分组标题两侧的细线，让它像一个"分区标题"而不是漂浮的小字 */
+.emp-group-label::before,
+.emp-group-label::after {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+  flex: 0 0 auto;
+}
+
+.emp-event-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 100%;
+}
+
 .emp-event {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  max-width: 100%;
-  padding: 5px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(10, 13, 18, 0.82);
-  /* 逐个淡入：上方节点自下而上、下方节点自上而下 */
+  gap: 9px;
+  padding: 8px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(10, 13, 18, 0.88);
+  box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.9);
   opacity: 0;
   transition:
     opacity 300ms ease,
@@ -318,11 +354,11 @@
 }
 
 .emp-events--top .emp-event {
-  transform: translateY(8px);
+  transform: translateY(10px);
 }
 
 .emp-events--bottom .emp-event {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
 }
 
 .emp-card:hover .emp-events--top .emp-event,
@@ -333,15 +369,15 @@
   transform: translateY(0);
 }
 
-/* 连线：从节点连向卡片 */
+/* 连线：从节点朝卡片方向引出 */
 .emp-events--top .emp-event::after {
   content: '';
   position: absolute;
   left: 50%;
   top: 100%;
   width: 1px;
-  height: 12px;
-  background: linear-gradient(180deg, rgba(226, 200, 125, 0.55), rgba(226, 200, 125, 0));
+  height: 14px;
+  background: linear-gradient(180deg, rgba(226, 200, 125, 0.6), rgba(226, 200, 125, 0));
 }
 
 .emp-events--bottom .emp-event::before {
@@ -350,38 +386,49 @@
   left: 50%;
   bottom: 100%;
   width: 1px;
-  height: 12px;
-  background: linear-gradient(0deg, rgba(226, 200, 125, 0.55), rgba(226, 200, 125, 0));
+  height: 14px;
+  background: linear-gradient(0deg, rgba(226, 200, 125, 0.6), rgba(226, 200, 125, 0));
+}
+
+/* 军事与政治用不同点色，强化"分组"语义 */
+.emp-event[data-dimension='military'] .emp-event-dot {
+  background: #d98b5f;
+  box-shadow: 0 0 8px 1px rgba(217, 139, 95, 0.4);
+}
+
+.emp-event[data-dimension='political'] .emp-event-dot,
+.emp-event[data-dimension='culture'] .emp-event-dot {
+  background: #8fb7a6;
+  box-shadow: 0 0 8px 1px rgba(143, 183, 166, 0.35);
 }
 
 .emp-event-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #e2c87d;
   flex: 0 0 auto;
-  opacity: 0.85;
 }
 
 .emp-event-body {
   display: flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
 }
 
+/* 字号放大：11.5 → 13.5，年份 9.5 → 11 */
 .emp-event-name {
   font-family: var(--font-thin);
-  font-size: 11.5px;
-  letter-spacing: 0.08em;
-  color: #efe9dc;
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
+  color: #f2ecdf;
   white-space: nowrap;
 }
 
 .emp-event-year {
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.48);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }

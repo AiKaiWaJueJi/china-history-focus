@@ -6,10 +6,15 @@
  * 批量导入其它朝代时，只需提供同样形状的 JSON。
  */
 
+/** 事件维度：决定它出现在思维导图的上方还是下方 */
+export type EventDimension = 'military' | 'political' | 'culture'
+
 export interface EmperorEvent {
   id: string
   /** 事件名称，思维导图浮层直接展示 */
   name: string
+  /** 维度：军事走上半区，政治/文教走下半区 */
+  dimension: EventDimension
   /** 年份，负数表示公元前 */
   year: number
 }

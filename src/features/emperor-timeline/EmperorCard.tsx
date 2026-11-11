@@ -6,8 +6,10 @@
  *   .emp-media  背景图，hover 时 scale(1.05)，只动 transform（合成器友好）
  *   .emp-events 事件浮层，**在 .emp-clip 外面**，所以能伸出模块上下边界
  *
- * 悬浮态全部由 CSS `:has()` 驱动（见 emperor-timeline.css）：
- * 鼠标在 3 个模块间移动时 React 不重渲染，效果依旧跟手。
+ * 【关于文字模糊】
+ * 早先悬浮时给整个 .emp-card 加了 transform: scale(1.012)，
+ * 非整数缩放会让卡片内的文字被重新采样 —— 姓名与在位时间就"糊"了。
+ * 现在卡片本身不再缩放（只让背景图放大），文字始终按 1:1 像素渲染。
  */
 import type { CSSProperties } from 'react'
 import type { EmperorRecord } from '../../core/emperorTypes'
@@ -21,22 +23,19 @@ interface EmperorCardProps {
 
 type CardStyle = CSSProperties & {
   '--portrait': string
-  '--delay': string
 }
 
 export function EmperorCard({ emperor, index }: EmperorCardProps) {
   const style: CardStyle = {
     '--portrait': `url("${emperor.portrait}")`,
-    '--delay': `${index * 70}ms`,
   }
 
-  // 2-3 个事件：一半朝上、一半朝下，形成上下对称的导图
-  const splitAt = Math.ceil(emperor.events.length / 2)
-  const topEvents = emperor.events.slice(0, splitAt)
-  const bottomEvents = emperor.events.slice(splitAt)
+  // 上半区放军事，下半区放政治与文教（理由见 EventMindMap 顶部说明）
+  const military = emperor.events.filter((event) => event.dimension === 'military')
+  const civic = emperor.events.filter((event) => event.dimension !== 'military')
 
   return (
-    <article className="emp-card" style={style} tabIndex={0}>
+    <article className="emp-card" style={style} tabIndex={0} data-index={index}>
       <div className="emp-clip">
         <div className="emp-media" />
         <div className="emp-shade" />
@@ -48,8 +47,8 @@ export function EmperorCard({ emperor, index }: EmperorCardProps) {
         <span className="emp-corner" aria-hidden="true" />
       </div>
 
-      <EventMindMap events={topEvents} side="top" />
-      <EventMindMap events={bottomEvents} side="bottom" />
+      <EventMindMap events={military} side="top" label="军事成就" />
+      <EventMindMap events={civic} side="bottom" label="政治 · 文教" />
     </article>
   )
 }
