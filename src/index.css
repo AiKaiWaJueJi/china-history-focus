@@ -50,13 +50,14 @@
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
     /*
-      展开 / 收缩采用**非对称时长**：
-      收缩 360ms（快），展开 620ms（慢）。
-      原因：聚焦模块被推移的距离，取决于邻居让位有多快。
-      若邻居收缩与新模块展开一样慢，新模块会长时间被"推着走"，
-      光标下就会不断换元素 —— 这正是"焦点跑到隔壁"的成因之一。
+      挤压统一用一个时长（360ms）。
+      历史教训：早先给"激活项"和"非激活项"设置不同 duration，
+      会在激活的同一帧改变 transition 参数，导致两条过渡的时间轴错位：
+      邻居已经跳到 10%，激活项才走了 0.03%，
+      于是 grow 总和一度变小、激活项被压到十几像素——肉眼就是"闪缩一下"。
+      现在锚定已经解决了"被推着走"，非对称时长不再必要。
     */
-    --dur-open: 620ms;
+    --dur-open: 360ms;
     --dur-close: 360ms;
   }
 
@@ -113,28 +114,28 @@
     container-type: inline-size;
     will-change: flex-grow;
 
-    /* 默认态 = "离开中"：用较短时长快速收缩 */
+    /*
+      过渡作用于 width（像素）而不是 flex-grow。
+      width 是长度属性，插值随时间线性，观感匀速；
+      flex-grow 的比例插值会让宽度在前 1/4 时间就冲掉 3/4 位移。
+    */
     transition:
-      flex-grow var(--dur-close) var(--ease-out),
+      width var(--dur-open) var(--ease-out),
       border-color 300ms var(--ease-out);
   }
 
-  /* 被激活的那一块：用较长时长缓缓展开 */
-  .dyn-panel[data-active='true'] {
-    transition:
-      flex-grow var(--dur-open) var(--ease-squeeze),
-      border-color 300ms var(--ease-out);
-  }
+  /*
+    注意：这里**不能**再为激活态单独覆盖 flex-grow 的 transition 参数。
+    否则浏览器会在同一帧内同时处理"transition 参数变更 + 属性变更"，
+    两条时间轴错位，出现宽度先塌陷再展开的闪烁。
+  */
 
-  /* 有人激活时，其余模块收缩 */
-  .gallery[data-has-active='true'] .dyn-panel {
-    flex-grow: 0.8;
-  }
-
-  /* 激活项覆盖上面的收缩规则（特异性更高） */
-  .gallery[data-has-active='true'] .dyn-panel[data-active='true'] {
-    flex-grow: 2.6;
-  }
+  /*
+    注意：这里不再用 CSS 写死 0.8 / 2.6 的 grow 比例。
+    挤压由 features/gallery/squeezeLayout.ts 以"像素宽度"写入内联 flex-grow，
+    从而让锚定侧（中轴线另一侧）的真实宽度在整个过渡期间保持不变。
+    原因见该文件顶部：纯比例的 grow 无法让某一侧真正静止。
+  */
 
   .dyn-panel[data-active='true'] {
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
