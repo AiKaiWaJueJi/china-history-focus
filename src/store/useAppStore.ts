@@ -11,6 +11,7 @@ import { useShallow } from 'zustand/react/shallow'
 import type { AppEvent, AppSnapshot } from '../core/viewMachine'
 import { INITIAL_APP, transition } from '../core/viewMachine'
 import { entityExists } from '../data'
+import { dynastyPath, navigateTo } from '../router/navigation'
 
 interface AppStore extends AppSnapshot {
   dispatch: (event: AppEvent) => void
@@ -49,7 +50,11 @@ export const useAppStore = create<AppStore>()((set, get) => ({
     set(next)
   },
 
-  openDynasty: (id) => get().dispatch({ type: 'OPEN_DYNASTY', id }),
+  openDynasty: (id) => {
+    get().dispatch({ type: 'OPEN_DYNASTY', id })
+    // 路由跳转由这里发起：阶段一主页只负责调用 openDynasty，不必关心路由
+    navigateTo(dynastyPath(id))
+  },
   openEmperor: (id) => get().dispatch({ type: 'OPEN_EMPEROR', id }),
   toggleFigure: (id) => get().dispatch({ type: 'TOGGLE_FIGURE', id }),
   toggleEvent: (id) => get().dispatch({ type: 'TOGGLE_EVENT', id }),

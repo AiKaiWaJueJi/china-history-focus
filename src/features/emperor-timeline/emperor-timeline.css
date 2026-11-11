@@ -1,0 +1,475 @@
+/* ==========================================================================
+   阶段二：帝王时间轴视图
+   --------------------------------------------------------------------------
+   视觉基调与阶段一保持一致（暗色博物馆 + 书法字），但这是**独立样式表**，
+   只在 DynastyDetail 内 import，不影响朝代主页。
+   ========================================================================== */
+
+.timeline-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 22px 16px;
+  box-sizing: border-box;
+}
+
+/* ---------- 顶部信息条 ---------- */
+.timeline-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 10px;
+  flex: 0 0 auto;
+}
+
+.timeline-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.timeline-head-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.timeline-dynasty {
+  font-family: var(--font-brush);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1;
+  margin: 0;
+  letter-spacing: 0.1em;
+}
+
+.timeline-period {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-count {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-hint {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.timeline-btn {
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #cfc6b4;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 240ms ease, color 240ms ease, opacity 240ms ease;
+}
+
+.timeline-btn:hover:not(:disabled) {
+  border-color: rgba(201, 162, 39, 0.5);
+  color: #f0dca6;
+}
+
+.timeline-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---------- 舞台 ---------- */
+.timeline-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 上下留白供事件浮层伸出（浮层是 absolute，不占位） */
+  padding: 4px 0;
+}
+
+.pager {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.pager-track {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  /* 高度决定卡片大小；留出的上下空间给思维导图浮层 */
+  height: clamp(280px, 52vh, 560px);
+  will-change: transform, opacity;
+}
+
+/* ---------- 帝王模块 ---------- */
+.emp-card {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  /* 不裁剪：事件浮层要伸出上下边界 */
+  outline: none;
+  transition:
+    transform 420ms var(--ease-out),
+    opacity 300ms ease;
+  will-change: transform, opacity;
+}
+
+/* 真正负责裁剪与圆角的是内层，这样悬停放大时背景不会溢出 */
+.emp-clip {
+  position: relative;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0a0c10;
+  isolation: isolate;
+}
+
+.emp-media {
+  position: absolute;
+  inset: 0;
+  background-image: var(--portrait);
+  background-size: cover;
+  background-position: 50% 28%;
+  transform: scale(1);
+  filter: saturate(0.92) brightness(0.86);
+  /* 只动 transform：合成器线程可独立完成 */
+  transition:
+    transform 620ms var(--ease-out),
+    filter 420ms ease;
+}
+
+.emp-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 10, 0.12) 0%,
+    rgba(6, 8, 10, 0.4) 52%,
+    rgba(6, 8, 10, 0.88) 86%,
+    rgba(6, 8, 10, 0.96) 100%
+  );
+  transition: background 420ms ease;
+  pointer-events: none;
+}
+
+.emp-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px 26px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.emp-title {
+  font-family: var(--font-thin);
+  font-size: clamp(1.5rem, 2.1vw, 2.3rem);
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  color: #f4efe4;
+  margin: 0;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+}
+
+.emp-name {
+  font-family: var(--font-thin);
+  font-size: 12.5px;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+
+.emp-reign {
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.48);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 角标：暗示可交互 */
+.emp-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 300ms ease, box-shadow 300ms ease;
+  z-index: 2;
+}
+
+/* ---------- 悬浮：聚焦 / 变暗 ---------- */
+/* 用 :has() 让 CSS 自己判断"谁被悬浮"，React 全程不重渲染 */
+.pager-track:has(.emp-card:hover) .emp-card:not(:hover),
+.pager-track:has(.emp-card:focus-visible) .emp-card:not(:focus-visible) {
+  opacity: 0.32;
+  transform: scale(0.982);
+}
+
+.pager-track:has(.emp-card:hover) .emp-card:not(:hover) .emp-media,
+.pager-track:has(.emp-card:focus-visible) .emp-card:not(:focus-visible) .emp-media {
+  filter: saturate(0.35) brightness(0.6);
+}
+
+.emp-card:hover,
+.emp-card:focus-visible {
+  transform: scale(1.012);
+}
+
+.emp-card:hover .emp-clip,
+.emp-card:focus-visible .emp-clip {
+  border-color: color-mix(in srgb, var(--accent-soft, #dcc094) 45%, transparent);
+  box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
+}
+
+/* 需求：悬停时背景轻微缩放 1.05 */
+.emp-card:hover .emp-media,
+.emp-card:focus-visible .emp-media {
+  transform: scale(1.05);
+  filter: saturate(1.04) brightness(0.96);
+}
+
+/* 需求：遮罩层加深（底部更暗，保证文字对比度更高） */
+.emp-card:hover .emp-shade,
+.emp-card:focus-visible .emp-shade {
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 10, 0.2) 0%,
+    rgba(6, 8, 10, 0.52) 46%,
+    rgba(6, 8, 10, 0.93) 84%,
+    rgba(6, 8, 10, 0.99) 100%
+  );
+}
+
+.emp-card:hover .emp-corner,
+.emp-card:focus-visible .emp-corner {
+  background: #e2c87d;
+  box-shadow: 0 0 10px 2px rgba(201, 162, 39, 0.45);
+}
+
+/* ---------- 事件浮层（思维导图节点） ---------- */
+.emp-events {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  /* 不占文档流：出现/消失都不会引起相邻模块重排 */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+  z-index: 3;
+}
+
+.emp-events--top {
+  bottom: calc(100% + 14px);
+  flex-direction: column;
+}
+
+.emp-events--bottom {
+  top: calc(100% + 14px);
+}
+
+.emp-card:hover .emp-events,
+.emp-card:focus-visible .emp-events {
+  opacity: 1;
+}
+
+.emp-event {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 13, 18, 0.82);
+  /* 逐个淡入：上方节点自下而上、下方节点自上而下 */
+  opacity: 0;
+  transition:
+    opacity 300ms ease,
+    transform 380ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+
+.emp-events--top .emp-event {
+  transform: translateY(8px);
+}
+
+.emp-events--bottom .emp-event {
+  transform: translateY(-8px);
+}
+
+.emp-card:hover .emp-events--top .emp-event,
+.emp-card:hover .emp-events--bottom .emp-event,
+.emp-card:focus-visible .emp-events--top .emp-event,
+.emp-card:focus-visible .emp-events--bottom .emp-event {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 连线：从节点连向卡片 */
+.emp-events--top .emp-event::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(226, 200, 125, 0.55), rgba(226, 200, 125, 0));
+}
+
+.emp-events--bottom .emp-event::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 12px;
+  background: linear-gradient(0deg, rgba(226, 200, 125, 0.55), rgba(226, 200, 125, 0));
+}
+
+.emp-event-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e2c87d;
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+
+.emp-event-body {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.emp-event-name {
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: #efe9dc;
+  white-space: nowrap;
+}
+
+.emp-event-year {
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* 末页补位槽：保证卡片宽度恒定 */
+.emp-slot {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- 底部：进度点 + 翻页按钮 ---------- */
+.timeline-foot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 10px;
+}
+
+.timeline-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 3px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: width 260ms var(--ease-out), background 260ms ease;
+}
+
+.timeline-dot.is-active {
+  width: 26px;
+  background: #e2c87d;
+}
+
+.timeline-step {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- 空态 ---------- */
+.timeline-empty {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeline-empty-text {
+  font-family: var(--font-thin);
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+.timeline-empty-sub {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}
+
+.timeline-page--empty {
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ---------- 减少动效 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .emp-card,
+  .emp-media,
+  .emp-events,
+  .emp-event {
+    transition-duration: 120ms !important;
+  }
+
+  .emp-card:hover .emp-media {
+    transform: none;
+  }
+}

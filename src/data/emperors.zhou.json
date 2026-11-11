@@ -1,0 +1,404 @@
+{
+  "dynastyId": "zhou",
+  "name": "周",
+  "period": "前1046 — 前256",
+  "note": "本文件为阶段二「单朝代测试数据」：完整覆盖西周 12 王与东周 25 王，共 37 位。events 为要点摘录，用于验证 UI 与交互，非学术级编年。",
+  "emperors": [
+    {
+      "id": "zhou_wu",
+      "posthumousTitle": "周武王",
+      "personalName": "姬发",
+      "reign": "前1046 — 前1043",
+      "portrait": "/portraits/zhou-wu.svg",
+      "events": [
+        { "id": "e_muye", "name": "牧野之战", "year": -1046 },
+        { "id": "e_ke_shang", "name": "克商建周", "year": -1046 },
+        { "id": "e_fengjian", "name": "分封诸侯", "year": -1045 }
+      ]
+    },
+    {
+      "id": "zhou_cheng",
+      "posthumousTitle": "周成王",
+      "personalName": "姬诵",
+      "reign": "前1042 — 前1021",
+      "portrait": "/portraits/zhou-cheng.svg",
+      "events": [
+        { "id": "e_zhougong", "name": "周公摄政", "year": -1042 },
+        { "id": "e_sanjian", "name": "三监之乱", "year": -1041 },
+        { "id": "e_luoyi", "name": "营建洛邑", "year": -1038 }
+      ]
+    },
+    {
+      "id": "zhou_kang",
+      "posthumousTitle": "周康王",
+      "personalName": "姬钊",
+      "reign": "前1020 — 前996",
+      "portrait": "/portraits/zhou-kang.svg",
+      "events": [
+        { "id": "e_chengkang", "name": "成康之治", "year": -1020 },
+        { "id": "e_dafeng", "name": "大封诸侯", "year": -1015 }
+      ]
+    },
+    {
+      "id": "zhou_zhao",
+      "posthumousTitle": "周昭王",
+      "personalName": "姬瑕",
+      "reign": "前995 — 前977",
+      "portrait": "/portraits/zhou-zhao.svg",
+      "events": [
+        { "id": "e_zhaonan", "name": "昭王南征荆楚", "year": -985 },
+        { "id": "e_hanshui", "name": "汉水丧师", "year": -977 }
+      ]
+    },
+    {
+      "id": "zhou_mu",
+      "posthumousTitle": "周穆王",
+      "personalName": "姬满",
+      "reign": "前976 — 前922",
+      "portrait": "/portraits/zhou-mu.svg",
+      "events": [
+        { "id": "e_xizheng", "name": "西征犬戎", "year": -965 },
+        { "id": "e_xunshou", "name": "巡狩西域", "year": -960 },
+        { "id": "e_lvxing", "name": "作《吕刑》", "year": -950 }
+      ]
+    },
+    {
+      "id": "zhou_gong",
+      "posthumousTitle": "周共王",
+      "personalName": "姬繄扈",
+      "reign": "前922 — 前900",
+      "portrait": "/portraits/zhou-gong.svg",
+      "events": [{ "id": "e_mie_mi", "name": "灭密国", "year": -910 }]
+    },
+    {
+      "id": "zhou_yi",
+      "posthumousTitle": "周懿王",
+      "personalName": "姬囏",
+      "reign": "前899 — 前892",
+      "portrait": "/portraits/zhou-yi.svg",
+      "events": [
+        { "id": "e_wangshi_shuai", "name": "王室衰微", "year": -895 },
+        { "id": "e_quanrong", "name": "犬戎侵扰", "year": -890 }
+      ]
+    },
+    {
+      "id": "zhou_xiao",
+      "posthumousTitle": "周孝王",
+      "personalName": "姬辟方",
+      "reign": "前891 — 前886",
+      "portrait": "/portraits/zhou-xiao.svg",
+      "events": [
+        { "id": "e_feng_fei", "name": "封秦非子", "year": -890 },
+        { "id": "e_muma", "name": "牧马汧渭", "year": -889 }
+      ]
+    },
+    {
+      "id": "zhou_yi_wai",
+      "posthumousTitle": "周夷王",
+      "personalName": "姬燮",
+      "reign": "前885 — 前878",
+      "portrait": "/portraits/zhou-yi-wai.svg",
+      "events": [
+        { "id": "e_peng_qi", "name": "烹齐哀公", "year": -880 },
+        { "id": "e_zhuhou_buchao", "name": "诸侯不朝", "year": -878 }
+      ]
+    },
+    {
+      "id": "zhou_li",
+      "posthumousTitle": "周厉王",
+      "personalName": "姬胡",
+      "reign": "前877 — 前841",
+      "portrait": "/portraits/zhou-li.svg",
+      "events": [
+        { "id": "e_zhuanli", "name": "专利之政", "year": -860 },
+        { "id": "e_guoren", "name": "国人暴动", "year": -841 },
+        { "id": "e_gonghe", "name": "共和行政", "year": -841 }
+      ]
+    },
+    {
+      "id": "zhou_xuan",
+      "posthumousTitle": "周宣王",
+      "personalName": "姬静",
+      "reign": "前827 — 前782",
+      "portrait": "/portraits/zhou-xuan.svg",
+      "events": [
+        { "id": "e_xuan_zhongxing", "name": "宣王中兴", "year": -820 },
+        { "id": "e_bujie", "name": "不藉千亩", "year": -817 },
+        { "id": "e_qianmu", "name": "千亩之战", "year": -789 }
+      ]
+    },
+    {
+      "id": "zhou_you",
+      "posthumousTitle": "周幽王",
+      "personalName": "姬宫湦",
+      "reign": "前781 — 前771",
+      "portrait": "/portraits/zhou-you.svg",
+      "events": [
+        { "id": "e_fei_di", "name": "废嫡立庶", "year": -780 },
+        { "id": "e_quanrong_po", "name": "犬戎破镐京", "year": -771 },
+        { "id": "e_xi_zhou_wang", "name": "西周覆亡", "year": -771 }
+      ]
+    },
+    {
+      "id": "zhou_ping",
+      "posthumousTitle": "周平王",
+      "personalName": "姬宜臼",
+      "reign": "前770 — 前720",
+      "portrait": "/portraits/zhou-ping.svg",
+      "events": [
+        { "id": "e_dongqian", "name": "东迁洛邑", "year": -770 },
+        { "id": "e_wanggang", "name": "王纲解纽", "year": -750 }
+      ]
+    },
+    {
+      "id": "zhou_huan",
+      "posthumousTitle": "周桓王",
+      "personalName": "姬林",
+      "reign": "前719 — 前697",
+      "portrait": "/portraits/zhou-huan.svg",
+      "events": [{ "id": "e_xuge", "name": "繻葛之战", "year": -707 }]
+    },
+    {
+      "id": "zhou_zhuang",
+      "posthumousTitle": "周庄王",
+      "personalName": "姬佗",
+      "reign": "前696 — 前682",
+      "portrait": "/portraits/zhou-zhuang.svg",
+      "events": [{ "id": "e_wangzi_tui", "name": "王子颓之乱", "year": -675 }]
+    },
+    {
+      "id": "zhou_xi",
+      "posthumousTitle": "周釐王",
+      "personalName": "姬胡齐",
+      "reign": "前681 — 前677",
+      "portrait": "/portraits/zhou-xi.svg",
+      "events": [
+        { "id": "e_huan_gong", "name": "齐桓公称霸", "year": -679 },
+        { "id": "e_ju_zhi_hui", "name": "鄄之会", "year": -679 }
+      ]
+    },
+    {
+      "id": "zhou_hui",
+      "posthumousTitle": "周惠王",
+      "personalName": "姬阆",
+      "reign": "前676 — 前652",
+      "portrait": "/portraits/zhou-hui.svg",
+      "events": [
+        { "id": "e_wangzi_dai", "name": "王子带之乱", "year": -675 },
+        { "id": "e_zunwang", "name": "齐桓公尊王攘夷", "year": -660 }
+      ]
+    },
+    {
+      "id": "zhou_xiang",
+      "posthumousTitle": "周襄王",
+      "personalName": "姬郑",
+      "reign": "前651 — 前619",
+      "portrait": "/portraits/zhou-xiang.svg",
+      "events": [
+        { "id": "e_kuqiu", "name": "葵丘之会", "year": -651 },
+        { "id": "e_chengpu", "name": "城濮之战", "year": -632 },
+        { "id": "e_jiantu", "name": "践土之盟", "year": -632 }
+      ]
+    },
+    {
+      "id": "zhou_qing",
+      "posthumousTitle": "周顷王",
+      "personalName": "姬壬臣",
+      "reign": "前618 — 前613",
+      "portrait": "/portraits/zhou-qing.svg",
+      "events": [{ "id": "e_wangshi_neiluan", "name": "王室内乱", "year": -615 }]
+    },
+    {
+      "id": "zhou_kuang",
+      "posthumousTitle": "周匡王",
+      "personalName": "姬班",
+      "reign": "前612 — 前607",
+      "portrait": "/portraits/zhou-kuang.svg",
+      "events": [{ "id": "e_jinchu", "name": "晋楚争霸", "year": -610 }]
+    },
+    {
+      "id": "zhou_ding",
+      "posthumousTitle": "周定王",
+      "personalName": "姬瑜",
+      "reign": "前606 — 前586",
+      "portrait": "/portraits/zhou-ding.svg",
+      "events": [
+        { "id": "e_wen_ding", "name": "楚庄王问鼎中原", "year": -606 },
+        { "id": "e_bi_zhi_zhan", "name": "邲之战", "year": -597 }
+      ]
+    },
+    {
+      "id": "zhou_jian",
+      "posthumousTitle": "周简王",
+      "personalName": "姬夷",
+      "reign": "前585 — 前572",
+      "portrait": "/portraits/zhou-jian.svg",
+      "events": [
+        { "id": "e_an_zhan", "name": "鞌之战", "year": -589 },
+        { "id": "e_mibing_1", "name": "第一次弭兵之会", "year": -579 }
+      ]
+    },
+    {
+      "id": "zhou_ling",
+      "posthumousTitle": "周灵王",
+      "personalName": "姬泄心",
+      "reign": "前571 — 前545",
+      "portrait": "/portraits/zhou-ling.svg",
+      "events": [
+        { "id": "e_mibing_2", "name": "第二次弭兵之会", "year": -546 },
+        { "id": "e_chu_ling_hui", "name": "楚灵王会盟", "year": -538 }
+      ]
+    },
+    {
+      "id": "zhou_jing",
+      "posthumousTitle": "周景王",
+      "personalName": "姬贵",
+      "reign": "前544 — 前520",
+      "portrait": "/portraits/zhou-jing.svg",
+      "events": [
+        { "id": "e_zhu_daqian", "name": "铸大钱", "year": -524 },
+        { "id": "e_wangzi_chao", "name": "王子朝之乱", "year": -520 }
+      ]
+    },
+    {
+      "id": "zhou_dao",
+      "posthumousTitle": "周悼王",
+      "personalName": "姬猛",
+      "reign": "前520",
+      "portrait": "/portraits/zhou-dao.svg",
+      "events": [
+        { "id": "e_dao_yuhai", "name": "悼王遇害", "year": -520 },
+        { "id": "e_wangzi_chao_2", "name": "王子朝据洛邑", "year": -520 }
+      ]
+    },
+    {
+      "id": "zhou_jing_2",
+      "posthumousTitle": "周敬王",
+      "personalName": "姬匄",
+      "reign": "前519 — 前476",
+      "portrait": "/portraits/zhou-jing-2.svg",
+      "events": [
+        { "id": "e_ping_chao", "name": "王子朝之乱平定", "year": -516 },
+        { "id": "e_wuyue", "name": "吴越争霸", "year": -490 },
+        { "id": "e_kongzi", "name": "孔子卒", "year": -479 }
+      ]
+    },
+    {
+      "id": "zhou_yuan",
+      "posthumousTitle": "周元王",
+      "personalName": "姬仁",
+      "reign": "前475 — 前469",
+      "portrait": "/portraits/zhou-yuan.svg",
+      "events": [
+        { "id": "e_zhanguo", "name": "战国开端", "year": -475 },
+        { "id": "e_yue_mie_wu", "name": "越灭吴", "year": -473 }
+      ]
+    },
+    {
+      "id": "zhou_zhending",
+      "posthumousTitle": "周贞定王",
+      "personalName": "姬介",
+      "reign": "前468 — 前441",
+      "portrait": "/portraits/zhou-zhending.svg",
+      "events": [
+        { "id": "e_jinyang", "name": "晋阳之战", "year": -453 },
+        { "id": "e_sanjia_miezhi", "name": "三家灭智", "year": -453 }
+      ]
+    },
+    {
+      "id": "zhou_ai",
+      "posthumousTitle": "周哀王",
+      "personalName": "姬去疾",
+      "reign": "前441",
+      "portrait": "/portraits/zhou-ai.svg",
+      "events": [{ "id": "e_ai_beisha", "name": "哀王被杀", "year": -441 }]
+    },
+    {
+      "id": "zhou_si",
+      "posthumousTitle": "周思王",
+      "personalName": "姬叔",
+      "reign": "前441",
+      "portrait": "/portraits/zhou-si.svg",
+      "events": [{ "id": "e_si_shixiong", "name": "思王弑兄自立", "year": -441 }]
+    },
+    {
+      "id": "zhou_kao",
+      "posthumousTitle": "周考王",
+      "personalName": "姬嵬",
+      "reign": "前440 — 前426",
+      "portrait": "/portraits/zhou-kao.svg",
+      "events": [
+        { "id": "e_feng_di", "name": "封弟揭于河南", "year": -440 },
+        { "id": "e_xi_zhou_huan", "name": "西周桓公建国", "year": -440 }
+      ]
+    },
+    {
+      "id": "zhou_weilie",
+      "posthumousTitle": "周威烈王",
+      "personalName": "姬午",
+      "reign": "前425 — 前402",
+      "portrait": "/portraits/zhou-weilie.svg",
+      "events": [
+        { "id": "e_sanjia_fenjin", "name": "三家分晋", "year": -403 },
+        { "id": "e_jiuding_zhen", "name": "九鼎震", "year": -402 }
+      ]
+    },
+    {
+      "id": "zhou_an",
+      "posthumousTitle": "周安王",
+      "personalName": "姬骄",
+      "reign": "前401 — 前376",
+      "portrait": "/portraits/zhou-an.svg",
+      "events": [
+        { "id": "e_tian_dai_qi", "name": "田氏代齐", "year": -386 },
+        { "id": "e_sanjin_fa_qi", "name": "三晋伐齐", "year": -380 }
+      ]
+    },
+    {
+      "id": "zhou_lie",
+      "posthumousTitle": "周烈王",
+      "personalName": "姬喜",
+      "reign": "前375 — 前369",
+      "portrait": "/portraits/zhou-lie.svg",
+      "events": [
+        { "id": "e_zhoushi_yishuai", "name": "周室益衰", "year": -370 },
+        { "id": "e_zhuhou_buchao_2", "name": "诸侯不朝", "year": -369 }
+      ]
+    },
+    {
+      "id": "zhou_xian",
+      "posthumousTitle": "周显王",
+      "personalName": "姬扁",
+      "reign": "前368 — 前321",
+      "portrait": "/portraits/zhou-xian.svg",
+      "events": [
+        { "id": "e_shangyang", "name": "商鞅变法", "year": -356 },
+        { "id": "e_guiling", "name": "桂陵之战", "year": -353 },
+        { "id": "e_maling", "name": "马陵之战", "year": -341 }
+      ]
+    },
+    {
+      "id": "zhou_shenjing",
+      "posthumousTitle": "周慎靓王",
+      "personalName": "姬定",
+      "reign": "前320 — 前315",
+      "portrait": "/portraits/zhou-shenjing.svg",
+      "events": [
+        { "id": "e_wuguo_faqin", "name": "五国伐秦", "year": -318 },
+        { "id": "e_hezong", "name": "合纵连横", "year": -316 }
+      ]
+    },
+    {
+      "id": "zhou_nan",
+      "posthumousTitle": "周赧王",
+      "personalName": "姬延",
+      "reign": "前314 — 前256",
+      "portrait": "/portraits/zhou-nan.svg",
+      "events": [
+        { "id": "e_changping", "name": "长平之战", "year": -260 },
+        { "id": "e_zhou_fenlie", "name": "周室分裂", "year": -256 },
+        { "id": "e_qin_mie_zhou", "name": "秦灭东周", "year": -256 }
+      ]
+    }
+  ]
+}

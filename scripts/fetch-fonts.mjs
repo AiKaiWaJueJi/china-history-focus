@@ -1,21 +1,15 @@
 /**
  * 字体子集化 + 自托管
  * ===========================================================================
- * 需求里有 fontStyle 字段（毛笔/篆书、汉隶、瘦金体、魏碑…），前端要"按字段换字体"。
+ * 阶段二新增「周朝 37 位君主」后，用字集合扩大到谥号与姓名，
+ * 所以这里改为统一从数据文件里抽取所有需要书法字体的字符，再重新子集化。
  *
- * 现实约束：方正瘦金书、汉仪篆书是**商业字体**，不能直接打包分发。
- * 因此这里用四款可商用的开源中文字体做"字形气质"的近似映射：
+ * 用字来源：
+ *   1. 13 个朝代名
+ *   2. 周朝 37 位君主的谥号 + 姓名
+ *   3. 界面固定文案（时间轴、在位、第 X 页等）
  *
- *   毛笔 / 篆书 / 魏碑 / 颜体  → Ma Shan Zheng   （毛笔行楷，笔锋最足）
- *   瘦金 / 台阁 / 馆阁 / 汉隶  → ZCOOL XiaoWei   （细劲清瘦，最接近瘦金体骨架）
- *   行书 / 行楷                → Long Cang       （行书连笔）
- *   行草 / 草书                → Zhi Mang Xing   （草书飞动）
- *   楷书                       → 系统 KaiTi      （Windows 自带 simkai.ttf，零下载）
- *
- * 换成商业字体时：把 woff2 放进 public/fonts/，改 src/lib/fonts.ts 的映射表和
- * index.css 的 @font-face 即可，组件不用动。
- *
- * 体积控制：只请求"13 个朝代名"用到的字（约 17 个），每款字体 ~10-20KB。
+ * 体积极小（几十 KB），且完全离线可用；子集外的字会自动回落到系统楷体。
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -23,10 +17,23 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = dirname(fileURLToPath(import.meta.url))
 const PROJECT = join(ROOT, '..')
-const data = JSON.parse(readFileSync(join(PROJECT, 'src/data/history.data.json'), 'utf8'))
 
-/** 需要以书法字体渲染的字符集合 */
-const chars = [...new Set(data.dynasties.map((d) => d.name).join(''))].join('')
+const dynasties = JSON.parse(readFileSync(join(PROJECT, 'src/data/history.data.json'), 'utf8'))
+const zhou = JSON.parse(readFileSync(join(PROJECT, 'src/data/emperors.zhou.json'), 'utf8'))
+
+const UI_TEXT = '周帝王时间轴在位第页共位事件史事返回朝代年至今前后'
+
+const chars = [
+  ...new Set(
+    [
+      ...dynasties.dynasties.map((d) => d.name),
+      ...zhou.emperors.map((e) => e.posthumousTitle + e.personalName),
+      UI_TEXT,
+    ]
+      .join('')
+      .split(''),
+  ),
+].join('')
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
@@ -44,7 +51,7 @@ const fetchFont = async (family, outName) => {
   console.log(`${cssFamily.padEnd(16)} ${chars.length} chars -> ${outName} ${(buf.length / 1024).toFixed(1)} KB`)
 }
 
-console.log(`用字: ${chars}  共 ${[...chars].length} 个`)
+console.log(`用字 ${[...chars].length} 个`)
 await fetchFont('Ma+Shan+Zheng', 'ma-shan-zheng.woff2')
 await fetchFont('ZCOOL+XiaoWei', 'zcool-xiaowei.woff2')
 await fetchFont('Long+Cang', 'long-cang.woff2')

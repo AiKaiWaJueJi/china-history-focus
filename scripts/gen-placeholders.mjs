@@ -267,38 +267,122 @@ function artifactSvg(d) {
 </svg>`
 }
 
+/** 颜色工具：让每位君主的画像有独立的色相，避免 37 张图长得一模一样 */
+const hexToHsl = (hex) => {
+  const n = parseInt(hex.slice(1), 16)
+  const r = ((n >> 16) & 255) / 255
+  const g = ((n >> 8) & 255) / 255
+  const b = (n & 255) / 255
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  const l = (max + min) / 2
+  let h = 0
+  let s = 0
+  if (max !== min) {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+    else if (max === g) h = ((b - r) / d + 2) / 6
+    else h = ((r - g) / d + 4) / 6
+  }
+  return [h * 360, s, l]
+}
+const hslToHex = (h, s, l) => {
+  const c = (1 - Math.abs(2 * l - 1)) * s
+  const hp = (((h % 360) + 360) % 360) / 60
+  const x = c * (1 - Math.abs((hp % 2) - 1))
+  let rgb = [0, 0, 0]
+  if (hp < 1) rgb = [c, x, 0]
+  else if (hp < 2) rgb = [x, c, 0]
+  else if (hp < 3) rgb = [0, c, x]
+  else if (hp < 4) rgb = [0, x, c]
+  else if (hp < 5) rgb = [x, 0, c]
+  else rgb = [c, 0, x]
+  const m = l - c / 2
+  return (
+    '#' +
+    rgb
+      .map((v) => Math.round((v + m) * 255).toString(16).padStart(2, '0'))
+      .join('')
+  )
+}
+const shiftHue = (hex, deg) => {
+  const [h, s, l] = hexToHsl(hex)
+  return hslToHex(h + deg, s, l)
+}
+
+/**
+ * 帝王画像占位图
+ * 每位君主按 id 哈希得到：独立色相（±35°）、三种冠制之一、不同的肩宽与袍纹，
+ * 这样 37 位能一眼区分开，同时整体仍统一在同一套"博物馆暗调"里。
+ */
 function portraitSvg(e, d) {
   const h = hash(e.id)
-  const sway = (h % 20) - 10
+  const sway = (h % 16) - 8
+  const hueShift = ((h % 70) - 35)
+  const accent = shiftHue(d.accent, hueShift)
+  const soft = shiftHue(d.accentSoft, hueShift)
+  const crown = h % 3
+  const shoulderW = 88 + (h % 18)
+  const headRy = 40 + (h % 6)
+
+  // 三种冠制：平天冠 / 阶梯冠 / 尖顶冠
+  const crownShape =
+    crown === 0
+      ? `<rect x="-58" y="92" width="116" height="15" rx="4" fill="${rgba(soft, 0.5)}"/>
+         <rect x="-34" y="76" width="68" height="18" rx="4" fill="${rgba(soft, 0.34)}"/>`
+      : crown === 1
+        ? `<rect x="-52" y="88" width="104" height="12" rx="3" fill="${rgba(soft, 0.46)}"/>
+           <rect x="-36" y="76" width="72" height="14" rx="3" fill="${rgba(soft, 0.36)}"/>
+           <rect x="-18" y="64" width="36" height="14" rx="3" fill="${rgba(soft, 0.26)}"/>`
+        : `<path d="M-54 100 L0 60 L54 100 Z" fill="${rgba(soft, 0.34)}"/>
+           <rect x="-54" y="100" width="108" height="12" rx="3" fill="${rgba(soft, 0.46)}"/>`
+
+  // 袍纹：竖条纹 / 交领 / 素面
+  const robePattern =
+    h % 3 === 0
+      ? `<path d="M-40 220 L-40 480 M-14 220 L-14 480 M14 220 L14 480 M40 220 L40 480"
+              stroke="${rgba(soft, 0.12)}" stroke-width="2"/>`
+      : h % 3 === 1
+        ? `<path d="M-30 200 L0 300 L30 200" fill="none" stroke="${rgba(soft, 0.3)}" stroke-width="2.5"/>
+           <path d="M-14 196 L-14 300 M14 196 L14 300" stroke="${rgba(soft, 0.14)}" stroke-width="2"/>`
+        : `<path d="M0 200 L0 480" stroke="${rgba(soft, 0.16)}" stroke-width="2"/>`
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 520" width="420" height="520">
   <defs>
     <linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0b0d11"/>
-      <stop offset="55%" stop-color="${rgba(d.accent, 0.26)}"/>
+      <stop offset="55%" stop-color="${rgba(accent, 0.28)}"/>
       <stop offset="100%" stop-color="#07090b"/>
     </linearGradient>
     <radialGradient id="pglow" cx="50%" cy="34%" r="48%">
-      <stop offset="0%" stop-color="${rgba(d.accentSoft, 0.42)}"/>
-      <stop offset="100%" stop-color="${rgba(d.accentSoft, 0)}"/>
+      <stop offset="0%" stop-color="${rgba(soft, 0.44)}"/>
+      <stop offset="100%" stop-color="${rgba(soft, 0)}"/>
     </radialGradient>
     <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${rgba(d.accentSoft, 0.34)}"/>
-      <stop offset="100%" stop-color="${rgba(d.accent, 0.12)}"/>
+      <stop offset="0%" stop-color="${rgba(soft, 0.34)}"/>
+      <stop offset="100%" stop-color="${rgba(accent, 0.12)}"/>
+    </linearGradient>
+    <linearGradient id="pbg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(6,8,10,0)"/>
+      <stop offset="100%" stop-color="rgba(6,8,10,0.86)"/>
     </linearGradient>
   </defs>
+
   <rect width="420" height="520" fill="url(#pbg)"/>
   <ellipse cx="210" cy="170" rx="190" ry="170" fill="url(#pglow)"/>
-  <g transform="translate(${210 + sway} 0)" opacity="0.9">
-    <rect x="-58" y="96" width="116" height="16" rx="4" fill="${rgba(d.accentSoft, 0.5)}"/>
-    <rect x="-34" y="80" width="68" height="18" rx="4" fill="${rgba(d.accentSoft, 0.34)}"/>
-    <ellipse cx="0" cy="152" rx="34" ry="42" fill="${rgba(d.accentSoft, 0.30)}"/>
-    <path d="M-96 300 Q-70 196 0 190 Q70 196 96 300 L104 520 L-104 520 Z" fill="url(#robe)"/>
-    <path d="M-30 196 L0 300 L30 196" fill="none" stroke="${rgba(d.accentSoft, 0.35)}" stroke-width="2"/>
+
+  <g transform="translate(${210 + sway} 0)" opacity="0.92">
+    ${crownShape}
+    <ellipse cx="0" cy="152" rx="33" ry="${headRy}" fill="${rgba(soft, 0.3)}"/>
+    <path d="M-${shoulderW} 300 Q-70 196 0 190 Q70 196 ${shoulderW} 300 L${shoulderW + 8} 520 L-${shoulderW + 8} 520 Z"
+          fill="url(#robe)"/>
+    ${robePattern}
   </g>
-  <rect y="380" width="420" height="140" fill="rgba(6,8,10,0.86)"/>
+
+  <rect y="380" width="420" height="140" fill="url(#pbg2)"/>
 </svg>`
 }
-
 const artDir = join(PROJECT, 'public/artifacts')
 mkdirSync(artDir, { recursive: true })
 for (const d of data.dynasties) writeFileSync(join(artDir, `${d.id}.svg`), artifactSvg(d))
@@ -310,5 +394,13 @@ for (const e of data.emperors) {
   writeFileSync(join(porDir, `${e.id.replace('e_', '').replace(/_/g, '-')}.svg`), portraitSvg(e, d))
 }
 
+// ---- 阶段二：周朝 37 位君主的画像占位图 ----
+const zhouFile = JSON.parse(readFileSync(join(PROJECT, 'src/data/emperors.zhou.json'), 'utf8'))
+const zhouDynasty = data.dynasties.find((d) => d.id === zhouFile.dynastyId)
+for (const emperor of zhouFile.emperors) {
+  const fileName = `${emperor.id.replace(/_/g, '-')}.svg`
+  writeFileSync(join(porDir, fileName), portraitSvg({ id: emperor.id }, zhouDynasty))
+}
+console.log(`zhou portraits: ${zhouFile.emperors.length}`)
 console.log(`artifacts: ${data.dynasties.length} (${data.dynasties.map((d) => d.id).join(', ')})`)
 console.log(`portraits: ${data.emperors.length}`)
