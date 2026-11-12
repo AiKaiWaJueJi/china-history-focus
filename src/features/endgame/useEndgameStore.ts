@@ -24,6 +24,8 @@ export interface EndgameStore {
   focusedNation: string | null
   /** 人物卡片的 id；null 表示未打开 */
   profileId: string | null
+  /** 鼠标悬浮的国家（地图 ↔ 底部节点双向联动） */
+  hoveredNation: string | null
   /** 音效开关 */
   muted: boolean
   /** 总步数（由页面注入，默认 6） */
@@ -36,6 +38,7 @@ export interface EndgameStore {
   /** 回到战前（index = 0），并清除聚焦 */
   resetAll: () => void
   focusNation: (nationId: string | null) => void
+  setHovered: (nationId: string | null) => void
   openProfile: (id: string | null) => void
   toggleMute: () => void
 }
@@ -44,6 +47,7 @@ export const useEndgameStore = create<EndgameStore>()((set, get) => ({
   index: 0,
   focusedNation: null,
   profileId: null,
+  hoveredNation: null,
   muted: false,
   total: 6,
 
@@ -67,6 +71,10 @@ export const useEndgameStore = create<EndgameStore>()((set, get) => ({
 
   resetAll: () => set({ index: 0, focusedNation: null, profileId: null }),
   focusNation: (nationId) => set({ focusedNation: nationId }),
+  setHovered: (nationId) => {
+    if (get().hoveredNation === nationId) return
+    set({ hoveredNation: nationId })
+  },
   openProfile: (id) => set({ profileId: id }),
   toggleMute: () => set({ muted: !get().muted }),
 }))

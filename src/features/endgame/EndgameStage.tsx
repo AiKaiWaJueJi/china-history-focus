@@ -1,17 +1,14 @@
 /**
  * EndgameStage —— 王朝覆灭（可逆战略沙盘）
  * ===========================================================================
- * 与上一版（自动播放动画）的根本区别：
- *   这里没有计时器、没有「开始」按钮。
- *   用户点击地图上的国家或底部节点 → setIndex(n) → 全部视图重算。
- *   因为所有派生数据都来自单个 index，"回退"不需要任何撤销代码。
+ * 交互模型（本轮重构成"用户掌控 + 分层浮现"）：
+ *   默认      只有地图 + 底部阶梯，没有常驻战报栏
+ *   悬浮国家  轻量卡片（年份 / 灭国 / 2-3 条要点），底部对应节点亮起流光
+ *   点击国家  左侧展开详细战报（战前形势 / 经过 / 结局），地图变暗
+ *   点击外部  关闭战报，地图恢复
  *
- * 组成：
- *   BattlePanel        战报（常态 22% → 聚焦 50%）
- *   WarringStatesMap   版图（墨色自西向东蔓延）
- *   StepRail           0..6 阶梯控制器
- *   FigureModal        人物生平
- *   QinSeal + 入口卡    index === 6 时的终局
+ * 状态仍然收敛在 useEndgameStore 的 index(0..6)：正向与回退共用同一套过渡。
+ * 注意：本页**监听不到滚轮返回**——按需求改为「返回时间轴」按钮。
  */
 import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -25,9 +22,6 @@ import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { useEndgameStore } from './useEndgameStore'
 import './endgame.css'
-
-/** 滚轮返回上一页的冷却，防止一次滚动连续跳转 */
-const WHEEL_COOLDOWN = 900
 
 export function EndgameStage() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
@@ -55,15 +49,18 @@ export function EndgameStage() {
 
   const isFinished = index === events.length && events.length > 0
 
-  /* 总步数由数据注入，避免 store 里硬编码 6 */
+  const closePanel = useCallback(() => {
+    useEndgameStore.setState({ focusedNation: null })
+  }, [])
+
   useEffect(() => {
     useEndgameStore.setState({ total: events.length })
   }, [events.length])
 
-  /* 离开页面时复位，下次进入是干净的沙盘 */
+  /* 离开页面时复位 */
   useEffect(() => () => resetAll(), [resetAll])
 
-  /* 点击国家：推进/回退到该节点，并聚焦该国战报 */
+  /* 点击国家：推进/回退到该节点，并展开该国详细战报 */
   const handleConquer = useCallback(
     (event: (typeof events)[number]) => {
       conquerTo(event.order, event.nationId)
@@ -72,33 +69,17 @@ export function EndgameStage() {
     [conquerTo, muted],
   )
 
-  /* 点击底部节点 */
   const handleStep = useCallback(
     (value: number) => {
       setIndex(value)
-      useEndgameStore.setState({ focusedNation: null })
+      closePanel()
       if (value === events.length && events.length > 0 && !muted) playGong(0.6)
       else if (value > 0 && !muted) playDrum(0.6, (value - 1) * 2)
     },
-    [setIndex, events.length, muted],
+    [setIndex, closePanel, events.length, muted],
   )
 
-  /* 滚轮向上 → 回到时间轴最后一页（带冷却） */
-  useEffect(() => {
-    if (!dynastyId) return
-    let lastAt = 0
-    const onWheel = (event: WheelEvent) => {
-      if (event.deltaY > -24) return
-      const now = Date.now()
-      if (now - lastAt < WHEEL_COOLDOWN) return
-      lastAt = now
-      navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
-    }
-    window.addEventListener('wheel', onWheel, { passive: true })
-    return () => window.removeEventListener('wheel', onWheel)
-  }, [dynastyId, navigate])
-
-  /* 键盘：ESC 逐层退出（人物 → 聚焦 → 返回时间轴） */
+  /* 键盘：ESC 逐层退出；← → 逐级推移 */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight') {
@@ -112,12 +93,12 @@ export function EndgameStage() {
       if (event.key !== 'Escape') return
       event.preventDefault()
       if (profileId) openProfile(null)
-      else if (focusedNation) useEndgameStore.setState({ focusedNation: null })
+      else if (focusedNation) closePanel()
       else if (dynastyId) navigate(`/dynasty/${dynastyId}`)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [index, setIndex, profileId, focusedNation, openProfile, dynastyId, navigate])
+  }, [index, setIndex, profileId, focusedNation, openProfile, closePanel, dynastyId, navigate])
 
   if (!dynasty || !endgame) {
     return (
@@ -150,7 +131,7 @@ export function EndgameStage() {
         </div>
 
         <div className="endgame-head-right">
-          <span className="endgame-step-hint">滚轮上滑 / ESC 返回 · ← → 逐级推移</span>
+          <span className="endgame-step-hint">悬停看要点 · 点击看详情 · ← → 逐级推移</span>
           <button
             type="button"
             className={`endgame-mute${muted ? ' is-muted' : ''}`}
@@ -163,24 +144,23 @@ export function EndgameStage() {
       </header>
 
       <div className={`endgame-body${focusedEvent ? ' is-focused' : ''}`}>
-        <BattlePanel
-          events={events}
-          index={index}
-          intro={endgame.intro}
-          focusedEvent={focusedEvent}
-          onFigureClick={openProfile}
-        />
+        {focusedEvent ? (
+          <BattlePanel
+            event={focusedEvent}
+            onFigureClick={openProfile}
+            onClose={closePanel}
+          />
+        ) : null}
 
         <WarringStatesMap
           events={events}
           index={index}
           dimmed={Boolean(focusedEvent)}
           onConquer={handleConquer}
-          onExitFocus={() => useEndgameStore.setState({ focusedNation: null })}
+          onExitFocus={closePanel}
           overlay={
             isFinished ? (
               <>
-                {/* 六国尽墨：秦印落下 + 进入秦朝 */}
                 <QinSeal />
                 <button
                   type="button"

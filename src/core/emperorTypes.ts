@@ -116,6 +116,16 @@ export interface EndgameFigure {
   deeds: string[]
 }
 
+/** 灭国前的详细情况，三段式叙述 */
+export interface EndgameDetail {
+  /** 战前形势 */
+  situation: string
+  /** 战役经过 */
+  course: string
+  /** 结局 */
+  result: string
+}
+
 export interface EndgameEvent {
   id: string
   /** 阶梯序号 1..6（0 是"战前"，不占事件） */
@@ -132,8 +142,12 @@ export interface EndgameEvent {
   desc: string
   /** 一句话梗概，用于地图 Tooltip */
   brief: string
-  /** 战报正文 */
+  /** 简要重大事件（悬浮卡片用，2-3 条） */
+  highlights: string[]
+  /** 战报正文（时间线一句话） */
   report: string
+  /** 灭国前详细情况（点击聚焦后展开） */
+  detail: EndgameDetail
   /** 本节出现的人物（正文中会被高亮成可点击标签） */
   figures: EndgameFigure[]
 }

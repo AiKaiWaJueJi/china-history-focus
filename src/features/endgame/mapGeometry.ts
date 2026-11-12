@@ -20,8 +20,8 @@ export interface MapRegion {
   label: [number, number]
   /** 未被吞并时的底色 */
   color: string
-  /** 墨色覆盖层的扩散方向（用于自定义属性，纯装饰） */
-  inkAngle?: number
+  /** 国都（示意坐标，落在该国轮廓内） */
+  capital?: { name: string; x: number; y: number }
 }
 
 /** 六国（按被灭顺序，order 与 endgame.events 对齐） */
@@ -30,8 +30,9 @@ export const SIX_STATES: MapRegion[] = [
     id: 'han',
     name: '韩',
     points: '486,352 540,336 592,344 620,392 606,428 560,438 508,432 492,404',
-    label: [548, 392],
+    label: [548, 380],
     color: '#6f7f4f',
+    capital: { name: '新郑', x: 596, y: 410 },
   },
   {
     id: 'zhao',
@@ -39,6 +40,7 @@ export const SIX_STATES: MapRegion[] = [
     points: '436,96 500,64 602,56 648,118 634,186 604,232 536,246 468,240 430,180 424,132',
     label: [528, 158],
     color: '#8a6440',
+    capital: { name: '邯郸', x: 560, y: 218 },
   },
   {
     id: 'wei',
@@ -46,6 +48,7 @@ export const SIX_STATES: MapRegion[] = [
     points: '452,238 528,226 604,232 652,282 646,330 606,358 520,350 484,344 424,304',
     label: [540, 296],
     color: '#5f6f83',
+    capital: { name: '大梁', x: 612, y: 300 },
   },
   {
     id: 'chu',
@@ -53,6 +56,7 @@ export const SIX_STATES: MapRegion[] = [
     points: '300,402 430,392 602,398 726,436 790,498 806,548 742,598 640,624 500,616 386,606 296,540 262,468',
     label: [520, 512],
     color: '#7a5b6b',
+    capital: { name: '寿春', x: 700, y: 470 },
   },
   {
     id: 'yan',
@@ -60,13 +64,15 @@ export const SIX_STATES: MapRegion[] = [
     points: '600,62 690,46 800,44 872,82 884,140 856,172 748,188 664,168 618,120',
     label: [736, 118],
     color: '#4f6f6f',
+    capital: { name: '蓟', x: 664, y: 128 },
   },
   {
     id: 'qi',
     name: '齐',
     points: '802,192 880,178 932,180 968,238 962,306 918,348 838,344 794,292 786,236',
-    label: [878, 266],
+    label: [870, 252],
     color: '#7f7a46',
+    capital: { name: '临淄', x: 906, y: 300 },
   },
 ]
 
@@ -77,6 +83,7 @@ export const QIN_REGION: MapRegion = {
   points: '88,142 240,116 420,110 448,196 456,292 424,380 330,442 236,470 152,432 96,368 70,286 66,206',
   label: [256, 300],
   color: '#241a12',
+  capital: { name: '咸阳', x: 300, y: 352 },
 }
 
 export const ALL_REGIONS: MapRegion[] = [QIN_REGION, ...SIX_STATES]

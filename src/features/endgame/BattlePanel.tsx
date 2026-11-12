@@ -1,32 +1,23 @@
 /**
- * BattlePanel —— 战报栏
+ * BattlePanel —— 灭国战报（仅在聚焦时展开）
  * ===========================================================================
- * 两种宽度：
- *   常态 22%  → 与地图并置，只做「时间线注脚」
- *   聚焦 50%  → 地图退为暗色背景（opacity .3 + grayscale），战报成为主角
+ * 默认不渲染：地图独占整个宽度。
+ * 点击某国后才从左侧展开，内容是该国**灭国前的详细情况**：
+ *   战前形势 / 战役经过 / 结局 —— 三段式，而不是时间线上那一句话。
  *
  * 字体按需求指定（含 fallback）：
  *   标题 '方正小标简宋', serif
  *   正文 '仿宋GB2312', 'FangSong', serif
- *
- * 战报里的重要人物（王翦、王贲…）会被替换成可点击标签，
- * 点击后打开人物 Modal（数据在 endgame.zhou.json 的 figures 里）。
  */
 import type { EndgameEvent, EndgameFigure } from '../../core/emperorTypes'
 
-interface BattlePanelProps {
-  events: EndgameEvent[]
-  index: number
-  intro: string
-  focusedEvent: EndgameEvent | null
-  onFigureClick: (figureId: string) => void
-}
-
-/** 把正文中的人物名切成可点击标签 */
-function renderReport(text: string, figures: EndgameFigure[], onFigureClick: (id: string) => void) {
+/** 把正文中的人物名切成可点击标签（长名字优先匹配，避免"王翦/王贲"互相截断） */
+function renderWithFigures(
+  text: string,
+  figures: EndgameFigure[],
+  onFigureClick: (id: string) => void,
+) {
   if (figures.length === 0) return text
-
-  // 长名字优先匹配，避免"王翦"与"王贲"互相截断
   const names = [...figures].map((figure) => figure.name).sort((a, b) => b.length - a.length)
   const pattern = new RegExp(`(${names.join('|')})`, 'g')
 
@@ -50,65 +41,64 @@ function renderReport(text: string, figures: EndgameFigure[], onFigureClick: (id
   })
 }
 
-export function BattlePanel({
-  events,
-  index,
-  intro,
-  focusedEvent,
-  onFigureClick,
-}: BattlePanelProps) {
-  const visible = events.slice(0, index)
+interface BattlePanelProps {
+  event: EndgameEvent
+  onFigureClick: (figureId: string) => void
+  onClose: () => void
+}
 
+export function BattlePanel({ event, onFigureClick, onClose }: BattlePanelProps) {
   return (
-    <aside className={`battle-panel${focusedEvent ? ' is-focused' : ''}`} aria-live="polite">
+    <aside className="battle-panel" aria-label={`${event.desc}详细战报`}>
       <header className="battle-head">
-        <h2 className="battle-title">战报</h2>
-        <span className="battle-count">
-          {index === 0 ? '未启战端' : `已灭 ${index} / ${events.length}`}
-        </span>
+        <div>
+          <span className="battle-year">{event.year}</span>
+          <h2 className="battle-title">{event.desc}</h2>
+        </div>
+        <button type="button" className="battle-close" onClick={onClose} aria-label="关闭战报">
+          ×
+        </button>
       </header>
 
-      {index === 0 ? (
-        <p className="battle-intro">{intro}</p>
-      ) : (
-        <ol className="battle-list">
-          {visible.map((event) => {
-            const isActive = focusedEvent?.id === event.id
-            return (
-              <li key={event.id} className={`battle-item${isActive ? ' is-active' : ''}`}>
-                <span className="battle-year">{event.year}</span>
-                <h3 className="battle-item-title">{event.desc}</h3>
-                <p className="battle-text">
-                  {renderReport(event.report, event.figures, onFigureClick)}
-                </p>
+      <div className="battle-section">
+        <span className="battle-section-label">战前形势</span>
+        <p className="battle-text">
+          {renderWithFigures(event.detail.situation, event.figures, onFigureClick)}
+        </p>
+      </div>
 
-                {isActive ? (
-                  <div className="battle-figures">
-                    <span className="battle-figures-label">相关人物</span>
-                    {event.figures.map((figure) => (
-                      <button
-                        key={figure.id}
-                        type="button"
-                        className="figure-card"
-                        onClick={() => onFigureClick(figure.id)}
-                      >
-                        <span className="figure-card-name">{figure.name}</span>
-                        <span className="figure-card-title">{figure.title}</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
-              </li>
-            )
-          })}
-        </ol>
-      )}
+      <div className="battle-section">
+        <span className="battle-section-label">战役经过</span>
+        <p className="battle-text">
+          {renderWithFigures(event.detail.course, event.figures, onFigureClick)}
+        </p>
+      </div>
 
-      {focusedEvent ? (
-        <p className="battle-exit-hint">点击地图空白处或再次点击该国，退出聚焦</p>
-      ) : (
-        <p className="battle-exit-hint">点击地图上的国家，展开该国战报</p>
-      )}
+      <div className="battle-section">
+        <span className="battle-section-label">结局</span>
+        <p className="battle-text">
+          {renderWithFigures(event.detail.result, event.figures, onFigureClick)}
+        </p>
+      </div>
+
+      {event.figures.length > 0 ? (
+        <div className="battle-figures">
+          <span className="battle-figures-label">相关人物</span>
+          {event.figures.map((figure) => (
+            <button
+              key={figure.id}
+              type="button"
+              className="figure-card"
+              onClick={() => onFigureClick(figure.id)}
+            >
+              <span className="figure-card-name">{figure.name}</span>
+              <span className="figure-card-title">{figure.title}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <p className="battle-exit-hint">点击战报外任意处关闭</p>
     </aside>
   )
 }

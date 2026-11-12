@@ -1,20 +1,20 @@
 /**
- * verify-endgame.mjs —— 王朝覆灭（可逆沙盘）验收
+ * verify-endgame.mjs —— 王朝覆灭（可逆沙盘 · 分层浮现）验收
  * ---------------------------------------------------------------------------
- * 覆盖：
- *   1. 时间轴末页 → 王朝覆灭；末页下滚也能进；覆灭页上滚回到末页
- *   2. 阶梯可逆：点齐→index6，再点赵→index2，魏楚燕齐必须回退
- *   3. 版图：墨色层 scaleX 随 index 变化（正反向同一套过渡）
- *   4. 聚焦：点国家 → 战报栏 22%→50%，地图 opacity .3 + grayscale
- *   5. Tooltip / 人物 Modal（点人物标签打开，点外部关闭）
- *   6. 字体：标题 方正小标简宋，正文 仿宋 fallback
+ * 本轮重构后的验收重点：
+ *   1. 默认无战报栏（地图独占），悬浮只出要点卡片
+ *   2. 点击国家 → 展开详细战报（战前形势 / 经过 / 结局 三段）
+ *   3. 点击外部 → 关闭战报
+ *   4. 地图悬浮 ↔ 底部节点流光 双向联动
+ *   5. 国都（7 座）渲染正确
+ *   6. 已取消"滚轮返回上一页"，改为按钮
  */
 import puppeteer from 'puppeteer-core'
 import { mkdirSync } from 'node:fs'
 
 const URL = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-const OUT = 'D:\\文档\\deepseek-harness\\default-workspace\\china-history-focus\\shots\\v7'
+const OUT = 'D:\\文档\\deepseek-harness\\default-workspace\\china-history-focus\\shots\\v8'
 mkdirSync(OUT, { recursive: true })
 
 const results = []
@@ -48,33 +48,36 @@ try {
   await sleep(1000)
 
   const ctaText = await page.$eval('.timeline-btn--endgame', (n) => n.textContent?.trim()).catch(() => null)
-  check('末页入口更名为「王朝覆灭」', /王朝覆灭/.test(ctaText ?? ''), ctaText)
-
+  check('末页入口为「王朝覆灭」', /王朝覆灭/.test(ctaText ?? ''), ctaText)
   await page.click('.timeline-btn--endgame')
   await sleep(1000)
-  check('进入王朝覆灭页', /\/dynasty\/zhou\/endgame$/.test(page.url()), page.url())
   await page.waitForSelector('.map-stage', { timeout: 10000 })
-  await sleep(700)
+  await sleep(600)
 
-  /* ---------- 2) 初始态 ---------- */
+  /* ---------- 2) 初始态：无战报栏 ---------- */
   const idle = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     regions: document.querySelectorAll('.region').length,
     captured: document.querySelectorAll('.region.is-captured').length,
     rails: document.querySelectorAll('.rail-node').length,
-    hasIntro: Boolean(document.querySelector('.battle-intro')),
-    hasEntry: Boolean(document.querySelector('.qin-entry')),
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
+    capitals: [...document.querySelectorAll('.capital-label')].map((n) => n.textContent?.trim()),
   }))
   console.log(`\n[IDLE] ${JSON.stringify(idle)}`)
   check('index 初始为 0', idle.index === '0', idle.index)
-  check('地图渲染 7 个区域（含秦）', idle.regions === 7, `${idle.regions}`)
+  check('地图 7 个区域', idle.regions === 7, `${idle.regions}`)
   check('初始只有秦为墨色', idle.captured === 1, `${idle.captured}`)
-  check('阶梯含「战前」+6 国共 7 个节点', idle.rails === 7, `${idle.rails}`)
-  check('初始显示序章', idle.hasIntro)
-  check('初始无秦朝入口', !idle.hasEntry)
+  check('阶梯 7 个节点（战前 + 6 国）', idle.rails === 7, `${idle.rails}`)
+  check('默认不显示战报栏（地图独占）', !idle.hasPanel)
+  check(
+    '渲染 7 座国都',
+    idle.capitals.length === 7 &&
+      ['咸阳', '新郑', '邯郸', '大梁', '寿春', '蓟', '临淄'].every((name) => idle.capitals.includes(name)),
+    idle.capitals.join('/'),
+  )
   await page.screenshot({ path: `${OUT}\\01-idle.png` })
 
-  /* ---------- 3) 正推：点齐 → index 6 ---------- */
+  /* ---------- 3) 正推 / 逆推 ---------- */
   await page.evaluate(() => {
     const nodes = [...document.querySelectorAll('.rail-node')]
     nodes[nodes.length - 1].click()
@@ -83,19 +86,13 @@ try {
   const full = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     captured: document.querySelectorAll('.region.is-captured').length,
-    reports: document.querySelectorAll('.battle-item').length,
     hasEntry: Boolean(document.querySelector('.qin-entry')),
-    hasSeal: Boolean(document.querySelector('.qin-seal-char')),
   }))
-  console.log(`[FULL] ${JSON.stringify(full)}`)
   check('点「齐」推进到 index 6', full.index === '6', full.index)
   check('六国全部入秦图', full.captured === 7, `${full.captured}`)
-  check('战报累计 6 条', full.reports === 6, `${full.reports}`)
   check('出现大秦帝国入口', full.hasEntry)
-  check('秦印出现', full.hasSeal)
   await page.screenshot({ path: `${OUT}\\02-all-captured.png` })
 
-  /* ---------- 4) 逆向回退：点赵 → index 2 ---------- */
   const inkOf = (nation) =>
     page.evaluate((id) => {
       const ink = document.querySelector(`[data-nation="${id}"] .region-ink`)
@@ -104,151 +101,171 @@ try {
       return Number(m.a.toFixed(3))
     }, nation)
 
-  const beforeBack = {
-    wei: await inkOf('wei'),
-    chu: await inkOf('chu'),
-    yan: await inkOf('yan'),
-    qi: await inkOf('qi'),
-  }
-
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click()) // 战前/韩/赵 → index 2
+  const beforeBack = { wei: await inkOf('wei'), chu: await inkOf('chu'), qi: await inkOf('qi') }
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click()) // → index 2
   await sleep(1100)
-
   const back = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     captured: document.querySelectorAll('.region.is-captured').length,
-    reports: document.querySelectorAll('.battle-item').length,
     hasEntry: Boolean(document.querySelector('.qin-entry')),
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
   }))
-  const afterBack = {
-    wei: await inkOf('wei'),
-    chu: await inkOf('chu'),
-    yan: await inkOf('yan'),
-    qi: await inkOf('qi'),
-  }
-  console.log(`\n[BACK] ${JSON.stringify(back)}`)
-  console.log(`[INK ] 回退前 魏楚燕齐: ${Object.values(beforeBack).join(' / ')}`)
-  console.log(`[INK ] 回退后 魏楚燕齐: ${Object.values(afterBack).join(' / ')}`)
-
+  const afterBack = { wei: await inkOf('wei'), chu: await inkOf('chu'), qi: await inkOf('qi') }
+  console.log(`\n[BACK] ${JSON.stringify(back)} · 墨色 ${Object.values(beforeBack)} → ${Object.values(afterBack)}`)
   check('回退到 index 2', back.index === '2', back.index)
-  check('已入秦图的只剩秦+韩+赵（3 个）', back.captured === 3, `${back.captured}`)
-  check('战报回退为 2 条', back.reports === 2, `${back.reports}`)
-  check('秦朝入口消失（不再是终局）', !back.hasEntry)
+  check('已入秦图的只剩 3 个（秦+韩+赵）', back.captured === 3, `${back.captured}`)
+  check('秦朝入口消失', !back.hasEntry)
+  check('回退后仍无战报栏', !back.hasPanel)
   check(
-    '版图墨色随之回退（魏楚燕齐全归 0）',
-    Object.values(afterBack).every((scale) => scale < 0.05),
-    Object.values(afterBack).join('/'),
+    '版图墨色随之回退',
+    Object.values(afterBack).every((v) => v < 0.05) && Object.values(beforeBack).every((v) => v > 0.95),
+    `${Object.values(beforeBack).join('/')} → ${Object.values(afterBack).join('/')}`,
   )
-  check(
-    '回退前的墨色确实是满格',
-    Object.values(beforeBack).every((scale) => scale > 0.95),
-    Object.values(beforeBack).join('/'),
-  )
-  await page.screenshot({ path: `${OUT}\\03-rewound.png` })
 
-  /* ---------- 5) 聚焦模式 ---------- */
-  await page.evaluate(() => {
-    const zhao = document.querySelector('[data-nation="zhao"]')
-    zhao.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-  })
-  await sleep(900)
-  const focus = await page.evaluate(() => {
-    const panel = document.querySelector('.battle-panel')
-    const map = document.querySelector('.map-stage')
-    const body = document.querySelector('.endgame-body')
-    const panelRect = panel.getBoundingClientRect()
-    const bodyRect = body.getBoundingClientRect()
-    return {
-      focused: body.classList.contains('is-focused'),
-      panelRatio: Number((panelRect.width / bodyRect.width).toFixed(2)),
-      mapOpacity: Number(getComputedStyle(map).opacity),
-      mapFilter: getComputedStyle(map).filter,
-      activeTitle: document.querySelector('.battle-item.is-active .battle-item-title')?.textContent,
-    }
-  })
-  console.log(`[FOCUS] ${JSON.stringify(focus)}`)
-  check('点击国家进入聚焦', focus.focused)
-  check('战报栏展开到约 50%', focus.panelRatio > 0.44 && focus.panelRatio < 0.56, `${focus.panelRatio}`)
-  check('地图变暗（opacity ≤ 0.35）', focus.mapOpacity <= 0.35, `${focus.mapOpacity}`)
-  check('地图灰化（grayscale）', /grayscale\(1\)/.test(focus.mapFilter), focus.mapFilter)
-  check('聚焦到「秦灭赵」', focus.activeTitle === '秦灭赵', focus.activeTitle)
-  await page.screenshot({ path: `${OUT}\\04-focused.png` })
-
-  /* ---------- 6) 人物 Modal ---------- */
-  const tagCount = await page.$$eval('.battle-item.is-active .figure-tag', (ns) => ns.length)
-  check('战报中人物被高亮为可点击标签', tagCount >= 1, `${tagCount} 个`)
-
-  await page.click('.battle-item.is-active .figure-tag')
-  await sleep(500)
-  const modal = await page.evaluate(() => ({
-    open: Boolean(document.querySelector('.figure-modal')),
-    name: document.querySelector('.figure-modal-name')?.textContent?.trim(),
-    hasBio: Boolean(document.querySelector('.figure-modal-bio')?.textContent?.trim()),
-    deeds: document.querySelectorAll('.figure-modal-deeds li').length,
-  }))
-  console.log(`[MODAL] ${JSON.stringify(modal)}`)
-  check('点击人物标签打开 Modal', modal.open, modal.name)
-  check('Modal 显示姓名与生平', Boolean(modal.name) && modal.hasBio)
-  check('Modal 列出生平事迹', modal.deeds >= 1, `${modal.deeds}`)
-  await page.screenshot({ path: `${OUT}\\05-figure-modal.png` })
-
-  // 点击浮层外部关闭
-  await page.mouse.click(60, 60)
-  await sleep(400)
-  check('点击浮层外部关闭 Modal', !(await page.$('.figure-modal')))
-
-  /* ---------- 7) 退出聚焦 ---------- */
-  await page.evaluate(() => {
-    const bg = document.querySelector('.map-bg')
-    bg.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-  })
-  await sleep(800)
-  const exited = await page.evaluate(() => ({
-    focused: document.querySelector('.endgame-body').classList.contains('is-focused'),
-    mapOpacity: Number(getComputedStyle(document.querySelector('.map-stage')).opacity),
-  }))
-  check('点击地图空白处退出聚焦', !exited.focused)
-  check('地图恢复亮度', exited.mapOpacity > 0.9, `${exited.mapOpacity}`)
-
-  /* ---------- 8) Tooltip ---------- */
-  // 取多边形本体（不是 <g>）的包围盒：墨层是撑满 viewBox 的矩形，会让 <g> 的盒失真
+  /* ---------- 4) 悬浮：要点卡片 + 底部节点流光 ---------- */
   const zhaoBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="zhao"] .region-base')
     const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
-  await page.mouse.move(zhaoBox.x, zhaoBox.y, { steps: 2 })
+  await page.mouse.move(zhaoBox.x, zhaoBox.y, { steps: 3 })
+  await sleep(500)
+
+  const hover = await page.evaluate(() => ({
+    tip: Boolean(document.querySelector('.map-tip')),
+    title: document.querySelector('.map-tip-title')?.textContent?.trim(),
+    points: [...document.querySelectorAll('.map-tip-list li')].map((n) => n.textContent?.trim()),
+    action: document.querySelector('.map-tip-action')?.textContent?.trim(),
+    railHovered: [...document.querySelectorAll('.rail-node.is-hovered')].map(
+      (n) => n.querySelector('.rail-node-name')?.textContent?.trim(),
+    ),
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  console.log(`[HOVER] ${JSON.stringify(hover)}`)
+  check('悬浮出现要点卡片', hover.tip)
+  check('卡片标题为「秦灭赵」', hover.title === '秦灭赵', hover.title)
+  check('卡片列出 2-3 条要点', hover.points.length >= 2 && hover.points.length <= 3, hover.points.join(' / '))
+  check('卡片提示可点击查看详情', /查看详情/.test(hover.action ?? ''), hover.action)
+  check('悬浮时仍然不展开战报', !hover.hasPanel)
+  check(
+    '底部对应节点同步高亮（流光）',
+    hover.railHovered.length === 1 && hover.railHovered[0] === '赵',
+    hover.railHovered.join('/'),
+  )
+  await page.screenshot({ path: `${OUT}\\03-hover.png` })
+
+  /* ---------- 5) 点击：展开详细战报 ---------- */
+  await page.mouse.click(zhaoBox.x, zhaoBox.y)
+  await sleep(900)
+  const panel = await page.evaluate(() => {
+    const sections = [...document.querySelectorAll('.battle-section')].map((n) => ({
+      label: n.querySelector('.battle-section-label')?.textContent?.trim(),
+      len: (n.querySelector('.battle-text')?.textContent ?? '').trim().length,
+    }))
+    const map = document.querySelector('.map-stage')
+    return {
+      open: Boolean(document.querySelector('.battle-panel')),
+      title: document.querySelector('.battle-title')?.textContent?.trim(),
+      sections,
+      mapOpacity: Number(getComputedStyle(map).opacity),
+      mapFilter: getComputedStyle(map).filter,
+      figureTags: document.querySelectorAll('.battle-panel .figure-tag').length,
+      panelWidth: Math.round(document.querySelector('.battle-panel').getBoundingClientRect().width),
+    }
+  })
+  console.log(`[PANEL] ${JSON.stringify(panel)}`)
+  check('点击国家展开战报', panel.open && panel.title === '秦灭赵', panel.title)
+  check(
+    '战报含「战前形势 / 战役经过 / 结局」三段',
+    panel.sections.length === 3 &&
+      panel.sections[0].label === '战前形势' &&
+      panel.sections[1].label === '战役经过' &&
+      panel.sections[2].label === '结局',
+    panel.sections.map((s) => s.label).join('/'),
+  )
+  check(
+    '详细内容是长文（非简介复述，每段 >40 字）',
+    panel.sections.every((s) => s.len > 40),
+    panel.sections.map((s) => s.len).join('/'),
+  )
+  check('地图变暗灰化', panel.mapOpacity <= 0.35 && /grayscale\(1\)/.test(panel.mapFilter), `${panel.mapOpacity}`)
+  check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
+  await page.screenshot({ path: `${OUT}\\04-detail.png` })
+
+  /* ---------- 6) 人物 Modal ---------- */
+  await page.click('.battle-panel .figure-tag')
+  await sleep(500)
+  const modal = await page.evaluate(() => ({
+    open: Boolean(document.querySelector('.figure-modal')),
+    name: document.querySelector('.figure-modal-name')?.textContent?.trim(),
+    deeds: document.querySelectorAll('.figure-modal-deeds li').length,
+  }))
+  check('点击人物标签打开 Modal', modal.open, modal.name)
+  check('Modal 有生平事迹', modal.deeds >= 1, `${modal.deeds}`)
+  await page.screenshot({ path: `${OUT}\\05-figure.png` })
+  await page.keyboard.press('Escape')
   await sleep(400)
-  const tip = await page.evaluate(() => ({
-    visible: Boolean(document.querySelector('.map-tip')),
-    text: document.querySelector('.map-tip')?.textContent?.replace(/\s+/g, ' ').trim(),
-  }))
-  console.log(`[TIP] ${tip.text}`)
-  check('悬浮已灭国家出现 Tooltip', tip.visible)
-  check('Tooltip 含「秦灭赵」简述', /秦灭赵/.test(tip.text ?? ''), tip.text)
+  check('ESC 关闭 Modal 且保留战报', !(await page.$('.figure-modal')) && Boolean(await page.$('.battle-panel')))
 
-  /* ---------- 9) 字体 ---------- */
-  const fonts = await page.evaluate(() => ({
-    title: getComputedStyle(document.querySelector('.battle-title')).fontFamily,
-    body: getComputedStyle(document.querySelector('.battle-text')).fontFamily,
+  /* ---------- 7) 点击外部关闭战报 ---------- */
+  await page.evaluate(() => {
+    document.querySelector('.map-bg').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(600)
+  const closed = await page.evaluate(() => ({
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
+    mapOpacity: Number(getComputedStyle(document.querySelector('.map-stage')).opacity),
   }))
-  check('战报标题字体含「方正小标简宋」', /方正小标简宋/.test(fonts.title), fonts.title)
-  check('战报正文字体含「仿宋」fallback', /仿宋GB2312|FangSong/.test(fonts.body), fonts.body)
+  check('点击地图空白处关闭战报', !closed.hasPanel)
+  check('地图恢复亮度', closed.mapOpacity > 0.9, `${closed.mapOpacity}`)
 
-  /* ---------- 10) 滚轮回退到时间轴末页 ---------- */
+  /* ---------- 8) 取消滚轮返回，改为按钮 ---------- */
   await page.mouse.move(800, 400)
-  await page.mouse.wheel({ deltaY: -240 })
-  await sleep(1200)
-  check('上滚返回时间轴', /\/dynasty\/zhou$/.test(page.url()), page.url())
-  const backPage = await page.$eval('.timeline-count', (n) => n.textContent?.trim()).catch(() => null)
-  check('返回时停在最后一页（第 13 页）', /第 13 \/ 13 页/.test(backPage ?? ''), backPage)
+  await page.mouse.wheel({ deltaY: -260 })
+  await sleep(1000)
+  check('滚轮上滑不再返回时间轴', /\/endgame$/.test(page.url()), page.url())
 
-  /* ---------- 11) 末页下滚进入覆灭 ---------- */
+  await page.click('.endgame-btn')
+  await sleep(1100)
+  check('点击「返回时间轴」可返回', /\/dynasty\/zhou$/.test(page.url()), page.url())
+  const backPage = await page.$eval('.timeline-count', (n) => n.textContent?.trim()).catch(() => null)
+  check('返回时停在最后一页', /第 13 \/ 13 页/.test(backPage ?? ''), backPage)
+
+  /* ---------- 9) 末页下滚仍可进入覆灭 ---------- */
   await sleep(600)
   await page.mouse.move(800, 450)
   await page.mouse.wheel({ deltaY: 240 })
   await sleep(1200)
-  check('末页继续下滚进入王朝覆灭', /\/endgame$/.test(page.url()), page.url())
+  check('末页下滚仍可进入王朝覆灭', /\/endgame$/.test(page.url()), page.url())
+
+  /* ---------- 10) 字体 ---------- */
+  const fonts = await page.evaluate(() => {
+    document.querySelectorAll('.rail-node')[6]?.click()
+    return null
+  })
+  await sleep(900)
+  const fontInfo = await page.evaluate(() => {
+    const el = document.createElement('div')
+    el.className = 'battle-panel'
+    return {
+      titleRule: [...document.styleSheets]
+        .flatMap((sheet) => {
+          try {
+            return [...sheet.cssRules]
+          } catch {
+            return []
+          }
+        })
+        .filter((rule) => rule.cssText?.includes('.battle-title') || rule.cssText?.includes('.battle-text'))
+        .map((rule) => rule.cssText.slice(0, 120)),
+    }
+  })
+  const fontText = (fontInfo.titleRule ?? []).join(' ')
+  check(
+    '战报字体规则含「方正小标简宋」与「仿宋」',
+    /方正小标简宋/.test(fontText) && /仿宋GB2312/.test(fontText),
+    fontText.includes('方正小标简宋') ? 'ok' : 'missing',
+  )
 
   check('无控制台错误', errors.length === 0, errors.slice(0, 2).join(' | '))
 } finally {

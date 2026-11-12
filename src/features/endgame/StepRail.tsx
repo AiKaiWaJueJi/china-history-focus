@@ -6,6 +6,7 @@
  * 而且它把"顺序"这件事显式画了出来（韩→赵→魏→楚→燕→齐）。
  */
 import type { EndgameEvent } from '../../core/emperorTypes'
+import { useEndgameStore } from './useEndgameStore'
 
 interface StepRailProps {
   events: EndgameEvent[]
@@ -14,12 +15,17 @@ interface StepRailProps {
 }
 
 export function StepRail({ events, index, onSelect }: StepRailProps) {
+  // 与地图双向联动：地图上悬浮哪一国，这里对应的节点就亮起流光
+  const hovered = useEndgameStore((s) => s.hoveredNation)
+  const setHovered = useEndgameStore((s) => s.setHovered)
+
   return (
     <nav className="step-rail" aria-label="统一进程节点">
       <button
         type="button"
         className={`rail-node rail-node--zero${index === 0 ? ' is-active' : ''}`}
         onClick={() => onSelect(0)}
+        onMouseEnter={() => setHovered(null)}
       >
         <span className="rail-node-name">战前</span>
         <span className="rail-node-year">前256</span>
@@ -31,8 +37,10 @@ export function StepRail({ events, index, onSelect }: StepRailProps) {
           <button
             key={event.id}
             type="button"
-            className={`rail-node is-${state}`}
+            className={`rail-node is-${state}${hovered === event.nationId ? ' is-hovered' : ''}`}
             onClick={() => onSelect(event.order)}
+            onMouseEnter={() => setHovered(event.nationId)}
+            onMouseLeave={() => setHovered(null)}
             aria-current={state === 'active' ? 'step' : undefined}
           >
             <span className="rail-node-name">{event.target}</span>
