@@ -130,6 +130,37 @@ try {
   check('六国国名全部消散', unified.fadedLabels === 6, `${unified.fadedLabels}/6`)
   await page.screenshot({ path: `${OUT}\\02b-unified.png` })
 
+  /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[5].click()) // 回到 index 5
+  await sleep(900)
+  const qiBox = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="qi"] .region-base')
+    const r = el.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  await page.mouse.click(qiBox.x, qiBox.y)
+  await sleep(1000)
+  const atSix = await page.evaluate(() => ({
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
+    hasHero: Boolean(document.querySelector('.unify-hero')),
+    svgOpacity: Number(getComputedStyle(document.querySelector('.map-svg')).opacity),
+  }))
+  console.log(`[SIX-OPEN] ${JSON.stringify(atSix)}`)
+  check('点「齐」后 index 到 6 且战报打开', atSix.index === '6' && atSix.hasPanel)
+  check('战报打开时不播终章', !atSix.hasHero && atSix.svgOpacity > 0.9, `svg=${atSix.svgOpacity}`)
+
+  await page.evaluate(() => {
+    document.querySelector('.map-bg').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(500)
+  const afterClose = await page.evaluate(() => ({
+    hasPanel: Boolean(document.querySelector('.battle-panel')),
+    hasHero: Boolean(document.querySelector('.unify-hero')),
+  }))
+  console.log(`[SIX-CLOSED] ${JSON.stringify(afterClose)}`)
+  check('关闭战报后才出现终章秦字', !afterClose.hasPanel && afterClose.hasHero)
+
 
   // 秦色覆盖层现在用 opacity 淡入（"填成秦色"），不再是 scaleX 擦除
   const inkOf = (nation) =>
@@ -162,7 +193,7 @@ try {
 
   // 秦字应落在「秦 + 已灭诸国」合并后的重心，而不是固定在某处
   const qinShift = await page.evaluate(() => {
-    const el = document.querySelector('[data-nation="qin"] .region-label')
+    const el = document.querySelector('.region-label--qin')
     return getComputedStyle(el).transform
   })
   check(

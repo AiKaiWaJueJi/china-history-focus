@@ -193,20 +193,18 @@ export function WarringStatesMap({
 
               <polygon className="region-edge" points={region.points} />
 
-              <text
-                className="region-label"
-                x={region.label[0]}
-                y={region.label[1]}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                style={
-                  isQin
-                    ? { transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }
-                    : undefined
-                }
-              >
-                {region.name}
-              </text>
+              {/* 秦字不在这里画：它独立成层，避免被后渲染的邻国压住 */}
+              {isQin ? null : (
+                <text
+                  className="region-label"
+                  x={region.label[0]}
+                  y={region.label[1]}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                >
+                  {region.name}
+                </text>
+              )}
 
               {region.capital ? (
                 <g className="capital" pointerEvents="none">
@@ -220,6 +218,22 @@ export function WarringStatesMap({
             </g>
           )
         })}
+        {/*
+          秦字单独一层，画在所有国家之后 ——
+          之前它在自己的 <g> 里（秦是第一个渲染的），移动后会被邻国的图块盖住。
+        */}
+        <g className="qin-label-layer" aria-hidden="true">
+          <text
+            className="region-label region-label--qin"
+            x={QIN_REGION.label[0]}
+            y={QIN_REGION.label[1]}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            style={{ transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }}
+          >
+            秦
+          </text>
+        </g>
       </svg>
 
       {hoveredEvent && hoveredRegion ? (

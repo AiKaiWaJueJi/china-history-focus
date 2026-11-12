@@ -1493,3 +1493,59 @@
     text-shadow: 0 0 70px rgba(184, 48, 31, 0.55);
   }
 }
+/* ==========================================================================
+   v5：秦字置顶 · 去边框阴影 · 终章限定在背景范围内
+   ========================================================================== */
+
+/* 秦字独立成层，永远压在所有图块之上 */
+.qin-label-layer {
+  pointer-events: none;
+}
+
+.region-label--qin {
+  fill: #e9d29a;
+  font-size: 44px;
+}
+
+/*
+  不要边框阴影：
+  · 并集层只负责填色，不再发光（那圈光晕在深色底上就是一道"边框"）
+  · 被吞并的块取消 drop-shadow，避免在交界处留下影子
+  未吞并的块保留一点投影，维持厚度感。
+*/
+.empire-layer {
+  filter: none;
+}
+
+.region.is-captured {
+  filter: none;
+}
+
+.region:not(.is-captured) {
+  filter: drop-shadow(0 5px 9px rgba(0, 0, 0, 0.55));
+}
+
+/* 一统时的秦字已由 hero 承担，图内不再重复放大变红 */
+.map-stage[data-unified='true'] .region-label--qin {
+  opacity: 0;
+}
+
+/* 终章 hero：绝对定位在版图容器内（而不是全屏），自然被始皇帝背景框住 */
+.unify-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.unify-ring {
+  width: min(52vh, 440px);
+  height: min(52vh, 440px);
+}
+
+.unify-char {
+  font-size: min(34vh, 300px);
+}

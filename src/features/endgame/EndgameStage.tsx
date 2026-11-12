@@ -47,6 +47,8 @@ export function EndgameStage() {
       : (events.flatMap((event) => event.figures).find((figure) => figure.id === profileId) ?? null)
 
   const isFinished = index === events.length && events.length > 0
+  /* 终章要等战报关闭后再播：点「齐」先看战报，退出后才演一统 */
+  const showFinale = isFinished && !focusedEvent
 
   /*
     关闭战报不能直接卸载：那样面板会"啪"地消失。
@@ -182,12 +184,20 @@ export function EndgameStage() {
           events={events}
           index={index}
           dimmed={Boolean(focusedEvent)}
-          unified={isFinished}
+          unified={showFinale}
           onConquer={handleConquer}
           onExitFocus={closePanel}
           overlay={
             isFinished ? (
               <>
+                {/* 一统主角：七国版图消散后，秦字独立占据版图中心 */}
+                {showFinale ? (
+                  <div className="unify-hero" aria-hidden="true">
+                    <span className="unify-ring" />
+                    <span className="unify-char">秦</span>
+                  </div>
+                ) : null}
+
                 <button
                   type="button"
                   className="qin-entry"
@@ -205,16 +215,6 @@ export function EndgameStage() {
 
       <StepRail events={events} index={index} onSelect={handleStep} />
 
-      {/*
-        一统主角：七国版图整体消散后，秦字独立占据界面中心。
-        黄色 → 红色、逐渐放大，周围是一圈比背景更深的半透明圆环，同步拉近。
-      */}
-      {isFinished ? (
-        <div className="unify-hero" aria-hidden="true">
-          <span className="unify-ring" />
-          <span className="unify-char">秦</span>
-        </div>
-      ) : null}
 
       <FigureModal figure={profile} onClose={() => openProfile(null)} />
     </div>
