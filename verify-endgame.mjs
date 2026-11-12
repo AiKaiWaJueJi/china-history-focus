@@ -238,6 +238,37 @@ try {
     qinShift,
   )
 
+  /* ---------- 3d) 已灭国的原疆域可悬浮点亮 ---------- */
+  const hanBox = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="han"] .region-base')
+    const r = el.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  const hanEdgeIdle = await page.evaluate(() => {
+    const edge = document.querySelector('[data-nation="han"] .region-edge')
+    return Number(getComputedStyle(edge).opacity)
+  })
+  await page.mouse.move(hanBox.x, hanBox.y, { steps: 3 })
+  await sleep(500)
+  const hanHover = await page.evaluate(() => {
+    const edge = document.querySelector('[data-nation="han"] .region-edge')
+    const cs = getComputedStyle(edge)
+    return {
+      opacity: Number(cs.opacity),
+      stroke: cs.stroke,
+      width: Number(cs.strokeWidth.replace('px', '')),
+      tip: Boolean(document.querySelector('.map-tip')),
+    }
+  })
+  console.log(`[HAN-EDGE] idle=${hanEdgeIdle} hover=${JSON.stringify(hanHover)}`)
+  check('已灭国平时无国界（opacity 0）', hanEdgeIdle < 0.1, `${hanEdgeIdle}`)
+  check('悬浮已灭国时原疆域描边点亮', hanHover.opacity > 0.9, `${hanHover.opacity}`)
+  check('点亮后为鎏金描边且加粗', /goldStroke/.test(hanHover.stroke) && hanHover.width >= 2.5, `${hanHover.stroke} · ${hanHover.width}px`)
+  check('悬浮已灭国仍给出提示卡', hanHover.tip)
+  await page.screenshot({ path: `${OUT}\\03b-conquered-hover.png` })
+  await page.mouse.move(800, 120, { steps: 2 })
+  await sleep(300)
+
   /* ---------- 4) 悬浮：要点卡片 + 底部节点流光 ---------- */
   const zhaoBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="zhao"] .region-base')
