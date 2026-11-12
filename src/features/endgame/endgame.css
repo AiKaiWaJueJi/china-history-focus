@@ -909,7 +909,7 @@
   }
 
   .endgame-body.is-focused .battle-panel {
-    flex-basis: 56%;
+    flex-basis: 44%;
   }
 
   .step-rail {
@@ -940,7 +940,9 @@
    ========================================================================== */
 
 .battle-panel {
-  flex: 0 0 46%;
+  /* 内容只有三段话，46% 太宽反而显得空；34% 约 540px 是舒适行宽，再配一个上限给超宽屏 */
+  flex: 0 0 34%;
+  max-width: 600px;
   gap: 14px;
   padding: 18px 22px 14px;
   transition: none;
@@ -948,7 +950,7 @@
 }
 
 .endgame-body.is-focused .battle-panel {
-  flex-basis: 46%;
+  flex-basis: 34%;
   background: linear-gradient(180deg, rgba(22, 15, 11, 0.95), rgba(7, 5, 4, 0.97));
 }
 
@@ -959,7 +961,7 @@
     transform: translateX(-20px);
   }
   to {
-    flex-basis: 46%;
+    flex-basis: 34%;
     opacity: 1;
     transform: translateX(0);
   }
@@ -1347,7 +1349,7 @@
 
 @keyframes panel-out {
   from {
-    flex-basis: 46%;
+    flex-basis: 34%;
     opacity: 1;
     transform: translateX(0);
   }

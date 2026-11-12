@@ -25,3 +25,8 @@ dist-ssr
 
 # 验证截图与临时产物
 shots
+
+# 交付物与截图（可由 capture-report.mjs / build-report.py 重建）
+*.docx
+shots/
+.dsh-office-*/
