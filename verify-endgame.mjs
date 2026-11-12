@@ -93,12 +93,47 @@ try {
   check('出现大秦帝国入口', full.hasEntry)
   await page.screenshot({ path: `${OUT}\\02-all-captured.png` })
 
+  /* ---------- 3b) 一统效果：拉镜 + 秦字转红放大 + 始皇虚影 ---------- */
+  await sleep(1900)
+  const unified = await page.evaluate(() => {
+    const stage = document.querySelector('.map-stage')
+    const svg = document.querySelector('.map-svg')
+    const qinLabel = document.querySelector('[data-nation="qin"] .region-label')
+    const emperor = document.querySelector('.map-photo--emperor')
+    const m = new DOMMatrixReadOnly(getComputedStyle(svg).transform)
+    const cs = getComputedStyle(qinLabel)
+    return {
+      dataUnified: stage.getAttribute('data-unified'),
+      scale: Number(m.a.toFixed(2)),
+      qinFill: cs.fill,
+      qinSize: Math.round(parseFloat(cs.fontSize)),
+      emperorOpacity: Number(getComputedStyle(emperor).opacity),
+      hasSeal: Boolean(document.querySelector('.qin-seal-char')),
+      fadedLabels: [...document.querySelectorAll('.region:not(.is-qin) .region-label')].filter(
+        (n) => Number(getComputedStyle(n).opacity) < 0.1,
+      ).length,
+    }
+  })
+  console.log(`[UNIFIED] ${JSON.stringify(unified)}`)
+  check('进入一统态（data-unified）', unified.dataUnified === 'true', unified.dataUnified)
+  check('视角拉近（scale > 1.15）', unified.scale > 1.15, `${unified.scale}`)
+  check(
+    '秦字转红并放大',
+    /192,\s*57,\s*43/.test(unified.qinFill) && unified.qinSize >= 140,
+    `${unified.qinFill} · ${unified.qinSize}px`,
+  )
+  check('始皇虚影淡入', unified.emperorOpacity > 0.4, `${unified.emperorOpacity}`)
+  check('不再有红色巨型秦印', !unified.hasSeal)
+  check('六国国名全部消散', unified.fadedLabels === 6, `${unified.fadedLabels}/6`)
+  await page.screenshot({ path: `${OUT}\\02b-unified.png` })
+
+
+  // 秦色覆盖层现在用 opacity 淡入（"填成秦色"），不再是 scaleX 擦除
   const inkOf = (nation) =>
     page.evaluate((id) => {
       const ink = document.querySelector(`[data-nation="${id}"] .region-ink`)
       if (!ink) return null
-      const m = new DOMMatrixReadOnly(getComputedStyle(ink).transform)
-      return Number(m.a.toFixed(3))
+      return Number(Number(getComputedStyle(ink).opacity).toFixed(3))
     }, nation)
 
   const beforeBack = { wei: await inkOf('wei'), chu: await inkOf('chu'), qi: await inkOf('qi') }
@@ -211,12 +246,26 @@ try {
   await page.evaluate(() => {
     document.querySelector('.map-bg').dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
-  await sleep(600)
+  await sleep(80)
+  const closingNow = await page.evaluate(() => {
+    const panel = document.querySelector('.battle-panel')
+    return {
+      exists: Boolean(panel),
+      closing: panel ? panel.classList.contains('is-closing') : false,
+    }
+  })
+  check(
+    '关闭时先播退场动画（is-closing）',
+    closingNow.exists && closingNow.closing,
+    JSON.stringify(closingNow),
+  )
+
+  await sleep(500)
   const closed = await page.evaluate(() => ({
     hasPanel: Boolean(document.querySelector('.battle-panel')),
     mapOpacity: Number(getComputedStyle(document.querySelector('.map-stage')).opacity),
   }))
-  check('点击地图空白处关闭战报', !closed.hasPanel)
+  check('退场结束后才卸载面板', !closed.hasPanel)
   check('地图恢复亮度', closed.mapOpacity > 0.9, `${closed.mapOpacity}`)
 
   /* ---------- 8) 取消滚轮返回，改为按钮 ---------- */

@@ -43,13 +43,18 @@ function renderWithFigures(
 
 interface BattlePanelProps {
   event: EndgameEvent
+  /** 正在播出场动画（父级 240ms 后才真正卸载） */
+  closing?: boolean
   onFigureClick: (figureId: string) => void
   onClose: () => void
 }
 
-export function BattlePanel({ event, onFigureClick, onClose }: BattlePanelProps) {
+export function BattlePanel({ event, closing, onFigureClick, onClose }: BattlePanelProps) {
   return (
-    <aside className="battle-panel" aria-label={`${event.desc}详细战报`}>
+    <aside
+      className={'battle-panel' + (closing ? ' is-closing' : '')}
+      aria-label={event.desc + '详细战报'}
+    >
       <header className="battle-head">
         <div>
           <span className="battle-year">{event.year}</span>

@@ -10,14 +10,13 @@
  * 状态仍然收敛在 useEndgameStore 的 index(0..6)：正向与回退共用同一套过渡。
  * 注意：本页**监听不到滚轮返回**——按需求改为「返回时间轴」按钮。
  */
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
 import { getDynastyEndgame } from '../../data/emperorData'
-import { playDrum, playGong } from './audio'
+import { playBell, warmUpAudio } from './audio'
 import { BattlePanel } from './BattlePanel'
 import { FigureModal } from './FigureModal'
-import { QinSeal } from './QinSeal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { useEndgameStore } from './useEndgameStore'
@@ -49,9 +48,30 @@ export function EndgameStage() {
 
   const isFinished = index === events.length && events.length > 0
 
+  /*
+    关闭战报不能直接卸载：那样面板会"啪"地消失。
+    这里先挂上 is-closing 让它播 240ms 退场动画，再真正清空 focusedNation。
+  */
+  const [closing, setClosing] = useState(false)
+  const closeTimer = useRef<number | null>(null)
+
   const closePanel = useCallback(() => {
-    useEndgameStore.setState({ focusedNation: null })
+    if (!useEndgameStore.getState().focusedNation) return
+    if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    setClosing(true)
+    closeTimer.current = window.setTimeout(() => {
+      useEndgameStore.setState({ focusedNation: null })
+      setClosing(false)
+      closeTimer.current = null
+    }, 240)
   }, [])
+
+  useEffect(
+    () => () => {
+      if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    },
+    [],
+  )
 
   useEffect(() => {
     useEndgameStore.setState({ total: events.length })
@@ -63,8 +83,14 @@ export function EndgameStage() {
   /* 点击国家：推进/回退到该节点，并展开该国详细战报 */
   const handleConquer = useCallback(
     (event: (typeof events)[number]) => {
+      if (closeTimer.current) {
+        window.clearTimeout(closeTimer.current)
+        closeTimer.current = null
+      }
+      setClosing(false)
+      warmUpAudio()
       conquerTo(event.order, event.nationId)
-      if (!muted) playDrum(0.8, (event.order - 1) * 2)
+      if (!muted) playBell(0.9)
     },
     [conquerTo, muted],
   )
@@ -73,8 +99,7 @@ export function EndgameStage() {
     (value: number) => {
       setIndex(value)
       closePanel()
-      if (value === events.length && events.length > 0 && !muted) playGong(0.6)
-      else if (value > 0 && !muted) playDrum(0.6, (value - 1) * 2)
+      if (value > 0 && !muted) playBell(value === events.length ? 1 : 0.7)
     },
     [setIndex, closePanel, events.length, muted],
   )
@@ -147,6 +172,7 @@ export function EndgameStage() {
         {focusedEvent ? (
           <BattlePanel
             event={focusedEvent}
+            closing={closing}
             onFigureClick={openProfile}
             onClose={closePanel}
           />
@@ -156,12 +182,12 @@ export function EndgameStage() {
           events={events}
           index={index}
           dimmed={Boolean(focusedEvent)}
+          unified={isFinished}
           onConquer={handleConquer}
           onExitFocus={closePanel}
           overlay={
             isFinished ? (
               <>
-                <QinSeal />
                 <button
                   type="button"
                   className="qin-entry"

@@ -1,16 +1,16 @@
 /**
- * WarringStatesMap —— 可交互的战国版图
+ * WarringStatesMap —— 战国版图（无缝嵌合 · 秦色吞并 · 一统拉镜）
  * ===========================================================================
- * 三层结构：
- *   1. .map-photo   你上传的地图照片（低饱和 + 压暗 + 模糊）→ 只负责时代质感
- *   2. .map-svg     手绘示意版图（7 个 polygon）→ 负责可交互、可动画
- *   3. 墨色覆盖层   每个国家一个 clip-path 包裹 + 全宽 rect，靠 scaleX(0→1) 实现
- *                   "秦的墨色自西向东漫过该国"的吞噬观感
+ * 视觉分四层：
+ *   1. .map-photo           上传的战国地图（低饱和压暗）—— 时代质感
+ *   2. .map-photo--emperor  秦始皇像（模糊），仅一统时淡入
+ *   3. .map-svg             无缝嵌合的七块版图
+ *   4. 秦色覆盖层           被吞并的块上盖一层"秦色"渐变，opacity 0→1
  *
- * 交互分层（本轮重构的重点）：
- *   悬浮 → 只出轻量卡片（年份 + 灭国 + 2-3 条要点），不展开战报
- *   点击 → 展开左侧详细战报（战前形势 / 经过 / 结局）
- *   因此默认没有常驻战报栏，地图独占整个宽度。
+ * 图块的"厚重感"来自三件事：
+ *   · 统一的石色渐变（上亮下暗），而不是七种饱和度很高的彩块
+ *   · 每块都有一圈青铜描边（未灭也可见），交界处自然形成双线
+ *   · 整组 drop-shadow 投影，看起来像压在图上的一块石版
  */
 import { useMemo } from 'react'
 import type { EndgameEvent } from '../../core/emperorTypes'
@@ -22,9 +22,10 @@ interface WarringStatesMapProps {
   index: number
   /** 聚焦战报时地图变暗 */
   dimmed: boolean
+  /** 六国尽墨 */
+  unified: boolean
   onConquer: (event: EndgameEvent) => void
   onExitFocus: () => void
-  /** 终局态叠加层（秦印 + 进入秦朝的入口卡片） */
   overlay?: React.ReactNode
 }
 
@@ -32,6 +33,7 @@ export function WarringStatesMap({
   events,
   index,
   dimmed,
+  unified,
   onConquer,
   onExitFocus,
   overlay,
@@ -47,12 +49,12 @@ export function WarringStatesMap({
   }, [events])
 
   const hoveredEvent = hoveredId ? (eventsByNation.get(hoveredId) ?? null) : null
-  const hoveredCaptured = hoveredEvent ? hoveredEvent.order <= index : false
   const hoveredRegion = ALL_REGIONS.find((region) => region.id === hoveredId) ?? null
 
   return (
-    <div className="map-stage" data-dimmed={dimmed}>
+    <div className="map-stage" data-dimmed={dimmed} data-unified={unified}>
       <div className="map-photo" aria-hidden="true" />
+      <div className="map-photo map-photo--emperor" aria-hidden="true" />
 
       <svg
         className="map-svg"
@@ -62,6 +64,27 @@ export function WarringStatesMap({
         aria-label="战国七雄版图"
       >
         <defs>
+          {/* 石版底色：上亮下暗，制造厚度 */}
+          <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2b241c" />
+            <stop offset="42%" stopColor="#1b1712" />
+            <stop offset="100%" stopColor="#0e0b09" />
+          </linearGradient>
+
+          {/* 秦色：暗铜 → 近黑 */}
+          <linearGradient id="qinFill" x1="0" y1="0" x2="0.2" y2="1">
+            <stop offset="0%" stopColor="#33200f" />
+            <stop offset="45%" stopColor="#1d130b" />
+            <stop offset="100%" stopColor="#0b0705" />
+          </linearGradient>
+
+          {/* 鎏金描边（悬浮 / 聚焦） */}
+          <linearGradient id="goldStroke" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#f6e0a4" />
+            <stop offset="45%" stopColor="#e0b95f" />
+            <stop offset="100%" stopColor="#9c7326" />
+          </linearGradient>
+
           {ALL_REGIONS.map((region) => (
             <clipPath key={region.id} id={`clip-${region.id}`}>
               <polygon points={region.points} />
@@ -69,7 +92,6 @@ export function WarringStatesMap({
           ))}
         </defs>
 
-        {/* 点击空白处 = 退出聚焦 */}
         <rect className="map-bg" x="0" y="0" width="1000" height="640" onClick={onExitFocus} />
 
         {RIVERS.map((d, i) => (
@@ -97,15 +119,18 @@ export function WarringStatesMap({
               onMouseEnter={() => setHovered(region.id)}
               onMouseLeave={() => setHovered(null)}
             >
-              <polygon className="region-base" points={region.points} style={{ fill: region.color }} />
+              {/* 石版底 */}
+              <polygon className="region-base" points={region.points} />
 
-              {/* 墨色蔓延层：被国家轮廓裁剪，scaleX 0→1 */}
+              {/* 秦色覆盖：被吞并时淡入，形成"版图被秦色填满"的观感 */}
               <g clipPath={`url(#clip-${region.id})`} className="region-ink-wrap">
                 <rect className="region-ink" x="0" y="0" width="1000" height="640" />
               </g>
 
+              {/* 青铜描边：未灭也画，交界处自然成双线，嵌合感更强 */}
               <polygon className="region-edge" points={region.points} />
 
+              {/* 国名（被吞并后逐渐消散） */}
               <text
                 className="region-label"
                 x={region.label[0]}
@@ -116,11 +141,21 @@ export function WarringStatesMap({
                 {region.name}
               </text>
 
-              {/* 国都 */}
+              {/* 国都（同样随灭国消散） */}
               {region.capital ? (
                 <g className="capital" pointerEvents="none">
-                  <circle className="capital-halo" cx={region.capital.x} cy={region.capital.y} r={9} />
-                  <circle className="capital-dot" cx={region.capital.x} cy={region.capital.y} r={3.6} />
+                  <circle
+                    className="capital-halo"
+                    cx={region.capital.x}
+                    cy={region.capital.y}
+                    r={9}
+                  />
+                  <circle
+                    className="capital-dot"
+                    cx={region.capital.x}
+                    cy={region.capital.y}
+                    r={3.4}
+                  />
                   <text className="capital-label" x={region.capital.x} y={region.capital.y + 21}>
                     {region.capital.name}
                   </text>
@@ -131,12 +166,17 @@ export function WarringStatesMap({
         })}
       </svg>
 
-      {/* 悬浮卡片：轻量，只给要点，不展开战报 */}
+      {/* 悬浮卡片：靠近右缘时向左翻转，避免溢出 */}
       {hoveredEvent && hoveredRegion ? (
         <div
-          className={`map-tip${hoveredCaptured ? ' is-captured' : ''}${
-            hoveredRegion.label[1] < 220 ? ' is-below' : ''
-          }`}
+          className={[
+            'map-tip',
+            hoveredEvent.order <= index ? 'is-captured' : '',
+            hoveredRegion.label[0] > 660 ? 'is-flip-x' : '',
+            hoveredRegion.label[1] < 220 ? 'is-below' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={{
             left: `${(hoveredRegion.label[0] / 1000) * 100}%`,
             top: `${(hoveredRegion.label[1] / 640) * 100}%`,
@@ -144,7 +184,7 @@ export function WarringStatesMap({
         >
           <span className="map-tip-year">{hoveredEvent.year}</span>
           <span className="map-tip-title">{hoveredEvent.desc}</span>
-          {hoveredCaptured ? (
+          {hoveredEvent.order <= index ? (
             <ul className="map-tip-list">
               {hoveredEvent.highlights.map((item) => (
                 <li key={item}>{item}</li>
@@ -153,7 +193,9 @@ export function WarringStatesMap({
           ) : (
             <span className="map-tip-brief">尚未入秦图 · 点击推演至此</span>
           )}
-          <span className="map-tip-action">{hoveredCaptured ? '点击查看详情 →' : ''}</span>
+          <span className="map-tip-action">
+            {hoveredEvent.order <= index ? '点击查看详情 →' : ''}
+          </span>
         </div>
       ) : null}
 
