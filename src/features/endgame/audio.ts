@@ -24,17 +24,23 @@ const getContext = (): AudioContext | null => {
   return ctx
 }
 
-/** 低沉战鼓：正弦从 110Hz 快速滑到 42Hz + 一段短噪声（鼓皮的"啪"） */
-export function playDrum(volume = 1) {
+/**
+ * 低沉战鼓：正弦从 110Hz 快速滑到 42Hz + 一段短噪声（鼓皮的"啪"）
+ * @param volume 音量
+ * @param semitones 半音偏移：每灭一国升高一点，形成"步步紧逼"的音高上行
+ */
+export function playDrum(volume = 1, semitones = 0) {
   const ac = getContext()
   if (!ac) return
   const t = ac.currentTime
 
+  const base = 110 * Math.pow(2, semitones / 12)
+
   const osc = ac.createOscillator()
   const gain = ac.createGain()
   osc.type = 'sine'
-  osc.frequency.setValueAtTime(110, t)
-  osc.frequency.exponentialRampToValueAtTime(42, t + 0.45)
+  osc.frequency.setValueAtTime(base, t)
+  osc.frequency.exponentialRampToValueAtTime(base * 0.38, t + 0.45)
   gain.gain.setValueAtTime(0.0001, t)
   gain.gain.exponentialRampToValueAtTime(0.5 * volume, t + 0.02)
   gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.7)

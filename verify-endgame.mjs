@@ -80,9 +80,24 @@ try {
   await page.screenshot({ path: `${OUT}\\01-idle.png` })
 
   /* ---------- 3) 推演中：逐步灰化 ---------- */
+  // 在点击前装一个采样器，记录每次"陷落数量"跳变的时刻，用于核对节奏
+  await page.evaluate(() => {
+    window.__rhythm = []
+    const t0 = performance.now()
+    window.__rhythmTimer = setInterval(() => {
+      window.__rhythm.push([
+        Math.round(performance.now() - t0),
+        document.querySelectorAll('.state-tile.is-fallen').length,
+      ])
+    }, 40)
+  })
+
   await page.click('.start-btn')
-  // 步进间隔 1200ms，因此 600ms 时应当恰好只有第 1 国倒下
-  await sleep(600)
+  /*
+    新节奏：首国 0.48s 落下、第二国 1.78s，灰化过渡 720ms。
+    取 1.15s 采样 —— 第 1 国已基本灰透，第 2 国尚未开始。
+  */
+  await sleep(1150)
   const step1 = await page.evaluate(() => ({
     phase: document.querySelector('.endgame-page')?.getAttribute('data-phase'),
     fallen: document.querySelectorAll('.state-tile.is-fallen').length,
@@ -109,7 +124,7 @@ try {
   )
   await page.screenshot({ path: `${OUT}\\02-playing.png` })
 
-  await sleep(1500) // 累计约 2.1s → 应有 2 国倒下
+  await sleep(1600) // 累计约 2.75s → 应有 2 国倒下（第 3 国 3.42s 才落）
   const stepLater = await page.evaluate(() => ({
     fallen: document.querySelectorAll('.state-tile.is-fallen').length,
     reports: document.querySelectorAll('.battle-log-item').length,
@@ -161,7 +176,40 @@ try {
   check('秦印淡为水印（不再遮挡）', sealOpacity <= 0.2, `${sealOpacity}`)
   await page.screenshot({ path: `${OUT}\\03b-sealed.png` })
 
-  /* ---------- 5) 进入秦朝 ---------- */
+  /* ---------- 5) 节奏：按真实亡国年差排布（必须在离开本页前读取采样） ---------- */
+  await page.evaluate(() => clearInterval(window.__rhythmTimer))
+  const rhythm = await page.evaluate(() => window.__rhythm)
+
+  // 找出每个数量首次出现的时刻（offset 无关，只看间隔）
+  const timeline = []
+  let seen = 0
+  for (const [t, count] of rhythm) {
+    if (count > seen) {
+      seen = count
+      timeline.push(t)
+    }
+  }
+  const gaps = timeline.slice(1).map((t, i) => t - timeline[i])
+  // 史实年差：赵2年→1300ms、魏3年→1640ms、楚2年→1300ms、燕1年→960ms、齐1年→960ms
+  const expected = [1300, 1640, 1300, 960, 960]
+  console.log(`\n[RHYTHM] 实测间隔: ${gaps.join(', ')} ms`)
+  console.log(`[RHYTHM] 期望间隔: ${expected.join(', ')} ms`)
+
+  check('六国依次陷落（采样到 6 次跳变）', timeline.length === 6, `${timeline.length} 次`)
+  check(
+    '间隔按真实年差排布（误差 ≤300ms）',
+    gaps.length === expected.length &&
+      gaps.every((gap, i) => Math.abs(gap - expected[i]) <= 300),
+    gaps.map((g, i) => `${g}/${expected[i]}`).join(' '),
+  )
+  check(
+    '呈现"前缓后急"加速（首个间隔 > 末个间隔）',
+    gaps.length >= 2 && gaps[0] > gaps[gaps.length - 1],
+    `${gaps[0]} → ${gaps[gaps.length - 1]}`,
+  )
+
+
+  /* ---------- 6) 进入秦朝 ---------- */
   await page.click('.qin-entry')
   await sleep(1400)
   check('点击入口跳转到秦朝时间轴', /\/dynasty\/qin$/.test(page.url()), page.url())
@@ -172,7 +220,7 @@ try {
   check('秦朝共 3 位帝王', /共 3 位帝王/.test(qinCount ?? ''), qinCount)
   await page.screenshot({ path: `${OUT}\\04-qin-timeline.png` })
 
-  /* ---------- 6) 末页继续下滚也能进入终局 ---------- */
+  /* ---------- 7) 末页继续下滚也能进入终局 ---------- */
   await page.goto(`${URL}/dynasty/zhou`, { waitUntil: 'networkidle2' })
   await page.waitForSelector('.emp-card')
   await sleep(2200)
