@@ -147,6 +147,15 @@ try {
   console.log(`[GEOM] ${JSON.stringify(geom)}`)
   check('秦字与圆环同心（偏差 ≤ 2px）', Math.abs(geom.dx) <= 2 && Math.abs(geom.dy) <= 2, `${geom.dx},${geom.dy}`)
   check('圆环完整落在始皇帝背景范围内', geom.inside)
+
+  await sleep(600)
+  const entryVisible = await page.evaluate(() => {
+    const el = document.querySelector('.qin-entry')
+    if (!el) return { exists: false, opacity: 0 }
+    return { exists: true, opacity: Number(getComputedStyle(el).opacity) }
+  })
+  console.log(`[ENTRY] ${JSON.stringify(entryVisible)}`)
+  check('秦字转红后入口卡片才浮现且完全可见', entryVisible.exists && entryVisible.opacity >= 0.95, `${entryVisible.opacity}`)
   check(
     '终章后地图层不再响应指针（回退只走底部节点）',
     geom.svgPointer === 'none' && geom.regionPointer === 'none',
@@ -180,10 +189,12 @@ try {
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     hasPanel: Boolean(document.querySelector('.battle-panel')),
     hasHero: Boolean(document.querySelector('.unify-hero')),
+    hasEntry: Boolean(document.querySelector('.qin-entry')),
     svgOpacity: Number(getComputedStyle(document.querySelector('.map-svg')).opacity),
   }))
   console.log(`[SIX-OPEN] ${JSON.stringify(atSix)}`)
   check('点「齐」后 index 到 6 且战报打开', atSix.index === '6' && atSix.hasPanel)
+  check('战报打开时不出现大秦入口', !atSix.hasEntry, `entry=${atSix.hasEntry}`)
   check('战报打开时不播终章', !atSix.hasHero && atSix.svgOpacity > 0.9, `svg=${atSix.svgOpacity}`)
 
   await page.evaluate(() => {

@@ -188,22 +188,24 @@ export function EndgameStage() {
           onConquer={handleConquer}
           onExitFocus={closePanel}
           overlay={
-            isFinished ? (
+            /*
+              整个终章（秦字 + 大秦帝国入口）都只在 showFinale 时挂载：
+              之前入口卡片跟着 isFinished 渲染，导致"战报还开着、入口已经出现"。
+            */
+            showFinale ? (
               <>
                 {/* 一统主角：七国版图消散后，秦字独立占据版图中心 */}
-                {showFinale ? (
-                  <div className="unify-hero" aria-hidden="true">
-                    {/*
-                      缩放交给 .unify-core 统一做：
-                      秦字与圆环是同一个盒子的两个子元素，天然同步、天然同心。
-                      之前两者各自动画，才会出现"不同步"和"不居中"。
-                    */}
-                    <div className="unify-core">
-                      <span className="unify-ring" />
-                      <span className="unify-char">秦</span>
-                    </div>
+                <div className="unify-hero" aria-hidden="true">
+                  {/*
+                    缩放交给 .unify-core 统一做：
+                    秦字与圆环是同一个盒子的两个子元素，天然同步、天然同心。
+                    之前两者各自动画，才会出现"不同步"和"不居中"。
+                  */}
+                  <div className="unify-core">
+                    <span className="unify-ring" />
+                    <span className="unify-char">秦</span>
                   </div>
-                ) : null}
+                </div>
 
                 <button
                   type="button"
