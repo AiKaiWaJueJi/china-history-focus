@@ -99,8 +99,16 @@ export function WarringStatesMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, events])
 
-  const hoveredEvent = hoveredId ? (eventsByNation.get(hoveredId) ?? null) : null
-  const hoveredRegion = ALL_REGIONS.find((region) => region.id === hoveredId) ?? null
+  /*
+    一统之后地图层已经退场，此时底部节点的悬浮不该再牵动它：
+    否则节点 hover 仍会写出 hoveredNation，而悬浮卡片是 HTML 元素，
+    不会跟着 SVG 一起淡出，就会出现"看不见的地图上还在弹提示"。
+  */
+  const hoverActive = !unified && Boolean(hoveredId)
+  const hoveredEvent = hoverActive ? (eventsByNation.get(hoveredId!) ?? null) : null
+  const hoveredRegion = hoverActive
+    ? (ALL_REGIONS.find((region) => region.id === hoveredId) ?? null)
+    : null
 
   return (
     <div className="map-stage" data-dimmed={dimmed} data-unified={unified}>
@@ -174,7 +182,7 @@ export function WarringStatesMap({
             <g
               key={region.id}
               className={`region${captured ? ' is-captured' : ''}${isNewest ? ' is-newest' : ''}${
-                hoveredId === region.id ? ' is-hovered' : ''
+                hoverActive && hoveredId === region.id ? ' is-hovered' : ''
               }${isQin ? ' is-qin' : ''}${focusedNation === region.id ? ' is-focused' : ''}`}
               data-nation={region.id}
               data-captured={captured ? 'true' : 'false'}

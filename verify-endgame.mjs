@@ -152,6 +152,18 @@ try {
     geom.svgPointer === 'none' && geom.regionPointer === 'none',
     `${geom.svgPointer}/${geom.regionPointer}`,
   )
+  // 终章后悬浮底部节点，不能反过来点亮已经退场的地图
+  await page.hover('.rail-node:nth-child(4)') // 魏
+  await sleep(350)
+  const railHoverAfterUnify = await page.evaluate(() => ({
+    tip: Boolean(document.querySelector('.map-tip')),
+    regionHovered: document.querySelectorAll('.region.is-hovered').length,
+    nodeHovered: document.querySelectorAll('.rail-node.is-hovered').length,
+  }))
+  console.log(`[RAIL-AFTER] ${JSON.stringify(railHoverAfterUnify)}`)
+  check('终章后悬浮节点不再弹出地图提示卡', !railHoverAfterUnify.tip)
+  check('终章后悬浮节点不再高亮地图图块', railHoverAfterUnify.regionHovered === 0, `${railHoverAfterUnify.regionHovered}`)
+  check('终章后节点自身的流光仍正常', railHoverAfterUnify.nodeHovered === 1, `${railHoverAfterUnify.nodeHovered}`)
   await page.screenshot({ path: `${OUT}\\02b-unified.png` })
 
   /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
