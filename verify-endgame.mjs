@@ -93,22 +93,24 @@ try {
   check('出现大秦帝国入口', full.hasEntry)
   await page.screenshot({ path: `${OUT}\\02-all-captured.png` })
 
-  /* ---------- 3b) 一统效果：拉镜 + 秦字转红放大 + 始皇虚影 ---------- */
-  await sleep(1900)
+  /* ---------- 3b) 一统：图块消散 + 秦字独立成章 ---------- */
+  await sleep(4200) // 等 3.8s 的秦字动画走完
   const unified = await page.evaluate(() => {
     const stage = document.querySelector('.map-stage')
     const svg = document.querySelector('.map-svg')
-    const qinLabel = document.querySelector('[data-nation="qin"] .region-label')
-    const emperor = document.querySelector('.map-photo--emperor')
-    const m = new DOMMatrixReadOnly(getComputedStyle(svg).transform)
-    const cs = getComputedStyle(qinLabel)
+    const char = document.querySelector('.unify-char')
+    const ring = document.querySelector('.unify-ring')
+    const qiEdge = document.querySelector('[data-nation="qi"] .region-edge')
+    const cs = char ? getComputedStyle(char) : null
     return {
       dataUnified: stage.getAttribute('data-unified'),
-      scale: Number(m.a.toFixed(2)),
-      qinFill: cs.fill,
-      qinSize: Math.round(parseFloat(cs.fontSize)),
-      emperorOpacity: Number(getComputedStyle(emperor).opacity),
-      hasSeal: Boolean(document.querySelector('.qin-seal-char')),
+      svgOpacity: Number(getComputedStyle(svg).opacity),
+      hasHero: Boolean(document.querySelector('.unify-hero')),
+      hasChar: Boolean(char),
+      hasRing: Boolean(ring),
+      charColor: cs ? cs.color : null,
+      charScale: cs ? Number(new DOMMatrixReadOnly(cs.transform).a.toFixed(2)) : 0,
+      qiEdgeOpacity: qiEdge ? Number(getComputedStyle(qiEdge).opacity) : null,
       fadedLabels: [...document.querySelectorAll('.region:not(.is-qin) .region-label')].filter(
         (n) => Number(getComputedStyle(n).opacity) < 0.1,
       ).length,
@@ -116,14 +118,15 @@ try {
   })
   console.log(`[UNIFIED] ${JSON.stringify(unified)}`)
   check('进入一统态（data-unified）', unified.dataUnified === 'true', unified.dataUnified)
-  check('视角拉近（scale > 1.15）', unified.scale > 1.15, `${unified.scale}`)
+  check('七国图块整体消散（svg opacity < 0.1）', unified.svgOpacity < 0.1, `${unified.svgOpacity}`)
+  check('秦字独立成章（unify-hero）', unified.hasHero && unified.hasChar && unified.hasRing)
   check(
-    '秦字转红并放大',
-    /192,\s*57,\s*43/.test(unified.qinFill) && unified.qinSize >= 140,
-    `${unified.qinFill} · ${unified.qinSize}px`,
+    '秦字由黄转红',
+    Boolean(unified.charColor) && /^rgb\(1[5-9]\d,\s*[0-8]?\d,\s*[0-9]{1,2}\)$/.test(unified.charColor ?? ''),
+    unified.charColor,
   )
-  check('始皇虚影淡入', unified.emperorOpacity > 0.4, `${unified.emperorOpacity}`)
-  check('不再有红色巨型秦印', !unified.hasSeal)
+  check('秦字放大（scale > 1.05）', unified.charScale > 1.05, `${unified.charScale}`)
+  check('灭国后国界线消失（齐的描边透明）', (unified.qiEdgeOpacity ?? 1) < 0.1, `${unified.qiEdgeOpacity}`)
   check('六国国名全部消散', unified.fadedLabels === 6, `${unified.fadedLabels}/6`)
   await page.screenshot({ path: `${OUT}\\02b-unified.png` })
 
@@ -155,6 +158,17 @@ try {
     '版图墨色随之回退',
     Object.values(afterBack).every((v) => v < 0.05) && Object.values(beforeBack).every((v) => v > 0.95),
     `${Object.values(beforeBack).join('/')} → ${Object.values(afterBack).join('/')}`,
+  )
+
+  // 秦字应落在「秦 + 已灭诸国」合并后的重心，而不是固定在某处
+  const qinShift = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="qin"] .region-label')
+    return getComputedStyle(el).transform
+  })
+  check(
+    '秦字移到合并疆域重心',
+    qinShift !== 'none' && !/matrix\(1, 0, 0, 1, 0, 0\)/.test(qinShift),
+    qinShift,
   )
 
   /* ---------- 4) 悬浮：要点卡片 + 底部节点流光 ---------- */

@@ -205,6 +205,17 @@ export function EndgameStage() {
 
       <StepRail events={events} index={index} onSelect={handleStep} />
 
+      {/*
+        一统主角：七国版图整体消散后，秦字独立占据界面中心。
+        黄色 → 红色、逐渐放大，周围是一圈比背景更深的半透明圆环，同步拉近。
+      */}
+      {isFinished ? (
+        <div className="unify-hero" aria-hidden="true">
+          <span className="unify-ring" />
+          <span className="unify-char">秦</span>
+        </div>
+      ) : null}
+
       <FigureModal figure={profile} onClose={() => openProfile(null)} />
     </div>
   )

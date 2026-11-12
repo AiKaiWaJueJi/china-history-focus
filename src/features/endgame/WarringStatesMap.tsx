@@ -1,32 +1,66 @@
 /**
- * WarringStatesMap —— 战国版图（无缝嵌合 · 秦色吞并 · 一统拉镜）
+ * WarringStatesMap —— 战国版图（无缝嵌合 · 秦色吞并 · 一统消散）
  * ===========================================================================
- * 视觉分四层：
- *   1. .map-photo           上传的战国地图（低饱和压暗）—— 时代质感
- *   2. .map-photo--emperor  秦始皇像（模糊），仅一统时淡入
- *   3. .map-svg             无缝嵌合的七块版图
- *   4. 秦色覆盖层           被吞并的块上盖一层"秦色"渐变，opacity 0→1
+ * 视觉分层（自下而上）：
+ *   1. .map-photo             上传的战国地图（压暗）—— 时代质感
+ *   2. .map-photo--emperor    秦始皇像（模糊），一统时淡入
+ *   3. .empire-layer          秦 + 已灭诸国的**并集轮廓**：靠 drop-shadow 得到
+ *                             一圈只包外缘的光晕（不会画出内部接缝）
+ *   4. 各国 polygon           石色底 + 秦色覆盖层
+ *   5. 国名 / 国都            灭国后消散
  *
- * 图块的"厚重感"来自三件事：
- *   · 统一的石色渐变（上亮下暗），而不是七种饱和度很高的彩块
- *   · 每块都有一圈青铜描边（未灭也可见），交界处自然形成双线
- *   · 整组 drop-shadow 投影，看起来像压在图上的一块石版
+ * 两个关键设计：
+ *   · 灭国后国界线要消失 —— 所以每块自己的描边淡出，外缘交给 empire-layer 的
+ *     并集光晕统一表达，内部接缝自然消失。
+ *   · 秦字要落在"秦 + 已灭诸国"的重心 —— 按面积加权算多边形重心并平滑移动。
  */
 import { useMemo } from 'react'
 import type { EndgameEvent } from '../../core/emperorTypes'
-import { ALL_REGIONS, RIVERS } from './mapGeometry'
+import { ALL_REGIONS, QIN_REGION, RIVERS } from './mapGeometry'
 import { useEndgameStore } from './useEndgameStore'
 
 interface WarringStatesMapProps {
   events: EndgameEvent[]
   index: number
-  /** 聚焦战报时地图变暗 */
   dimmed: boolean
-  /** 六国尽墨 */
   unified: boolean
   onConquer: (event: EndgameEvent) => void
   onExitFocus: () => void
   overlay?: React.ReactNode
+}
+
+/** 多边形面积与形心（鞋带公式） */
+function areaCentroid(points: string) {
+  const pts = points.split(' ').map((pair) => pair.split(',').map(Number))
+  let twiceArea = 0
+  let cx = 0
+  let cy = 0
+  for (let i = 0; i < pts.length; i++) {
+    const [x0, y0] = pts[i]
+    const [x1, y1] = pts[(i + 1) % pts.length]
+    const cross = x0 * y1 - x1 * y0
+    twiceArea += cross
+    cx += (x0 + x1) * cross
+    cy += (y0 + y1) * cross
+  }
+  const area = twiceArea / 2
+  if (Math.abs(area) < 1e-6) return { area: 0, x: 0, y: 0 }
+  return { area: Math.abs(area), x: cx / (6 * area), y: cy / (6 * area) }
+}
+
+/** 秦 + 已灭诸国的面积加权重心 */
+function mergedCentroid(regions: typeof ALL_REGIONS) {
+  let total = 0
+  let x = 0
+  let y = 0
+  for (const region of regions) {
+    const c = areaCentroid(region.points)
+    total += c.area
+    x += c.x * c.area
+    y += c.y * c.area
+  }
+  if (total === 0) return { x: QIN_REGION.label[0], y: QIN_REGION.label[1] }
+  return { x: x / total, y: y / total }
 }
 
 export function WarringStatesMap({
@@ -48,6 +82,23 @@ export function WarringStatesMap({
     return map
   }, [events])
 
+  const isCaptured = (id: string) => {
+    if (id === 'qin') return true
+    const event = eventsByNation.get(id)
+    return event ? event.order <= index : false
+  }
+
+  /** 秦字的落点：随版图扩张移到合并后的重心 */
+  const labelShift = useMemo(() => {
+    const captured = ALL_REGIONS.filter((region) => isCaptured(region.id))
+    const center = mergedCentroid(captured)
+    return {
+      dx: center.x - QIN_REGION.label[0],
+      dy: center.y - QIN_REGION.label[1],
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, events])
+
   const hoveredEvent = hoveredId ? (eventsByNation.get(hoveredId) ?? null) : null
   const hoveredRegion = ALL_REGIONS.find((region) => region.id === hoveredId) ?? null
 
@@ -64,18 +115,18 @@ export function WarringStatesMap({
         aria-label="战国七雄版图"
       >
         <defs>
-          {/* 石版底色：上亮下暗，制造厚度 */}
+          {/* 六国石色：中性、偏暖，与秦色拉开距离 */}
           <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2b241c" />
-            <stop offset="42%" stopColor="#1b1712" />
-            <stop offset="100%" stopColor="#0e0b09" />
+            <stop offset="0%" stopColor="#332b22" />
+            <stop offset="45%" stopColor="#221c16" />
+            <stop offset="100%" stopColor="#12100c" />
           </linearGradient>
 
-          {/* 秦色：暗铜 → 近黑 */}
+          {/* 秦色：更暗、带铜褐，视觉上"沉"于六国之下 */}
           <linearGradient id="qinFill" x1="0" y1="0" x2="0.2" y2="1">
-            <stop offset="0%" stopColor="#33200f" />
-            <stop offset="45%" stopColor="#1d130b" />
-            <stop offset="100%" stopColor="#0b0705" />
+            <stop offset="0%" stopColor="#241505" />
+            <stop offset="45%" stopColor="#160c04" />
+            <stop offset="100%" stopColor="#070302" />
           </linearGradient>
 
           {/* 鎏金描边（悬浮 / 聚焦） */}
@@ -98,10 +149,25 @@ export function WarringStatesMap({
           <path key={i} className="map-river" d={d} />
         ))}
 
+        {/*
+          并集轮廓层：所有已归秦的块画在这里。
+          它自身的 fill 会被上面的各国图层遮住，唯一作用是让 group 的
+          drop-shadow 生成"整块疆域"的外缘光晕 —— 内部接缝不会发光。
+        */}
+        <g className="empire-layer" aria-hidden="true">
+          {ALL_REGIONS.map((region) => (
+            <polygon
+              key={region.id}
+              points={region.points}
+              className={isCaptured(region.id) ? 'is-on' : ''}
+            />
+          ))}
+        </g>
+
         {ALL_REGIONS.map((region) => {
           const event = eventsByNation.get(region.id) ?? null
           const isQin = region.id === 'qin'
-          const captured = isQin || (event ? event.order <= index : false)
+          const captured = isCaptured(region.id)
           const isNewest = Boolean(event && event.order === index)
 
           return (
@@ -119,43 +185,33 @@ export function WarringStatesMap({
               onMouseEnter={() => setHovered(region.id)}
               onMouseLeave={() => setHovered(null)}
             >
-              {/* 石版底 */}
               <polygon className="region-base" points={region.points} />
 
-              {/* 秦色覆盖：被吞并时淡入，形成"版图被秦色填满"的观感 */}
               <g clipPath={`url(#clip-${region.id})`} className="region-ink-wrap">
                 <rect className="region-ink" x="0" y="0" width="1000" height="640" />
               </g>
 
-              {/* 青铜描边：未灭也画，交界处自然成双线，嵌合感更强 */}
               <polygon className="region-edge" points={region.points} />
 
-              {/* 国名（被吞并后逐渐消散） */}
               <text
                 className="region-label"
                 x={region.label[0]}
                 y={region.label[1]}
                 textAnchor="middle"
                 dominantBaseline="middle"
+                style={
+                  isQin
+                    ? { transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }
+                    : undefined
+                }
               >
                 {region.name}
               </text>
 
-              {/* 国都（同样随灭国消散） */}
               {region.capital ? (
                 <g className="capital" pointerEvents="none">
-                  <circle
-                    className="capital-halo"
-                    cx={region.capital.x}
-                    cy={region.capital.y}
-                    r={9}
-                  />
-                  <circle
-                    className="capital-dot"
-                    cx={region.capital.x}
-                    cy={region.capital.y}
-                    r={3.4}
-                  />
+                  <circle className="capital-halo" cx={region.capital.x} cy={region.capital.y} r={9} />
+                  <circle className="capital-dot" cx={region.capital.x} cy={region.capital.y} r={3.4} />
                   <text className="capital-label" x={region.capital.x} y={region.capital.y + 21}>
                     {region.capital.name}
                   </text>
@@ -166,7 +222,6 @@ export function WarringStatesMap({
         })}
       </svg>
 
-      {/* 悬浮卡片：靠近右缘时向左翻转，避免溢出 */}
       {hoveredEvent && hoveredRegion ? (
         <div
           className={[

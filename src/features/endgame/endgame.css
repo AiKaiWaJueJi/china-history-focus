@@ -1366,3 +1366,130 @@
     transition-duration: 200ms !important;
   }
 }
+/* ==========================================================================
+   v4：并集轮廓 · 灭国后国界消失 · 一统时图块整体消散 + 秦字独立成章
+   ========================================================================== */
+
+/* 秦 + 已灭诸国的并集：只有外缘发光，内部接缝不画线 */
+.empire-layer {
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(226, 190, 120, 0.6));
+}
+
+.empire-layer polygon {
+  fill: url(#qinFill);
+  fill-opacity: 0;
+  transition: fill-opacity 900ms ease;
+}
+
+.empire-layer polygon.is-on {
+  fill-opacity: 1;
+}
+
+/* 灭国后：本块描边淡出，交给并集轮廓表达外缘 */
+.region-edge {
+  transition:
+    stroke 600ms ease,
+    stroke-width 260ms ease,
+    filter 260ms ease,
+    opacity 720ms ease;
+}
+
+.region.is-captured .region-edge {
+  opacity: 0;
+}
+
+/* 秦字随版图扩张平滑移动 */
+.region-label {
+  transition:
+    opacity 900ms ease,
+    fill 900ms ease,
+    font-size 600ms cubic-bezier(0.2, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 一统：整层 SVG 先轻微推近，随后彻底消散 */
+.map-stage[data-unified='true'] .map-svg {
+  transform: scale(1.12);
+  opacity: 0;
+  transition:
+    transform 1700ms cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 1100ms ease 320ms;
+}
+
+/* ---------- 一统主角：秦字 + 圆弧半透明边框 ---------- */
+.unify-hero {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.unify-ring {
+  position: absolute;
+  width: min(56vmin, 480px);
+  height: min(56vmin, 480px);
+  border-radius: 50%;
+  /* 圆环比背景更深，只用一道极细的鎏金边勾勒出轮廓 */
+  border: 2px solid rgba(0, 0, 0, 0.88);
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.26) 58%,
+    rgba(0, 0, 0, 0) 74%
+  );
+  box-shadow:
+    0 0 0 1px rgba(226, 200, 125, 0.16),
+    inset 0 0 80px rgba(0, 0, 0, 0.6);
+  animation: unify-ring 3.6s cubic-bezier(0.22, 1, 0.3, 1) both;
+}
+
+.unify-char {
+  position: relative;
+  font-family: var(--font-brush), 'STKaiti', serif;
+  font-size: min(40vmin, 360px);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  animation: unify-char 3.8s cubic-bezier(0.22, 1, 0.3, 1) both;
+}
+
+@keyframes unify-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  28% {
+    opacity: 0.9;
+    transform: scale(0.86);
+  }
+  100% {
+    opacity: 0.82;
+    transform: scale(1.42);
+  }
+}
+
+@keyframes unify-char {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+    color: #e9d29a;
+    text-shadow: 0 0 30px rgba(233, 210, 154, 0.25);
+  }
+  20% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1);
+    color: #e9d29a;
+    text-shadow: 0 0 40px rgba(233, 210, 154, 0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.16);
+    color: #b8301f;
+    text-shadow: 0 0 70px rgba(184, 48, 31, 0.55);
+  }
+}
