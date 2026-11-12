@@ -1,0 +1,13 @@
+{
+  "dynastyId": "qin",
+  "segments": [
+    {
+      "id": "seg_qin",
+      "name": "秦朝",
+      "startYear": -221,
+      "endYear": -207,
+      "accent": "#a05a3a",
+      "desc": "六王毕 · 四海一"
+    }
+  ]
+}

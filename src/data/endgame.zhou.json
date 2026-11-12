@@ -1,0 +1,68 @@
+{
+  "dynastyId": "zhou",
+  "title": "终局推演",
+  "subtitle": "秦灭六国",
+  "intro": "前256年，赧王崩，周室不祀。此后三十五年，六国次第入秦图。",
+  "next": {
+    "dynastyId": "qin",
+    "label": "大秦帝国",
+    "year": "公元前221年",
+    "hint": "六王毕，四海一"
+  },
+  "events": [
+    {
+      "id": "e_han",
+      "year": "前230年",
+      "yearValue": -230,
+      "target": "韩",
+      "desc": "秦灭韩",
+      "report": "公元前230年，内史腾破新郑，虏韩王安，韩亡。",
+      "general": "内史腾"
+    },
+    {
+      "id": "e_zhao",
+      "year": "前228年",
+      "yearValue": -228,
+      "target": "赵",
+      "desc": "秦灭赵",
+      "report": "公元前228年，王翦破邯郸，虏赵王迁；公子嘉北奔代地。",
+      "general": "王翦"
+    },
+    {
+      "id": "e_wei",
+      "year": "前225年",
+      "yearValue": -225,
+      "target": "魏",
+      "desc": "秦灭魏",
+      "report": "公元前225年，王贲引河水灌大梁，三月城坏，魏王假出降。",
+      "general": "王贲"
+    },
+    {
+      "id": "e_chu",
+      "year": "前223年",
+      "yearValue": -223,
+      "target": "楚",
+      "desc": "秦灭楚",
+      "report": "公元前223年，王翦、蒙武破寿春，虏楚王负刍，楚亡。",
+      "general": "王翦"
+    },
+    {
+      "id": "e_yan",
+      "year": "前222年",
+      "yearValue": -222,
+      "target": "燕",
+      "desc": "秦灭燕",
+      "report": "公元前222年，王贲破辽东，虏燕王喜，燕亡。",
+      "general": "王贲"
+    },
+    {
+      "id": "e_qi",
+      "year": "前221年",
+      "yearValue": -221,
+      "target": "齐",
+      "desc": "秦灭齐",
+      "report": "公元前221年，王贲自燕南下，齐王建不战而降，齐亡。",
+      "general": "王贲"
+    }
+  ]
+}

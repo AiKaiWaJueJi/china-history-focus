@@ -22,6 +22,8 @@ export interface WheelPagingOptions {
   cooldown?: number
   /** 触发翻页的最小滚动量 */
   threshold?: number
+  /** 已在最后一页仍继续向下滚时触发（用于进入「终局推演」） */
+  onBeyondEnd?: () => void
 }
 
 export function useWheelPaging({
@@ -30,10 +32,11 @@ export function useWheelPaging({
   onChange,
   cooldown = 520,
   threshold = 18,
+  onBeyondEnd,
 }: WheelPagingOptions) {
   // 用 ref 保存最新值，避免因为重建监听器导致冷却状态丢失
-  const state = useRef({ pageCount, pageIndex, onChange })
-  state.current = { pageCount, pageIndex, onChange }
+  const state = useRef({ pageCount, pageIndex, onChange, onBeyondEnd })
+  state.current = { pageCount, pageIndex, onChange, onBeyondEnd }
 
   const lastTime = useRef(0)
   const acc = useRef(0)
@@ -42,9 +45,20 @@ export function useWheelPaging({
     const step = (direction: 1 | -1) => {
       const now = performance.now()
       if (now - lastTime.current < cooldown) return
-      const { pageIndex: current, pageCount: total, onChange: emit } = state.current
+      const { pageIndex: current, pageCount: total, onChange: emit, onBeyondEnd: beyond } = state.current
       const next = current + direction
-      if (next < 0 || next > total - 1) return
+
+      // 已到最后一页还继续向下滚 → 交给调用方（进入终局推演）
+      if (next > total - 1) {
+        if (beyond) {
+          lastTime.current = now
+          acc.current = 0
+          beyond()
+        }
+        return
+      }
+      if (next < 0) return
+
       lastTime.current = now
       acc.current = 0
       emit(next)

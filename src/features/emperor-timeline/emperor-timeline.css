@@ -913,6 +913,18 @@
   gap: 8px;
 }
 
+/* 末页的"推演终局"入口：用赤金强调，与普通翻页拉开层级 */
+.timeline-btn--endgame {
+  border-color: rgba(200, 80, 55, 0.55);
+  background: linear-gradient(180deg, rgba(140, 40, 28, 0.34), rgba(24, 12, 10, 0.9));
+  color: #f0c9a8;
+}
+
+.timeline-btn--endgame:hover {
+  border-color: rgba(240, 200, 140, 0.8);
+  color: #ffe9c9;
+}
+
 /* ---------- 空态 ---------- */
 .timeline-empty {
   text-align: center;

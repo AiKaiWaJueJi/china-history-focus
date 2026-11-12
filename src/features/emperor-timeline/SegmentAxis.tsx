@@ -13,7 +13,7 @@
  */
 import type { CSSProperties } from 'react'
 import type { EmperorRecord, TimelineSegment } from '../../core/emperorTypes'
-import { formatYear } from '../../data/zhouEmperors'
+import { formatYear } from '../../data/emperorData'
 
 /** 播放头固定宽度（百分比）：约等于一页平均跨度的视觉宽度 */
 const PLAYHEAD_WIDTH = 7.5

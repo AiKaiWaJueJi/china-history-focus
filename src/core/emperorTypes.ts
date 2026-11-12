@@ -102,3 +102,40 @@ export interface DynastyLords {
   dynastyId: string
   lords: Lord[]
 }
+
+/* -------------------------------------------------------------------------- */
+/* 终局推演（朝代收尾模块）                                                     */
+/* -------------------------------------------------------------------------- */
+
+export interface EndgameEvent {
+  id: string
+  /** 展示用年份，如「前230年」 */
+  year: string
+  /** 排序/计算用年份（负数＝公元前） */
+  yearValue: number
+  /** 被灭的对象，如「韩」 */
+  target: string
+  /** 简短标题，如「秦灭韩」 */
+  desc: string
+  /** 战报正文，序列推演时逐条浮现 */
+  report: string
+  /** 主将 */
+  general?: string
+}
+
+export interface EndgameNext {
+  dynastyId: string
+  label: string
+  year: string
+  hint?: string
+}
+
+export interface DynastyEndgame {
+  dynastyId: string
+  title: string
+  subtitle: string
+  intro: string
+  /** 推演结束后要跳转的下一朝代 */
+  next: EndgameNext
+  events: EndgameEvent[]
+}

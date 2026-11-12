@@ -402,5 +402,12 @@ for (const emperor of zhouFile.emperors) {
   writeFileSync(join(porDir, fileName), portraitSvg({ id: emperor.id }, zhouDynasty))
 }
 console.log(`zhou portraits: ${zhouFile.emperors.length}`)
+// ---- 秦朝 3 位统治者的画像（终局推演的落地页需要）----
+const qinFile = JSON.parse(readFileSync(join(PROJECT, 'src/data/emperors.qin.json'), 'utf8'))
+const qinDynasty = data.dynasties.find((d) => d.id === qinFile.dynastyId)
+for (const emperor of qinFile.emperors) {
+  writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, qinDynasty))
+}
+console.log(`qin portraits: ${qinFile.emperors.length}`)
 console.log(`artifacts: ${data.dynasties.length} (${data.dynasties.map((d) => d.id).join(', ')})`)
 console.log(`portraits: ${data.emperors.length}`)

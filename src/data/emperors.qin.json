@@ -1,0 +1,54 @@
+{
+  "dynastyId": "qin",
+  "name": "秦",
+  "period": "前221 — 前207",
+  "note": "秦朝帝王数据：为『终局推演』的落地页补齐，完整覆盖秦朝三位统治者。events 为要点摘录。",
+  "emperors": [
+    {
+      "id": "qin_shi",
+      "posthumousTitle": "秦始皇",
+      "personalName": "嬴政",
+      "reign": "前221 — 前210",
+      "startYear": -221,
+      "endYear": -210,
+      "segmentId": "seg_qin",
+      "portrait": "/portraits/qin-shi.svg",
+      "events": [
+        { "id": "q_huangdi", "name": "始称皇帝", "dimension": "political", "year": -221 },
+        { "id": "q_junxian", "name": "废分封·行郡县", "dimension": "political", "year": -221 },
+        { "id": "q_tongwen", "name": "书同文·车同轨", "dimension": "culture", "year": -220 },
+        { "id": "q_xiongnu", "name": "北击匈奴·筑长城", "dimension": "military", "year": -214 },
+        { "id": "q_fenshu", "name": "焚书坑儒", "dimension": "culture", "year": -213 }
+      ]
+    },
+    {
+      "id": "qin_er",
+      "posthumousTitle": "秦二世",
+      "personalName": "胡亥",
+      "reign": "前210 — 前207",
+      "startYear": -210,
+      "endYear": -207,
+      "segmentId": "seg_qin",
+      "portrait": "/portraits/qin-er.svg",
+      "events": [
+        { "id": "q_shaqiu", "name": "沙丘之变", "dimension": "political", "year": -210 },
+        { "id": "q_daze", "name": "大泽乡起义", "dimension": "military", "year": -209 },
+        { "id": "q_julu", "name": "巨鹿之战", "dimension": "military", "year": -207 }
+      ]
+    },
+    {
+      "id": "qin_ziying",
+      "posthumousTitle": "秦王",
+      "personalName": "子婴",
+      "reign": "前207",
+      "startYear": -207,
+      "endYear": -207,
+      "segmentId": "seg_qin",
+      "portrait": "/portraits/qin-ziying.svg",
+      "events": [
+        { "id": "q_jiangliu", "name": "子婴降刘邦", "dimension": "political", "year": -207 },
+        { "id": "q_qinwang", "name": "秦亡", "dimension": "military", "year": -207 }
+      ]
+    }
+  ]
+}

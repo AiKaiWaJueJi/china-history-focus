@@ -10,7 +10,7 @@
  */
 import type { CSSProperties } from 'react'
 import type { Lord } from '../../core/emperorTypes'
-import { formatYear } from '../../data/zhouEmperors'
+import { formatYear } from '../../data/emperorData'
 import { EventMindMap } from './EventMindMap'
 
 interface LordCardProps {

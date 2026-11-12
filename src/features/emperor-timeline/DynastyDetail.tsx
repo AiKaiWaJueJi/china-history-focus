@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
-import { getDynastyEmperors, getDynastyLords, getDynastySegments } from '../../data/zhouEmperors'
+import { getDynastyEmperors, getDynastyEndgame, getDynastyLords, getDynastySegments } from '../../data/emperorData'
 import { EmperorPager } from './EmperorPager'
 import { LordsRow } from './LordsRow'
 import { SegmentAxis } from './SegmentAxis'
@@ -30,6 +30,7 @@ export function DynastyDetail() {
   const data = getDynastyEmperors(dynastyId)
   const segmentsData = getDynastySegments(dynastyId)
   const lordsData = getDynastyLords(dynastyId)
+  const endgameData = getDynastyEndgame(dynastyId)
 
   const [pageIndex, setPageIndex] = useState(0)
   const [direction, setDirection] = useState(1)
@@ -47,10 +48,18 @@ export function DynastyDetail() {
     })
   }, [])
 
+  /** 进入终局推演（只有配置了 endgame 数据的朝代才有） */
+  const goEndgame = useCallback(() => {
+    if (!dynastyId || !endgameData) return
+    navigate(`/dynasty/${dynastyId}/endgame`)
+  }, [dynastyId, endgameData, navigate])
+
   const { canPrev, canNext } = useWheelPaging({
     pageCount,
     pageIndex,
     onChange: handleChange,
+    // 已在最后一页继续向下滚 → 直接进入终局推演
+    onBeyondEnd: endgameData ? goEndgame : undefined,
   })
 
   // ESC 返回主页
@@ -211,14 +220,22 @@ export function DynastyDetail() {
           >
             ← 上一页
           </button>
-          <button
-            type="button"
-            className="timeline-btn"
-            disabled={!canNext}
-            onClick={() => handleChange(Math.min(pageCount - 1, pageIndex + 1))}
-          >
-            下一页 →
-          </button>
+
+          {/* 到达末页时，"下一页"变成进入终局推演的入口 */}
+          {endgameData && pageIndex === pageCount - 1 ? (
+            <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goEndgame}>
+              推演终局 · {endgameData.subtitle} →
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="timeline-btn"
+              disabled={!canNext}
+              onClick={() => handleChange(Math.min(pageCount - 1, pageIndex + 1))}
+            >
+              下一页 →
+            </button>
+          )}
         </div>
       </footer>
     </div>
