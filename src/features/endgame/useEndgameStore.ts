@@ -1,58 +1,78 @@
 /**
- * 终局推演状态机（Zustand）
+ * 终局推演状态机（Zustand）—— 可逆阶梯式
  * ===========================================================================
- * 三个阶段：idle（待启动）→ playing（推演中）→ sealed（秦印落下，可进入秦朝）
+ * 与上一版最大的区别：
+ *   旧版：phase(idle/playing/sealed) + fallen 计数，由计时器自动推进 → 不可逆
+ *   新版：**单一整数 index（0..6）**，由用户点击设定 → 天然可逆、可跳转
  *
- * 为什么用 store 而不是组件内 useState：
- *   推演是"有时间序列的状态推进"，需要被多个组件读取
- *   （诸侯卡、版图刻度、战报、终局印章），且必须能一键重置。
- *   集中到一个 store 后，任何时刻这些组件看到的都是同一个 step，
- *   不会出现"卡片已灰、版图还没亮"的错位。
+ * 为什么一个整数就够：
+ *   "哪些国家已亡"完全由 index 派生（order <= index），不另存数组。
+ *   于是"回退"不需要任何撤销逻辑——把 index 改小，所有派生数据自动回退，
+ *   CSS 过渡会自动从当前样式倒放到目标样式。
  *
- * 只存**离散状态**，不存动画：动画由 CSS / Framer 各自处理。
+ * 派生规则：
+ *   captured(event) = event.order <= index
+ *   battleEvents    = events.slice(0, index)
+ *   isFinished      = index === 6
  */
 import { create } from 'zustand'
 
-export type EndgamePhase = 'idle' | 'playing' | 'sealed'
-
-interface EndgameStore {
-  phase: EndgamePhase
-  /** 已陷落的国家数量（0..total） */
-  fallen: number
-  /** 音效静音开关 */
+export interface EndgameStore {
+  /** 0 = 战前；1..6 = 已灭至第 N 国 */
+  index: number
+  /** 战报聚焦的国家 id；null 表示未聚焦 */
+  focusedNation: string | null
+  /** 人物卡片的 id；null 表示未打开 */
+  profileId: string | null
+  /** 音效开关 */
   muted: boolean
-  /** 总国数（由页面按数据注入，用于边界计算） */
+  /** 总步数（由页面注入，默认 6） */
   total: number
-  begin: (total: number) => void
-  /** 第 index 个国家陷落（index 从 0 起） */
-  fall: (index: number) => void
-  seal: () => void
-  reset: () => void
+
+  /** 跳到某个历史节点（可正可负）；会自动收敛到 [0, total] */
+  setIndex: (next: number) => void
+  /** 直接点某个国家：跳到"该国已亡"这一节点 */
+  conquerTo: (order: number, nationId: string) => void
+  /** 回到战前（index = 0），并清除聚焦 */
+  resetAll: () => void
+  focusNation: (nationId: string | null) => void
+  openProfile: (id: string | null) => void
   toggleMute: () => void
 }
 
 export const useEndgameStore = create<EndgameStore>()((set, get) => ({
-  phase: 'idle',
-  fallen: 0,
+  index: 0,
+  focusedNation: null,
+  profileId: null,
   muted: false,
-  total: 0,
+  total: 6,
 
-  begin: (total) => set({ phase: 'playing', fallen: 0, total }),
-  fall: (index) => {
-    // 幂等：重复调用不会让计数倒退或跳变
-    if (get().phase !== 'playing') return
-    const next = Math.min(index + 1, get().total)
-    if (next <= get().fallen) return
-    set({ fallen: next })
+  setIndex: (next) => {
+    const total = get().total
+    const clamped = Math.max(0, Math.min(total, next))
+    if (clamped === get().index) return
+    set({ index: clamped })
   },
-  seal: () => {
-    if (get().phase === 'playing') set({ phase: 'sealed' })
+
+  conquerTo: (order, nationId) => {
+    const total = get().total
+    const clamped = Math.max(0, Math.min(total, order))
+    // 同一点击同一国家 = 取消聚焦（再次点击归位）
+    const alreadyFocused = get().focusedNation === nationId && get().index === clamped
+    set({
+      index: clamped,
+      focusedNation: alreadyFocused ? null : nationId,
+    })
   },
-  reset: () => set({ phase: 'idle', fallen: 0 }),
+
+  resetAll: () => set({ index: 0, focusedNation: null, profileId: null }),
+  focusNation: (nationId) => set({ focusedNation: nationId }),
+  openProfile: (id) => set({ profileId: id }),
   toggleMute: () => set({ muted: !get().muted }),
 }))
 
-/* 细粒度 selector：避免无关字段变化导致整页重渲染 */
-export const useEndgamePhase = () => useEndgameStore((s) => s.phase)
-export const useFallenCount = () => useEndgameStore((s) => s.fallen)
+/* 细粒度 selector */
+export const useIndex = () => useEndgameStore((s) => s.index)
+export const useFocusedNation = () => useEndgameStore((s) => s.focusedNation)
+export const useProfileId = () => useEndgameStore((s) => s.profileId)
 export const useMuted = () => useEndgameStore((s) => s.muted)

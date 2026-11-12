@@ -75,13 +75,13 @@
 
 .seg-band-name {
   font-family: var(--font-thin);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.16em;
   color: color-mix(in srgb, var(--accent) 78%, white);
 }
 
 .seg-band-range {
-  font-size: 9.5px;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   color: rgba(255, 255, 255, 0.34);
   font-variant-numeric: tabular-nums;
@@ -132,7 +132,7 @@
   align-items: baseline;
   gap: 5px;
   font-family: var(--font-thin);
-  font-size: 12px;
+  font-size: 13.5px;
   letter-spacing: 0.14em;
   color: #f0dca6;
   white-space: nowrap;
@@ -140,7 +140,7 @@
 
 .seg-marker-label em {
   font-style: normal;
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   color: rgba(255, 255, 255, 0.38);
   font-variant-numeric: tabular-nums;
@@ -189,14 +189,14 @@
 }
 
 .timeline-period {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.45);
   font-variant-numeric: tabular-nums;
 }
 
 .timeline-count {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.66);
   font-variant-numeric: tabular-nums;
@@ -204,7 +204,7 @@
 
 .timeline-hint {
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 9.5px;
+  font-size: 11.5px;
   letter-spacing: 0.14em;
   color: rgba(255, 255, 255, 0.3);
 }
@@ -376,7 +376,7 @@
 
 .emp-name {
   font-family: var(--font-thin);
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0.2em;
   text-indent: 0.2em;
   color: rgba(255, 255, 255, 0.92);
@@ -385,7 +385,7 @@
 }
 
 .emp-reign {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.04em;
   color: rgba(255, 255, 255, 0.72);
   margin: 0;
@@ -490,14 +490,14 @@
 }
 
 .lords-count {
-  font-size: 10.5px;
+  font-size: 12.5px;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.4);
 }
 
 .lords-hint {
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   color: rgba(255, 255, 255, 0.24);
   margin-left: auto;
@@ -596,7 +596,7 @@
   position: absolute;
   top: 10px;
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   color: rgba(255, 255, 255, 0.4);
 }
@@ -612,7 +612,7 @@
 
 .lord-title {
   font-family: var(--font-thin);
-  font-size: 12px;
+  font-size: 13.5px;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.86);
   white-space: nowrap;
@@ -622,7 +622,7 @@
 }
 
 .lord-period {
-  font-size: 9.5px;
+  font-size: 11.5px;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.42);
   font-variant-numeric: tabular-nums;
@@ -631,7 +631,7 @@
 
 /* 称霸期：与"在位"区分，用主题色标出，这是时代主线 */
 .lord-hegemony {
-  font-size: 9.5px;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   color: color-mix(in srgb, var(--accent) 72%, white);
   font-variant-numeric: tabular-nums;
@@ -685,7 +685,7 @@
   align-items: center;
   gap: 10px;
   font-family: var(--font-thin);
-  font-size: 11.5px;
+  font-size: 13px;
   letter-spacing: 0.3em;
   text-indent: 0.3em;
   color: rgba(236, 214, 148, 0.95);
@@ -801,7 +801,7 @@
 
 .emp-event-name {
   font-family: var(--font-thin);
-  font-size: 14px;
+  font-size: 15.5px;
   /* 瘦金体只有 400 字重，这里让浏览器合成加粗，提升小字可读性 */
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -814,7 +814,7 @@
 }
 
 .emp-event-year {
-  font-size: 11.5px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.68);
   font-variant-numeric: tabular-nums;
@@ -862,7 +862,7 @@
 
 .lords-empty-text {
   font-family: var(--font-thin);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.28em;
   text-indent: 0.28em;
   color: rgba(255, 255, 255, 0.26);
@@ -942,7 +942,7 @@
 }
 
 .timeline-empty-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.35);
   margin: 0;

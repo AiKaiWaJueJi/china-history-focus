@@ -11,7 +11,7 @@
  * 不改动阶段一（DynastyGallery / DynastyPanel / squeezeLayout）。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
 import { getDynastyEmperors, getDynastyEndgame, getDynastyLords, getDynastySegments } from '../../data/emperorData'
 import { EmperorPager } from './EmperorPager'
@@ -25,6 +25,7 @@ const PAGE_SIZE = 3
 export function DynastyDetail() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const dynasty = dynastyId ? dynastyById.get(dynastyId) : undefined
   const data = getDynastyEmperors(dynastyId)
@@ -78,6 +79,17 @@ export function DynastyDetail() {
     setPageIndex(0)
     setDirection(1)
   }, [dynastyId])
+
+  /*
+    从「王朝覆灭」向上滚回来时，要落在**最后一页**而不是第一页。
+    用 location.state.page === 'last' 传递意图（不污染 URL，也不写进 store）。
+  */
+  useEffect(() => {
+    const wantsLast = (location.state as { page?: string } | null)?.page === 'last'
+    if (!wantsLast || pageCount === 0) return
+    setPageIndex(pageCount - 1)
+    setDirection(-1)
+  }, [location.state, pageCount])
 
   /* ---------------- 当前页所属分段 → 决定布局 ---------------- */
   const pageEmperors = emperors.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE)
@@ -224,7 +236,7 @@ export function DynastyDetail() {
           {/* 到达末页时，"下一页"变成进入终局推演的入口 */}
           {endgameData && pageIndex === pageCount - 1 ? (
             <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goEndgame}>
-              推演终局 · {endgameData.subtitle} →
+              王朝覆灭 · {endgameData.subtitle} →
             </button>
           ) : (
             <button

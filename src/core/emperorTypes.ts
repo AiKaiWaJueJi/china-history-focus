@@ -107,8 +107,21 @@ export interface DynastyLords {
 /* 终局推演（朝代收尾模块）                                                     */
 /* -------------------------------------------------------------------------- */
 
+/** 战报中可下钻的重要人物 */
+export interface EndgameFigure {
+  id: string
+  name: string
+  title: string
+  bio: string
+  deeds: string[]
+}
+
 export interface EndgameEvent {
   id: string
+  /** 阶梯序号 1..6（0 是"战前"，不占事件） */
+  order: number
+  /** 对应的地图区域 id（han/zhao/wei/chu/yan/qi） */
+  nationId: string
   /** 展示用年份，如「前230年」 */
   year: string
   /** 排序/计算用年份（负数＝公元前） */
@@ -117,10 +130,12 @@ export interface EndgameEvent {
   target: string
   /** 简短标题，如「秦灭韩」 */
   desc: string
-  /** 战报正文，序列推演时逐条浮现 */
+  /** 一句话梗概，用于地图 Tooltip */
+  brief: string
+  /** 战报正文 */
   report: string
-  /** 主将 */
-  general?: string
+  /** 本节出现的人物（正文中会被高亮成可点击标签） */
+  figures: EndgameFigure[]
 }
 
 export interface EndgameNext {

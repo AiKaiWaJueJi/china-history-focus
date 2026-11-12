@@ -270,7 +270,7 @@
 
   .dyn-ord {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.2em;
     color: rgba(255, 255, 255, 0.34);
     transition: color 300ms ease;
@@ -327,7 +327,7 @@
   }
 
   .dyn-period {
-    font-size: 9.5px;
+    font-size: 12px;
     letter-spacing: 0.02em;
     color: rgba(255, 255, 255, 0.62);
     font-variant-numeric: tabular-nums;
@@ -360,13 +360,13 @@
   }
 
   .dyn-detail-line {
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.06em;
     color: rgba(255, 255, 255, 0.5);
   }
 
   .dyn-detail-item {
-    font-size: 9.5px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     color: var(--accent-soft);
     opacity: 0.9;
@@ -412,7 +412,7 @@
 
   .app-sub {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
-    font-size: 9.5px;
+    font-size: 11.5px;
     letter-spacing: 0.28em;
     color: #6f6752;
     text-transform: uppercase;
@@ -420,7 +420,7 @@
 
   .app-hint {
     font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.06em;
     color: #565049;
   }
