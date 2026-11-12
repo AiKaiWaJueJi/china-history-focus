@@ -193,8 +193,15 @@ export function EndgameStage() {
                 {/* 一统主角：七国版图消散后，秦字独立占据版图中心 */}
                 {showFinale ? (
                   <div className="unify-hero" aria-hidden="true">
-                    <span className="unify-ring" />
-                    <span className="unify-char">秦</span>
+                    {/*
+                      缩放交给 .unify-core 统一做：
+                      秦字与圆环是同一个盒子的两个子元素，天然同步、天然同心。
+                      之前两者各自动画，才会出现"不同步"和"不居中"。
+                    */}
+                    <div className="unify-core">
+                      <span className="unify-ring" />
+                      <span className="unify-char">秦</span>
+                    </div>
                   </div>
                 ) : null}
 

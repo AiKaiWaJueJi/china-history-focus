@@ -1549,3 +1549,80 @@
 .unify-char {
   font-size: min(34vh, 300px);
 }
+/* ==========================================================================
+   v6：终章同步与居中
+   --------------------------------------------------------------------------
+   把 scale 收归到 .unify-core 一个盒子上：
+   秦字与圆环同属这个盒子，缩放不可能不同步，圆心也不可能偏。
+   子元素只负责各自的 opacity / color。
+   ========================================================================== */
+
+.unify-core {
+  position: relative;
+  width: min(52vh, 440px);
+  height: min(52vh, 440px);
+  display: grid;
+  place-items: center;
+  transform-origin: center center;
+  animation: core-grow 3.8s cubic-bezier(0.22, 1, 0.3, 1) both;
+}
+
+.unify-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: ring-fade 3.8s cubic-bezier(0.22, 1, 0.3, 1) both;
+}
+
+.unify-char {
+  position: relative;
+  z-index: 1;
+  /* 单字不需要字距；有字距会给字形右侧留白，视觉上就偏左了 */
+  letter-spacing: 0;
+  line-height: 1;
+  animation: char-color 3.8s cubic-bezier(0.22, 1, 0.3, 1) both;
+}
+
+@keyframes core-grow {
+  from {
+    transform: scale(0.72);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes ring-fade {
+  0% {
+    opacity: 0;
+  }
+  26% {
+    opacity: 0.92;
+  }
+  100% {
+    opacity: 0.84;
+  }
+}
+
+@keyframes char-color {
+  0% {
+    opacity: 0;
+    color: #e9d29a;
+  }
+  20% {
+    opacity: 1;
+  }
+  62% {
+    color: #e9d29a;
+  }
+  100% {
+    color: #b8301f;
+  }
+}
+
+/* 终章开始后，地图层彻底退出交互（回退只走底部节点） */
+.map-stage[data-unified='true'] .map-svg,
+.map-stage[data-unified='true'] .map-photo {
+  pointer-events: none;
+}

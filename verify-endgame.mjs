@@ -109,7 +109,7 @@ try {
       hasChar: Boolean(char),
       hasRing: Boolean(ring),
       charColor: cs ? cs.color : null,
-      charScale: cs ? Number(new DOMMatrixReadOnly(cs.transform).a.toFixed(2)) : 0,
+      charScale: Number(new DOMMatrixReadOnly(getComputedStyle(document.querySelector('.unify-core')).transform).a.toFixed(2)),
       qiEdgeOpacity: qiEdge ? Number(getComputedStyle(qiEdge).opacity) : null,
       fadedLabels: [...document.querySelectorAll('.region:not(.is-qin) .region-label')].filter(
         (n) => Number(getComputedStyle(n).opacity) < 0.1,
@@ -128,6 +128,30 @@ try {
   check('秦字放大（scale > 1.05）', unified.charScale > 1.05, `${unified.charScale}`)
   check('灭国后国界线消失（齐的描边透明）', (unified.qiEdgeOpacity ?? 1) < 0.1, `${unified.qiEdgeOpacity}`)
   check('六国国名全部消散', unified.fadedLabels === 6, `${unified.fadedLabels}/6`)
+  const geom = await page.evaluate(() => {
+    const ring = document.querySelector('.unify-ring').getBoundingClientRect()
+    const char = document.querySelector('.unify-char').getBoundingClientRect()
+    const stage = document.querySelector('.map-stage').getBoundingClientRect()
+    return {
+      dx: Math.round(char.x + char.width / 2 - (ring.x + ring.width / 2)),
+      dy: Math.round(char.y + char.height / 2 - (ring.y + ring.height / 2)),
+      inside:
+        ring.top >= stage.top - 1 &&
+        ring.bottom <= stage.bottom + 1 &&
+        ring.left >= stage.left - 1 &&
+        ring.right <= stage.right + 1,
+      svgPointer: getComputedStyle(document.querySelector('.map-svg')).pointerEvents,
+      regionPointer: getComputedStyle(document.querySelector('[data-nation="qi"]')).pointerEvents,
+    }
+  })
+  console.log(`[GEOM] ${JSON.stringify(geom)}`)
+  check('秦字与圆环同心（偏差 ≤ 2px）', Math.abs(geom.dx) <= 2 && Math.abs(geom.dy) <= 2, `${geom.dx},${geom.dy}`)
+  check('圆环完整落在始皇帝背景范围内', geom.inside)
+  check(
+    '终章后地图层不再响应指针（回退只走底部节点）',
+    geom.svgPointer === 'none' && geom.regionPointer === 'none',
+    `${geom.svgPointer}/${geom.regionPointer}`,
+  )
   await page.screenshot({ path: `${OUT}\\02b-unified.png` })
 
   /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
