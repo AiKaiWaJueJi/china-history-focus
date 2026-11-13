@@ -348,6 +348,11 @@ export function EndgameStage() {
           onReset={handleReset}
           overlay={
             <>
+              {/* 行军进行中：提示可以滚动跳过（这个操作本身没人猜得到） */}
+              {campaignNation && !campaignDone ? (
+                <div className="campaign-skip-hint">向下滚动 · 跳过动画</div>
+              ) : null}
+
               {/* 跳步确认：先说清要补齐哪几场 */}
               {pendingConquer ? (
                 <div className="conquer-confirm" role="dialog" aria-label="补齐推演确认">

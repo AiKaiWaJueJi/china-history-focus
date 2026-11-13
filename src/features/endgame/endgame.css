@@ -3043,3 +3043,68 @@
   background: rgba(44, 33, 12, 0.55) !important;
   color: #e8cf8e !important;
 }
+/* ==========================================================================
+   v27
+   --------------------------------------------------------------------------
+   1) 史实「今译」卡被裁：.source-quote 上有 overflow:hidden（v22 为了裁竖排文字加的），
+      而提示卡是绝对定位到 .source-body 上方的，正好被这个容器切掉。
+      文字高度现在已自适应，不再需要那层裁剪，改为 visible 并抬高层级。
+   2) 行军期间提示"向下滚动跳过"，否则这个操作没人发现。
+   ========================================================================== */
+
+.source-quote {
+  overflow: visible;
+  z-index: 3;
+}
+
+.source-tooltip {
+  z-index: 30;
+}
+
+/* 行军跳过提示 */
+.campaign-skip-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  z-index: 7;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(10, 8, 6, 0.72);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  color: rgba(240, 220, 170, 0.72);
+  pointer-events: none;
+  animation: skip-hint-in 420ms ease 600ms both;
+}
+
+@keyframes skip-hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+/* ==========================================================================
+   v28：今译卡改为浮在整块史实之上
+   --------------------------------------------------------------------------
+   之前它以 .source-body 为定位基准，而 source-body 起始于书名之下，
+   卡片底边会压进史实框内部，看起来像"嵌套在容器里"。
+   这里让 source-body 退回普通流，定位基准变成 .source-quote 本身，
+   卡片就完整浮在史实框之上，并且宽于窄框，读起来像一张独立的浮层。
+   ========================================================================== */
+
+.source-body {
+  position: static;
+}
+
+.source-tooltip {
+  left: 0;
+  right: auto;
+  width: min(330px, calc(100% + 60px));
+  bottom: calc(100% + 10px);
+}

@@ -118,6 +118,13 @@ try {
   }))
   console.log(`[CAMPAIGN-0] ${JSON.stringify(play0)}`)
   check('单击国家开始播放战役序列', play0.routes === 4 && play0.current === 1, `${play0.current}/${play0.routes}`)
+  const skipHint = Boolean(
+    await page.waitForSelector('.campaign-skip-hint', { timeout: 2000 }).catch(() => null),
+  )
+  const skipHintText = await page.evaluate(
+    () => document.querySelector('.campaign-skip-hint')?.textContent?.trim() ?? '',
+  )
+  check('行军期间提示可滚动跳过', skipHint && /滚动/.test(skipHintText), skipHintText)
   check('动画未播完时不弹战报', !play0.panel)
 
   await sleep(2200)
@@ -700,6 +707,28 @@ try {
   check('原文使用楷体', /KaiTi|楷体|STKaiti/.test(quote.font ?? ''), quote.font)
   check('史实原文完整落在容器内', quote.fits)
   check('今译默认隐藏', (quote.tipOpacity ?? 1) < 0.1, `${quote.tipOpacity}`)
+
+  // 今译卡应浮在史实框之上，而不是被裁进框内
+  await page.hover('.source-body')
+  await sleep(500)
+  const tipGeo = await page.evaluate(() => {
+    const tip = document.querySelector('.source-tooltip')
+    const quote = document.querySelector('.source-quote')
+    const panel = document.querySelector(".battle-panel")
+    const t = tip.getBoundingClientRect()
+    const q = quote.getBoundingClientRect()
+    const p = panel.getBoundingClientRect()
+    return {
+      opacity: Number(getComputedStyle(tip).opacity),
+      above: t.bottom <= q.top + 1,
+      insidePanel: t.top >= p.top - 1 && t.bottom <= p.bottom + 1,
+    }
+  })
+  console.log(`[TIP] ${JSON.stringify(tipGeo)}`)
+  check('今译卡悬停可见', tipGeo.opacity > 0.9, `${tipGeo.opacity}`)
+  check('今译卡浮在史实框之上（不在框内裁剪）', tipGeo.above && tipGeo.insidePanel, `above=${tipGeo.above} inPanel=${tipGeo.insidePanel}`)
+  await page.mouse.move(1450, 820, { steps: 2 })
+  await sleep(300)
 
   const qbox = await page.evaluate(() => {
     const r = document.querySelector('.source-text').getBoundingClientRect()
