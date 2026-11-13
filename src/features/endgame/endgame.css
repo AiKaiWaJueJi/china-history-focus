@@ -2899,3 +2899,30 @@
 .campaign-result {
   font-size: 12.5px;
 }
+/* ==========================================================================
+   v22：史书原文不再横向溢出
+   --------------------------------------------------------------------------
+   竖排（vertical-rl）的"宽度"由列数决定：字数一多就多出一列，撑破容器。
+   这里给原文一个明确高度，让它按列折行；万一仍超出，容器自身可横向滚动兜底。
+   战报栏本身改为可纵向滚动，原文高度不再被强行压缩。
+   ========================================================================== */
+
+.source-quote {
+  overflow: hidden;
+}
+
+.source-text {
+  height: 132px;
+  max-height: 132px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.source-text::-webkit-scrollbar {
+  height: 3px;
+}
+
+.battle-panel {
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
