@@ -26,7 +26,7 @@ function renderWithFigures(
   return text.split(pattern).map((part, i) => {
     const figure = figures.find((item) => item.name === part)
     if (!figure) return <span key={i}>{part}</span>
-    return (
+  return (
       <button
         key={i}
         type="button"

@@ -2959,3 +2959,10 @@
   min-height: 132px;
   max-height: 132px;
 }
+/* v25：高度由组件按内容量出来，CSS 不再写死 */
+.source-text {
+  height: auto;
+  min-height: 96px;
+  max-height: none;
+  transition: height 220ms ease;
+}
