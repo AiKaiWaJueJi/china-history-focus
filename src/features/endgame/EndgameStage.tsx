@@ -246,15 +246,21 @@ export function EndgameStage() {
     (value: number) => {
       /*
         底部国家容器优先级最高：一旦点它，正在播的行军序列立即作废。
-        否则会出现"地图在播灭赵、底部已经跳到齐"的双线并行。
+        并且点节点 = 跳到该节点 + 展开对应战报：这排节点是"六国被灭的次序"
+        （前230、前228…），不是等距时间轴，点谁就该看谁那场仗。
       */
       useCampaignStore.getState().clearCampaign()
       setClosing(false)
       setIndex(value)
-      closePanel()
+      const ev = events.find((e) => e.order === value)
+      if (ev) {
+        useEndgameStore.setState({ focusedNation: ev.nationId })
+      } else {
+        closePanel()
+      }
       if (value > 0 && !muted) playBell(value === events.length ? 1 : 0.7)
     },
-    [setIndex, closePanel, events.length, muted],
+    [setIndex, closePanel, events, muted],
   )
 
   /* 键盘：ESC 逐层退出；← → 逐级推移 */

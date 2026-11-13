@@ -124,10 +124,10 @@ export function WarringStatesMap({
     否则节点 hover 仍会写出 hoveredNation，而悬浮卡片是 HTML 元素，
     不会跟着 SVG 一起淡出，就会出现"看不见的地图上还在弹提示"。
   */
-  // 聚焦战报时屏蔽区域 hover：否则金边会一直挂在你点过的那块上
-  const hoverActive = !unified && !focusedNation && Boolean(hoveredId)
+  // 战报态也要响应 hover：轮廓给一圈中性灰线，提示"这里能点"
+  const hoverActive = !unified && Boolean(hoveredId)
 
-  const hoveredEvent = hoverActive ? (eventsByNation.get(hoveredId!) ?? null) : null
+  const hoveredEvent = hoverActive && !focusedNation ? (eventsByNation.get(hoveredId!) ?? null) : null
   const hoveredRegion = hoverActive
     ? (ALL_REGIONS.find((region) => region.id === hoveredId) ?? null)
     : null
@@ -297,6 +297,15 @@ export function WarringStatesMap({
           </text>
         </g>
         {/* 行军路线：在版图之上、不参与聚焦压暗 */}
+        {/*
+          战报态：hover 的版块描一圈中性灰轮廓。
+          它在 .regions-layer 之外，因此不会被聚焦时那层 0.26 的压暗吃掉；
+          用灰黑而不是金色，避免和"秦疆域"的金色呼吸轮廓抢辨识度。
+        */}
+        {focusedNation && hoveredRegion ? (
+          <polygon className="region-hover-ring" points={hoveredRegion.points} />
+        ) : null}
+
         <CampaignRoutes
           campaigns={campaigns}
           index={campaignIndex}

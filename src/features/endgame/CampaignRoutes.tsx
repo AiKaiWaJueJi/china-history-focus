@@ -32,7 +32,33 @@ function polyline(points: MapPoint[]) {
   return vs.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')
 }
 
-/** 末段方向（箭头朝向）与该段中点（文字位置） */
+/**
+ * 文字位置：取**最长那段**的中点，并沿法线外推 24px。
+ * 之前用末段中点，短路线（如齐的"济西→临淄"）会让将领名、战果
+ * 和终点地名挤成一团。
+ */
+function captionAt(points: MapPoint[]) {
+  const vs = points.map(toView)
+  let pick = 1
+  let longest = -1
+  for (let i = 1; i < vs.length; i++) {
+    const len = Math.hypot(vs[i].x - vs[i - 1].x, vs[i].y - vs[i - 1].y)
+    if (len > longest) {
+      longest = len
+      pick = i
+    }
+  }
+  const a = vs[pick - 1] ?? vs[0]
+  const b = vs[pick]
+  const mx = (a.x + b.x) / 2
+  const my = (a.y + b.y) / 2
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  const len = Math.hypot(dx, dy) || 1
+  return { x: mx + (-dy / len) * 26, y: my + (dx / len) * 26 }
+}
+
+/** 末段方向（箭头朝向）与该段中点 */
 function tail(points: MapPoint[]) {
   const vs = points.map(toView)
   const end = vs[vs.length - 1]
@@ -56,6 +82,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
         const isHovered = hovered === i
         const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
         const t = tail(campaign.points)
+        const cap = captionAt(campaign.points)
 
         return (
           <g
@@ -78,7 +105,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
               <circle className="campaign-flare-ring" r={9} />
             </g>
 
-            <g className="campaign-caption" transform={`translate(${t.mid.x} ${t.mid.y})`}>
+            <g className="campaign-caption" transform={`translate(${cap.x} ${cap.y})`}>
               <text className="campaign-general" textAnchor="middle" y={-6}>
                 {campaign.general}
               </text>
@@ -126,6 +153,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
           const isHovered = hovered === i
           const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
           const t = tail(ally.points)
+          const cap = captionAt(ally.points)
 
           return (
             <g
@@ -143,7 +171,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
                 <circle className="campaign-flare" r={5} />
                 <circle className="campaign-flare-ring" r={8} />
               </g>
-              <g className="campaign-caption" transform={`translate(${t.mid.x} ${t.mid.y})`}>
+              <g className="campaign-caption" transform={`translate(${cap.x} ${cap.y})`}>
                 <text className="campaign-general" textAnchor="middle" y={-5}>
                   {ally.nation}·{ally.general}
                 </text>

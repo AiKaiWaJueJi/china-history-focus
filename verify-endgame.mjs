@@ -54,6 +54,16 @@ try {
     if (clicked) await sleep(280)
   }
 
+  /* 点底部节点：会同时展开该场战报，测试里顺手关掉以便继续观察版图 */
+  const railTo = async (value) => {
+    await page.evaluate((v) => document.querySelectorAll('.rail-node')[v].click(), value)
+    await sleep(500)
+    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
+      await page.keyboard.press('Escape')
+      await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+      await sleep(400)
+    }
+  }
   const openReportByClick = async (box) => {
     await page.mouse.click(box.x, box.y)
     await sleep(140)
@@ -194,7 +204,7 @@ try {
     document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),
   )
   await sleep(600)
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await railTo(0)
   await sleep(800)
 
   /* ---------- 2c) 线性时间轴：跳步必须先补齐 ---------- */
@@ -277,7 +287,7 @@ try {
   await page.keyboard.press('Escape')
   await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
   await sleep(400)
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await railTo(0)
   await sleep(700)
 
   await clickNation2('han') // 韩是第一个，无需确认
@@ -285,7 +295,7 @@ try {
   const beforeRail = await page.evaluate(() => ({
     routes: document.querySelectorAll('.campaign-route').length,
   }))
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await railTo(0)
   await sleep(500)
   const afterRail = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
@@ -339,14 +349,20 @@ try {
   check('退场后才开始新的行军', !afterSwitch.panel && afterSwitch.routes > 0, `${afterSwitch.routes}`)
 
   // 收尾
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await railTo(0)
   await sleep(600)
   /* ---------- 3) 正推 / 逆推 ---------- */
   await page.evaluate(() => {
     const nodes = [...document.querySelectorAll('.rail-node')]
     nodes[nodes.length - 1].click()
   })
-  await sleep(1000)
+  await sleep(900)
+  // 点底部节点现在会展开该场战报；终章要等战报关掉才演
+  const railOpenedReport = await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))
+  check('点底部最后节点会展开对应战报', railOpenedReport)
+  await page.keyboard.press('Escape')
+  await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+  await sleep(900)
   const full = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     captured: document.querySelectorAll('.region.is-captured').length,
@@ -440,7 +456,7 @@ try {
   await page.screenshot({ path: `${OUT}\\02b-unified.png` })
 
   /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[5].click()) // 回到 index 5
+  await railTo(5) // 回到 index 5（会自动关掉弹出的战报）
   await sleep(900)
   const qiBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="qi"] .region-base')
@@ -482,7 +498,7 @@ try {
     }, nation)
 
   const beforeBack = { wei: await labelOf('wei'), chu: await labelOf('chu'), qi: await labelOf('qi') }
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click()) // → index 2
+  await railTo(2) // → index 2
   await sleep(1100)
   const back = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
@@ -579,7 +595,7 @@ try {
   check('秦朝入口与战报一并消失', !afterReset.entry && !afterReset.panel)
 
   // 后续用例依赖 index 2 的状态，复位回去
-  await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click())
+  await railTo(2)
   await sleep(900)
   /* ---------- 4) 悬浮：要点卡片 + 底部节点流光 ---------- */
   const zhaoBox = await page.evaluate(() => {

@@ -3108,3 +3108,37 @@
   width: min(330px, calc(100% + 60px));
   bottom: calc(100% + 10px);
 }
+/* ==========================================================================
+   v29：战报态的可点击提示
+   --------------------------------------------------------------------------
+   战报展开时鼠标移到右侧版图，原本毫无反馈 —— 用户不知道还能点。
+   给 hover 的版块描一圈中性灰轮廓（灰黑），既提示可点，
+   又不会和"秦疆域呼吸"的金色抢辨识度。
+   ========================================================================== */
+
+.region-hover-ring {
+  fill: rgba(196, 190, 178, 0.05);
+  stroke: #8f887c;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  opacity: 0.95;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(143, 136, 124, 0.6));
+  animation: ring-in 180ms ease both;
+}
+
+@keyframes ring-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* 战报态里，区域自身的金色 hover 边不再生效（由上面那圈灰线代替） */
+.endgame-body.is-focused .region.is-hovered .region-edge {
+  opacity: 0.06;
+  stroke-width: 1;
+  filter: none;
+}
