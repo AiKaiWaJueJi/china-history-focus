@@ -116,6 +116,8 @@ export function EndgameStage() {
     这里先挂上 is-closing 让它播 240ms 退场动画，再真正清空 focusedNation。
   */
   const [closing, setClosing] = useState(false)
+  /* 跳步确认：点后面的国家时，先问一句"要不要补齐中间几场" */
+  const [pendingConquer, setPendingConquer] = useState<(typeof events)[number] | null>(null)
   const closeTimer = useRef<number | null>(null)
 
   const closePanel = useCallback(() => {
@@ -143,22 +145,13 @@ export function EndgameStage() {
   /* 离开页面时复位 */
   useEffect(() => () => resetAll(), [resetAll])
 
-  /* 点击国家：推进/回退到该节点，并展开该国详细战报 */
-  const handleConquer = useCallback(
+  /* 真正开始一场推演：关掉已有战报（带动画）→ 播行军 → 播完弹战报 */
+  const startConquer = useCallback(
     (event: (typeof events)[number]) => {
       if (closeTimer.current) {
         window.clearTimeout(closeTimer.current)
         closeTimer.current = null
       }
-      /*
-        点国家 = 补齐前置 → 推出已有战报（带动画）→ 播战役序列 → 播完再弹新战报。
-        · 沙盘是线性时间轴：点后面的国家，必须先把中间已灭的国家补上，
-          否则会出现"韩赵魏还是独立国，却在播灭楚"的时空错乱。
-        · index 不在点击时推到 order，吞并仍发生在序列播完那一刻。
-      */
-      const prevOrder = Math.max(0, event.order - 1)
-      const current = useEndgameStore.getState().index
-      if (prevOrder > current) setIndex(prevOrder)
 
       const begin = () => {
         warmUpAudio()
@@ -168,7 +161,6 @@ export function EndgameStage() {
         if (!muted) playBell(0.9)
       }
 
-      // 战报开着：先播完退场动画，再开始行军
       if (useEndgameStore.getState().focusedNation) {
         setClosing(true)
         window.setTimeout(() => {
@@ -182,8 +174,39 @@ export function EndgameStage() {
       setClosing(false)
       begin()
     },
-    [muted, setIndex],
+    [muted],
   )
+
+  /*
+    点国家：沙盘是线性时间轴，点后面的国家必须先补齐中间几场。
+    补齐这件事不能"静默发生"，所以先在界面上问一句，用户确认后再快进。
+  */
+  const handleConquer = useCallback(
+    (event: (typeof events)[number]) => {
+      const prevOrder = Math.max(0, event.order - 1)
+      if (prevOrder > useEndgameStore.getState().index) {
+        setPendingConquer(event)
+        return
+      }
+      startConquer(event)
+    },
+    [startConquer],
+  )
+
+  /* 确认跳步：补齐前置后开始这场推演 */
+  const confirmConquer = useCallback(() => {
+    const ev = pendingConquer
+    if (!ev) return
+    setPendingConquer(null)
+    const prevOrder = Math.max(0, ev.order - 1)
+    if (prevOrder > useEndgameStore.getState().index) setIndex(prevOrder)
+    startConquer(ev)
+  }, [pendingConquer, setIndex, startConquer])
+
+  /* 需要补齐的国家列表（用于确认文案） */
+  const pendingBacklog = pendingConquer
+    ? events.filter((e) => e.order < pendingConquer.order)
+    : []
 
   /*
     点「秦」= 回到战前。
@@ -305,11 +328,37 @@ export function EndgameStage() {
           onExitFocus={closePanel}
           onReset={handleReset}
           overlay={
-            /*
+            <>
+              {/* 跳步确认：先说清要补齐哪几场 */}
+              {pendingConquer ? (
+                <div className="conquer-confirm" role="dialog" aria-label="补齐推演确认">
+                  <p className="conquer-confirm-label">补齐推演</p>
+                  <p className="conquer-confirm-text">
+                    将先推进
+                    {pendingBacklog
+                      .map((e) => ` ${e.desc.replace('秦灭', '')}（${e.year}）`)
+                      .join(' →')}
+                    ，再演 {pendingConquer.desc}
+                  </p>
+                  <div className="conquer-confirm-actions">
+                    <button
+                      type="button"
+                      className="conquer-confirm-primary"
+                      onClick={confirmConquer}
+                    >
+                      继续
+                    </button>
+                    <button type="button" onClick={() => setPendingConquer(null)}>
+                      取消
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+              {/*
               整个终章（秦字 + 大秦帝国入口）都只在 showFinale 时挂载：
               之前入口卡片跟着 isFinished 渲染，导致"战报还开着、入口已经出现"。
-            */
-            showFinale ? (
+              */}
+            {showFinale ? (
               <>
                 {/* 一统主角：七国版图消散后，秦字独立占据版图中心 */}
                 <div className="unify-hero" aria-hidden="true">
@@ -334,7 +383,8 @@ export function EndgameStage() {
                   <span className="qin-entry-hint">{endgame.next.hint} · 点击进入 →</span>
                 </button>
               </>
-            ) : null
+            ) : null}
+            </>
           }
         />
       </div>

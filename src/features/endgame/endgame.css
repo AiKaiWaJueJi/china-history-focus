@@ -2966,3 +2966,80 @@
   max-height: none;
   transition: height 220ms ease;
 }
+/* ==========================================================================
+   v26：跳步确认卡
+   --------------------------------------------------------------------------
+   点后面的国家时，先在版图中央问一句"要补齐哪几场"，
+   而不是让中间几国默默消失。
+   ========================================================================== */
+
+.conquer-confirm {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 9;
+  width: min(430px, 78%);
+  padding: 17px 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: rgba(12, 10, 8, 0.94);
+  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 1);
+  transform: translate(-50%, -50%);
+  animation: confirm-rise 220ms cubic-bezier(0.2, 1, 0.3, 1) both;
+}
+
+@keyframes confirm-rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 10px));
+  }
+}
+
+.conquer-confirm-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: rgba(226, 200, 125, 0.75);
+}
+
+.conquer-confirm-text {
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.conquer-confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.conquer-confirm-actions button {
+  padding: 6px 15px;
+  font-family: inherit;
+  font-size: 12.5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.58);
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.conquer-confirm-actions button:hover {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.conquer-confirm-primary {
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  background: rgba(44, 33, 12, 0.55) !important;
+  color: #e8cf8e !important;
+}

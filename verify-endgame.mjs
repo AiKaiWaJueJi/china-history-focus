@@ -43,6 +43,17 @@ try {
     点击国家会先播战役序列（约 2s/段），战报在播完后才出现。
     测试里用"单击启动 + 派发 wheel 向下滚动"来快速到达战报。
   */
+  /* 跳步会先弹「补齐推演」确认卡，有就点继续（DOM click，避免被覆盖层挡住） */
+  const confirmJump = async () => {
+    const clicked = await page.evaluate(() => {
+      const btn = document.querySelector(".conquer-confirm-primary")
+      if (!btn) return false
+      btn.click()
+      return true
+    })
+    if (clicked) await sleep(280)
+  }
+
   const openReportByClick = async (box) => {
     await page.mouse.click(box.x, box.y)
     await sleep(140)
@@ -99,6 +110,7 @@ try {
   })
   await page.mouse.click(campaignBox.x, campaignBox.y) // 单击启动序列
   await sleep(260)
+  await confirmJump()
   const play0 = await page.evaluate(() => ({
     panel: Boolean(document.querySelector('.battle-panel')),
     routes: document.querySelectorAll('.campaign-route').length,
@@ -178,15 +190,29 @@ try {
   await sleep(800)
 
   /* ---------- 2c) 线性时间轴：跳步必须先补齐 ---------- */
-  const chuBox = await page.evaluate(() => {
-    const el = document.querySelector('[data-nation="chu"] .region-label')
-    const r = el.getBoundingClientRect()
-    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
-  })
+  // 从干净页面开始，避免前面的状态让坐标/索引失真
+  await page.goto('http://localhost:5180/dynasty/zhou/endgame', { waitUntil: 'networkidle2' })
+  await page.waitForSelector('.map-stage')
+  await sleep(1200)
 
-  // 从战前直接点「楚」：中间的韩、赵、魏必须已经归秦
-  await page.mouse.click(chuBox.x, chuBox.y)
-  await sleep(320)
+  const clickNation2 = (id) =>
+    page.evaluate((n) => {
+      document.querySelector(`[data-nation="${n}"]`)?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      )
+    }, id)
+
+  await clickNation2('chu')
+  await sleep(350)
+  const confirmShown = Boolean(await page.waitForSelector('.conquer-confirm', { timeout: 3000 }).catch(() => null))
+  const confirmText = await page.evaluate(
+    () => document.querySelector('.conquer-confirm-text')?.textContent?.trim() ?? '',
+  )
+  check('跳步先弹补齐确认', confirmShown, confirmText)
+  check('确认文案列出前置国家', /韩/.test(confirmText) && /赵/.test(confirmText), confirmText)
+
+  await confirmJump()
+  await sleep(350)
   const jump = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     captured: document.querySelectorAll('.region.is-captured').length,
@@ -199,18 +225,18 @@ try {
   check('跳步点楚时先把前置国并入秦', jump.index === '3' && jump.captured === 4, `index=${jump.index} captured=${jump.captured}`)
   check('中间国家都已归秦', jump.hanCaptured === 'true' && jump.weiCaptured === 'true')
 
-  // 战报 hover 路线 → 地图浮现起点/关隘/目的地地名
+  // 滚轮跳过行军 → 战报出现；hover 路线 → 地图浮现地名
   await page.evaluate(() =>
     document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 })),
   )
-  await sleep(800)
+  await page.waitForSelector('.battle-panel', { timeout: 5000 }).catch(() => null)
+  await sleep(600)
   await page.hover('.campaign-item')
   await sleep(500)
   const hoverPlaces = await page.evaluate(() => {
     const hot = document.querySelector('.campaign-route.is-hovered')
     const places = [...(hot?.querySelectorAll('.campaign-place') ?? [])]
     return {
-      count: places.length,
       visible: places.filter((n) => Number(getComputedStyle(n).opacity) > 0.5).length,
       names: places.map((n) => n.textContent?.trim()),
     }
@@ -220,30 +246,30 @@ try {
   check('地名包含起点与目的地', hoverPlaces.names.includes('咸阳'), hoverPlaces.names.join('/'))
 
   // 底部国家容器优先级最高：点它应立刻作废进行中的行军
-  await page.evaluate(() =>
-    document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),
-  )
-  await sleep(500)
+  await page.keyboard.press('Escape')
+  await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+  await sleep(400)
   await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
-  await sleep(600)
+  await sleep(700)
 
-  await page.mouse.click(chuBox.x, chuBox.y) // 重新开播
-  await sleep(300)
+  await clickNation2('han') // 韩是第一个，无需确认
+  await sleep(400)
   const beforeRail = await page.evaluate(() => ({
     routes: document.querySelectorAll('.campaign-route').length,
   }))
   await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
-  await sleep(400)
+  await sleep(500)
   const afterRail = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
     routes: document.querySelectorAll('.campaign-route').length,
     panel: Boolean(document.querySelector('.battle-panel')),
   }))
-  await sleep(2500) // 若序列仍在跑，这段时间足以让它结束
+  await sleep(2600) // 若序列仍在跑，这段时间足以让它结束
   const settledAfterRail = await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))
   console.log(`[RAIL-PRIORITY] ${JSON.stringify({ beforeRail, afterRail, settledAfterRail })}`)
   check('底部容器点击后行军立即作废', beforeRail.routes > 0 && afterRail.routes === 0)
   check('作废的行军不会再弹战报', afterRail.panel === false && settledAfterRail === false)
+
   /* ---------- 2d) 战报开着时点另一国：先播退场动画 ---------- */
   // 直接派发 click，绕开小多边形（韩）包围盒中心的命中误差；
   // 面板等它自然出现，不依赖"跳过"的时机。
