@@ -118,6 +118,7 @@ try {
   }))
   console.log(`[CAMPAIGN-0] ${JSON.stringify(play0)}`)
   check('单击国家开始播放战役序列', play0.routes === 4 && play0.current === 1, `${play0.current}/${play0.routes}`)
+  check('点击后收起悬浮卡', !(await page.evaluate(() => Boolean(document.querySelector('.map-tip')))))
   const skipHint = Boolean(
     await page.waitForSelector('.campaign-skip-hint', { timeout: 2000 }).catch(() => null),
   )

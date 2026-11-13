@@ -224,6 +224,11 @@ export function WarringStatesMap({
               data-nation={region.id}
               data-captured={captured ? 'true' : 'false'}
               onClick={() => {
+                /*
+                  点击后立刻收起悬浮卡：指针还压在版图上，那张"秦灭X"的卡
+                  会一直挡着刚开播的行军动画，直到鼠标挪开才消失。
+                */
+                setHovered(null)
                 // 秦不是"被灭国"，它是沙盘的本体：点它等于把时间拨回战前
                 if (isQin) {
                   onReset()
