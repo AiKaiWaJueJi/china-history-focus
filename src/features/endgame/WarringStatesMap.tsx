@@ -107,7 +107,8 @@ export function WarringStatesMap({
     否则节点 hover 仍会写出 hoveredNation，而悬浮卡片是 HTML 元素，
     不会跟着 SVG 一起淡出，就会出现"看不见的地图上还在弹提示"。
   */
-  const hoverActive = !unified && Boolean(hoveredId)
+  // 聚焦战报时屏蔽区域 hover：否则金边会一直挂在你点过的那块上
+  const hoverActive = !unified && !focusedNation && Boolean(hoveredId)
 
   const hoveredEvent = hoverActive ? (eventsByNation.get(hoveredId!) ?? null) : null
   const hoveredRegion = hoverActive
@@ -176,6 +177,8 @@ export function WarringStatesMap({
           ))}
         </g>
 
+        {/* 聚焦战报时整体压暗的就是这一层 */}
+        <g className="regions-layer">
         {ALL_REGIONS.map((region) => {
           const event = eventsByNation.get(region.id) ?? null
           const isQin = region.id === 'qin'
@@ -256,6 +259,7 @@ export function WarringStatesMap({
           >
             秦
           </text>
+        </g>
         </g>
       </svg>
 

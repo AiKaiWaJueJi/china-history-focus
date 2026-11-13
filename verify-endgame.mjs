@@ -357,7 +357,7 @@ try {
       label: n.querySelector('.battle-section-label')?.textContent?.trim(),
       len: (n.querySelector('.battle-text')?.textContent ?? '').trim().length,
     }))
-    const map = document.querySelector('[data-nation="wei"] .region-base')
+    const map = document.querySelector('.regions-layer')
     return {
       open: Boolean(document.querySelector('.battle-panel')),
       title: document.querySelector('.battle-title')?.textContent?.trim(),
@@ -383,7 +383,7 @@ try {
     panel.sections.every((s) => s.len > 40),
     panel.sections.map((s) => s.len).join('/'),
   )
-  check('聚焦时地色压暗（国名国都不压）', panel.mapOpacity <= 0.35, `地色=${panel.mapOpacity}`)
+  check('聚焦时整层压暗（地色+国名+国都）', panel.mapOpacity <= 0.35, `层透明度=${panel.mapOpacity}`)
   check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
 
   await page.screenshot({ path: `${OUT}\\04-detail.png` })

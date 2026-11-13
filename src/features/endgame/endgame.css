@@ -2349,3 +2349,52 @@
 .endgame-body.is-focused .region.is-captured .region-breathe {
   animation-duration: 4s;
 }
+/* ==========================================================================
+   v15：聚焦态只留一条呼吸的疆域轮廓
+   --------------------------------------------------------------------------
+   阅读战报时，地图应当退成"背景示意图"：
+   地色、国名、国都、秦字全部压暗，唯一亮着的是秦国疆域的轮廓在呼吸。
+   ========================================================================== */
+
+/* 旧的两条聚焦规则作废（v14 的"只压地色"与聚焦国金边） */
+.endgame-body.is-focused .region-base { opacity: 1; }
+.endgame-body.is-focused .region-edge { opacity: 1; }
+.endgame-body.is-focused .region.is-focused .region-edge { opacity: 1; }
+
+/* 整层压暗：地色、国名、国都、秦字一起变暗（不再保留亮字） */
+.endgame-body.is-focused .regions-layer {
+  opacity: 0.26;
+  filter: grayscale(0.85);
+  transition:
+    opacity 340ms ease,
+    filter 340ms ease;
+}
+
+/* 呼吸层此前是"填充呼吸"，现在改为只让疆域轮廓呼吸，填充不再闪 */
+.region-breathe {
+  display: none;
+}
+
+/* 疆域轮廓：并集层沉在各国之下，drop-shadow 只会从并集外缘溢出，
+   于是得到的正是"整个秦疆域的一圈外轮廓"，而不是每块各自的边。 */
+/*
+  三层叠加的 drop-shadow 才能在被压暗的版图上"透"出来：
+  第一层贴边、第二层扩散、第三层晕开，合起来接近一条 1.5px 的金线。
+*/
+.endgame-body.is-focused .empire-layer {
+  filter:
+    drop-shadow(0 0 1.5px rgba(240, 214, 150, 1))
+    drop-shadow(0 0 4px rgba(214, 168, 60, 0.8))
+    drop-shadow(0 0 9px rgba(214, 168, 60, 0.4));
+  animation: empire-breathe 4.2s ease-in-out infinite;
+}
+
+@keyframes empire-breathe {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 1;
+  }
+}
