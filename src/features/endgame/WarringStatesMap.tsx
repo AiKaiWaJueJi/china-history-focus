@@ -248,6 +248,7 @@ export function WarringStatesMap({
           秦字单独一层，画在所有国家之后 ——
           之前它在自己的 <g> 里（秦是第一个渲染的），移动后会被邻国的图块盖住。
         */}
+        </g>
         <g className="qin-label-layer" aria-hidden="true">
           <text
             className="region-label region-label--qin"
@@ -259,7 +260,6 @@ export function WarringStatesMap({
           >
             秦
           </text>
-        </g>
         </g>
       </svg>
 

@@ -384,6 +384,29 @@ try {
     panel.sections.map((s) => s.len).join('/'),
   )
   check('聚焦时整层压暗（地色+国名+国都）', panel.mapOpacity <= 0.35, `层透明度=${panel.mapOpacity}`)
+
+  // 「秦」字要区别于其他国名：仍是金色，只是暗一档
+  const qinLabel = await page.evaluate(() => {
+    const el = document.querySelector('.region-label--qin')
+    const layer = el?.parentElement
+    return {
+      fill: el ? getComputedStyle(el).fill : null,
+      layerOpacity: layer ? Number(getComputedStyle(layer).opacity) : null,
+      inDimmedLayer: Boolean(el?.closest('.regions-layer')),
+    }
+  })
+  console.log(`[QIN-LABEL] ${JSON.stringify(qinLabel)}`)
+  check('聚焦时秦字仍为金色', /233,\s*210,\s*154/.test(qinLabel.fill ?? ''), qinLabel.fill)
+  check(
+    '秦字未被灰化层吞掉（不在压暗组内）',
+    qinLabel.inDimmedLayer === false,
+    `inDimmedLayer=${qinLabel.inDimmedLayer}`,
+  )
+  check(
+    '秦字亮度高于其他国名（>0.26 层透明度）',
+    (qinLabel.layerOpacity ?? 0) > 0.35,
+    `${qinLabel.layerOpacity}`,
+  )
   check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
 
   await page.screenshot({ path: `${OUT}\\04-detail.png` })
