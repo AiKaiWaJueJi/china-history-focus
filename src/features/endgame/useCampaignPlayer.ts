@@ -14,7 +14,7 @@
  * 计时器放在 hook 里（见 useCampaignPlayer），store 只存离散状态；
  * 这样组件重渲染不会重启动画。
  */
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { create } from 'zustand'
 import type { CampaignPhase } from '../../core/emperorTypes'
 
@@ -117,9 +117,14 @@ export function useCampaignPlayer(
     // index 变化也必须重排 timer，因此一并列入依赖
   }, [nation, index, stage, done, campaigns.length])
 
-  // 播放结束：打开战报（只触发一次）
+  /*
+    播放结束：打开战报。
+    用 ref 持有回调，避免父组件每次渲染新建函数导致 effect 反复执行/丢失。
+  */
+  const settledRef = useRef(onSettled)
+  settledRef.current = onSettled
+
   useEffect(() => {
-    if (done) onSettled()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (done) settledRef.current()
   }, [done])
 }

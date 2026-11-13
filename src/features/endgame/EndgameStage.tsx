@@ -76,11 +76,17 @@ export function EndgameStage() {
     useCampaignStore.getState().finishCampaign()
   }, [])
 
+  /*
+    序列播完才吞并版图：index 在这一刻推进，敌国的墨色晕染与行军到达同步。
+    之前是点击即 setIndex，版图瞬间变色，与动画脱节。
+  */
   const openReportAfterCampaign = useCallback(() => {
     const nation = useCampaignStore.getState().campaignNation
     if (!nation) return
+    const ev = events.find((e) => e.nationId === nation)
+    if (ev) setIndex(ev.order)
     useEndgameStore.setState({ focusedNation: nation })
-  }, [])
+  }, [events, setIndex])
 
   useCampaignPlayer(activeCampaigns, openReportAfterCampaign)
 
@@ -133,19 +139,22 @@ export function EndgameStage() {
         window.clearTimeout(closeTimer.current)
         closeTimer.current = null
       }
+      /*
+        点国家 = 先推出已有战报 → 播战役序列 → 播完再弹新战报。
+        index 不在这里推进：吞并在序列播完时才发生（见 openReportAfterCampaign），
+        否则点一下版图就瞬间变色，与行军动画脱节。
+      */
+      if (useEndgameStore.getState().focusedNation) {
+        useEndgameStore.setState({ focusedNation: null })
+      }
       setClosing(false)
       warmUpAudio()
-      /*
-        点国家 = 先播战役序列，再开战报（旧行为是立刻开面板）。
-        双击可跳过，由 onSkipCampaign 处理。
-      */
-      setIndex(event.order)
       const campaign = useCampaignStore.getState()
       campaign.clearCampaign()
       campaign.startCampaign(event.nationId)
       if (!muted) playBell(0.9)
     },
-    [setIndex, muted],
+    [muted],
   )
 
   /*

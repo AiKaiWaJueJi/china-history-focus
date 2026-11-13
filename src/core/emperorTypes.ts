@@ -148,6 +148,8 @@ export interface CampaignPhase {
    */
   points: MapPoint[]
   result: string
+  /** 中途重点关隘名（与 points 的中间点一一对应），仅动画期间显示 */
+  via?: string[]
   /** 本段是否引来援军 */
   allies?: CampaignAlly[]
 }

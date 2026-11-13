@@ -13,7 +13,6 @@
  *      战报里 hover 某段 → 该段重播一次生长动画 + 终点闪一下。
  */
 import type { CampaignPhase, MapPoint } from '../../core/emperorTypes'
-import { CAMPAIGN_GROW_MS } from './useCampaignPlayer'
 
 interface CampaignRoutesProps {
   campaigns: CampaignPhase[]
@@ -63,12 +62,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
             key={`p-${campaign.phase}`}
             className={`campaign-route ${state} side-${campaign.side}${isHovered ? ' is-hovered' : ''}`}
           >
-            <path
-              className="campaign-line"
-              d={polyline(campaign.points)}
-              pathLength={1}
-              style={{ transitionDuration: `${CAMPAIGN_GROW_MS}ms` }}
-            />
+            <path className="campaign-line" d={polyline(campaign.points)} pathLength={1} />
 
             {/* 箭头延迟浮现，避免一开始就钉在终点 */}
             <polygon
@@ -85,11 +79,31 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
             </g>
 
             <g className="campaign-caption" transform={`translate(${t.mid.x} ${t.mid.y})`}>
-              <text className="campaign-general" textAnchor="middle" y={-5}>
+              <text className="campaign-general" textAnchor="middle" y={-6}>
                 {campaign.general}
               </text>
-              <text className="campaign-result" textAnchor="middle" y={11}>
+              <text className="campaign-result" textAnchor="middle" y={12}>
                 {campaign.result}
+              </text>
+            </g>
+
+            {/* 重点关隘与目的地：只在该段行军时显示，播完即消失 */}
+            <g className="campaign-places">
+              {(campaign.via ?? []).map((name, k) => {
+                const p = toView(campaign.points[k + 1] ?? campaign.points[0])
+                return (
+                  <text key={name} className="campaign-place" x={p.x} y={p.y - 12} textAnchor="middle">
+                    {name}
+                  </text>
+                )
+              })}
+              <text
+                className="campaign-place campaign-place--dest"
+                x={t.end.x}
+                y={t.end.y + 24}
+                textAnchor="middle"
+              >
+                {campaign.to}
               </text>
             </g>
           </g>
@@ -110,12 +124,7 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
               key={`a-${campaign.phase}-${ally.nation}`}
               className={`campaign-route campaign-ally ${state}${isHovered ? ' is-hovered' : ''}`}
             >
-              <path
-                className="campaign-line"
-                d={polyline(ally.points)}
-                pathLength={1}
-                style={{ transitionDuration: `${CAMPAIGN_GROW_MS}ms` }}
-              />
+              <path className="campaign-line" d={polyline(ally.points)} pathLength={1} />
               <polygon
                 className="campaign-arrow"
                 points="-11,-6 0,0 -11,6"

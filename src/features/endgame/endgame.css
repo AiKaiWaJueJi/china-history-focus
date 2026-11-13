@@ -2841,3 +2841,61 @@
 .campaign-ally-row {
   padding: 3px 8px;
 }
+/* ==========================================================================
+   v21：首段也要有生长动画 + 关隘标注 + 字号放大
+   ========================================================================== */
+
+/*
+  之前用 transition 做生长：第一段路线是"挂载即当前态"，
+  没有过渡前的旧值，于是直接以完结状态出现 —— 看起来就是没有动画。
+  改成 keyframe 动画后，元素一挂载就开始播，每一段都一致。
+*/
+.campaign-route.is-current .campaign-line {
+  animation: campaign-grow 1500ms linear both;
+}
+
+@keyframes campaign-grow {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* 关隘与目的地标注 */
+.campaign-place {
+  fill: rgba(240, 220, 170, 0.85);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.9);
+  stroke-width: 3px;
+  opacity: 0;
+  transition: opacity 320ms ease 260ms;
+}
+
+.campaign-route.is-current .campaign-place {
+  opacity: 1;
+}
+
+/* 动画结束即消失：已播段与 hover 复现都不显示 */
+.campaign-route.is-played .campaign-place,
+.campaign-route.is-hovered .campaign-place {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.campaign-place--dest {
+  fill: rgba(243, 226, 182, 0.95);
+  font-size: 13px;
+}
+
+/* 行军解释字号放大 */
+.campaign-general {
+  font-size: 15px;
+}
+
+.campaign-result {
+  font-size: 12.5px;
+}
