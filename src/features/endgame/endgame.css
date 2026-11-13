@@ -2292,3 +2292,60 @@
   background: rgba(44, 33, 12, 0.5);
   box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.1);
 }
+/* ==========================================================================
+   v14：合并色差回归 + 聚焦态"暗下去但关键信息亮着"
+   ========================================================================== */
+
+/* ---------- 1. 灭国即并入秦色（恢复色差） ---------- */
+.region:not(.is-qin).is-captured .region-ink {
+  opacity: 1;
+}
+
+/* ---------- 2. 秦疆域呼吸 ---------- */
+.region-breathe {
+  /* 暖赭，峰值压到 .12：能感到"在呼吸"，又不至于亮得抢国名的戏 */
+  fill: #b8752f;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.region.is-captured .region-breathe {
+  animation: region-breathe 5s ease-in-out infinite;
+}
+
+@keyframes region-breathe {
+  0%,
+  100% {
+    opacity: 0.03;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+/* ---------- 3. 聚焦：只压"地"，不压"字" ----------
+   整层压暗会把国名与国都一起吃掉，读者就没法边看战报边对位置了。
+   现在只压底色与边界：地图退为暗底，秦国疆域（秦色填充 + 呼吸）与在场国名保持清晰。 */
+.endgame-body.is-focused .map-svg {
+  opacity: 1;
+  filter: none;
+}
+
+.endgame-body.is-focused .region-base {
+  opacity: 0.22;
+  transition: opacity 320ms ease;
+}
+
+.endgame-body.is-focused .region-edge {
+  opacity: 0.06;
+}
+
+/* 当前聚焦国的轮廓仍然留一圈金边，便于定位 */
+.endgame-body.is-focused .region.is-focused .region-edge {
+  opacity: 1;
+}
+
+/* 呼吸在聚焦时略强一点，提醒"这是此刻秦的疆域" */
+.endgame-body.is-focused .region.is-captured .region-breathe {
+  animation-duration: 4s;
+}

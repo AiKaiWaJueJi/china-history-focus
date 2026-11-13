@@ -205,7 +205,13 @@ export function WarringStatesMap({
               <polygon className="region-base" points={region.points} />
 
               <g clipPath={`url(#clip-${region.id})`} className="region-ink-wrap">
+                {/* 底色：灭国时由透明淡入为秦色 */}
                 <rect className="region-ink" x="0" y="0" width="1000" height="640" />
+                {/*
+                  呼吸层：单独一层半透明暖色，靠 opacity 循环做出"呼吸"，
+                  不动 filter，交给合成器；最暗时底层仍是秦色，疆域始终看得清。
+                */}
+                <rect className="region-breathe" x="0" y="0" width="1000" height="640" />
               </g>
 
               <polygon className="region-edge" points={region.points} />
