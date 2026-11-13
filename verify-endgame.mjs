@@ -209,15 +209,15 @@ try {
   check('关闭战报后才出现终章秦字', !afterClose.hasPanel && afterClose.hasHero)
 
 
-  // 秦色覆盖层现在用 opacity 淡入（"填成秦色"），不再是 scaleX 擦除
-  const inkOf = (nation) =>
+  // 降噪后灭国不再填充底色，进攻判据改为"国名是否消散"
+  const labelOf = (nation) =>
     page.evaluate((id) => {
-      const ink = document.querySelector(`[data-nation="${id}"] .region-ink`)
-      if (!ink) return null
-      return Number(Number(getComputedStyle(ink).opacity).toFixed(3))
+      const el = document.querySelector(`[data-nation="${id}"] .region-label`)
+      if (!el) return null
+      return Number(Number(getComputedStyle(el).opacity).toFixed(2))
     }, nation)
 
-  const beforeBack = { wei: await inkOf('wei'), chu: await inkOf('chu'), qi: await inkOf('qi') }
+  const beforeBack = { wei: await labelOf('wei'), chu: await labelOf('chu'), qi: await labelOf('qi') }
   await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click()) // → index 2
   await sleep(1100)
   const back = await page.evaluate(() => ({
@@ -226,15 +226,17 @@ try {
     hasEntry: Boolean(document.querySelector('.qin-entry')),
     hasPanel: Boolean(document.querySelector('.battle-panel')),
   }))
-  const afterBack = { wei: await inkOf('wei'), chu: await inkOf('chu'), qi: await inkOf('qi') }
-  console.log(`\n[BACK] ${JSON.stringify(back)} · 墨色 ${Object.values(beforeBack)} → ${Object.values(afterBack)}`)
+  const afterBack = { wei: await labelOf('wei'), chu: await labelOf('chu'), qi: await labelOf('qi') }
+  console.log(
+    `\n[BACK] ${JSON.stringify(back)} · 国名可见度 ${Object.values(beforeBack).join('/')} → ${Object.values(afterBack).join('/')}`,
+  )
   check('回退到 index 2', back.index === '2', back.index)
   check('已入秦图的只剩 3 个（秦+韩+赵）', back.captured === 3, `${back.captured}`)
   check('秦朝入口消失', !back.hasEntry)
   check('回退后仍无战报栏', !back.hasPanel)
   check(
-    '版图墨色随之回退',
-    Object.values(afterBack).every((v) => v < 0.05) && Object.values(beforeBack).every((v) => v > 0.95),
+    '回退后六国国名随之复原',
+    Object.values(beforeBack).every((v) => v < 0.05) && Object.values(afterBack).every((v) => v > 0.5),
     `${Object.values(beforeBack).join('/')} → ${Object.values(afterBack).join('/')}`,
   )
 
@@ -348,6 +350,15 @@ try {
   await page.screenshot({ path: `${OUT}\\03-hover.png` })
 
   /* ---------- 4b) 地缘战略点 ---------- */
+  const layerOff = await page.evaluate(() => ({
+    toggle: Boolean(document.querySelector('.map-layer-toggle')),
+    dots: document.querySelectorAll('.strat-dot').length,
+  }))
+  check('地图右上角有图层开关', layerOff.toggle)
+  check('战略点默认不显示', layerOff.dots === 0, `${layerOff.dots}`)
+
+  await page.click('.map-layer-toggle')
+  await sleep(500)
   const strat = await page.evaluate(() => {
     const layer = document.querySelector('.strategic-layer')
     const dots = [...document.querySelectorAll('.strat-dot')]
@@ -377,8 +388,21 @@ try {
     strat.names.join('/'),
   )
   check('图层与版图内容盒对齐（不越界）', strat.insideSvg)
-  check('呼吸动画已启用', strat.pulse === 'strat-pulse', strat.pulse)
+  check('呼吸动画已启用（慢速）', strat.pulse === 'strat-pulse-slow', strat.pulse)
   check('说明默认隐藏', (strat.tipOpacity ?? 1) < 0.1, `${strat.tipOpacity}`)
+
+  // 悬停某国 → 只点亮该国的战略点（渐进式呈现）
+  await page.hover('[data-nation="zhao"] .region-base')
+  await sleep(450)
+  const litByCountry = await page.evaluate(() => ({
+    active: document.querySelectorAll('.strat-dot[data-active="true"]').length,
+    dim: Number(getComputedStyle(document.querySelector('.strat-dot')).opacity),
+  }))
+  console.log(`[STRAT-ACTIVE] ${JSON.stringify(litByCountry)}`)
+  check('悬停赵国只点亮该国的战略点', litByCountry.active === 3, `${litByCountry.active} 个`)
+  check('其余战略点保持低调', litByCountry.dim < 0.5, `${litByCountry.dim}`)
+  await page.mouse.move(800, 40, { steps: 2 })
+  await sleep(300)
 
   await page.hover('.strat-dot')
   await sleep(400)
@@ -436,6 +460,20 @@ try {
   )
   check('地图变暗灰化', panel.mapOpacity <= 0.35 && /grayscale\(1\)/.test(panel.mapFilter), `${panel.mapOpacity}`)
   check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
+
+  // 聚焦时该国战略点仍要保持高亮（余光能对上地理位置）
+  await page.mouse.move(900, 60, { steps: 2 })
+  await sleep(500)
+  const focusedDots = await page.evaluate(() => ({
+    title: document.querySelector('.battle-panel .battle-title')?.textContent?.trim() ?? '',
+    active: document.querySelectorAll('.strat-dot[data-active="true"]').length,
+  }))
+  console.log(`[FOCUS-DOTS] ${JSON.stringify(focusedDots)}`)
+  check(
+    '聚焦战报时该国战略点保持高亮',
+    focusedDots.active > 0,
+    `${focusedDots.title} → ${focusedDots.active} 个`,
+  )
   await page.screenshot({ path: `${OUT}\\04-detail.png` })
   /* ---------- 5b) 史料原文 ---------- */
   const quote = await page.evaluate(() => {

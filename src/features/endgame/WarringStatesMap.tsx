@@ -113,6 +113,9 @@ export function WarringStatesMap({
     SVG 用 xMidYMid meet 适配容器，容器比 1000:640 宽时左右会留黑边。
     战略点要贴在版图上而不是容器上，所以量一次"实际绘制区"当坐标系。
   */
+  // 图层开关：默认关闭，避免一开始就满屏小点
+  const [showStrategic, setShowStrategic] = useState(false)
+
   const stageRef = useRef<HTMLDivElement>(null)
   const [contentBox, setContentBox] = useState<ContentBox | null>(null)
 
@@ -284,7 +287,13 @@ export function WarringStatesMap({
       </svg>
 
       {/* 地缘战略点：在版图之上、提示卡之下 */}
-      <StrategicLayer points={STRATEGIC_POINTS} box={contentBox} hidden={unified} />
+      <StrategicLayer
+        points={STRATEGIC_POINTS}
+        box={contentBox}
+        visible={showStrategic}
+        activeNation={hoveredId ?? focusedNation}
+        hidden={unified}
+      />
 
       {hoveredEvent && hoveredRegion ? (
         <div
@@ -330,6 +339,29 @@ export function WarringStatesMap({
           <span className="map-tip-title">秦</span>
           <span className="map-tip-brief">点击回到战前 · 六国复其疆</span>
         </div>
+      ) : null}
+
+      {!unified ? (
+        <button
+          type="button"
+          className="map-layer-toggle"
+          data-on={showStrategic}
+          onClick={() => setShowStrategic((v) => !v)}
+          aria-pressed={showStrategic}
+          title={showStrategic ? '隐藏战略要点' : '显示战略要点'}
+        >
+          {/* 地图钉 */}
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+            <path
+              d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+            <circle cx="12" cy="11" r="2.1" fill="currentColor" />
+          </svg>
+        </button>
       ) : null}
 
       {overlay}

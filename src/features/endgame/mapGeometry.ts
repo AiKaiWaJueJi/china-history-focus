@@ -109,6 +109,8 @@ export interface StrategicPoint {
   id: string
   name: string
   kind: StrategicKind
+  /** 所属国家（用于 hover 联动：悬停某国时只点亮该国的点） */
+  regionId: string
   /** 与版图同一坐标系（viewBox 1000×640） */
   x: number
   y: number
@@ -125,6 +127,7 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
     id: 'sp_hangu',
     name: '函谷关',
     kind: 'pass',
+    regionId: 'qin',
     x: 342,
     y: 302,
     description: '秦之东大门，一夫当关万夫莫开。六国合纵屡至而不得入，秦据此进退自如。',
@@ -133,6 +136,7 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
     id: 'sp_jingxing',
     name: '井陉',
     kind: 'pass',
+    regionId: 'zhao',
     x: 448,
     y: 168,
     description: '太行八陉之一。前229年王翦由此东出，绕开赵军正面，直下邯郸。',
@@ -141,6 +145,7 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
     id: 'sp_changping',
     name: '长平',
     kind: 'battle',
+    regionId: 'zhao',
     x: 470,
     y: 250,
     description: '前260年秦赵决战处，赵卒四十余万降而被坑，赵国自此不复为强国。',
@@ -149,6 +154,7 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
     id: 'sp_handan',
     name: '邯郸',
     kind: 'city',
+    regionId: 'zhao',
     x: 556,
     y: 196,
     description: '赵都，河北之枢。前228年城破，赵王迁被俘，秦尽取赵地。',
@@ -157,6 +163,7 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
     id: 'sp_bashu',
     name: '巴蜀粮仓',
     kind: 'granary',
+    regionId: 'qin',
     x: 232,
     y: 470,
     description: '李冰治水所成"天府"。秦取巴蜀后粮秣不竭，是东进六十万大军的底气。',

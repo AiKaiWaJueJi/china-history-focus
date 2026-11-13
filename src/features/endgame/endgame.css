@@ -2103,3 +2103,185 @@
     transform 1700ms cubic-bezier(0.33, 0, 0.2, 1),
     opacity 1100ms ease 320ms;
 }
+/* ==========================================================================
+   v12：降噪 —— 视觉权重重新分配
+   --------------------------------------------------------------------------
+   总原则：国名是第一层级，其余全部退到"地图注记"的量级。
+   目标不是"信息更多"，而是"一眼看到重点，其余余光可及"。
+   ========================================================================== */
+
+/* ---------- 1. 取消灭国后的背景填充 ----------
+   之前每灭一国就把该国填成秦色，六国尽墨时整张图像一块脏抹布。
+   现在只有秦保留秦色（它是帝国本体），被灭国家的底色不变，
+   灭国的信号改由"国名与国都消散 + 边界消失"承担。 */
+.region:not(.is-qin).is-captured .region-ink {
+  opacity: 0;
+}
+
+/* ---------- 2. 国都：降到"注记"量级 ---------- */
+.capital-halo {
+  display: none; /* 去掉高亮外圈 */
+}
+
+.capital-dot {
+  r: 2px;
+  fill: #453f36;
+}
+
+.capital-label {
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  fill: rgba(214, 208, 196, 0.4);
+  stroke: rgba(0, 0, 0, 0.6);
+  stroke-width: 2px;
+  transition:
+    fill 260ms ease,
+    opacity 260ms ease,
+    filter 260ms ease;
+}
+
+/* 悬停/聚焦该国时才提亮，并给一点极淡的金色投影 */
+.region.is-hovered .capital-dot,
+.region.is-focused .capital-dot {
+  fill: #e8cf8e;
+}
+
+.region.is-hovered .capital-label,
+.region.is-focused .capital-label {
+  fill: rgba(243, 226, 182, 0.95);
+  filter: drop-shadow(0 0 4px rgba(232, 207, 142, 0.45));
+}
+
+/* ---------- 3. 战略点：暗红微点，慢呼吸 ---------- */
+.strat-dot {
+  opacity: 0.32;
+  transition: opacity 320ms ease;
+}
+
+/* 该国被悬停或聚焦时点亮 */
+.strat-dot[data-active='true'],
+.strat-dot:hover,
+.strat-dot:focus-visible {
+  opacity: 1;
+}
+
+.strat-core {
+  width: 4px;
+  height: 4px;
+  background: #8b0000;
+  box-shadow: none;
+  transition: box-shadow 320ms ease, transform 220ms ease;
+}
+
+.strat-dot[data-active='true'] .strat-core,
+.strat-dot:hover .strat-core,
+.strat-dot:focus-visible .strat-core {
+  box-shadow: 0 0 7px 1px rgba(139, 0, 0, 0.6);
+}
+
+.strat-ring {
+  width: 9px;
+  height: 9px;
+  border-color: rgba(139, 0, 0, 0.5);
+  /* 慢一倍、幅度收一半：更像呼吸，不像雷达 */
+  animation: strat-pulse-slow 5.6s ease-out infinite;
+}
+
+@keyframes strat-pulse-slow {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.42;
+  }
+  70% {
+    opacity: 0.05;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+/* 默认不必显示焦点环（浏览器默认是蓝色，最破坏氛围） */
+.strat-dot,
+.strat-dot:focus,
+.strat-dot:focus-visible,
+.map-layer-toggle,
+.map-layer-toggle:focus,
+.map-layer-toggle:focus-visible {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- 4. 说明卡：克制的战术标记 ---------- */
+.strat-tip {
+  width: 190px;
+  padding: 7px 9px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(10, 10, 10, 0.9);
+  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 1);
+}
+
+.strat-tip-name {
+  margin-bottom: 3px;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  color: #b8912f; /* 暗金，不再是随类型变的亮色 */
+}
+
+.strat-tip-desc {
+  font-size: 11px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 「秦」提示卡也统一到同一套配色 */
+.map-tip.is-qin-tip {
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(10, 10, 10, 0.9);
+  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 1);
+}
+
+.map-tip.is-qin-tip .map-tip-title {
+  color: #b8912f;
+  font-size: 12px;
+}
+
+.map-tip.is-qin-tip .map-tip-brief {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- 5. 图层开关 ---------- */
+.map-layer-toggle {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 8;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 8, 6, 0.5);
+  color: rgba(255, 255, 255, 0.32);
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+}
+
+.map-layer-toggle:hover {
+  color: rgba(232, 207, 142, 0.8);
+  border-color: rgba(212, 175, 55, 0.32);
+}
+
+.map-layer-toggle[data-on='true'] {
+  color: #e8cf8e;
+  border-color: rgba(212, 175, 55, 0.45);
+  background: rgba(44, 33, 12, 0.5);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.1);
+}
