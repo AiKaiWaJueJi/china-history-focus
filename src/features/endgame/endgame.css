@@ -2414,3 +2414,287 @@
 .endgame-body.is-focused .qin-label-layer {
   opacity: 0.55;
 }
+/* ==========================================================================
+   v17：行军路线（Campaign Routes）
+   --------------------------------------------------------------------------
+   秦军赤金、敌国幽蓝；路线用 stroke-dashoffset 生长，箭头延迟淡入，
+   起点微光与终点战火只属于"当前段"，战报里 hover 复现时不带文字。
+   ========================================================================== */
+
+.campaign-layer {
+  pointer-events: none;
+}
+
+.campaign-route {
+  transition: opacity 300ms ease;
+}
+
+.campaign-route.is-future {
+  opacity: 0;
+}
+
+/* 已播完的段：半透明留在地图上 */
+.campaign-route.is-played {
+  opacity: 0.45;
+}
+
+.campaign-route.is-current,
+.campaign-route.is-hovered {
+  opacity: 1;
+}
+
+.campaign-line {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition-property: stroke-dashoffset;
+  transition-timing-function: linear;
+}
+
+.campaign-route.is-current .campaign-line,
+.campaign-route.is-played .campaign-line,
+.campaign-route.is-hovered .campaign-line {
+  stroke-dashoffset: 0;
+}
+
+/* 秦军：赤金 */
+.side-qin .campaign-line {
+  stroke: #c0762a;
+}
+
+.side-qin.is-current .campaign-line,
+.side-qin.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 6px rgba(192, 118, 42, 0.75));
+}
+
+/* 敌国反击：幽蓝 */
+.side-enemy .campaign-line {
+  stroke: #3f7f9c;
+}
+
+.side-enemy.is-current .campaign-line,
+.side-enemy.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 6px rgba(63, 127, 156, 0.7));
+}
+
+/* 箭头：路线快画完才浮现，避免一开始就钉在终点 */
+.campaign-arrow {
+  opacity: 0;
+  transition: opacity 260ms ease 1.3s;
+}
+
+.side-qin .campaign-arrow {
+  fill: #d98b3a;
+}
+
+.side-enemy .campaign-arrow {
+  fill: #4a90b8;
+}
+
+.campaign-route.is-current .campaign-arrow {
+  opacity: 1;
+}
+
+.campaign-route.is-played .campaign-arrow {
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* 起止点：只属于当前段 */
+.campaign-start,
+.campaign-end {
+  opacity: 0;
+}
+
+.campaign-start {
+  fill: #f0dcaa;
+}
+
+.campaign-route.is-current .campaign-start {
+  opacity: 0.9;
+  transition: opacity 220ms ease;
+}
+
+.campaign-flare {
+  fill: #e08a3c;
+}
+
+.campaign-flare-ring {
+  fill: none;
+  stroke: #e08a3c;
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.campaign-route.is-current .campaign-end {
+  opacity: 1;
+  transition: opacity 300ms ease 1.15s;
+}
+
+.campaign-route.is-current .campaign-flare-ring {
+  animation: campaign-flare 1.6s ease-out 1.15s infinite;
+}
+
+@keyframes campaign-flare {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* 文字：只随当前段浮现；战报 hover 复现的路线不带文字 */
+.campaign-caption {
+  opacity: 0;
+  transition: opacity 400ms ease 320ms;
+}
+
+.campaign-route.is-current .campaign-caption {
+  opacity: 1;
+}
+
+.campaign-route.is-played .campaign-caption,
+.campaign-route.is-hovered .campaign-caption {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.campaign-general {
+  fill: #f2ddb0;
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.9);
+  stroke-width: 3px;
+}
+
+.campaign-result {
+  fill: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.85);
+  stroke-width: 3px;
+}
+
+/* ---------- 战报里的「进军序列」 ---------- */
+.campaign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 2px 0 0;
+}
+
+.campaign-list-label {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: rgba(226, 200, 125, 0.6);
+  margin-bottom: 2px;
+}
+
+.campaign-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-left: 2px solid rgba(192, 118, 42, 0.55);
+  background: transparent;
+  border-radius: 0 4px 4px 0;
+  cursor: default;
+  text-align: left;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.campaign-item.side-enemy {
+  border-left-color: rgba(63, 127, 156, 0.65);
+}
+
+.campaign-item:hover,
+.campaign-item:focus-visible {
+  outline: none;
+  background: rgba(226, 200, 125, 0.06);
+  border-color: rgba(226, 200, 125, 0.18);
+  border-left-color: #e8cf8e;
+}
+
+.campaign-item-phase {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.32);
+  font-variant-numeric: tabular-nums;
+}
+
+.campaign-item-general {
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 12.5px;
+  color: #e8cf8e;
+  letter-spacing: 0.06em;
+}
+
+.campaign-item-route {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.campaign-item-result {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+}
+/* ==========================================================================
+   v18：加入「进军序列」后，把战报重新压回一屏
+   ========================================================================== */
+
+.battle-panel {
+  gap: 8px;
+  padding: 12px 18px 10px;
+}
+
+.battle-section {
+  gap: 2px;
+}
+
+.battle-text {
+  font-size: 14px;
+  line-height: 1.82;
+}
+
+.source-quote {
+  padding: 12px 12px 9px;
+}
+
+.source-book {
+  margin-bottom: 6px;
+}
+
+.source-text {
+  max-height: 74px;
+  line-height: 30px;
+  font-size: 14px;
+}
+
+.campaign-item {
+  padding: 4px 7px;
+  gap: 6px;
+}
+
+.campaign-item-result {
+  font-size: 10.5px;
+}
+
+.battle-figures {
+  margin-top: 0;
+}
+
+.battle-exit-hint {
+  padding-top: 4px;
+}

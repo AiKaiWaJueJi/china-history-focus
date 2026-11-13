@@ -44,13 +44,15 @@ function renderWithFigures(
 
 interface BattlePanelProps {
   event: EndgameEvent
+  /** hover 某一段进军时，让地图重新点亮该路线 */
+  onCampaignHover?: (phase: number | null) => void
   /** 正在播出场动画（父级 240ms 后才真正卸载） */
   closing?: boolean
   onFigureClick: (figureId: string) => void
   onClose: () => void
 }
 
-export function BattlePanel({ event, closing, onFigureClick, onClose }: BattlePanelProps) {
+export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaignHover }: BattlePanelProps) {
   return (
     <aside
       className={'battle-panel' + (closing ? ' is-closing' : '')}
@@ -86,6 +88,31 @@ export function BattlePanel({ event, closing, onFigureClick, onClose }: BattlePa
           {renderWithFigures(event.detail.result, event.figures, onFigureClick)}
         </p>
       </div>
+
+      {/* 进军序列：hover 任一条，右侧地图会重新点亮对应路线（不带文字） */}
+      {event.campaigns?.length ? (
+        <div className="campaign-list">
+          <span className="campaign-list-label">进军序列</span>
+          {event.campaigns.map((campaign, i) => (
+            <button
+              key={`${campaign.phase}-${i}`}
+              type="button"
+              className={`campaign-item side-${campaign.side}`}
+              onMouseEnter={() => onCampaignHover?.(i)}
+              onMouseLeave={() => onCampaignHover?.(null)}
+              onFocus={() => onCampaignHover?.(i)}
+              onBlur={() => onCampaignHover?.(null)}
+            >
+              <span className="campaign-item-phase">{i + 1}</span>
+              <span className="campaign-item-general">{campaign.general}</span>
+              <span className="campaign-item-route">
+                {campaign.from} → {campaign.to}
+              </span>
+              <span className="campaign-item-result">{campaign.result}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       {/* 三段式正文之后：史料原文 */}
       <SourceQuote

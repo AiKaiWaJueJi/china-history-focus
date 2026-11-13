@@ -20,6 +20,7 @@ import { FigureModal } from './FigureModal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { useEndgameStore } from './useEndgameStore'
+import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
 
 export function EndgameStage() {
@@ -35,10 +36,45 @@ export function EndgameStage() {
   const profileId = useEndgameStore((s) => s.profileId)
   const muted = useEndgameStore((s) => s.muted)
   const setIndex = useEndgameStore((s) => s.setIndex)
-  const conquerTo = useEndgameStore((s) => s.conquerTo)
   const resetAll = useEndgameStore((s) => s.resetAll)
   const openProfile = useEndgameStore((s) => s.openProfile)
   const toggleMute = useEndgameStore((s) => s.toggleMute)
+
+  /* ---------------- 战役序列（行军路线） ---------------- */
+  const campaignNation = useCampaignStore((s) => s.campaignNation)
+  const campaignIndex = useCampaignStore((s) => s.campaignIndex)
+  const campaignDone = useCampaignStore((s) => s.campaignDone)
+  const hoveredCampaign = useCampaignStore((s) => s.hoveredCampaign)
+
+  const activeCampaigns = useMemo(
+    () => events.find((event) => event.nationId === campaignNation)?.campaigns ?? [],
+    [events, campaignNation],
+  )
+
+  /*
+    地图上要画哪一组路线：
+    · 点击国家后走动画 → 用当前国家的序列，按播放进度
+    · 直接看战报（点底部节点/回退）→ 用该事件自己的序列，全部视为已完成
+  */
+  const focusedCampaigns = events.find((e) => e.nationId === focusedNation)?.campaigns ?? []
+  const mapCampaigns = campaignNation ? activeCampaigns : focusedCampaigns
+  const mapDone = campaignNation ? campaignDone : focusedCampaigns.length > 0
+  const mapIndex = campaignNation ? campaignIndex : focusedCampaigns.length - 1
+
+  /* 播放完毕 → 打开战报（与动画进度严格对应：动画没走完不弹面板） */
+  /** 双击跳过剩余动画，直接进战报 */
+  const skipCampaign = useCallback(() => {
+    if (!useCampaignStore.getState().campaignNation) return
+    useCampaignStore.getState().finishCampaign()
+  }, [])
+
+  const openReportAfterCampaign = useCallback(() => {
+    const nation = useCampaignStore.getState().campaignNation
+    if (!nation) return
+    useEndgameStore.setState({ focusedNation: nation })
+  }, [])
+
+  useCampaignPlayer(activeCampaigns, openReportAfterCampaign)
 
   const focusedEvent = events.find((event) => event.nationId === focusedNation) ?? null
   const profile =
@@ -91,10 +127,17 @@ export function EndgameStage() {
       }
       setClosing(false)
       warmUpAudio()
-      conquerTo(event.order, event.nationId)
+      /*
+        点国家 = 先播战役序列，再开战报（旧行为是立刻开面板）。
+        双击可跳过，由 onSkipCampaign 处理。
+      */
+      setIndex(event.order)
+      const campaign = useCampaignStore.getState()
+      campaign.clearCampaign()
+      campaign.startCampaign(event.nationId)
       if (!muted) playBell(0.9)
     },
-    [conquerTo, muted],
+    [setIndex, muted],
   )
 
   /*
@@ -102,6 +145,7 @@ export function EndgameStage() {
     若战报正开着，先让它播完 240ms 退场动画再归零，避免面板"啪"地消失。
   */
   const handleReset = useCallback(() => {
+    useCampaignStore.getState().clearCampaign()
     if (useEndgameStore.getState().focusedNation) {
       closePanel()
       window.setTimeout(() => useEndgameStore.getState().resetAll(), 240)
@@ -191,12 +235,18 @@ export function EndgameStage() {
             closing={closing}
             onFigureClick={openProfile}
             onClose={closePanel}
+            onCampaignHover={(phase) => useCampaignStore.getState().setHoveredCampaign(phase)}
           />
         ) : null}
 
         <WarringStatesMap
           events={events}
           index={index}
+          campaigns={mapCampaigns}
+          campaignIndex={mapIndex}
+          campaignDone={mapDone}
+          hoveredCampaign={hoveredCampaign}
+          onSkipCampaign={skipCampaign}
           dimmed={Boolean(focusedEvent)}
           unified={showFinale}
           onConquer={handleConquer}

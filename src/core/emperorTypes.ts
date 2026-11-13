@@ -116,6 +116,19 @@ export interface EndgameFigure {
   deeds: string[]
 }
 
+/** 战役序列中的一段：秦军进攻或敌国反击 */
+export interface CampaignPhase {
+  phase: number
+  side: 'qin' | 'enemy'
+  general: string
+  from: string
+  to: string
+  /** 版图百分比坐标（0-100），运行时换算成 viewBox */
+  startPoint: { x: number; y: number }
+  endPoint: { x: number; y: number }
+  result: string
+}
+
 /** 史料原文（古籍引文） */
 export interface EndgameSource {
   /** 出处，如《史记·秦始皇本纪》 */
@@ -160,6 +173,8 @@ export interface EndgameEvent {
   detail: EndgameDetail
   /** 史料原文 */
   sourceText: EndgameSource
+  /** 战役序列：按 phase 顺序播放的进军路线 */
+  campaigns: CampaignPhase[]
   /** 本节出现的人物（正文中会被高亮成可点击标签） */
   figures: EndgameFigure[]
 }

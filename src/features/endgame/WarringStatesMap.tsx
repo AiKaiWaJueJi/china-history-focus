@@ -16,11 +16,20 @@
  */
 import { useMemo } from 'react'
 import type { EndgameEvent } from '../../core/emperorTypes'
+import type { CampaignPhase } from '../../core/emperorTypes'
 import { ALL_REGIONS, QIN_REGION, RIVERS } from './mapGeometry'
+import { CampaignRoutes } from './CampaignRoutes'
 import { useEndgameStore } from './useEndgameStore'
 
 interface WarringStatesMapProps {
   events: EndgameEvent[]
+  /** 当前正在播放/已播放完的战役序列（按国家） */
+  campaigns: CampaignPhase[]
+  campaignIndex: number
+  campaignDone: boolean
+  hoveredCampaign: number | null
+  /** 双击跳过剩余动画 */
+  onSkipCampaign: () => void
   index: number
   dimmed: boolean
   unified: boolean
@@ -67,6 +76,11 @@ function mergedCentroid(regions: typeof ALL_REGIONS) {
 
 export function WarringStatesMap({
   events,
+  campaigns,
+  campaignIndex,
+  campaignDone,
+  hoveredCampaign,
+  onSkipCampaign,
   index,
   dimmed,
   unified,
@@ -116,7 +130,12 @@ export function WarringStatesMap({
     : null
 
   return (
-    <div className="map-stage" data-dimmed={dimmed} data-unified={unified}>
+    <div
+      className="map-stage"
+      data-dimmed={dimmed}
+      data-unified={unified}
+      onDoubleClick={onSkipCampaign}
+    >
       <div className="map-photo" aria-hidden="true" />
       <div className="map-photo map-photo--emperor" aria-hidden="true" />
 
@@ -261,6 +280,13 @@ export function WarringStatesMap({
             秦
           </text>
         </g>
+        {/* 行军路线：在版图之上、不参与聚焦压暗 */}
+        <CampaignRoutes
+          campaigns={campaigns}
+          index={campaignIndex}
+          done={campaignDone}
+          hovered={hoveredCampaign}
+        />
       </svg>
 
 

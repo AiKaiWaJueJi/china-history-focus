@@ -39,6 +39,20 @@ try {
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
   page.on('pageerror', (e) => errors.push(String(e)))
 
+  /*
+    点击国家会先播战役序列（约 2s/段），战报在播完后才出现。
+    测试里用"单击启动 + 派发 dblclick 跳过"来快速到达战报。
+  */
+  const openReportByClick = async (box) => {
+    await page.mouse.click(box.x, box.y)
+    await sleep(140)
+    await page.evaluate(() => {
+      document
+        .querySelector('.map-stage')
+        ?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }))
+    })
+    await sleep(600)
+  }
   /* ---------- 1) 从时间轴末页进入 ---------- */
   await page.goto(`${URL}/dynasty/zhou`, { waitUntil: 'networkidle2', timeout: 60000 })
   await page.waitForSelector('.emp-card')
@@ -76,6 +90,69 @@ try {
     idle.capitals.join('/'),
   )
   await page.screenshot({ path: `${OUT}\\01-idle.png` })
+
+  /* ---------- 2b) 战役序列播放器 ---------- */
+  const campaignBox = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="han"] .region-base')
+    const r = el.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  await page.mouse.click(campaignBox.x, campaignBox.y) // 单击启动序列
+  await sleep(260)
+  const play0 = await page.evaluate(() => ({
+    panel: Boolean(document.querySelector('.battle-panel')),
+    routes: document.querySelectorAll('.campaign-route').length,
+    current: document.querySelectorAll('.campaign-route.is-current').length,
+  }))
+  console.log(`[CAMPAIGN-0] ${JSON.stringify(play0)}`)
+  check('单击国家开始播放战役序列', play0.routes === 3 && play0.current === 1, `${play0.current}/${play0.routes}`)
+  check('动画未播完时不弹战报', !play0.panel)
+
+  await sleep(2200)
+  const play1 = await page.evaluate(() => ({
+    played: document.querySelectorAll('.campaign-route.is-played').length,
+    panel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  console.log(`[CAMPAIGN-1] ${JSON.stringify(play1)}`)
+  check('序列按 phase 自动推进', play1.played >= 1, `${play1.played} 段已播`)
+  check('推进过程中仍不弹战报', !play1.panel)
+
+  await page.evaluate(() =>
+    document.querySelector('.map-stage')?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })),
+  )
+  await sleep(800)
+  const play2 = await page.evaluate(() => ({
+    panel: Boolean(document.querySelector('.battle-panel')),
+    played: document.querySelectorAll('.campaign-route.is-played').length,
+    items: document.querySelectorAll('.campaign-item').length,
+  }))
+  console.log(`[CAMPAIGN-2] ${JSON.stringify(play2)}`)
+  check('双击跳过后直接进入战报', play2.panel)
+  check('跳过后三段路线全部保留', play2.played === 3, `${play2.played}`)
+  check('战报列出三条进军', play2.items === 3, `${play2.items}`)
+
+  // 战报里 hover 进军条目 → 地图重新点亮对应路线（且不带文字）
+  await page.hover('.campaign-item')
+  await sleep(400)
+  const hoverRoute = await page.evaluate(() => {
+    const hot = document.querySelector('.campaign-route.is-hovered')
+    const caption = hot?.querySelector('.campaign-caption')
+    return {
+      hovered: document.querySelectorAll('.campaign-route.is-hovered').length,
+      captionOpacity: caption ? Number(getComputedStyle(caption).opacity) : null,
+    }
+  })
+  console.log(`[CAMPAIGN-HOVER] ${JSON.stringify(hoverRoute)}`)
+  check('hover 战报条目点亮对应路线', hoverRoute.hovered === 1, `${hoverRoute.hovered}`)
+  check('hover 复现的路线不显示文字', (hoverRoute.captionOpacity ?? 1) < 0.1, `${hoverRoute.captionOpacity}`)
+
+  // 收尾：关战报、回到战前
+  await page.evaluate(() =>
+    document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),
+  )
+  await sleep(600)
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await sleep(800)
 
   /* ---------- 3) 正推 / 逆推 ---------- */
   await page.evaluate(() => {
@@ -183,7 +260,7 @@ try {
     const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
-  await page.mouse.click(qiBox.x, qiBox.y)
+  await openReportByClick(qiBox)
   await sleep(1000)
   const atSix = await page.evaluate(() => ({
     index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
@@ -350,7 +427,7 @@ try {
   await page.screenshot({ path: `${OUT}\\03-hover.png` })
 
   /* ---------- 5) 点击：展开详细战报 ---------- */
-  await page.mouse.click(zhaoBox.x, zhaoBox.y)
+  await openReportByClick(zhaoBox)
   await sleep(900)
   const panel = await page.evaluate(() => {
     const sections = [...document.querySelectorAll('.battle-section')].map((n) => ({
