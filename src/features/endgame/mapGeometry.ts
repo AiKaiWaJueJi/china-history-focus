@@ -98,3 +98,68 @@ export const RIVERS: string[] = [
   'M 80,268 C 200,250 280,232 360,254 C 450,278 520,262 600,278 C 700,298 820,276 960,300',
   'M 300,500 C 400,486 470,502 560,514 C 660,528 740,516 850,530',
 ]
+
+/* -------------------------------------------------------------------------- */
+/* 地缘战略点                                                                  */
+/* -------------------------------------------------------------------------- */
+
+export type StrategicKind = 'pass' | 'battle' | 'city' | 'granary'
+
+export interface StrategicPoint {
+  id: string
+  name: string
+  kind: StrategicKind
+  /** 与版图同一坐标系（viewBox 1000×640） */
+  x: number
+  y: number
+  /** 战略价值，一句话 */
+  description: string
+}
+
+/**
+ * 秦灭六国不只是版图吞并，更是关隘、粮道、决战地的争夺。
+ * 这些点标的是"为什么这块地形重要"，而不是"这里发生了什么事"。
+ */
+export const STRATEGIC_POINTS: StrategicPoint[] = [
+  {
+    id: 'sp_hangu',
+    name: '函谷关',
+    kind: 'pass',
+    x: 342,
+    y: 302,
+    description: '秦之东大门，一夫当关万夫莫开。六国合纵屡至而不得入，秦据此进退自如。',
+  },
+  {
+    id: 'sp_jingxing',
+    name: '井陉',
+    kind: 'pass',
+    x: 448,
+    y: 168,
+    description: '太行八陉之一。前229年王翦由此东出，绕开赵军正面，直下邯郸。',
+  },
+  {
+    id: 'sp_changping',
+    name: '长平',
+    kind: 'battle',
+    x: 470,
+    y: 250,
+    description: '前260年秦赵决战处，赵卒四十余万降而被坑，赵国自此不复为强国。',
+  },
+  {
+    id: 'sp_handan',
+    name: '邯郸',
+    kind: 'city',
+    x: 556,
+    y: 196,
+    description: '赵都，河北之枢。前228年城破，赵王迁被俘，秦尽取赵地。',
+  },
+  {
+    id: 'sp_bashu',
+    name: '巴蜀粮仓',
+    kind: 'granary',
+    x: 232,
+    y: 470,
+    description: '李冰治水所成"天府"。秦取巴蜀后粮秣不竭，是东进六十万大军的底气。',
+  },
+]
+

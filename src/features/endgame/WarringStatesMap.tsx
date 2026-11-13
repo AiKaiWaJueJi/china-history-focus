@@ -14,9 +14,10 @@
  *     并集光晕统一表达，内部接缝自然消失。
  *   · 秦字要落在"秦 + 已灭诸国"的重心 —— 按面积加权算多边形重心并平滑移动。
  */
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { EndgameEvent } from '../../core/emperorTypes'
-import { ALL_REGIONS, QIN_REGION, RIVERS } from './mapGeometry'
+import { ALL_REGIONS, QIN_REGION, RIVERS, STRATEGIC_POINTS } from './mapGeometry'
+import { StrategicLayer, type ContentBox } from './StrategicLayer'
 import { useEndgameStore } from './useEndgameStore'
 
 interface WarringStatesMapProps {
@@ -108,13 +109,43 @@ export function WarringStatesMap({
     不会跟着 SVG 一起淡出，就会出现"看不见的地图上还在弹提示"。
   */
   const hoverActive = !unified && Boolean(hoveredId)
+  /*
+    SVG 用 xMidYMid meet 适配容器，容器比 1000:640 宽时左右会留黑边。
+    战略点要贴在版图上而不是容器上，所以量一次"实际绘制区"当坐标系。
+  */
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [contentBox, setContentBox] = useState<ContentBox | null>(null)
+
+  useEffect(() => {
+    const el = stageRef.current
+    if (!el) return
+
+    const measure = () => {
+      const { width, height } = el.getBoundingClientRect()
+      if (width === 0 || height === 0) return
+      const scale = Math.min(width / 1000, height / 640)
+      setContentBox({
+        x: (width - 1000 * scale) / 2,
+        y: (height - 640 * scale) / 2,
+        w: 1000 * scale,
+        h: 640 * scale,
+      })
+    }
+
+    measure()
+    // 侧栏展开/窗口缩放都会改尺寸：交给 ResizeObserver，不要再挂 window.resize
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   const hoveredEvent = hoverActive ? (eventsByNation.get(hoveredId!) ?? null) : null
   const hoveredRegion = hoverActive
     ? (ALL_REGIONS.find((region) => region.id === hoveredId) ?? null)
     : null
 
   return (
-    <div className="map-stage" data-dimmed={dimmed} data-unified={unified}>
+    <div className="map-stage" ref={stageRef} data-dimmed={dimmed} data-unified={unified}>
       <div className="map-photo" aria-hidden="true" />
       <div className="map-photo map-photo--emperor" aria-hidden="true" />
 
@@ -251,6 +282,9 @@ export function WarringStatesMap({
           </text>
         </g>
       </svg>
+
+      {/* 地缘战略点：在版图之上、提示卡之下 */}
+      <StrategicLayer points={STRATEGIC_POINTS} box={contentBox} hidden={unified} />
 
       {hoveredEvent && hoveredRegion ? (
         <div

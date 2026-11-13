@@ -323,8 +323,12 @@
   transition: opacity 460ms ease, filter 460ms ease;
 }
 
-/* 聚焦战报时：地图退为暗色背景 */
-.endgame-body.is-focused .map-stage {
+/*
+  聚焦战报时：只压暗"版图本身"，不压整层舞台。
+  之前压 .map-stage，连地缘战略点一起灰掉了 —— 那些点恰恰是聚焦时最该留着的线索。
+*/
+.endgame-body.is-focused .map-svg,
+.endgame-body.is-focused .map-photo {
   opacity: 0.3;
   filter: grayscale(1);
 }
@@ -1917,4 +1921,185 @@
 
 .map-tip.is-qin-tip .map-tip-brief {
   color: rgba(240, 215, 150, 0.8);
+}
+/* ==========================================================================
+   v11：地缘战略点
+   --------------------------------------------------------------------------
+   呼吸感只动 transform / opacity（合成器属性），不动 box-shadow 与尺寸，
+   五个点的动画不会触发重排或重绘整个地图。
+   ========================================================================== */
+
+.strategic-layer {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+/* 一统时随版图一起隐去，但不瞬间消失 */
+.strategic-layer[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.strat-dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: help;
+  pointer-events: auto;
+  outline: none;
+}
+
+.strat-core {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dot, #e8c27a);
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--dot, #e8c27a) 68%, transparent);
+  transition: transform 220ms ease;
+}
+
+.strat-dot:hover .strat-core,
+.strat-dot:focus-visible .strat-core {
+  transform: scale(1.5);
+}
+
+.strat-ring {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--dot, #e8c27a);
+  animation: strat-pulse 2.8s ease-out infinite;
+  /* 错开节奏，五个点不同步，看起来像各自的节律 */
+  animation-delay: calc(var(--i, 0) * 0.34s);
+  will-change: transform, opacity;
+}
+
+@keyframes strat-pulse {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+/* 四种类型各自的颜色 */
+.strat-pass {
+  --dot: #e8c27a; /* 关隘 · 金 */
+}
+
+.strat-battle {
+  --dot: #d4553f; /* 决战场 · 赤 */
+}
+
+.strat-city {
+  --dot: #e2b45f; /* 都城 · 暗金 */
+}
+
+.strat-granary {
+  --dot: #cfc07a; /* 粮仓 · 谷黄 */
+}
+
+/* ---------- 悬浮说明 ---------- */
+.strat-tip {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translate(-50%, 6px);
+  width: 236px;
+  max-width: 44vw;
+  padding: 10px 13px 11px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 200, 125, 0.34);
+  background: rgba(8, 6, 4, 0.97);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 20px 44px -22px rgba(0, 0, 0, 1);
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  z-index: 6;
+}
+
+.strat-dot:hover .strat-tip,
+.strat-dot:focus-visible .strat-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.strat-tip-name {
+  display: block;
+  margin-bottom: 4px;
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 13.5px;
+  letter-spacing: 0.16em;
+  color: var(--dot, #e8c27a);
+}
+
+.strat-tip-desc {
+  display: block;
+  font-family: '仿宋GB2312', 'FangSong', 'STFangsong', serif;
+  font-size: 12.5px;
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* 贴近左缘的点（巴蜀）把说明朝右推，避免溢出容器 */
+@media (max-width: 1400px) {
+  .strat-tip {
+    width: 210px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strat-ring {
+    animation: none;
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+}
+/*
+  聚焦压暗要快：.map-svg 上还挂着 unified 的 1100ms/320ms 延迟，
+  如果直接继承，打开战报后要一秒多才暗下来。这里给聚焦态单独一条短过渡。
+*/
+.endgame-body.is-focused .map-svg,
+.endgame-body.is-focused .map-photo {
+  transition:
+    opacity 320ms ease,
+    filter 320ms ease;
+}
+/*
+  版图层的过渡分级：
+   · 常规（聚焦/取消聚焦）：320ms —— 压暗要跟手
+   · 一统：1100ms + 320ms 延迟 —— 那是终章，需要缓慢消散
+  之前两者共用一个 1600ms，导致关掉战报后地图要一秒多才亮回来。
+*/
+.map-svg {
+  transition:
+    transform 1600ms cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 320ms ease,
+    filter 320ms ease;
+}
+
+.map-stage[data-unified='true'] .map-svg {
+  transition:
+    transform 1700ms cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 1100ms ease 320ms;
 }

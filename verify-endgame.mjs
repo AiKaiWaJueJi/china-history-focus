@@ -190,12 +190,12 @@ try {
     hasPanel: Boolean(document.querySelector('.battle-panel')),
     hasHero: Boolean(document.querySelector('.unify-hero')),
     hasEntry: Boolean(document.querySelector('.qin-entry')),
-    svgOpacity: Number(getComputedStyle(document.querySelector('.map-svg')).opacity),
+    unified: document.querySelector('.map-stage')?.getAttribute('data-unified'),
   }))
   console.log(`[SIX-OPEN] ${JSON.stringify(atSix)}`)
   check('点「齐」后 index 到 6 且战报打开', atSix.index === '6' && atSix.hasPanel)
   check('战报打开时不出现大秦入口', !atSix.hasEntry, `entry=${atSix.hasEntry}`)
-  check('战报打开时不播终章', !atSix.hasHero && atSix.svgOpacity > 0.9, `svg=${atSix.svgOpacity}`)
+  check('战报打开时不播终章', !atSix.hasHero && atSix.unified === 'false', `unified=${atSix.unified}`)
 
   await page.evaluate(() => {
     document.querySelector('.map-bg').dispatchEvent(new MouseEvent('click', { bubbles: true }))
@@ -347,6 +347,59 @@ try {
   )
   await page.screenshot({ path: `${OUT}\\03-hover.png` })
 
+  /* ---------- 4b) 地缘战略点 ---------- */
+  const strat = await page.evaluate(() => {
+    const layer = document.querySelector('.strategic-layer')
+    const dots = [...document.querySelectorAll('.strat-dot')]
+    const svg = document.querySelector('.map-svg').getBoundingClientRect()
+    const box = layer?.getBoundingClientRect()
+    return {
+      layer: Boolean(layer),
+      count: dots.length,
+      names: dots.map((n) => n.querySelector('.strat-tip-name')?.textContent?.trim()),
+      insideSvg: box
+        ? box.left >= svg.left - 2 &&
+          box.right <= svg.right + 2 &&
+          box.top >= svg.top - 2 &&
+          box.bottom <= svg.bottom + 2
+        : false,
+      pulse: dots.length ? getComputedStyle(dots[0].querySelector('.strat-ring')).animationName : null,
+      tipOpacity: dots.length
+        ? Number(getComputedStyle(dots[0].querySelector('.strat-tip')).opacity)
+        : null,
+    }
+  })
+  console.log(`[STRAT] ${JSON.stringify(strat)}`)
+  check('渲染地缘战略点图层', strat.layer && strat.count === 5, `${strat.count} 个`)
+  check(
+    '战略点含函谷关/井陉/长平/邯郸/巴蜀',
+    ['函谷关', '井陉', '长平', '邯郸', '巴蜀粮仓'].every((n) => strat.names.includes(n)),
+    strat.names.join('/'),
+  )
+  check('图层与版图内容盒对齐（不越界）', strat.insideSvg)
+  check('呼吸动画已启用', strat.pulse === 'strat-pulse', strat.pulse)
+  check('说明默认隐藏', (strat.tipOpacity ?? 1) < 0.1, `${strat.tipOpacity}`)
+
+  await page.hover('.strat-dot')
+  await sleep(400)
+  const stratTip = await page.evaluate(() => {
+    const dot = document.querySelector('.strat-dot')
+    const tip = dot.querySelector('.strat-tip')
+    return {
+      opacity: Number(getComputedStyle(tip).opacity),
+      name: tip.querySelector('.strat-tip-name')?.textContent?.trim(),
+      desc: tip.querySelector('.strat-tip-desc')?.textContent?.trim(),
+    }
+  })
+  console.log(`[STRAT-TIP] ${JSON.stringify(stratTip)}`)
+  check('悬浮战略点弹出说明', stratTip.opacity > 0.9, `${stratTip.opacity}`)
+  check(
+    '说明含名称与战略价值',
+    Boolean(stratTip.name) && (stratTip.desc?.length ?? 0) > 12,
+    `${stratTip.name}：${stratTip.desc?.slice(0, 18)}…`,
+  )
+  await page.mouse.move(800, 40, { steps: 2 })
+  await sleep(300)
   /* ---------- 5) 点击：展开详细战报 ---------- */
   await page.mouse.click(zhaoBox.x, zhaoBox.y)
   await sleep(900)
@@ -355,7 +408,7 @@ try {
       label: n.querySelector('.battle-section-label')?.textContent?.trim(),
       len: (n.querySelector('.battle-text')?.textContent ?? '').trim().length,
     }))
-    const map = document.querySelector('.map-stage')
+    const map = document.querySelector('.map-svg')
     return {
       open: Boolean(document.querySelector('.battle-panel')),
       title: document.querySelector('.battle-title')?.textContent?.trim(),
@@ -461,7 +514,7 @@ try {
   await sleep(500)
   const closed = await page.evaluate(() => ({
     hasPanel: Boolean(document.querySelector('.battle-panel')),
-    mapOpacity: Number(getComputedStyle(document.querySelector('.map-stage')).opacity),
+    mapOpacity: Number(getComputedStyle(document.querySelector('.map-svg')).opacity),
   }))
   check('退场结束后才卸载面板', !closed.hasPanel)
   check('地图恢复亮度', closed.mapOpacity > 0.9, `${closed.mapOpacity}`)
