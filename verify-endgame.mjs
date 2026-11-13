@@ -41,7 +41,7 @@ try {
 
   /*
     点击国家会先播战役序列（约 2s/段），战报在播完后才出现。
-    测试里用"单击启动 + 派发 dblclick 跳过"来快速到达战报。
+    测试里用"单击启动 + 派发 wheel 向下滚动"来快速到达战报。
   */
   const openReportByClick = async (box) => {
     await page.mouse.click(box.x, box.y)
@@ -49,7 +49,7 @@ try {
     await page.evaluate(() => {
       document
         .querySelector('.map-stage')
-        ?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }))
+        ?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 }))
     })
     await sleep(600)
   }
@@ -118,7 +118,7 @@ try {
   check('推进过程中仍不弹战报', !play1.panel)
 
   await page.evaluate(() =>
-    document.querySelector('.map-stage')?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })),
+    document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 })),
   )
   await sleep(800)
   const play2 = await page.evaluate(() => ({
@@ -201,7 +201,7 @@ try {
 
   // 战报 hover 路线 → 地图浮现起点/关隘/目的地地名
   await page.evaluate(() =>
-    document.querySelector('.map-stage')?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })),
+    document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 })),
   )
   await sleep(800)
   await page.hover('.campaign-item')
@@ -631,7 +631,20 @@ try {
       book: document.querySelector('.source-book-name')?.textContent?.trim(),
       mode: cs?.writingMode,
       font: cs ? cs.fontFamily : null,
-      fits: panel.scrollHeight <= panel.clientHeight + 2,
+      // 史实必须完整落在自己的容器里：不横向溢出、不纵向溢出、不越出父框
+      fits: (() => {
+        const q = document.querySelector('.source-text')
+        const box = document.querySelector('.source-quote')
+        if (!q || !box) return false
+        const qr = q.getBoundingClientRect()
+        const br = box.getBoundingClientRect()
+        return (
+          q.scrollHeight <= q.clientHeight + 2 &&
+          q.scrollWidth <= q.clientWidth + 2 &&
+          qr.bottom <= br.bottom + 1 &&
+          qr.top >= br.top - 1
+        )
+      })(),
       tipOpacity: tipEl ? Number(getComputedStyle(tipEl).opacity) : null,
     }
   })
@@ -639,7 +652,7 @@ try {
   check('战报含史料原文模块', quote.exists && /史记/.test(quote.book ?? ''), quote.book)
   check('原文竖排（vertical-rl）', quote.mode === 'vertical-rl', quote.mode)
   check('原文使用楷体', /KaiTi|楷体|STKaiti/.test(quote.font ?? ''), quote.font)
-  check('战报无需纵向滚动（一屏放得下）', quote.fits)
+  check('史实原文完整落在容器内', quote.fits)
   check('今译默认隐藏', (quote.tipOpacity ?? 1) < 0.1, `${quote.tipOpacity}`)
 
   const qbox = await page.evaluate(() => {

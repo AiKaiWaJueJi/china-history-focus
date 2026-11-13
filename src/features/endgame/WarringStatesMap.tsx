@@ -28,7 +28,7 @@ interface WarringStatesMapProps {
   campaignIndex: number
   campaignDone: boolean
   hoveredCampaign: number | null
-  /** 双击跳过剩余动画 */
+  /** 向下滚动跳过剩余动画 */
   onSkipCampaign: () => void
   /** 正在被"墨"吞并的国家（与最后一段行军同步晕染） */
   annexingNation: string | null
@@ -137,7 +137,13 @@ export function WarringStatesMap({
       className="map-stage"
       data-dimmed={dimmed}
       data-unified={unified}
-      onDoubleClick={onSkipCampaign}
+      /*
+        向下滚动 = 跳过行军动画，直接看战报。
+        比双击好操作：双击容易误触，滚轮是"往下翻 = 继续推进"的自然隐喻。
+      */
+      onWheel={(e) => {
+        if (e.deltaY > 0) onSkipCampaign()
+      }}
     >
       <div className="map-photo" aria-hidden="true" />
       <div className="map-photo map-photo--emperor" aria-hidden="true" />

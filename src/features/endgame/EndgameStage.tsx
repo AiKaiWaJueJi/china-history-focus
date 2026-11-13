@@ -84,8 +84,14 @@ export function EndgameStage() {
     const nation = useCampaignStore.getState().campaignNation
     if (!nation) return
     const ev = events.find((e) => e.nationId === nation)
-    if (ev) setIndex(ev.order)
+    // 只在前进时推进，避免回头点已灭国时把版图倒回去
+    if (ev && ev.order > useEndgameStore.getState().index) setIndex(ev.order)
     useEndgameStore.setState({ focusedNation: nation })
+    /*
+      播完即释放战役状态：否则 campaignNation 一直悬着，
+      终章的 showFinale 会被它永远挡住。战报里的路线改由 focusedCampaigns 提供。
+    */
+    useCampaignStore.getState().clearCampaign()
   }, [events, setIndex])
 
   useCampaignPlayer(activeCampaigns, openReportAfterCampaign)
@@ -98,7 +104,12 @@ export function EndgameStage() {
 
   const isFinished = index === events.length && events.length > 0
   /* 终章要等战报关闭后再播：点「齐」先看战报，退出后才演一统 */
-  const showFinale = isFinished && !focusedEvent
+  /*
+    终章只在"读完最后一战、点了战报以外的地方"时触发。
+    点击可视化里的国家会先关战报再播行军，那 240ms 空窗里 focusedEvent 为 null，
+    如果不排除 campaignNation，就会先闪一下秦字放大变红。
+  */
+  const showFinale = isFinished && !focusedEvent && !campaignNation
 
   /*
     关闭战报不能直接卸载：那样面板会"啪"地消失。
