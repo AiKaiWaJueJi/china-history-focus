@@ -263,7 +263,7 @@ export function WarringStatesMap({
           <span className="map-tip-title">{hoveredEvent.desc}</span>
           {hoveredEvent.order <= index ? (
             <ul className="map-tip-list">
-              {hoveredEvent.highlights.map((item) => (
+              {(hoveredEvent.highlights ?? []).map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>

@@ -1656,3 +1656,253 @@
 .qin-entry {
   animation: entry-in 640ms cubic-bezier(0.2, 1, 0.3, 1) 2.9s both;
 }
+/* ==========================================================================
+   v8：史料原文（古籍引文）
+   --------------------------------------------------------------------------
+   竖排 + 竹简条纹 + 四角回纹。
+   条纹周期 34px 与行宽对齐，字列正好落在简面上；
+   悬浮或键盘聚焦时浮出今译。
+   ========================================================================== */
+
+.source-quote {
+  position: relative;
+  margin: 6px 0 2px;
+  padding: 20px 16px 16px;
+  border: 1px solid rgba(200, 168, 106, 0.26);
+  border-radius: 3px;
+  background:
+    /* 竹简：竖向深浅相间的窄条 */
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.42) 0px,
+      rgba(0, 0, 0, 0.42) 1px,
+      rgba(52, 38, 22, 0.5) 1px,
+      rgba(52, 38, 22, 0.5) 33px,
+      rgba(0, 0, 0, 0.26) 33px,
+      rgba(0, 0, 0, 0.26) 34px
+    ),
+    linear-gradient(180deg, #17110a 0%, #0d0905 100%);
+  box-shadow:
+    inset 0 0 28px rgba(0, 0, 0, 0.85),
+    0 10px 24px -18px rgba(0, 0, 0, 0.9);
+  transition: border-color 260ms ease;
+}
+
+.source-quote:hover {
+  border-color: rgba(226, 196, 128, 0.45);
+}
+
+/* 四角的古籍回纹 */
+.source-quote::before,
+.source-quote::after {
+  content: '';
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 1px solid rgba(212, 178, 108, 0.5);
+  pointer-events: none;
+}
+
+.source-quote::before {
+  top: 5px;
+  left: 5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.source-quote::after {
+  right: 5px;
+  bottom: 5px;
+  border-left: none;
+  border-top: none;
+}
+
+.source-book {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.source-book-name {
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 12.5px;
+  letter-spacing: 0.16em;
+  color: rgba(226, 196, 128, 0.82);
+}
+
+.source-book-tag {
+  padding: 1px 6px;
+  border: 1px solid rgba(200, 168, 106, 0.35);
+  border-radius: 2px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: rgba(226, 196, 128, 0.55);
+}
+
+/* ---------- 竖排原文 ---------- */
+.source-body {
+  position: relative;
+  outline: none;
+}
+
+.source-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  /* 楷体，回落到各平台自带的楷体 */
+  font-family: 'KaiTi', '楷体', 'STKaiti', 'Kaiti SC', serif;
+  font-size: 15px;
+  /* 竖排下 line-height 控制的是"列宽"，与竹简条纹周期对齐 */
+  line-height: 34px;
+  letter-spacing: 0.14em;
+  color: #e8d9ba;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  max-height: 208px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0;
+  padding-right: 2px;
+  cursor: help;
+  scrollbar-width: thin;
+}
+
+.source-body:focus-visible .source-text {
+  color: #fff0cf;
+}
+
+/* ---------- 今译浮层 ---------- */
+.source-tooltip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 12px);
+  padding: 11px 14px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 200, 125, 0.34);
+  background: rgba(9, 7, 5, 0.98);
+  box-shadow: 0 20px 44px -22px rgba(0, 0, 0, 1);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+  z-index: 6;
+}
+
+.source-body:hover .source-tooltip,
+.source-body:focus-visible .source-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.source-tooltip-label {
+  display: inline-block;
+  margin-bottom: 5px;
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  color: rgba(226, 200, 125, 0.7);
+}
+
+.source-tooltip-text {
+  margin: 0;
+  font-family: '仿宋GB2312', 'FangSong', 'STFangsong', serif;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.78);
+}
+/* ==========================================================================
+   v9：让战报（含史料原文）完整落在一屏内
+   --------------------------------------------------------------------------
+   原文加进来后纵向超出了一屏，底部字会被面板裁掉。
+   这里收一轮：正文略小、段间距收紧、竖排高度降低（列数变多、变宽，总高下降）。
+   ========================================================================== */
+
+.battle-panel {
+  gap: 10px;
+  padding: 14px 20px 12px;
+}
+
+.battle-head {
+  padding-bottom: 8px;
+}
+
+.battle-section {
+  gap: 3px;
+}
+
+.battle-section-label {
+  font-size: 12px;
+}
+
+.battle-text {
+  font-size: 14.5px;
+  line-height: 1.9;
+}
+
+.battle-figures {
+  margin-top: 2px;
+  gap: 6px;
+}
+
+.figure-card {
+  padding: 5px 10px;
+}
+
+.source-quote {
+  margin: 2px 0 0;
+  padding: 16px 14px 12px;
+}
+
+.source-book {
+  margin-bottom: 8px;
+}
+
+.source-text {
+  /* 高度降低 → 每列字数减少 → 列数增加、总高下降 */
+  max-height: 132px;
+  line-height: 32px;
+  font-size: 14.5px;
+}
+
+.source-tooltip {
+  bottom: calc(100% + 8px);
+}
+
+.battle-exit-hint {
+  padding-top: 6px;
+}
+/* ==========================================================================
+   v10：竹简质感与贴合
+   --------------------------------------------------------------------------
+   · 条纹周期改为 32px，与 .source-text 的 line-height 完全一致，
+     字列正好落在简面中央，不会跨缝
+   · 外框改为贴合文字宽度（fit-content），避免右边密、左边空
+   ========================================================================== */
+
+.source-quote {
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.6) 0px,
+      rgba(0, 0, 0, 0.6) 2px,
+      rgba(60, 44, 25, 0.62) 2px,
+      rgba(60, 44, 25, 0.62) 30px,
+      rgba(255, 216, 150, 0.07) 30px,
+      rgba(255, 216, 150, 0.07) 32px
+    ),
+    linear-gradient(180deg, #1b130b 0%, #0b0704 100%);
+}
+
+.source-text {
+  line-height: 32px;
+}
+
+/* 简面高光：顶部亮一点，像竹片上端受光 */
+.source-quote::after {
+  box-shadow: inset 0 1px 0 rgba(255, 226, 170, 0.06);
+}

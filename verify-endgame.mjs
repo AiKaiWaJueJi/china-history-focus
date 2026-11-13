@@ -178,7 +178,6 @@ try {
   /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
   await page.evaluate(() => document.querySelectorAll('.rail-node')[5].click()) // 回到 index 5
   await sleep(900)
-  const qiBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="qi"] .region-base')
     const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
@@ -349,6 +348,46 @@ try {
   check('地图变暗灰化', panel.mapOpacity <= 0.35 && /grayscale\(1\)/.test(panel.mapFilter), `${panel.mapOpacity}`)
   check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
   await page.screenshot({ path: `${OUT}\\04-detail.png` })
+  /* ---------- 5b) 史料原文 ---------- */
+  const quote = await page.evaluate(() => {
+    const text = document.querySelector('.source-text')
+    const panel = document.querySelector('.battle-panel')
+    const tipEl = document.querySelector('.source-tooltip')
+    const cs = text ? getComputedStyle(text) : null
+    return {
+      exists: Boolean(document.querySelector('.source-quote')),
+      book: document.querySelector('.source-book-name')?.textContent?.trim(),
+      mode: cs?.writingMode,
+      font: cs ? cs.fontFamily : null,
+      fits: panel.scrollHeight <= panel.clientHeight + 2,
+      tipOpacity: tipEl ? Number(getComputedStyle(tipEl).opacity) : null,
+    }
+  })
+  console.log(`[QUOTE] ${JSON.stringify(quote)}`)
+  check('战报含史料原文模块', quote.exists && /史记/.test(quote.book ?? ''), quote.book)
+  check('原文竖排（vertical-rl）', quote.mode === 'vertical-rl', quote.mode)
+  check('原文使用楷体', /KaiTi|楷体|STKaiti/.test(quote.font ?? ''), quote.font)
+  check('战报无需纵向滚动（一屏放得下）', quote.fits)
+  check('今译默认隐藏', (quote.tipOpacity ?? 1) < 0.1, `${quote.tipOpacity}`)
+
+  const qbox = await page.evaluate(() => {
+    const r = document.querySelector('.source-text').getBoundingClientRect()
+    return { x: r.x + 16, y: r.y + 30 }
+  })
+  await page.mouse.move(qbox.x, qbox.y, { steps: 3 })
+  await sleep(500)
+  const tip = await page.evaluate(() => {
+    const el = document.querySelector('.source-tooltip')
+    return {
+      opacity: Number(getComputedStyle(el).opacity),
+      text: el.textContent.replace(/\s+/g, ' ').trim(),
+    }
+  })
+  console.log(`[TIP] ${tip.text.slice(0, 30)}`)
+  check('悬浮原文浮出今译', tip.opacity >= 0.9, `${tip.opacity}`)
+  check('今译有实质内容', tip.text.length > 20, `${tip.text.length} 字`)
+  await page.mouse.move(800, 60, { steps: 2 })
+  await sleep(300)
 
   /* ---------- 6) 人物 Modal ---------- */
   await page.click('.battle-panel .figure-tag')

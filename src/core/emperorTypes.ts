@@ -116,6 +116,16 @@ export interface EndgameFigure {
   deeds: string[]
 }
 
+/** 史料原文（古籍引文） */
+export interface EndgameSource {
+  /** 出处，如《史记·秦始皇本纪》 */
+  bookName: string
+  /** 文言原文 */
+  text: string
+  /** 今译，供悬浮提示 */
+  translation: string
+}
+
 /** 灭国前的详细情况，三段式叙述 */
 export interface EndgameDetail {
   /** 战前形势 */
@@ -148,6 +158,8 @@ export interface EndgameEvent {
   report: string
   /** 灭国前详细情况（点击聚焦后展开） */
   detail: EndgameDetail
+  /** 史料原文 */
+  sourceText: EndgameSource
   /** 本节出现的人物（正文中会被高亮成可点击标签） */
   figures: EndgameFigure[]
 }

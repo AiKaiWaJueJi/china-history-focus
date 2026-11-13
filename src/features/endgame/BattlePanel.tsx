@@ -10,6 +10,7 @@
  *   正文 '仿宋GB2312', 'FangSong', serif
  */
 import type { EndgameEvent, EndgameFigure } from '../../core/emperorTypes'
+import { SourceQuote } from './SourceQuote'
 
 /** 把正文中的人物名切成可点击标签（长名字优先匹配，避免"王翦/王贲"互相截断） */
 function renderWithFigures(
@@ -85,6 +86,13 @@ export function BattlePanel({ event, closing, onFigureClick, onClose }: BattlePa
           {renderWithFigures(event.detail.result, event.figures, onFigureClick)}
         </p>
       </div>
+
+      {/* 三段式正文之后：史料原文 */}
+      <SourceQuote
+        bookName={event.sourceText.bookName}
+        text={event.sourceText.text}
+        translation={event.sourceText.translation}
+      />
 
       {event.figures.length > 0 ? (
         <div className="battle-figures">
