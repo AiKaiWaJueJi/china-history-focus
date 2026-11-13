@@ -177,6 +177,116 @@ try {
   await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
   await sleep(800)
 
+  /* ---------- 2c) 线性时间轴：跳步必须先补齐 ---------- */
+  const chuBox = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="chu"] .region-label')
+    const r = el.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+
+  // 从战前直接点「楚」：中间的韩、赵、魏必须已经归秦
+  await page.mouse.click(chuBox.x, chuBox.y)
+  await sleep(320)
+  const jump = await page.evaluate(() => ({
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+    captured: document.querySelectorAll('.region.is-captured').length,
+    hanCaptured: document.querySelector('[data-nation="han"]')?.getAttribute('data-captured'),
+    weiCaptured: document.querySelector('[data-nation="wei"]')?.getAttribute('data-captured'),
+    routes: document.querySelectorAll('.campaign-route').length,
+    panel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  console.log(`[JUMP] ${JSON.stringify(jump)}`)
+  check('跳步点楚时先把前置国并入秦', jump.index === '3' && jump.captured === 4, `index=${jump.index} captured=${jump.captured}`)
+  check('中间国家都已归秦', jump.hanCaptured === 'true' && jump.weiCaptured === 'true')
+
+  // 战报 hover 路线 → 地图浮现起点/关隘/目的地地名
+  await page.evaluate(() =>
+    document.querySelector('.map-stage')?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })),
+  )
+  await sleep(800)
+  await page.hover('.campaign-item')
+  await sleep(500)
+  const hoverPlaces = await page.evaluate(() => {
+    const hot = document.querySelector('.campaign-route.is-hovered')
+    const places = [...(hot?.querySelectorAll('.campaign-place') ?? [])]
+    return {
+      count: places.length,
+      visible: places.filter((n) => Number(getComputedStyle(n).opacity) > 0.5).length,
+      names: places.map((n) => n.textContent?.trim()),
+    }
+  })
+  console.log(`[HOVER-PLACES] ${JSON.stringify(hoverPlaces)}`)
+  check('hover 路线时浮现地名', hoverPlaces.visible >= 2, `${hoverPlaces.visible} 个`)
+  check('地名包含起点与目的地', hoverPlaces.names.includes('咸阳'), hoverPlaces.names.join('/'))
+
+  // 底部国家容器优先级最高：点它应立刻作废进行中的行军
+  await page.evaluate(() =>
+    document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),
+  )
+  await sleep(500)
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await sleep(600)
+
+  await page.mouse.click(chuBox.x, chuBox.y) // 重新开播
+  await sleep(300)
+  const beforeRail = await page.evaluate(() => ({
+    routes: document.querySelectorAll('.campaign-route').length,
+  }))
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await sleep(400)
+  const afterRail = await page.evaluate(() => ({
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+    routes: document.querySelectorAll('.campaign-route').length,
+    panel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  await sleep(2500) // 若序列仍在跑，这段时间足以让它结束
+  const settledAfterRail = await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))
+  console.log(`[RAIL-PRIORITY] ${JSON.stringify({ beforeRail, afterRail, settledAfterRail })}`)
+  check('底部容器点击后行军立即作废', beforeRail.routes > 0 && afterRail.routes === 0)
+  check('作废的行军不会再弹战报', afterRail.panel === false && settledAfterRail === false)
+  /* ---------- 2d) 战报开着时点另一国：先播退场动画 ---------- */
+  // 直接派发 click，绕开小多边形（韩）包围盒中心的命中误差；
+  // 面板等它自然出现，不依赖"跳过"的时机。
+  await page.goto('http://localhost:5180/dynasty/zhou/endgame', { waitUntil: 'networkidle2' })
+  await page.waitForSelector('.map-stage')
+  await sleep(1200)
+  if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
+    await page.keyboard.press('Escape')
+    await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+    await sleep(300)
+  }
+
+  const clickNation = (id) =>
+    page.evaluate((n) => {
+      document.querySelector(`[data-nation="${n}"]`)?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      )
+    }, id)
+
+  await clickNation('han')
+  const opened = Boolean(
+    await page.waitForSelector('.battle-panel', { timeout: 9000 }).catch(() => null),
+  )
+
+  await clickNation('zhao')
+  await clickNation('zhao')
+  // 退场是 240ms：面板不能瞬间消失，先留在原地把动画播完
+  await sleep(80)
+  const stillThere = Boolean(await page.evaluate(() => document.querySelector('.battle-panel')))
+  await sleep(420)
+  const goneAfterAnim = !(await page.evaluate(() => document.querySelector('.battle-panel')))
+  await sleep(700)
+  const afterSwitch = await page.evaluate(() => ({
+    panel: Boolean(document.querySelector('.battle-panel')),
+    routes: document.querySelectorAll('.campaign-route').length,
+  }))
+  console.log(`[SWITCH] ${JSON.stringify({ opened, stillThere, goneAfterAnim, afterSwitch })}`)
+  check('切换国家时战报先退场再让位给新战报', opened && goneAfterAnim && !afterSwitch.panel, `留=${stillThere} 走=${goneAfterAnim}`)
+  check('退场后才开始新的行军', !afterSwitch.panel && afterSwitch.routes > 0, `${afterSwitch.routes}`)
+
+  // 收尾
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[0].click())
+  await sleep(600)
   /* ---------- 3) 正推 / 逆推 ---------- */
   await page.evaluate(() => {
     const nodes = [...document.querySelectorAll('.rail-node')]

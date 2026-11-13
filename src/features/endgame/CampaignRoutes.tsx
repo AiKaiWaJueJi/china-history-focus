@@ -87,8 +87,16 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
               </text>
             </g>
 
-            {/* 重点关隘与目的地：只在该段行军时显示，播完即消失 */}
+            {/* 起点、重点关隘与目的地：行军时显示；战报里 hover 复现时也显示 */}
             <g className="campaign-places">
+              <text
+                className="campaign-place campaign-place--origin"
+                x={toView(campaign.points[0]).x}
+                y={toView(campaign.points[0]).y + 20}
+                textAnchor="middle"
+              >
+                {campaign.from}
+              </text>
               {(campaign.via ?? []).map((name, k) => {
                 const p = toView(campaign.points[k + 1] ?? campaign.points[0])
                 return (

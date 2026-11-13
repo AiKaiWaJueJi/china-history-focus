@@ -140,21 +140,38 @@ export function EndgameStage() {
         closeTimer.current = null
       }
       /*
-        点国家 = 先推出已有战报 → 播战役序列 → 播完再弹新战报。
-        index 不在这里推进：吞并在序列播完时才发生（见 openReportAfterCampaign），
-        否则点一下版图就瞬间变色，与行军动画脱节。
+        点国家 = 补齐前置 → 推出已有战报（带动画）→ 播战役序列 → 播完再弹新战报。
+        · 沙盘是线性时间轴：点后面的国家，必须先把中间已灭的国家补上，
+          否则会出现"韩赵魏还是独立国，却在播灭楚"的时空错乱。
+        · index 不在点击时推到 order，吞并仍发生在序列播完那一刻。
       */
-      if (useEndgameStore.getState().focusedNation) {
-        useEndgameStore.setState({ focusedNation: null })
+      const prevOrder = Math.max(0, event.order - 1)
+      const current = useEndgameStore.getState().index
+      if (prevOrder > current) setIndex(prevOrder)
+
+      const begin = () => {
+        warmUpAudio()
+        const campaign = useCampaignStore.getState()
+        campaign.clearCampaign()
+        campaign.startCampaign(event.nationId)
+        if (!muted) playBell(0.9)
       }
+
+      // 战报开着：先播完退场动画，再开始行军
+      if (useEndgameStore.getState().focusedNation) {
+        setClosing(true)
+        window.setTimeout(() => {
+          useEndgameStore.setState({ focusedNation: null })
+          setClosing(false)
+          begin()
+        }, 240)
+        return
+      }
+
       setClosing(false)
-      warmUpAudio()
-      const campaign = useCampaignStore.getState()
-      campaign.clearCampaign()
-      campaign.startCampaign(event.nationId)
-      if (!muted) playBell(0.9)
+      begin()
     },
-    [muted],
+    [muted, setIndex],
   )
 
   /*
@@ -174,6 +191,12 @@ export function EndgameStage() {
 
   const handleStep = useCallback(
     (value: number) => {
+      /*
+        底部国家容器优先级最高：一旦点它，正在播的行军序列立即作废。
+        否则会出现"地图在播灭赵、底部已经跳到齐"的双线并行。
+      */
+      useCampaignStore.getState().clearCampaign()
+      setClosing(false)
       setIndex(value)
       closePanel()
       if (value > 0 && !muted) playBell(value === events.length ? 1 : 0.7)

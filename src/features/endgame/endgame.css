@@ -2926,3 +2926,17 @@
   overflow-y: auto;
   scrollbar-width: thin;
 }
+/* ==========================================================================
+   v23：战报里 hover 路线时，地图上重新浮现起点/关隘/目的地地名
+   （只出地名，不出一将名与战果的说明文字）
+   ========================================================================== */
+
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered .campaign-place {
+  opacity: 1;
+  transition: opacity 260ms ease 120ms;
+}
+
+.campaign-place--origin {
+  fill: rgba(232, 210, 160, 0.8);
+  font-size: 12px;
+}
