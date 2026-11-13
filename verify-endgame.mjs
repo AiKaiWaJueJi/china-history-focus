@@ -245,6 +245,26 @@ try {
   check('hover 路线时浮现地名', hoverPlaces.visible >= 2, `${hoverPlaces.visible} 个`)
   check('地名包含起点与目的地', hoverPlaces.names.includes('咸阳'), hoverPlaces.names.join('/'))
 
+  // 已灭国：点它只展开战报，不重演征服过程
+  await page.keyboard.press('Escape')
+  await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+  await sleep(400)
+  const t0 = Date.now()
+  await clickNation2('han')
+  const conqueredOpened = Boolean(
+    await page.waitForSelector('.battle-panel', { timeout: 2000 }).catch(() => null),
+  )
+  const openCost = Date.now() - t0
+  const conqueredState = await page.evaluate(() => ({
+    title: document.querySelector('.battle-title')?.textContent?.trim(),
+    current: document.querySelectorAll('.campaign-route.is-current').length,
+    settled: document.querySelector('.campaign-layer')?.getAttribute('data-settled'),
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+  }))
+  console.log(`[CONQUERED-CLICK] ${JSON.stringify({ conqueredOpened, openCost, ...conqueredState })}`)
+  check('点已灭国直接展开战报', conqueredOpened && conqueredState.title === '秦灭韩', conqueredState.title)
+  check('点已灭国不播行军动画', conqueredState.current === 0 && conqueredState.settled === 'true', `current=${conqueredState.current} settled=${conqueredState.settled}`)
+  check('点已灭国不改变时间线', conqueredState.index === '4', conqueredState.index)
   // 底部国家容器优先级最高：点它应立刻作废进行中的行军
   await page.keyboard.press('Escape')
   await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)

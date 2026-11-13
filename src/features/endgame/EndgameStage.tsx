@@ -183,14 +183,33 @@ export function EndgameStage() {
   */
   const handleConquer = useCallback(
     (event: (typeof events)[number]) => {
+      const state = useEndgameStore.getState()
+
+      /*
+        已灭国（order ≤ 当前 index）：只展开战报，不重演征服过程。
+        用户此刻要的是"再看一眼这场仗"，不是"再看一遍它怎么亡的"；
+        顺带解决"关掉战报想回顾、却被迫重看 4 秒行军"。
+      */
+      if (event.order <= state.index) {
+        if (closeTimer.current) {
+          window.clearTimeout(closeTimer.current)
+          closeTimer.current = null
+        }
+        useCampaignStore.getState().clearCampaign()
+        useEndgameStore.setState({ focusedNation: event.nationId })
+        if (!muted) playBell(0.45)
+        return
+      }
+
+      // 未灭国：跳步要先确认补齐
       const prevOrder = Math.max(0, event.order - 1)
-      if (prevOrder > useEndgameStore.getState().index) {
+      if (prevOrder > state.index) {
         setPendingConquer(event)
         return
       }
       startConquer(event)
     },
-    [startConquer],
+    [startConquer, muted],
   )
 
   /* 确认跳步：补齐前置后开始这场推演 */
