@@ -2677,8 +2677,8 @@
 }
 
 .source-text {
-  max-height: 74px;
-  line-height: 30px;
+  max-height: 46px;
+  line-height: 28px;
   font-size: 14px;
 }
 
@@ -2697,4 +2697,147 @@
 
 .battle-exit-hint {
   padding-top: 4px;
+}
+/* ==========================================================================
+   v19：三势三色 + 战报打开即隐 + 墨汁吞并
+   ========================================================================== */
+
+/* ---------- 颜色：秦军暗金、守军赤铜、援军青玉 ---------- */
+.side-qin .campaign-line {
+  stroke: #c9a227;
+}
+
+.side-enemy .campaign-line {
+  stroke: #a6402f;
+}
+
+.campaign-ally .campaign-line {
+  stroke: #7a9e8f;
+  stroke-width: 1.5;
+  opacity: 0.85;
+}
+
+.side-qin .campaign-arrow {
+  fill: #c9a227;
+}
+
+.side-enemy .campaign-arrow {
+  fill: #a6402f;
+}
+
+.campaign-ally .campaign-arrow {
+  fill: #7a9e8f;
+}
+
+.side-qin.is-current .campaign-line,
+.side-qin.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.8));
+}
+
+.side-enemy.is-current .campaign-line,
+.side-enemy.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 6px rgba(166, 64, 47, 0.75));
+}
+
+.campaign-ally.is-current .campaign-line,
+.campaign-ally.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 6px rgba(122, 158, 143, 0.7));
+}
+
+/* ---------- 战报打开后：路线全部隐藏，只留版图与文字 ---------- */
+.campaign-layer[data-settled='true'] .campaign-route {
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered {
+  opacity: 1;
+}
+
+/* hover 时把生长动画重放一次 */
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered .campaign-line {
+  animation: campaign-replay 820ms linear both;
+}
+
+@keyframes campaign-replay {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* hover 时终点光点闪烁 */
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered .campaign-end {
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered .campaign-flare-ring {
+  animation: campaign-flare 1.1s ease-out infinite;
+}
+
+.campaign-layer[data-settled='true'] .campaign-route.is-hovered .campaign-start {
+  opacity: 0.85;
+}
+
+/* ---------- 墨汁吞并：与最后一段行军同时开始，1.5s 晕染 ---------- */
+.region.is-annexing .region-ink {
+  opacity: 1;
+  clip-path: inset(0 100% 0 0);
+  animation: annex-wipe 1500ms linear forwards;
+}
+
+@keyframes annex-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- 战报里的援军条目 ---------- */
+.campaign-ally-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: -1px 0 2px 18px;
+  padding: 4px 8px;
+  border-left: 2px solid rgba(122, 158, 143, 0.55);
+  background: rgba(122, 158, 143, 0.05);
+  border-radius: 0 3px 3px 0;
+  cursor: default;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.campaign-ally-row:hover {
+  background: rgba(122, 158, 143, 0.14);
+  border-left-color: #9dbdb2;
+}
+
+.campaign-ally-tag {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(157, 189, 178, 0.85);
+}
+
+.campaign-ally-text {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.campaign-ally-reason {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.34);
+}
+/* 有了援军行之后，再紧一点 */
+.battle-panel {
+  gap: 7px;
+}
+.campaign-ally-row {
+  padding: 3px 8px;
 }

@@ -93,7 +93,7 @@ try {
 
   /* ---------- 2b) 战役序列播放器 ---------- */
   const campaignBox = await page.evaluate(() => {
-    const el = document.querySelector('[data-nation="han"] .region-base')
+    const el = document.querySelector('[data-nation="zhao"] .region-base')
     const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
@@ -105,7 +105,7 @@ try {
     current: document.querySelectorAll('.campaign-route.is-current').length,
   }))
   console.log(`[CAMPAIGN-0] ${JSON.stringify(play0)}`)
-  check('单击国家开始播放战役序列', play0.routes === 3 && play0.current === 1, `${play0.current}/${play0.routes}`)
+  check('单击国家开始播放战役序列', play0.routes === 4 && play0.current === 1, `${play0.current}/${play0.routes}`)
   check('动画未播完时不弹战报', !play0.panel)
 
   await sleep(2200)
@@ -128,7 +128,7 @@ try {
   }))
   console.log(`[CAMPAIGN-2] ${JSON.stringify(play2)}`)
   check('双击跳过后直接进入战报', play2.panel)
-  check('跳过后三段路线全部保留', play2.played === 3, `${play2.played}`)
+  check('跳过后四段路线全部保留（含援军）', play2.played === 4, `${play2.played}`)
   check('战报列出三条进军', play2.items === 3, `${play2.items}`)
 
   // 战报里 hover 进军条目 → 地图重新点亮对应路线（且不带文字）
@@ -146,6 +146,29 @@ try {
   check('hover 战报条目点亮对应路线', hoverRoute.hovered === 1, `${hoverRoute.hovered}`)
   check('hover 复现的路线不显示文字', (hoverRoute.captionOpacity ?? 1) < 0.1, `${hoverRoute.captionOpacity}`)
 
+  // 地理校验：秦军首段必须自咸阳出发，且路线是折线
+  await page.mouse.move(1400, 700, { steps: 2 })
+  await sleep(400)
+  const geo = await page.evaluate(() => {
+    const qin = document.querySelector('.campaign-route.side-qin .campaign-line')
+    const d = qin?.getAttribute('d') ?? ''
+    return {
+      start: d.slice(0, 16),
+      segments: (d.match(/L /g) ?? []).length,
+      allies: document.querySelectorAll('.campaign-ally').length,
+      allyRows: document.querySelectorAll('.campaign-ally-row').length,
+      settled: document.querySelector('.campaign-layer')?.getAttribute('data-settled'),
+      visibleRoutes: [...document.querySelectorAll('.campaign-route')].filter(
+        (r) => Number(getComputedStyle(r).opacity) > 0.05,
+      ).length,
+    }
+  })
+  console.log(`[GEO] ${JSON.stringify(geo)}`)
+  check('秦军路线自咸阳出发', geo.start.startsWith('M 250.0 401.9'), geo.start)
+  check('路线为多段折线', geo.segments >= 2, `${geo.segments} 段`)
+  check('赵之战有援军路线', geo.allies >= 1, `${geo.allies} 条`)
+  check('战报列出援军动向', geo.allyRows >= 1, `${geo.allyRows} 行`)
+  check('战报展开后路线默认全隐', geo.settled === 'true' && geo.visibleRoutes === 0, `可见=${geo.visibleRoutes}`)
   // 收尾：关战报、回到战前
   await page.evaluate(() =>
     document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),

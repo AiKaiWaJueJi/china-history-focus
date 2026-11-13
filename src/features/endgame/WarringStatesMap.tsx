@@ -30,6 +30,8 @@ interface WarringStatesMapProps {
   hoveredCampaign: number | null
   /** 双击跳过剩余动画 */
   onSkipCampaign: () => void
+  /** 正在被"墨"吞并的国家（与最后一段行军同步晕染） */
+  annexingNation: string | null
   index: number
   dimmed: boolean
   unified: boolean
@@ -81,6 +83,7 @@ export function WarringStatesMap({
   campaignDone,
   hoveredCampaign,
   onSkipCampaign,
+  annexingNation,
   index,
   dimmed,
   unified,
@@ -209,7 +212,9 @@ export function WarringStatesMap({
               key={region.id}
               className={`region${captured ? ' is-captured' : ''}${isNewest ? ' is-newest' : ''}${
                 hoverActive && hoveredId === region.id ? ' is-hovered' : ''
-              }${isQin ? ' is-qin' : ''}${focusedNation === region.id ? ' is-focused' : ''}`}
+              }${isQin ? ' is-qin' : ''}${focusedNation === region.id ? ' is-focused' : ''}${
+                annexingNation === region.id ? ' is-annexing' : ''
+              }`}
               data-nation={region.id}
               data-captured={captured ? 'true' : 'false'}
               onClick={() => {

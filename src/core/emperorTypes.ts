@@ -116,6 +116,25 @@ export interface EndgameFigure {
   deeds: string[]
 }
 
+export interface MapPoint {
+  /** 版图百分比（0-100），运行时换算成 viewBox */
+  x: number
+  y: number
+}
+
+/** 援军：第三方介入的势力 */
+export interface CampaignAlly {
+  /** 援军国（可为残部，如"代"） */
+  nation: string
+  general: string
+  /** 兵力数量，文案化（"十万"） */
+  troops: string
+  /** 出兵理由 */
+  reason: string
+  /** 援军路线：起点在援军国境内 */
+  points: MapPoint[]
+}
+
 /** 战役序列中的一段：秦军进攻或敌国反击 */
 export interface CampaignPhase {
   phase: number
@@ -123,10 +142,14 @@ export interface CampaignPhase {
   general: string
   from: string
   to: string
-  /** 版图百分比坐标（0-100），运行时换算成 viewBox */
-  startPoint: { x: number; y: number }
-  endPoint: { x: number; y: number }
+  /**
+   * 折线路径（≥2 点）。
+   * 秦军一律从咸阳出发，经关隘折向目标，不允许凭空出现在敌国境内。
+   */
+  points: MapPoint[]
   result: string
+  /** 本段是否引来援军 */
+  allies?: CampaignAlly[]
 }
 
 /** 史料原文（古籍引文） */

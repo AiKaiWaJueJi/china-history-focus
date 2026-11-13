@@ -9,6 +9,7 @@
  *   标题 '方正小标简宋', serif
  *   正文 '仿宋GB2312', 'FangSong', serif
  */
+import { Fragment } from 'react'
 import type { EndgameEvent, EndgameFigure } from '../../core/emperorTypes'
 import { SourceQuote } from './SourceQuote'
 
@@ -94,22 +95,38 @@ export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaign
         <div className="campaign-list">
           <span className="campaign-list-label">进军序列</span>
           {event.campaigns.map((campaign, i) => (
-            <button
-              key={`${campaign.phase}-${i}`}
-              type="button"
-              className={`campaign-item side-${campaign.side}`}
-              onMouseEnter={() => onCampaignHover?.(i)}
-              onMouseLeave={() => onCampaignHover?.(null)}
-              onFocus={() => onCampaignHover?.(i)}
-              onBlur={() => onCampaignHover?.(null)}
-            >
-              <span className="campaign-item-phase">{i + 1}</span>
-              <span className="campaign-item-general">{campaign.general}</span>
-              <span className="campaign-item-route">
-                {campaign.from} → {campaign.to}
-              </span>
-              <span className="campaign-item-result">{campaign.result}</span>
-            </button>
+            <Fragment key={`${campaign.phase}-${i}`}>
+              <button
+                type="button"
+                className={`campaign-item side-${campaign.side}`}
+                onMouseEnter={() => onCampaignHover?.(i)}
+                onMouseLeave={() => onCampaignHover?.(null)}
+                onFocus={() => onCampaignHover?.(i)}
+                onBlur={() => onCampaignHover?.(null)}
+              >
+                <span className="campaign-item-phase">{i + 1}</span>
+                <span className="campaign-item-general">{campaign.general}</span>
+                <span className="campaign-item-route">
+                  {campaign.from} → {campaign.to}
+                </span>
+                <span className="campaign-item-result">{campaign.result}</span>
+              </button>
+
+              {(campaign.allies ?? []).map((ally) => (
+                <div
+                  key={`${campaign.phase}-${ally.nation}`}
+                  className="campaign-ally-row"
+                  onMouseEnter={() => onCampaignHover?.(i)}
+                  onMouseLeave={() => onCampaignHover?.(null)}
+                >
+                  <span className="campaign-ally-tag">援军</span>
+                  <span className="campaign-ally-text">
+                    {ally.nation}·{ally.general} 率 {ally.troops}
+                  </span>
+                  <span className="campaign-ally-reason">{ally.reason}</span>
+                </div>
+              ))}
+            </Fragment>
           ))}
         </div>
       ) : null}

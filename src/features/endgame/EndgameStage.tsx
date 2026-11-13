@@ -61,6 +61,14 @@ export function EndgameStage() {
   const mapDone = campaignNation ? campaignDone : focusedCampaigns.length > 0
   const mapIndex = campaignNation ? campaignIndex : focusedCampaigns.length - 1
 
+  /*
+    最后一段（秦军定局）生长时，敌国版图同步被"墨"吞掉：
+    颜色变化与行军到达同时发生，而不是点击即变色。
+  */
+  const isLastPhase =
+    Boolean(campaignNation) && campaignIndex === activeCampaigns.length - 1 && !campaignDone
+  const annexingNation = isLastPhase ? campaignNation : null
+
   /* 播放完毕 → 打开战报（与动画进度严格对应：动画没走完不弹面板） */
   /** 双击跳过剩余动画，直接进战报 */
   const skipCampaign = useCallback(() => {
@@ -247,6 +255,7 @@ export function EndgameStage() {
           campaignDone={mapDone}
           hoveredCampaign={hoveredCampaign}
           onSkipCampaign={skipCampaign}
+          annexingNation={annexingNation}
           dimmed={Boolean(focusedEvent)}
           unified={showFinale}
           onConquer={handleConquer}

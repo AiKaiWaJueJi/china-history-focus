@@ -1,18 +1,18 @@
 /**
- * CampaignRoutes —— 行军路线图层
+ * CampaignRoutes —— 行军路线图层（折线版）
  * ===========================================================================
- * 三段一组的战役序列，画在版图之上（但不进 .regions-layer，因此不会被聚焦压暗）。
+ * 三条规则决定了这一版的形状：
  *
- * 绘制要点：
- *   1. 路线用二次贝塞尔（中点向外偏移），比直线更有"行军"的动势，
- *      偏移量按段序号正负交替，避免来回两条线完全重叠。
- *   2. 生长动画走 stroke-dashoffset（1→0），1.5s linear，交给合成器。
- *   3. 箭头不随虚线生长——marker 会从 t=0 就出现在终点，所以自己画一个
- *      三角形，延迟到路线快画完时再淡入。
- *   4. 起点微光、终点战火、将领姓名只在"当前段"出现；战报里 hover 复现的
- *      路线不带文字。
+ *   1. **折线**：秦军从咸阳出发，经关隘折向目标（M→L→L），不是两点直线。
+ *      转角用 linejoin: round 处理，像行军的转向而不是橡皮筋。
+ *
+ *   2. **三种势力三种色**：秦军暗金、守军赤铜、援军青玉。
+ *      都用低饱和的矿物色，贴着整体的青铜底子，而不是 UI 里的蓝橙箭头。
+ *
+ *   3. **战报打开后默认全隐**：路线只在"播放"与"被 hover"两种情形下可见。
+ *      战报里 hover 某段 → 该段重播一次生长动画 + 终点闪一下。
  */
-import type { CampaignPhase } from '../../core/emperorTypes'
+import type { CampaignPhase, MapPoint } from '../../core/emperorTypes'
 import { CAMPAIGN_GROW_MS } from './useCampaignPlayer'
 
 interface CampaignRoutesProps {
@@ -24,27 +24,25 @@ interface CampaignRoutesProps {
   hovered: number | null
 }
 
-/** 百分比 → viewBox */
-const toView = (x: number, y: number) => ({ x: x * 10, y: y * 6.4 })
+/** 百分比 → viewBox（1000×640） */
+const toView = (p: MapPoint) => ({ x: p.x * 10, y: p.y * 6.4 })
 
-/** 中点向外偏移，让路线呈一道弧 */
-function curveOf(a: { x: number; y: number }, b: { x: number; y: number }, bow: number) {
-  const mx = (a.x + b.x) / 2
-  const my = (a.y + b.y) / 2
-  const dx = b.x - a.x
-  const dy = b.y - a.y
-  const len = Math.hypot(dx, dy) || 1
-  // 法线方向
-  const nx = -dy / len
-  const ny = dx / len
-  const cx = mx + nx * bow
-  const cy = my + ny * bow
+/** 折线路径：M 起点 → L 逐点 */
+function polyline(points: MapPoint[]) {
+  const vs = points.map(toView)
+  return vs.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')
+}
+
+/** 末段方向（箭头朝向）与该段中点（文字位置） */
+function tail(points: MapPoint[]) {
+  const vs = points.map(toView)
+  const end = vs[vs.length - 1]
+  const prev = vs[vs.length - 2] ?? end
+  const angle = (Math.atan2(end.y - prev.y, end.x - prev.x) * 180) / Math.PI
   return {
-    d: `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`,
-    // 终点切线方向（控制点 → 终点）
-    angle: (Math.atan2(b.y - cy, b.x - cx) * 180) / Math.PI,
-    // 标签位置：弧顶
-    label: { x: (a.x + 2 * cx + b.x) / 4, y: (a.y + 2 * cy + b.y) / 4 },
+    end,
+    angle,
+    mid: { x: (prev.x + end.x) / 2, y: (prev.y + end.y) / 2 },
   }
 }
 
@@ -52,68 +50,94 @@ export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRout
   if (campaigns.length === 0) return null
 
   return (
-    <g className="campaign-layer" aria-hidden="true">
-      <defs>
-        {/* 秦军：赤金；敌国：幽蓝 */}
-        <marker id="camp-arrow-qin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#d98b3a" />
-        </marker>
-        <marker id="camp-arrow-enemy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a90b8" />
-        </marker>
-      </defs>
-
+    <g className="campaign-layer" data-settled={done}>
       {campaigns.map((campaign, i) => {
-        const from = toView(campaign.startPoint.x, campaign.startPoint.y)
-        const to = toView(campaign.endPoint.x, campaign.endPoint.y)
-        // 正负交替，来回两条线不重叠
-        const bow = (i % 2 === 0 ? 1 : -1) * 46
-        const curve = curveOf(from, to, bow)
-
         const isCurrent = !done && i === index
         const isPlayed = done || i < index
         const isHovered = hovered === i
         const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
+        const t = tail(campaign.points)
 
         return (
           <g
-            key={`${campaign.phase}-${i}`}
+            key={`p-${campaign.phase}`}
             className={`campaign-route ${state} side-${campaign.side}${isHovered ? ' is-hovered' : ''}`}
           >
             <path
               className="campaign-line"
-              d={curve.d}
+              d={polyline(campaign.points)}
               pathLength={1}
-              markerEnd={`url(#camp-arrow-${campaign.side})`}
               style={{ transitionDuration: `${CAMPAIGN_GROW_MS}ms` }}
             />
 
-            {/* 箭头：虚线画完后再淡入，避免一开始就钉在终点 */}
+            {/* 箭头延迟浮现，避免一开始就钉在终点 */}
             <polygon
               className="campaign-arrow"
               points="-13,-7 0,0 -13,7"
-              transform={`translate(${to.x} ${to.y}) rotate(${curve.angle})`}
+              transform={`translate(${t.end.x} ${t.end.y}) rotate(${t.angle})`}
             />
 
-            {/* 起点微光 / 终点战火 */}
-            <circle className="campaign-start" cx={from.x} cy={from.y} r={5} />
-            <g className="campaign-end" transform={`translate(${to.x} ${to.y})`}>
-              <circle className="campaign-flare" r={7} />
-              <circle className="campaign-flare-ring" r={10} />
+            <circle className="campaign-start" cx={toView(campaign.points[0]).x} cy={toView(campaign.points[0]).y} r={4.5} />
+
+            <g className="campaign-end" transform={`translate(${t.end.x} ${t.end.y})`}>
+              <circle className="campaign-flare" r={6} />
+              <circle className="campaign-flare-ring" r={9} />
             </g>
 
-            {/* 将军名 + 结果：只在当前段浮现（战报 hover 时不显示） */}
-            <g className="campaign-caption" transform={`translate(${curve.label.x} ${curve.label.y})`}>
-              <text className="campaign-general" textAnchor="middle" y={-4}>
+            <g className="campaign-caption" transform={`translate(${t.mid.x} ${t.mid.y})`}>
+              <text className="campaign-general" textAnchor="middle" y={-5}>
                 {campaign.general}
               </text>
-              <text className="campaign-result" textAnchor="middle" y={12}>
+              <text className="campaign-result" textAnchor="middle" y={11}>
                 {campaign.result}
               </text>
             </g>
           </g>
         )
       })}
+
+      {/* 援军：与所属阶段同步出现 */}
+      {campaigns.flatMap((campaign, i) =>
+        (campaign.allies ?? []).map((ally) => {
+          const isCurrent = !done && i === index
+          const isPlayed = done || i < index
+          const isHovered = hovered === i
+          const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
+          const t = tail(ally.points)
+
+          return (
+            <g
+              key={`a-${campaign.phase}-${ally.nation}`}
+              className={`campaign-route campaign-ally ${state}${isHovered ? ' is-hovered' : ''}`}
+            >
+              <path
+                className="campaign-line"
+                d={polyline(ally.points)}
+                pathLength={1}
+                style={{ transitionDuration: `${CAMPAIGN_GROW_MS}ms` }}
+              />
+              <polygon
+                className="campaign-arrow"
+                points="-11,-6 0,0 -11,6"
+                transform={`translate(${t.end.x} ${t.end.y}) rotate(${t.angle})`}
+              />
+              <circle className="campaign-start" cx={toView(ally.points[0]).x} cy={toView(ally.points[0]).y} r={4} />
+              <g className="campaign-end" transform={`translate(${t.end.x} ${t.end.y})`}>
+                <circle className="campaign-flare" r={5} />
+                <circle className="campaign-flare-ring" r={8} />
+              </g>
+              <g className="campaign-caption" transform={`translate(${t.mid.x} ${t.mid.y})`}>
+                <text className="campaign-general" textAnchor="middle" y={-5}>
+                  {ally.nation}·{ally.general}
+                </text>
+                <text className="campaign-result" textAnchor="middle" y={11}>
+                  援军 {ally.troops}
+                </text>
+              </g>
+            </g>
+          )
+        }),
+      )}
     </g>
   )
 }
