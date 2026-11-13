@@ -178,6 +178,7 @@ try {
   /* ---------- 3c) 点「齐」先出战报，关掉战报才演终章 ---------- */
   await page.evaluate(() => document.querySelectorAll('.rail-node')[5].click()) // 回到 index 5
   await sleep(900)
+  const qiBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="qi"] .region-base')
     const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
