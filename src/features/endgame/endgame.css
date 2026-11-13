@@ -327,8 +327,12 @@
   聚焦战报时：只压暗"版图本身"，不压整层舞台。
   之前压 .map-stage，连地缘战略点一起灰掉了 —— 那些点恰恰是聚焦时最该留着的线索。
 */
-.endgame-body.is-focused .map-svg,
-.endgame-body.is-focused .map-photo {
+/*
+  只压暗版图本身，**不动背景照片**。
+  之前这里把 .map-photo 一起改了：opacity 从 0.15 提到 0.3、还去掉了 brightness，
+  结果一打开战报，背后的战国地图反而"亮起来"。
+*/
+.endgame-body.is-focused .map-svg {
   opacity: 0.3;
   filter: grayscale(1);
 }
@@ -2119,21 +2123,24 @@
 }
 
 /* ---------- 2. 国都：降到"注记"量级 ---------- */
+/* 恢复原有尺度：外圈、金色圆点与 16px 文字 */
 .capital-halo {
-  display: none; /* 去掉高亮外圈 */
+  display: inline;
+  fill: rgba(240, 208, 137, 0.12);
+  stroke: rgba(240, 208, 137, 0.3);
 }
 
 .capital-dot {
-  r: 2px;
-  fill: #453f36;
+  r: 3.4px;
+  fill: #f0d089;
 }
 
 .capital-label {
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
-  fill: rgba(214, 208, 196, 0.4);
-  stroke: rgba(0, 0, 0, 0.6);
-  stroke-width: 2px;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  fill: rgba(255, 255, 255, 0.52);
+  stroke: rgba(0, 0, 0, 0.85);
+  stroke-width: 3px;
   transition:
     fill 260ms ease,
     opacity 260ms ease,

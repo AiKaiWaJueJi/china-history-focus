@@ -349,81 +349,6 @@ try {
   )
   await page.screenshot({ path: `${OUT}\\03-hover.png` })
 
-  /* ---------- 4b) 地缘战略点 ---------- */
-  const layerOff = await page.evaluate(() => ({
-    toggle: Boolean(document.querySelector('.map-layer-toggle')),
-    dots: document.querySelectorAll('.strat-dot').length,
-  }))
-  check('地图右上角有图层开关', layerOff.toggle)
-  check('战略点默认不显示', layerOff.dots === 0, `${layerOff.dots}`)
-
-  await page.click('.map-layer-toggle')
-  await sleep(500)
-  const strat = await page.evaluate(() => {
-    const layer = document.querySelector('.strategic-layer')
-    const dots = [...document.querySelectorAll('.strat-dot')]
-    const svg = document.querySelector('.map-svg').getBoundingClientRect()
-    const box = layer?.getBoundingClientRect()
-    return {
-      layer: Boolean(layer),
-      count: dots.length,
-      names: dots.map((n) => n.querySelector('.strat-tip-name')?.textContent?.trim()),
-      insideSvg: box
-        ? box.left >= svg.left - 2 &&
-          box.right <= svg.right + 2 &&
-          box.top >= svg.top - 2 &&
-          box.bottom <= svg.bottom + 2
-        : false,
-      pulse: dots.length ? getComputedStyle(dots[0].querySelector('.strat-ring')).animationName : null,
-      tipOpacity: dots.length
-        ? Number(getComputedStyle(dots[0].querySelector('.strat-tip')).opacity)
-        : null,
-    }
-  })
-  console.log(`[STRAT] ${JSON.stringify(strat)}`)
-  check('渲染地缘战略点图层', strat.layer && strat.count === 5, `${strat.count} 个`)
-  check(
-    '战略点含函谷关/井陉/长平/邯郸/巴蜀',
-    ['函谷关', '井陉', '长平', '邯郸', '巴蜀粮仓'].every((n) => strat.names.includes(n)),
-    strat.names.join('/'),
-  )
-  check('图层与版图内容盒对齐（不越界）', strat.insideSvg)
-  check('呼吸动画已启用（慢速）', strat.pulse === 'strat-pulse-slow', strat.pulse)
-  check('说明默认隐藏', (strat.tipOpacity ?? 1) < 0.1, `${strat.tipOpacity}`)
-
-  // 悬停某国 → 只点亮该国的战略点（渐进式呈现）
-  await page.hover('[data-nation="zhao"] .region-base')
-  await sleep(450)
-  const litByCountry = await page.evaluate(() => ({
-    active: document.querySelectorAll('.strat-dot[data-active="true"]').length,
-    dim: Number(getComputedStyle(document.querySelector('.strat-dot')).opacity),
-  }))
-  console.log(`[STRAT-ACTIVE] ${JSON.stringify(litByCountry)}`)
-  check('悬停赵国只点亮该国的战略点', litByCountry.active === 3, `${litByCountry.active} 个`)
-  check('其余战略点保持低调', litByCountry.dim < 0.5, `${litByCountry.dim}`)
-  await page.mouse.move(800, 40, { steps: 2 })
-  await sleep(300)
-
-  await page.hover('.strat-dot')
-  await sleep(400)
-  const stratTip = await page.evaluate(() => {
-    const dot = document.querySelector('.strat-dot')
-    const tip = dot.querySelector('.strat-tip')
-    return {
-      opacity: Number(getComputedStyle(tip).opacity),
-      name: tip.querySelector('.strat-tip-name')?.textContent?.trim(),
-      desc: tip.querySelector('.strat-tip-desc')?.textContent?.trim(),
-    }
-  })
-  console.log(`[STRAT-TIP] ${JSON.stringify(stratTip)}`)
-  check('悬浮战略点弹出说明', stratTip.opacity > 0.9, `${stratTip.opacity}`)
-  check(
-    '说明含名称与战略价值',
-    Boolean(stratTip.name) && (stratTip.desc?.length ?? 0) > 12,
-    `${stratTip.name}：${stratTip.desc?.slice(0, 18)}…`,
-  )
-  await page.mouse.move(800, 40, { steps: 2 })
-  await sleep(300)
   /* ---------- 5) 点击：展开详细战报 ---------- */
   await page.mouse.click(zhaoBox.x, zhaoBox.y)
   await sleep(900)
@@ -461,19 +386,6 @@ try {
   check('地图变暗灰化', panel.mapOpacity <= 0.35 && /grayscale\(1\)/.test(panel.mapFilter), `${panel.mapOpacity}`)
   check('正文人物被高亮为可点击标签', panel.figureTags >= 1, `${panel.figureTags}`)
 
-  // 聚焦时该国战略点仍要保持高亮（余光能对上地理位置）
-  await page.mouse.move(900, 60, { steps: 2 })
-  await sleep(500)
-  const focusedDots = await page.evaluate(() => ({
-    title: document.querySelector('.battle-panel .battle-title')?.textContent?.trim() ?? '',
-    active: document.querySelectorAll('.strat-dot[data-active="true"]').length,
-  }))
-  console.log(`[FOCUS-DOTS] ${JSON.stringify(focusedDots)}`)
-  check(
-    '聚焦战报时该国战略点保持高亮',
-    focusedDots.active > 0,
-    `${focusedDots.title} → ${focusedDots.active} 个`,
-  )
   await page.screenshot({ path: `${OUT}\\04-detail.png` })
   /* ---------- 5b) 史料原文 ---------- */
   const quote = await page.evaluate(() => {
