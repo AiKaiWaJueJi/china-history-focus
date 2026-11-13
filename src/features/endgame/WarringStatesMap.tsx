@@ -26,6 +26,8 @@ interface WarringStatesMapProps {
   unified: boolean
   onConquer: (event: EndgameEvent) => void
   onExitFocus: () => void
+  /** 点「秦」= 回到战前（六国复其疆） */
+  onReset: () => void
   overlay?: React.ReactNode
 }
 
@@ -70,6 +72,7 @@ export function WarringStatesMap({
   unified,
   onConquer,
   onExitFocus,
+  onReset,
   overlay,
 }: WarringStatesMapProps) {
   const hoveredId = useEndgameStore((s) => s.hoveredNation)
@@ -187,6 +190,11 @@ export function WarringStatesMap({
               data-nation={region.id}
               data-captured={captured ? 'true' : 'false'}
               onClick={() => {
+                // 秦不是"被灭国"，它是沙盘的本体：点它等于把时间拨回战前
+                if (isQin) {
+                  onReset()
+                  return
+                }
                 if (!event) return
                 onConquer(event)
               }}
@@ -276,9 +284,23 @@ export function WarringStatesMap({
         </div>
       ) : null}
 
+      {/* 悬浮「秦」时的提示：它不是战报入口，而是"回到战前"的开关 */}
+      {hoveredId === 'qin' ? (
+        <div
+          className="map-tip is-qin-tip"
+          style={{
+            left: `${(QIN_REGION.label[0] / 1000) * 100}%`,
+            top: `${(QIN_REGION.label[1] / 640) * 100}%`,
+          }}
+        >
+          <span className="map-tip-title">秦</span>
+          <span className="map-tip-brief">点击回到战前 · 六国复其疆</span>
+        </div>
+      ) : null}
+
       {overlay}
 
-      <p className="map-footnote">示意版图 · 相对方位依史 · 悬停看要点，点击看详情</p>
+      <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「秦」回到战前</p>
     </div>
   )
 }

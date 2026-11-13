@@ -280,6 +280,41 @@ try {
   await page.mouse.move(800, 120, { steps: 2 })
   await sleep(300)
 
+  /* ---------- 3e) 点「秦」回到战前 ---------- */
+  const qinBox = await page.evaluate(() => {
+    const el = document.querySelector('[data-nation="qin"] .region-base')
+    const r = el.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  await page.mouse.move(qinBox.x, qinBox.y, { steps: 3 })
+  await sleep(450)
+  const qinTip = await page.evaluate(() => ({
+    tip: Boolean(document.querySelector('.map-tip.is-qin-tip')),
+    text: document.querySelector('.map-tip.is-qin-tip')?.textContent?.replace(/\s+/g, ' ').trim(),
+  }))
+  console.log(`[QIN-TIP] ${JSON.stringify(qinTip)}`)
+  check('悬浮「秦」给出回战前提示', qinTip.tip && /回到战前/.test(qinTip.text ?? ''), qinTip.text)
+
+  await page.mouse.click(qinBox.x, qinBox.y)
+  await sleep(1000)
+  const afterReset = await page.evaluate(() => ({
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+    captured: document.querySelectorAll('.region.is-captured').length,
+    labels: [...document.querySelectorAll('.region:not(.is-qin) .region-label')].filter(
+      (n) => Number(getComputedStyle(n).opacity) > 0.5,
+    ).length,
+    entry: Boolean(document.querySelector('.qin-entry')),
+    panel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  console.log(`[RESET] ${JSON.stringify(afterReset)}`)
+  check('点「秦」回到战前（index 0）', afterReset.index === '0', afterReset.index)
+  check('六国恢复独立（只剩秦为墨色）', afterReset.captured === 1, `${afterReset.captured}`)
+  check('六国国名重新显现', afterReset.labels === 6, `${afterReset.labels}/6`)
+  check('秦朝入口与战报一并消失', !afterReset.entry && !afterReset.panel)
+
+  // 后续用例依赖 index 2 的状态，复位回去
+  await page.evaluate(() => document.querySelectorAll('.rail-node')[2].click())
+  await sleep(900)
   /* ---------- 4) 悬浮：要点卡片 + 底部节点流光 ---------- */
   const zhaoBox = await page.evaluate(() => {
     const el = document.querySelector('[data-nation="zhao"] .region-base')

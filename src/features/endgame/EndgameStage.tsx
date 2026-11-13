@@ -97,6 +97,20 @@ export function EndgameStage() {
     [conquerTo, muted],
   )
 
+  /*
+    点「秦」= 回到战前。
+    若战报正开着，先让它播完 240ms 退场动画再归零，避免面板"啪"地消失。
+  */
+  const handleReset = useCallback(() => {
+    if (useEndgameStore.getState().focusedNation) {
+      closePanel()
+      window.setTimeout(() => useEndgameStore.getState().resetAll(), 240)
+    } else {
+      useEndgameStore.getState().resetAll()
+    }
+    if (!muted) playBell(0.7)
+  }, [closePanel, muted])
+
   const handleStep = useCallback(
     (value: number) => {
       setIndex(value)
@@ -187,6 +201,7 @@ export function EndgameStage() {
           unified={showFinale}
           onConquer={handleConquer}
           onExitFocus={closePanel}
+          onReset={handleReset}
           overlay={
             /*
               整个终章（秦字 + 大秦帝国入口）都只在 showFinale 时挂载：
