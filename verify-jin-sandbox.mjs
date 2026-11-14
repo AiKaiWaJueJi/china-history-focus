@@ -1,4 +1,4 @@
-﻿/**
+/**
  * verify-jin-sandbox.mjs —— 晋末「十六国 · 南北分合」势力沙盘
  * ---------------------------------------------------------------------------
  * 这不是灭国战，检查的是：区域数、逐幕势力归属、关键年份（316/352/376/398/420）
@@ -30,6 +30,7 @@ const state = () =>
     ),
     chips: [...document.querySelectorAll('.jc-chip')].map((n) => n.textContent?.trim()),
     nodes: document.querySelectorAll('.jc-node').length,
+    routes: document.querySelectorAll('.jc-route').length,
   }
 
 try {
@@ -48,13 +49,14 @@ try {
   const first = await page.evaluate(state)
   console.log('[316]', JSON.stringify(first.regions))
   check('沙盘标题为「十六国 · 南北分合」', (await page.$eval('.jc-title h1', (n) => n.textContent)) === '十六国 · 南北分合')
-  check('13 个区域 + 13 幕', first.nodes === 13 && Object.keys(first.regions).length === 13, `${first.nodes}/${Object.keys(first.regions).length}`)
+  check('14 个区域 + 13 幕', first.nodes === 13 && Object.keys(first.regions).length === 14, `${first.nodes}/${Object.keys(first.regions).length}`)
   check(
     '316 年：关中属汉赵、河北属石勒、江南属东晋、巴蜀属成汉',
     first.regions.guanzhong === 'hanzhao' &&
       first.regions.hebei === 'houzhao' &&
       first.regions.jiangnan === 'dongjin' &&
-      first.regions.bashu === 'chenghan',
+      first.regions.bashu === 'chenghan' &&
+      first.regions.lingnan === 'dongjin',
     JSON.stringify(first.regions),
   )
 
@@ -74,6 +76,18 @@ try {
       p352.regions.shuofang === 'dai',
     JSON.stringify(p352.regions),
   )
+
+  check('352 有两支行军路线', p352.routes === 2, `${p352.routes}`)
+
+  await page.hover('[data-region="hebei"]')
+  await sleep(500)
+  const hot = await page.evaluate(() => ({
+    total: document.querySelectorAll('.jc-region.is-hot').length,
+    qianyan: document.querySelectorAll('.jc-region.is-hot[data-regime="qianyan"]').length,
+  }))
+  check('悬浮河北时，前燕的河北、辽西一起高亮', hot.total === 2 && hot.qianyan === 2, JSON.stringify(hot))
+  await page.mouse.move(10, 10)
+  await sleep(300)
 
   const p376 = await jump(7)
   console.log('[376]', JSON.stringify(p376.regions))
@@ -105,7 +119,8 @@ try {
     p420.regions.jiangnan === 'song' &&
       p420.regions.guanzhong === 'xia' &&
       p420.regions.hebei === 'beiwei' &&
-      p420.regions.liaoxi === 'beiyan',
+      p420.regions.liaoxi === 'beiyan' &&
+      p420.regions.lingnan === 'song',
     JSON.stringify(p420.regions),
   )
   check(
@@ -135,5 +150,7 @@ try {
 const failed = results.filter((r) => !r.pass)
 console.log(`\n===== ${results.length - failed.length}/${results.length} passed =====`)
 if (failed.length) process.exitCode = 1
+
+
 
 

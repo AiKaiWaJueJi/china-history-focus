@@ -27,7 +27,8 @@
       "bashu": "chenghan",
       "jingxiang": "dongjin",
       "jianghuai": "dongjin",
-      "jiangnan": "dongjin"
+      "jiangnan": "dongjin",
+      "lingnan": "dongjin"
     }
   },
   "steps": [
@@ -54,7 +55,8 @@
         "bashu": "chenghan",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       }
     },
     {
@@ -80,8 +82,29 @@
         "bashu": "chenghan",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
-      }
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
+      },
+      "routes": [
+        {
+          "id": "r329",
+          "label": "石勒自襄国西进，擒刘曜于洛阳",
+          "points": [
+            [
+              690,
+              270
+            ],
+            [
+              630,
+              390
+            ],
+            [
+              470,
+              390
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s337",
@@ -106,7 +129,8 @@
         "bashu": "chenghan",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       }
     },
     {
@@ -133,7 +157,8 @@
         "bashu": "dongjin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       }
     },
     {
@@ -159,9 +184,48 @@
         "bashu": "dongjin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       },
-      "note": "山东（青州）此时为段龛所据，洛阳亦在东晋手中；前燕要到 356 年后才逐步取之。"
+      "note": "山东（青州）此时为段龛所据，洛阳亦在东晋手中；前燕要到 356 年后才逐步取之。",
+      "routes": [
+        {
+          "id": "r352a",
+          "label": "慕容儁自辽西入邺，灭冉魏",
+          "points": [
+            [
+              840,
+              190
+            ],
+            [
+              740,
+              240
+            ],
+            [
+              700,
+              270
+            ]
+          ]
+        },
+        {
+          "id": "r352b",
+          "label": "苻健自陇右入关中，据长安",
+          "points": [
+            [
+              300,
+              345
+            ],
+            [
+              390,
+              360
+            ],
+            [
+              450,
+              385
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s370",
@@ -186,8 +250,29 @@
         "bashu": "dongjin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
-      }
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
+      },
+      "routes": [
+        {
+          "id": "r370",
+          "label": "王猛自长安出洛阳，东取邺城",
+          "points": [
+            [
+              450,
+              385
+            ],
+            [
+              630,
+              390
+            ],
+            [
+              710,
+              250
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s376",
@@ -212,7 +297,8 @@
         "bashu": "qianqin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       }
     },
     {
@@ -239,8 +325,33 @@
         "bashu": "qianqin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
-      }
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
+      },
+      "routes": [
+        {
+          "id": "r383",
+          "label": "苻坚自长安南下，至淝水遇谢玄",
+          "points": [
+            [
+              450,
+              385
+            ],
+            [
+              630,
+              390
+            ],
+            [
+              700,
+              470
+            ],
+            [
+              840,
+              540
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s398",
@@ -266,8 +377,29 @@
         "bashu": "dongjin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
-      }
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
+      },
+      "routes": [
+        {
+          "id": "r398",
+          "label": "拓跋珪自平城南取中山",
+          "points": [
+            [
+              520,
+              180
+            ],
+            [
+              620,
+              210
+            ],
+            [
+              710,
+              250
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s407",
@@ -292,7 +424,8 @@
         "bashu": "qiaoshu",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
       }
     },
     {
@@ -319,8 +452,33 @@
         "bashu": "dongjin",
         "jingxiang": "dongjin",
         "jianghuai": "dongjin",
-        "jiangnan": "dongjin"
-      }
+        "jiangnan": "dongjin",
+        "lingnan": "dongjin"
+      },
+      "routes": [
+        {
+          "id": "r417",
+          "label": "刘裕自建康北伐，经洛阳入长安",
+          "points": [
+            [
+              840,
+              540
+            ],
+            [
+              760,
+              470
+            ],
+            [
+              630,
+              390
+            ],
+            [
+              450,
+              385
+            ]
+          ]
+        }
+      ]
     },
     {
       "id": "s420",
@@ -346,7 +504,8 @@
         "bashu": "song",
         "jingxiang": "song",
         "jianghuai": "song",
-        "jiangnan": "song"
+        "jiangnan": "song",
+        "lingnan": "song"
       }
     }
   ],
@@ -356,229 +515,238 @@
       "name": "河西",
       "label": [
         160,
-        250
+        240
       ],
-      "points": "70,170 200,150 270,230 250,340 130,360 60,280"
+      "points": "70,210 150,120 246.4,101.5 270.7,192.5 147.6,385.2 95.9,400.7 70,360 50,270"
     },
     {
       "id": "longyou",
       "name": "陇右",
       "label": [
-        310,
-        350
+        300,
+        340
       ],
-      "points": "250,340 270,230 330,250 380,320 350,430 250,420"
+      "points": "147.6,385.2 270.7,192.5 399.8,272 347.7,467.3 337.4,477.6"
     },
     {
       "id": "shuofang",
       "name": "朔方",
       "label": [
         410,
-        160
+        150
       ],
-      "points": "330,90 480,80 520,170 460,250 350,240 300,150"
+      "points": "246.4,101.5 280,95 380,60 520,55 584.7,67.4 442.5,266.5 399.8,272 270.7,192.5"
     },
     {
       "id": "bingzhou",
       "name": "并州",
       "label": [
-        550,
-        270
+        545,
+        250
       ],
-      "points": "460,250 520,170 610,200 620,310 540,350 460,310"
+      "points": "584.7,67.4 635,77.1 635,300 541.1,346.9 442.5,266.5"
     },
     {
       "id": "hebei",
       "name": "河北",
       "label": [
-        700,
-        270
+        690,
+        250
       ],
-      "points": "610,200 760,170 800,270 760,360 650,380 620,310"
+      "points": "635,77.1 650,80 731.5,109.6 817.6,271.1 728.4,353.4 635,300"
     },
     {
       "id": "liaoxi",
       "name": "辽西",
       "label": [
-        860,
-        210
+        830,
+        180
       ],
-      "points": "760,170 900,120 960,220 900,300 800,270"
+      "points": "731.5,109.6 760,120 900,95 970,170 990,280 979.4,294.2 817.6,271.1"
     },
     {
       "id": "guanzhong",
       "name": "关中",
       "label": [
-        450,
-        380
+        430,
+        415
       ],
-      "points": "380,320 460,310 540,350 540,440 420,450 350,430"
+      "points": "347.7,467.3 399.8,272 442.5,266.5 541.1,346.9 538.6,437.9"
     },
     {
       "id": "zhongyuan",
       "name": "中原",
       "label": [
         610,
-        400
+        390
       ],
-      "points": "540,350 650,380 700,440 600,470 540,440"
+      "points": "569.1,477 538.6,437.9 541.1,346.9 635,300 728.4,353.4 731.9,422.7"
     },
     {
       "id": "shandong",
       "name": "山东",
       "label": [
-        810,
-        380
+        800,
+        370
       ],
-      "points": "700,440 760,360 800,270 900,300 930,420 820,460"
+      "points": "979.4,294.2 930,360 975.6,451.2 765.7,464.3 731.9,422.7 728.4,353.4 817.6,271.1"
     },
     {
       "id": "bashu",
       "name": "巴蜀",
       "label": [
-        290,
+        260,
         510
       ],
-      "points": "250,420 350,430 420,450 400,570 280,590 180,500"
+      "points": "343.4,580.7 250,560 140,470 95.9,400.7 147.6,385.2 337.4,477.6"
     },
     {
       "id": "jingxiang",
       "name": "荆襄",
       "label": [
-        480,
+        470,
         510
       ],
-      "points": "420,450 540,440 600,470 560,580 400,570"
+      "points": "425.6,599 343.4,580.7 337.4,477.6 347.7,467.3 538.6,437.9 569.1,477 570.3,522.9"
     },
     {
       "id": "jianghuai",
       "name": "江淮",
       "label": [
-        690,
-        510
+        650,
+        505
       ],
-      "points": "600,470 700,440 820,460 800,570 640,590 560,580"
+      "points": "736.9,627.8 650,630 640.8,628.8 570.3,522.9 569.1,477 731.9,422.7 765.7,464.3"
     },
     {
       "id": "jiangnan",
       "name": "江南",
       "label": [
-        810,
-        550
+        790,
+        530
       ],
-      "points": "820,460 930,420 970,520 900,620 700,620 640,590 800,570"
+      "points": "975.6,451.2 980,460 930,560 850,625 736.9,627.8 765.7,464.3"
+    },
+    {
+      "id": "lingnan",
+      "name": "岭南",
+      "label": [
+        500,
+        595
+      ],
+      "points": "640.8,628.8 430,600 425.6,599 570.3,522.9"
     }
   ],
   "regimes": [
     {
       "id": "hanzhao",
       "name": "漢趙（前趙）",
-      "color": "#a85a44"
+      "color": "#7a4a3f"
     },
     {
       "id": "houzhao",
       "name": "石勒／後趙",
-      "color": "#c08a45"
+      "color": "#8a6a3f"
     },
     {
       "id": "qianliang",
       "name": "前涼",
-      "color": "#6f8f7a"
+      "color": "#4f6a5c"
     },
     {
       "id": "chenghan",
       "name": "成漢",
-      "color": "#7a6f9a"
+      "color": "#62566f"
     },
     {
       "id": "dongjin",
       "name": "晉室／東晉",
-      "color": "#4f7f9a"
+      "color": "#3e5f70"
     },
     {
       "id": "murong",
       "name": "慕容部",
-      "color": "#9a6f7f"
+      "color": "#6f4f5e"
     },
     {
       "id": "qianyan",
       "name": "前燕",
-      "color": "#9a6f7f"
+      "color": "#6f4f5e"
     },
     {
       "id": "qianqin",
       "name": "前秦",
-      "color": "#8a6b3f"
+      "color": "#7a5f3a"
     },
     {
       "id": "zhangping",
       "name": "張平",
-      "color": "#777777"
+      "color": "#6a6a66"
     },
     {
       "id": "dai",
       "name": "代",
-      "color": "#6f7f8f"
+      "color": "#56606a"
     },
     {
       "id": "ranwei",
       "name": "冉魏",
-      "color": "#8a5f5f"
+      "color": "#6f4a4a"
     },
     {
       "id": "beiwei",
       "name": "北魏",
-      "color": "#4f7f6a"
+      "color": "#3f5f4f"
     },
     {
       "id": "houyan",
       "name": "後燕",
-      "color": "#7a6f8f"
+      "color": "#5e5268"
     },
     {
       "id": "nanyan",
       "name": "南燕",
-      "color": "#a07f5f"
+      "color": "#7a6a4f"
     },
     {
       "id": "houqin",
       "name": "後秦",
-      "color": "#a05a4a"
+      "color": "#6e4438"
     },
     {
       "id": "xia",
       "name": "夏",
-      "color": "#8f4f3f"
+      "color": "#6a3f32"
     },
     {
       "id": "beiyan",
       "name": "北燕",
-      "color": "#7f6f8a"
+      "color": "#564a5e"
     },
     {
       "id": "xiqin",
       "name": "西秦",
-      "color": "#6f6f8a"
+      "color": "#4e4e60"
     },
     {
       "id": "liang",
       "name": "河西諸涼",
-      "color": "#8a7f5f"
+      "color": "#6e6548"
     },
     {
       "id": "qiaoshu",
       "name": "譙蜀",
-      "color": "#7f5f8f"
+      "color": "#5e4a6a"
     },
     {
       "id": "beiliang",
       "name": "北涼",
-      "color": "#8a7f5f"
+      "color": "#6e6548"
     },
     {
       "id": "song",
       "name": "宋",
-      "color": "#4f8f7f"
+      "color": "#3f6a5e"
     }
   ]
 }

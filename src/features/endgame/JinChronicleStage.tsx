@@ -28,6 +28,12 @@ interface ChronicleRegime {
   color: string
 }
 
+interface ChronicleRoute {
+  id: string
+  label: string
+  points: number[][]
+}
+
 interface ChronicleStep {
   id: string
   year: string
@@ -37,6 +43,7 @@ interface ChronicleStep {
   source: { bookName: string; text: string }
   note?: string
   control: Record<string, string>
+  routes?: ChronicleRoute[]
 }
 
 interface ChronicleData {
@@ -62,6 +69,7 @@ function shortTitle(title: string) {
 export function JinChronicleStage() {
   const navigate = useNavigate()
   const [index, setIndex] = useState(0)
+  const [hoverRegime, setHoverRegime] = useState<string | null>(null)
   const lastWheel = useRef(0)
   const step = STEPS[index]
 
@@ -124,37 +132,49 @@ export function JinChronicleStage() {
 
       <div className="jc-body">
         <div className="jc-map">
-          <svg viewBox="0 0 1000 640" role="img" aria-label="316—420 年北方十六国与南方东晋、刘宋势力示意图">
+          <svg viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="316—420 年北方十六国与南方东晋、刘宋势力示意图">
             <defs>
-              <filter id="jc-glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="b" />
+              <filter id="jc-glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="4" result="b" />
                 <feMerge>
                   <feMergeNode in="b" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+              <marker id="jc-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 Z" fill="#f0d99b" />
+              </marker>
             </defs>
             <polygon
               className="jc-land"
-              points="60,160 200,130 330,70 480,60 620,80 760,150 900,100 980,220 970,430 930,540 900,630 700,620 400,590 180,520 60,360"
+              points="70,210 150,120 280,95 380,60 520,55 650,80 760,120 900,95 970,170 990,280 930,360 980,460 930,560 850,625 650,630 430,600 250,560 140,470 70,360 50,270"
             />
             {DATA.regions.map((region) => {
               const regime = REGIME_BY_ID.get(step.control[region.id])
               const [lx, ly] = region.label
+              const hot = hoverRegime !== null && hoverRegime === regime?.id
+              const dim = hoverRegime !== null && hoverRegime !== regime?.id
               return (
-                <g key={region.id} className="jc-region" data-region={region.id} data-regime={regime?.id}>
+                <g
+                  key={region.id}
+                  className={`jc-region${hot ? ' is-hot' : ''}${dim ? ' is-dim' : ''}`}
+                  data-region={region.id}
+                  data-regime={regime?.id}
+                  onMouseEnter={() => setHoverRegime(regime?.id ?? null)}
+                  onMouseLeave={() => setHoverRegime(null)}
+                >
                   <polygon
                     points={region.points}
                     fill={regime?.color ?? '#444'}
-                    fillOpacity={0.58}
-                    stroke="rgba(8, 10, 12, 0.9)"
-                    strokeWidth={2}
+                    fillOpacity={0.7}
+                    stroke="rgba(8, 10, 12, 0.92)"
+                    strokeWidth={1.6}
                   />
                   <polygon
                     points={region.points}
                     fill="none"
                     stroke={regime?.color ?? '#444'}
-                    strokeOpacity={0.9}
+                    strokeOpacity={0.85}
                     strokeWidth={1.2}
                   />
                   <title>
@@ -163,16 +183,35 @@ export function JinChronicleStage() {
                   <text x={lx} y={ly} className="jc-region-name">
                     {region.name}
                   </text>
-                  <text x={lx} y={ly + 26} className="jc-regime-name" fill={regime?.color ?? '#aaa'}>
+                  <text x={lx} y={ly + 24} className="jc-regime-name" fill={regime?.color ?? '#aaa'}>
                     {regime?.name}
                   </text>
                 </g>
               )
             })}
+            <g className="jc-routes">
+              {(step.routes ?? []).map((route) => {
+                const d = route.points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]} ${p[1]}`).join(' ')
+                return (
+                  <g key={route.id} className="jc-route" data-route={route.id}>
+                    <path id={`jc-path-${route.id}`} d={d} className="jc-route-line" markerEnd="url(#jc-arrow)" />
+                    <circle r={4.5} className="jc-route-dot">
+                      <animateMotion dur="2.8s" repeatCount="indefinite" path={d} />
+                    </circle>
+                  </g>
+                )
+              })}
+            </g>
           </svg>
           <div className="jc-legend">
             {activeRegimes.map((regime) => (
-              <span key={regime.id} className="jc-chip" data-regime-chip={regime.id}>
+              <span
+                key={regime.id}
+                className="jc-chip"
+                data-regime-chip={regime.id}
+                onMouseEnter={() => setHoverRegime(regime.id)}
+                onMouseLeave={() => setHoverRegime(null)}
+              >
                 <i style={{ background: regime.color }} />
                 {regime.name}
                 <em>{regime.count}</em>
@@ -194,6 +233,14 @@ export function JinChronicleStage() {
             <span>{step.source.text}</span>
           </blockquote>
           {step.note ? <p className="jc-note">注：{step.note}</p> : null}
+          {step.routes?.length ? (
+            <div className="jc-routes-list">
+              <span>行军</span>
+              {step.routes.map((route) => (
+                <em key={route.id}>{route.label}</em>
+              ))}
+            </div>
+          ) : null}
           <p className="jc-intro">{index === 0 ? DATA.intro : ''}</p>
 
           <div className="jc-actions">
