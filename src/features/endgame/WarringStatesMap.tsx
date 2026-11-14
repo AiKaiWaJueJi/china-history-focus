@@ -143,6 +143,7 @@ export function WarringStatesMap({
       className="map-stage"
       data-dimmed={dimmed}
       data-unified={unified}
+      data-undivided={index === 0 ? 'true' : 'false'}
       /*
         向下滚动 = 跳过行军动画，直接看战报。
         比双击好操作：双击容易误触，滚轮是"往下翻 = 继续推进"的自然隐喻。
@@ -215,7 +216,7 @@ export function WarringStatesMap({
         <g className="regions-layer">
         {allRegions.map((region) => {
           const event = eventsByNation.get(region.id) ?? null
-          const isQin = region.id === 'qin'
+          const isQin = region.id === mapSpec.attacker.id
           const captured = isCaptured(region.id)
           const isNewest = Boolean(event && event.order === index)
 
@@ -296,6 +297,13 @@ export function WarringStatesMap({
           之前它在自己的 <g> 里（秦是第一个渲染的），移动后会被邻国的图块盖住。
         */}
         </g>
+        {/* 第 0 幕：尚未分封，整块疆域只有一个名字 */}
+        {index === 0 ? (
+          <text className="map-empire-name" x="500" y="322" textAnchor="middle" dominantBaseline="middle">
+            {mapSpec.empireName ?? mapSpec.attacker.name}
+          </text>
+        ) : null}
+
         <g className="qin-label-layer" aria-hidden="true">
           <text
             className="region-label region-label--qin"
