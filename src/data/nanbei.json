@@ -1,0 +1,846 @@
+{
+  "id": "southern_northern",
+  "title": "南北朝",
+  "period": "420 — 589",
+  "intro": "南朝宋、齐、梁、陈相继；北朝北魏统一北方后分裂为东魏、西魏，再变为北齐、北周。四行并行，按在位年份横向展开；菱形节点为重大易代，点开是过渡页。",
+  "rows": [
+    {
+      "id": "beiwei",
+      "name": "北魏",
+      "note": "386—534"
+    },
+    {
+      "id": "dong",
+      "name": "东魏·北齐",
+      "note": "534—577"
+    },
+    {
+      "id": "xi",
+      "name": "西魏·北周",
+      "note": "535—581"
+    },
+    {
+      "id": "nan",
+      "name": "南朝",
+      "note": "宋 · 齐 · 梁 · 陈"
+    }
+  ],
+  "polities": [
+    {
+      "id": "beiwei",
+      "name": "北魏",
+      "row": "beiwei",
+      "start": 420,
+      "end": 534,
+      "full": "386—534"
+    },
+    {
+      "id": "dongwei",
+      "name": "东魏",
+      "row": "dong",
+      "start": 534,
+      "end": 550,
+      "full": "534—550"
+    },
+    {
+      "id": "beiqi",
+      "name": "北齐",
+      "row": "dong",
+      "start": 550,
+      "end": 577,
+      "full": "550—577"
+    },
+    {
+      "id": "xiwei",
+      "name": "西魏",
+      "row": "xi",
+      "start": 535,
+      "end": 557,
+      "full": "535—557"
+    },
+    {
+      "id": "beizhou",
+      "name": "北周",
+      "row": "xi",
+      "start": 557,
+      "end": 581,
+      "full": "557—581"
+    },
+    {
+      "id": "song",
+      "name": "宋",
+      "row": "nan",
+      "start": 420,
+      "end": 479,
+      "full": "420—479"
+    },
+    {
+      "id": "qi",
+      "name": "齐",
+      "row": "nan",
+      "start": 479,
+      "end": 502,
+      "full": "479—502"
+    },
+    {
+      "id": "liang",
+      "name": "梁",
+      "row": "nan",
+      "start": 502,
+      "end": 557,
+      "full": "502—557"
+    },
+    {
+      "id": "chen",
+      "name": "陈",
+      "row": "nan",
+      "start": 557,
+      "end": 589,
+      "full": "557—589"
+    }
+  ],
+  "emperors": [
+    {
+      "id": "song_wu",
+      "polity": "song",
+      "title": "宋武帝",
+      "name": "刘裕",
+      "start": 420,
+      "end": 422
+    },
+    {
+      "id": "song_shao",
+      "polity": "song",
+      "title": "宋少帝",
+      "name": "刘义符",
+      "start": 422,
+      "end": 424
+    },
+    {
+      "id": "song_wen",
+      "polity": "song",
+      "title": "宋文帝",
+      "name": "刘义隆",
+      "start": 424,
+      "end": 453
+    },
+    {
+      "id": "song_shao2",
+      "polity": "song",
+      "title": "元凶劭",
+      "name": "刘劭",
+      "start": 453,
+      "end": 453
+    },
+    {
+      "id": "song_xiaowu",
+      "polity": "song",
+      "title": "宋孝武帝",
+      "name": "刘骏",
+      "start": 453,
+      "end": 464
+    },
+    {
+      "id": "song_qianfei",
+      "polity": "song",
+      "title": "宋前废帝",
+      "name": "刘子业",
+      "start": 464,
+      "end": 465
+    },
+    {
+      "id": "song_ming",
+      "polity": "song",
+      "title": "宋明帝",
+      "name": "刘彧",
+      "start": 465,
+      "end": 472
+    },
+    {
+      "id": "song_houfei",
+      "polity": "song",
+      "title": "宋后废帝",
+      "name": "刘昱",
+      "start": 472,
+      "end": 477
+    },
+    {
+      "id": "song_shun",
+      "polity": "song",
+      "title": "宋顺帝",
+      "name": "刘准",
+      "start": 477,
+      "end": 479
+    },
+    {
+      "id": "qi_gao",
+      "polity": "qi",
+      "title": "齐高帝",
+      "name": "萧道成",
+      "start": 479,
+      "end": 482
+    },
+    {
+      "id": "qi_wu",
+      "polity": "qi",
+      "title": "齐武帝",
+      "name": "萧赜",
+      "start": 482,
+      "end": 493
+    },
+    {
+      "id": "qi_yulin",
+      "polity": "qi",
+      "title": "郁林王",
+      "name": "萧昭业",
+      "start": 493,
+      "end": 494
+    },
+    {
+      "id": "qi_hailing",
+      "polity": "qi",
+      "title": "海陵王",
+      "name": "萧昭文",
+      "start": 494,
+      "end": 494
+    },
+    {
+      "id": "qi_ming",
+      "polity": "qi",
+      "title": "齐明帝",
+      "name": "萧鸾",
+      "start": 494,
+      "end": 498
+    },
+    {
+      "id": "qi_donghun",
+      "polity": "qi",
+      "title": "东昏侯",
+      "name": "萧宝卷",
+      "start": 498,
+      "end": 501
+    },
+    {
+      "id": "qi_he",
+      "polity": "qi",
+      "title": "齐和帝",
+      "name": "萧宝融",
+      "start": 501,
+      "end": 502
+    },
+    {
+      "id": "liang_wu",
+      "polity": "liang",
+      "title": "梁武帝",
+      "name": "萧衍",
+      "start": 502,
+      "end": 549
+    },
+    {
+      "id": "liang_jianwen",
+      "polity": "liang",
+      "title": "简文帝",
+      "name": "萧纲",
+      "start": 549,
+      "end": 551
+    },
+    {
+      "id": "liang_dong",
+      "polity": "liang",
+      "title": "豫章王",
+      "name": "萧栋",
+      "start": 551,
+      "end": 552
+    },
+    {
+      "id": "liang_yuan",
+      "polity": "liang",
+      "title": "梁元帝",
+      "name": "萧绎",
+      "start": 552,
+      "end": 555
+    },
+    {
+      "id": "liang_yuanming",
+      "polity": "liang",
+      "title": "贞阳侯",
+      "name": "萧渊明",
+      "start": 555,
+      "end": 555
+    },
+    {
+      "id": "liang_jing",
+      "polity": "liang",
+      "title": "梁敬帝",
+      "name": "萧方智",
+      "start": 555,
+      "end": 557
+    },
+    {
+      "id": "chen_wu",
+      "polity": "chen",
+      "title": "陈武帝",
+      "name": "陈霸先",
+      "start": 557,
+      "end": 559
+    },
+    {
+      "id": "chen_wen",
+      "polity": "chen",
+      "title": "陈文帝",
+      "name": "陈蒨",
+      "start": 559,
+      "end": 566
+    },
+    {
+      "id": "chen_fei",
+      "polity": "chen",
+      "title": "陈废帝",
+      "name": "陈伯宗",
+      "start": 566,
+      "end": 568
+    },
+    {
+      "id": "chen_xuan",
+      "polity": "chen",
+      "title": "陈宣帝",
+      "name": "陈顼",
+      "start": 568,
+      "end": 582
+    },
+    {
+      "id": "chen_houzhu",
+      "polity": "chen",
+      "title": "陈后主",
+      "name": "陈叔宝",
+      "start": 582,
+      "end": 589
+    },
+    {
+      "id": "wei_mingyuan",
+      "polity": "beiwei",
+      "title": "明元帝",
+      "name": "拓跋嗣",
+      "start": 420,
+      "end": 423
+    },
+    {
+      "id": "wei_taiwu",
+      "polity": "beiwei",
+      "title": "太武帝",
+      "name": "拓跋焘",
+      "start": 423,
+      "end": 452
+    },
+    {
+      "id": "wei_nanan",
+      "polity": "beiwei",
+      "title": "南安王",
+      "name": "拓跋余",
+      "start": 452,
+      "end": 452
+    },
+    {
+      "id": "wei_wencheng",
+      "polity": "beiwei",
+      "title": "文成帝",
+      "name": "拓跋濬",
+      "start": 452,
+      "end": 465
+    },
+    {
+      "id": "wei_xianwen",
+      "polity": "beiwei",
+      "title": "献文帝",
+      "name": "拓跋弘",
+      "start": 465,
+      "end": 471
+    },
+    {
+      "id": "wei_xiaowen",
+      "polity": "beiwei",
+      "title": "孝文帝",
+      "name": "元宏",
+      "start": 471,
+      "end": 499
+    },
+    {
+      "id": "wei_xuanwu",
+      "polity": "beiwei",
+      "title": "宣武帝",
+      "name": "元恪",
+      "start": 499,
+      "end": 515
+    },
+    {
+      "id": "wei_xiaoming",
+      "polity": "beiwei",
+      "title": "孝明帝",
+      "name": "元诩",
+      "start": 515,
+      "end": 528
+    },
+    {
+      "id": "wei_xiaozhuang",
+      "polity": "beiwei",
+      "title": "孝庄帝",
+      "name": "元子攸",
+      "start": 528,
+      "end": 530
+    },
+    {
+      "id": "wei_changguang",
+      "polity": "beiwei",
+      "title": "长广王",
+      "name": "元晔",
+      "start": 530,
+      "end": 531
+    },
+    {
+      "id": "wei_jiemin",
+      "polity": "beiwei",
+      "title": "节闵帝",
+      "name": "元恭",
+      "start": 531,
+      "end": 532
+    },
+    {
+      "id": "wei_xiaowu",
+      "polity": "beiwei",
+      "title": "孝武帝",
+      "name": "元修",
+      "start": 532,
+      "end": 534
+    },
+    {
+      "id": "dongwei_jing",
+      "polity": "dongwei",
+      "title": "孝静帝",
+      "name": "元善见",
+      "start": 534,
+      "end": 550
+    },
+    {
+      "id": "beiqi_wenxuan",
+      "polity": "beiqi",
+      "title": "文宣帝",
+      "name": "高洋",
+      "start": 550,
+      "end": 559
+    },
+    {
+      "id": "beiqi_fei",
+      "polity": "beiqi",
+      "title": "北齐废帝",
+      "name": "高殷",
+      "start": 559,
+      "end": 560
+    },
+    {
+      "id": "beiqi_xiaozhao",
+      "polity": "beiqi",
+      "title": "孝昭帝",
+      "name": "高演",
+      "start": 560,
+      "end": 561
+    },
+    {
+      "id": "beiqi_wucheng",
+      "polity": "beiqi",
+      "title": "武成帝",
+      "name": "高湛",
+      "start": 561,
+      "end": 565
+    },
+    {
+      "id": "beiqi_houzhu",
+      "polity": "beiqi",
+      "title": "北齐后主",
+      "name": "高纬",
+      "start": 565,
+      "end": 577
+    },
+    {
+      "id": "beiqi_youzhu",
+      "polity": "beiqi",
+      "title": "北齐幼主",
+      "name": "高恒",
+      "start": 577,
+      "end": 577
+    },
+    {
+      "id": "xiwei_wen",
+      "polity": "xiwei",
+      "title": "西魏文帝",
+      "name": "元宝炬",
+      "start": 535,
+      "end": 551
+    },
+    {
+      "id": "xiwei_fei",
+      "polity": "xiwei",
+      "title": "西魏废帝",
+      "name": "元钦",
+      "start": 551,
+      "end": 554
+    },
+    {
+      "id": "xiwei_gong",
+      "polity": "xiwei",
+      "title": "西魏恭帝",
+      "name": "拓跋廓",
+      "start": 554,
+      "end": 557
+    },
+    {
+      "id": "beizhou_xiaomin",
+      "polity": "beizhou",
+      "title": "孝闵帝",
+      "name": "宇文觉",
+      "start": 557,
+      "end": 557
+    },
+    {
+      "id": "beizhou_ming",
+      "polity": "beizhou",
+      "title": "周明帝",
+      "name": "宇文毓",
+      "start": 557,
+      "end": 560
+    },
+    {
+      "id": "beizhou_wu",
+      "polity": "beizhou",
+      "title": "周武帝",
+      "name": "宇文邕",
+      "start": 560,
+      "end": 578
+    },
+    {
+      "id": "beizhou_xuan",
+      "polity": "beizhou",
+      "title": "周宣帝",
+      "name": "宇文赟",
+      "start": 578,
+      "end": 579
+    },
+    {
+      "id": "beizhou_jing",
+      "polity": "beizhou",
+      "title": "周静帝",
+      "name": "宇文阐",
+      "start": 579,
+      "end": 581
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n479",
+      "year": 479,
+      "title": "刘宋灭亡 · 萧齐代之",
+      "subtitle": "宋顺帝禅位于萧道成",
+      "acts": [
+        {
+          "heading": "宋末",
+          "lines": [
+            "后废帝刘昱暴虐，被左右所杀。",
+            "萧道成迎立顺帝刘准，独揽朝政。",
+            "荆州沈攸之起兵，败死。"
+          ],
+          "source": {
+            "book": "《南齐书·高帝纪》",
+            "text": "宋帝禅位，齐台建。"
+          }
+        },
+        {
+          "heading": "禅让",
+          "lines": [
+            "昇明三年，顺帝下诏禅位。",
+            "萧道成即皇帝位，国号齐，改元建元。",
+            "刘宋八帝，凡六十年而亡。"
+          ],
+          "source": {
+            "book": "《南齐书·高帝纪》",
+            "text": "即皇帝位，国号齐，改元建元。"
+          }
+        },
+        {
+          "heading": "余波",
+          "lines": [
+            "宋宗室多遭诛杀。",
+            "齐初以宽简为政，不久亦陷入宗室相残。",
+            "南朝易代，自此进入“禅让—屠宗”的循环。"
+          ],
+          "source": {
+            "book": "《南史·宋本纪》",
+            "text": "宋室诸王，诛夷略尽。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n502",
+      "year": 502,
+      "title": "萧齐灭亡 · 萧梁代之",
+      "subtitle": "齐和帝禅位于萧衍",
+      "acts": [
+        {
+          "heading": "齐末",
+          "lines": [
+            "东昏侯萧宝卷诛戮大臣，政刑混乱。",
+            "萧衍自襄阳起兵，拥立和帝萧宝融。",
+            "建康陷，东昏侯被杀。"
+          ],
+          "source": {
+            "book": "《梁书·武帝纪》",
+            "text": "义师克建康，东昏侯伏诛。"
+          }
+        },
+        {
+          "heading": "禅让",
+          "lines": [
+            "天监元年，和帝禅位于萧衍。",
+            "萧衍即皇帝位，国号梁。",
+            "齐七帝，凡二十四年。"
+          ],
+          "source": {
+            "book": "《梁书·武帝纪》",
+            "text": "齐帝禅位，梁台建。"
+          }
+        },
+        {
+          "heading": "梁初",
+          "lines": [
+            "梁武帝在位四十八年，为南朝最长。",
+            "天监之治，文教称盛。",
+            "晚年侯景之乱，梁室由盛转衰。"
+          ],
+          "source": {
+            "book": "《梁书·武帝纪》",
+            "text": "天监之治，民物阜康。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n534",
+      "year": 534,
+      "title": "北魏分裂",
+      "subtitle": "孝武帝西奔，东魏、西魏并立",
+      "acts": [
+        {
+          "heading": "乱源",
+          "lines": [
+            "六镇之乱后，尔朱荣入洛，河阴之变诛杀朝士。",
+            "高欢起兵灭尔朱氏，拥立孝武帝。",
+            "帝不堪高欢专权，西奔关中依宇文泰。"
+          ],
+          "source": {
+            "book": "《魏书·孝武帝纪》",
+            "text": "帝西幸长安，依宇文泰。"
+          }
+        },
+        {
+          "heading": "分裂",
+          "lines": [
+            "高欢另立元善见为帝，迁都邺，是为东魏。",
+            "宇文泰在长安奉元宝炬为帝，是为西魏。",
+            "北魏自此分裂，东西对峙。"
+          ],
+          "source": {
+            "book": "《北史·魏本纪》",
+            "text": "自是魏分为二。"
+          }
+        },
+        {
+          "heading": "影响",
+          "lines": [
+            "东魏、西魏皆由权臣掌握。",
+            "高氏、宇文氏各自积蓄力量，等候取而代之。",
+            "北方进入东魏—北齐、西魏—北周两条线。"
+          ],
+          "source": {
+            "book": "《资治通鉴》梁纪",
+            "text": "东西魏分据，兵连祸结。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n550",
+      "year": 550,
+      "title": "东魏灭亡 · 北齐代之",
+      "subtitle": "高洋受禅，国号齐",
+      "acts": [
+        {
+          "heading": "高氏专权",
+          "lines": [
+            "高欢死后，高澄继掌东魏。",
+            "高澄遇刺，高洋接掌军政。",
+            "孝静帝完全沦为傀儡。"
+          ],
+          "source": {
+            "book": "《北齐书·文宣帝纪》",
+            "text": "帝受禅于魏，国号齐。"
+          }
+        },
+        {
+          "heading": "受禅",
+          "lines": [
+            "武定八年，孝静帝禅位。",
+            "高洋即皇帝位，国号齐，史称北齐。",
+            "东魏十七年而亡。"
+          ],
+          "source": {
+            "book": "《北齐书·文宣帝纪》",
+            "text": "即皇帝位，改元天保。"
+          }
+        },
+        {
+          "heading": "北齐",
+          "lines": [
+            "北齐据河北、山东、河南，国力一度强于北周。",
+            "后期君主多昏暴，国势渐衰。",
+            "577 年为北周所灭。"
+          ],
+          "source": {
+            "book": "《北齐书·后主纪》",
+            "text": "政出多门，国用耗竭。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n557",
+      "year": 557,
+      "title": "梁亡陈立 · 周代西魏",
+      "subtitle": "南朝陈与北朝周同年而立",
+      "acts": [
+        {
+          "heading": "侯景之乱",
+          "lines": [
+            "548 年侯景自寿阳起兵，渡江围建康。",
+            "549 年台城陷，梁武帝饿死。",
+            "江南残破，梁室诸王互相攻杀。"
+          ],
+          "source": {
+            "book": "《梁书·侯景传》",
+            "text": "景攻陷台城，武帝崩于净居殿。"
+          }
+        },
+        {
+          "heading": "梁末",
+          "lines": [
+            "元帝萧绎平侯景，都江陵。",
+            "554 年西魏攻陷江陵，元帝被杀。",
+            "陈霸先、王僧辩拥立敬帝，后陈霸先袭杀王僧辩。"
+          ],
+          "source": {
+            "book": "《陈书·高祖纪》",
+            "text": "高祖讨平侯景，迎立敬帝。"
+          }
+        },
+        {
+          "heading": "陈、周并立",
+          "lines": [
+            "557 年，梁敬帝禅位于陈霸先，陈立。",
+            "同年，宇文觉受西魏禅，北周立。",
+            "南朝陈据江南；北周据关中、巴蜀，北方双雄并立。"
+          ],
+          "source": {
+            "book": "《陈书·高祖纪》",
+            "text": "梁帝禅位，陈台建。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n577",
+      "year": 577,
+      "title": "北周灭北齐",
+      "subtitle": "周武帝统一北方",
+      "acts": [
+        {
+          "heading": "齐政日坏",
+          "lines": [
+            "北齐后主高纬宠信冯小怜、和士开。",
+            "诛杀斛律光等名将，自毁长城。",
+            "赋役繁重，民不聊生。"
+          ],
+          "source": {
+            "book": "《北齐书·后主纪》",
+            "text": "盛修宫苑，穷极奢丽。"
+          }
+        },
+        {
+          "heading": "周武伐齐",
+          "lines": [
+            "575 年，周武帝宇文邕亲征北齐。",
+            "576 年取平阳，577 年克晋阳。",
+            "齐后主弃邺东逃，被俘。"
+          ],
+          "source": {
+            "book": "《周书·武帝纪》",
+            "text": "帝亲率六军，东伐齐。"
+          }
+        },
+        {
+          "heading": "北方一统",
+          "lines": [
+            "北齐亡，北周尽有北方。",
+            "周武帝灭佛、整军，国力大盛。",
+            "为隋代周、统一南北奠定基础。"
+          ],
+          "source": {
+            "book": "《周书·武帝纪》",
+            "text": "齐平，北方遂一。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "n589",
+      "year": 589,
+      "title": "隋灭陈 · 南北朝终",
+      "subtitle": "建康陷，陈后主降",
+      "acts": [
+        {
+          "heading": "隋代周",
+          "lines": [
+            "581 年，杨坚受北周禅，国号隋。",
+            "隋文帝整顿户籍、府兵，国力强盛。",
+            "587 年灭后梁，控制江陵。"
+          ],
+          "source": {
+            "book": "《隋书·高祖纪》",
+            "text": "受周禅，国号隋，改元开皇。"
+          }
+        },
+        {
+          "heading": "伐陈",
+          "lines": [
+            "588 年，隋以杨广、杨素、韩擒虎、贺若弼分道伐陈。",
+            "589 年正月，贺若弼渡江取京口，韩擒虎取采石。",
+            "建康陷，陈后主与张丽华藏于井中被俘。"
+          ],
+          "source": {
+            "book": "《隋书·高祖纪》",
+            "text": "开皇九年，平陈，天下为一。"
+          }
+        },
+        {
+          "heading": "统一",
+          "lines": [
+            "陈亡，南朝一百七十年终结。",
+            "自西晋末年以来近三百年的分裂结束。",
+            "南北朝之后，进入隋唐大一统。"
+          ],
+          "source": {
+            "book": "《隋书·高祖纪》",
+            "text": "九州大同，区宇宁一。"
+          }
+        }
+      ]
+    }
+  ]
+}

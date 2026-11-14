@@ -13,10 +13,17 @@ import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
+import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
+
+/** 南北朝是四行并行时间轴，不复用单行帝王分页 */
+function DynastyRoute() {
+  const { dynastyId } = useParams<{ dynastyId: string }>()
+  return dynastyId === 'southern_northern' ? <NanBeiTimeline /> : <DynastyDetail />
+}
 
 /** 晋末用「十六国势力变迁图」，不是灭国战沙盘，单独分流 */
 function EndgameRoute() {
@@ -59,7 +66,7 @@ function Shell() {
       <main className="app-main">
         <Routes>
           <Route path="/" element={<DynastyGallery />} />
-          <Route path="/dynasty/:dynastyId" element={<DynastyDetail />} />
+          <Route path="/dynasty/:dynastyId" element={<DynastyRoute />} />
           <Route path="/dynasty/:dynastyId/fall/:chapter?" element={<FallStage />} />
           <Route path="/dynasty/:dynastyId/endgame" element={<EndgameRoute />} />
           <Route path="*" element={<Navigate to="/" replace />} />
