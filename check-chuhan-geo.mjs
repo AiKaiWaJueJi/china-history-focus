@@ -84,8 +84,16 @@ check(
   badCap.length ? badCap.map((r) => r.name).join(',') : `${regions.length}/${regions.length}`,
 )
 
-/* ---------- 4) 行军路线端点 ---------- */
-const attacker = byId[geo.attacker]
+/* ---------- 4) 行军路线端点 ----------
+   汉军的出发地不一定是汉的本土：三秦平定后有，荥阳、赵地、齐地依次入汉。
+   所以判定标准是「起点落在**当时已经归汉的任一块**里」，而不是死板地只看汉。
+*/
+const attackerId = geo.attacker
+const capturedBefore = (order) => [
+  attackerId,
+  ...data.events.filter((e) => e.order < order).map((e) => e.nationId),
+]
+
 const badRoute = []
 for (const e of data.events) {
   const target = byId[e.nationId]
@@ -93,18 +101,31 @@ for (const e of data.events) {
     badRoute.push(`${e.target}: 没有对应疆域`)
     continue
   }
+  const home = capturedBefore(e.order).map((id) => byId[id]).filter(Boolean)
+  let prevPoint = null
   for (const c of e.campaigns ?? []) {
     if (!c.points?.length) continue
     const toXY = (p) => [p.x * 10, p.y * 6.4]
     const first = toXY(c.points[0])
     const last = toXY(c.points[c.points.length - 1])
-    const firstOk = c.side === 'enemy' ? inside(first, target.pts) : inside(first, attacker.pts)
-    if (!firstOk) badRoute.push(`${e.target}·${c.general} 起点不在出发国境内`)
+    // 同一幕内允许逐段推进：本段起点可以接续上一段终点
+    const chainFrom = prevPoint
+    const near = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 6
+    if (c.side === "enemy") {
+      if (!inside(first, target.pts)) badRoute.push(`${e.target}·${c.general} 起点不在 ${target.name} 境内`)
+    } else if (!home.some((r) => inside(first, r.pts)) && !(chainFrom && near(first, chainFrom))) {
+      badRoute.push(`${e.target}·${c.general} 起点不在当时已归汉的疆域内`)
+    }
+    prevPoint = toXY(c.points[c.points.length - 1])
     if (!inside(last, target.pts)) badRoute.push(`${e.target}·${c.general} 终点不在 ${target.name} 境内`)
+    // 中间点也不能飞出这张图
+    for (const mid of c.points.slice(1, -1)) {
+      const m = toXY(mid)
+      if (!regions.some((r) => inside(m, r.pts))) badRoute.push(`${e.target}·${c.general} 中途点落在版图外`)
+    }
   }
 }
 check('行军路线首尾都在对应疆域内', badRoute.length === 0, badRoute.slice(0, 3).join(' / ') || '全部通过')
-
 /* ---------- 5) 节点与疆域一一对应 ---------- */
 check('每个节点都有对应疆域', data.events.every((e) => Boolean(byId[e.nationId])), `${data.events.length} 个节点`)
 check('没有多余的疆域（除汉之外）', regions.filter((r) => r.id !== geo.attacker).length === data.events.length,

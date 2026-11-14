@@ -47,7 +47,7 @@ try {
   console.log(`[SHELL] ${JSON.stringify(shell)}`)
   check('标题为「楚汉相争」', shell.title === '楚汉相争', shell.title)
   check('战前节点为前206', (shell.rail[0] ?? '').includes('前206'), shell.rail[0])
-  check('七国节点顺序正确', shell.rail.slice(1).join(',').includes('三秦前206,魏前205,韩前205,燕前204,赵前204,齐前203,西楚前202'), shell.rail.slice(1).join(','))
+  check('七国节点顺序正确（破赵在前、燕降在后）', shell.rail.slice(1).join(',').includes('三秦前206,魏前205,韩前205,赵前204,燕前204,齐前203,西楚前202'), shell.rail.slice(1).join(','))
 
   /* ---------- 2) 地图上的攻方是汉 ---------- */
   const mapText = await page.evaluate(() => {
