@@ -316,6 +316,7 @@ export function WarringStatesMap({
               onMouseEnter={() => {
                 // 终章态（版图已消散、只剩统一大字）不该再产生 hover
                 if (unified) return
+                if (region.neutral) return
                 setHovered(region.id)
               }}
               onMouseLeave={() => setHovered(null)}

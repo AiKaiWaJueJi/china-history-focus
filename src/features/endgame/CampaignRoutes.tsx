@@ -16,6 +16,8 @@ import type { CampaignPhase, MapPoint } from '../../core/emperorTypes'
 
 interface CampaignRoutesProps {
   campaigns: CampaignPhase[]
+  /** 地图 viewBox 高度；百分比 y 按它换算（默认 640） */
+  height?: number
   /** 当前播放到第几段；-1 表示还没开始 */
   index: number
   done: boolean
@@ -24,7 +26,8 @@ interface CampaignRoutesProps {
 }
 
 /** 百分比 → viewBox（1000×640） */
-const toView = (p: MapPoint) => ({ x: p.x * 10, y: p.y * 6.4 })
+let VIEW_HEIGHT = 640
+const toView = (p: MapPoint) => ({ x: p.x * 10, y: (p.y * VIEW_HEIGHT) / 100 })
 
 /** 折线路径：M 起点 → L 逐点 */
 function polyline(points: MapPoint[]) {
@@ -88,7 +91,8 @@ function tail(points: MapPoint[]) {
   }
 }
 
-export function CampaignRoutes({ campaigns, index, done, hovered }: CampaignRoutesProps) {
+export function CampaignRoutes({ campaigns, height = 640, index, done, hovered }: CampaignRoutesProps) {
+  VIEW_HEIGHT = height
   if (campaigns.length === 0) return null
 
   return (
