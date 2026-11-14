@@ -132,7 +132,7 @@ export function JinChronicleStage() {
 
       <div className="jc-body">
         <div className="jc-map">
-          <svg viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="316—420 年北方十六国与南方东晋、刘宋势力示意图">
+          <svg viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" role="img" aria-label="316—420 年北方十六国与南方东晋、刘宋势力示意图">
             <defs>
               <filter id="jc-glow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="4" result="b" />

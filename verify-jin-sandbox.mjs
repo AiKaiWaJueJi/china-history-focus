@@ -1,4 +1,4 @@
-/**
+﻿/**
  * verify-jin-sandbox.mjs —— 晋末「十六国 · 南北分合」势力沙盘
  * ---------------------------------------------------------------------------
  * 这不是灭国战，检查的是：区域数、逐幕势力归属、关键年份（316/352/376/398/420）
@@ -48,6 +48,9 @@ try {
 
   const first = await page.evaluate(state)
   console.log('[316]', JSON.stringify(first.regions))
+  const fit = await page.evaluate(() => ({ overflow: document.documentElement.scrollHeight - innerHeight, svgBottom: document.querySelector('.jc-map svg').getBoundingClientRect().bottom, win: innerHeight }))
+  check('地图不超出视口（无纵向溢出）', fit.overflow <= 1 && fit.svgBottom <= fit.win + 1, JSON.stringify(fit))
+
   check('沙盘标题为「十六国 · 南北分合」', (await page.$eval('.jc-title h1', (n) => n.textContent)) === '十六国 · 南北分合')
   check('14 个区域 + 13 幕', first.nodes === 13 && Object.keys(first.regions).length === 14, `${first.nodes}/${Object.keys(first.regions).length}`)
   check(
@@ -150,6 +153,7 @@ try {
 const failed = results.filter((r) => !r.pass)
 console.log(`\n===== ${results.length - failed.length}/${results.length} passed =====`)
 if (failed.length) process.exitCode = 1
+
 
 
 
