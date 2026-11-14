@@ -190,6 +190,8 @@ export interface EndgameEvent {
   order: number
   /** 对应的地图区域 id（han/zhao/wei/chu/yan/qi） */
   nationId: string
+  /** 同一役中同时归入版图的其它区域（如垓下一役兼有九江） */
+  alsoCaptures?: string[]
   /** 展示用年份，如「前230年」 */
   year: string
   /** 排序/计算用年份（负数＝公元前） */

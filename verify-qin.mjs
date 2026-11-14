@@ -149,7 +149,7 @@ try {
   console.log(`[SANDBOX] ${JSON.stringify(sandbox)}`)
   check('秦亡之后进入楚汉沙盘', /\/dynasty\/qin\/endgame$/.test(sandbox.path), sandbox.path)
   check('沙盘标题为「楚汉相争」', sandbox.title === '楚汉相争', sandbox.title)
-  check('沙盘有 9 个节点（战前·分封·七国）', sandbox.rail.length === 9, String(sandbox.rail.length))
+  check('沙盘有 8 个节点（战前 + 七国）', sandbox.rail.length === 8, String(sandbox.rail.length))
   check('「战前」节点用楚汉年份', (sandbox.rail[0] ?? '').includes('前206'), sandbox.rail[0])
 
   /* ---------- 7) 上滚确认 + 返回 ---------- */

@@ -20,6 +20,7 @@ import { FigureModal } from './FigureModal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { MAPS } from './mapGeometry'
+import { CHUHAN_MAP } from './chuhanMap'
 import { useEndgameStore } from './useEndgameStore'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
@@ -340,7 +341,7 @@ export function EndgameStage() {
         ) : null}
 
         <WarringStatesMap
-          mapSpec={MAPS[endgame.mapId ?? 'zhanguo']}
+          mapSpec={endgame.mapId === 'chuhan' ? CHUHAN_MAP : MAPS[endgame.mapId ?? 'zhanguo']}
           events={events}
           index={index}
           campaigns={mapCampaigns}
