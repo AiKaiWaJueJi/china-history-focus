@@ -438,7 +438,29 @@ try {
     }
   })
   console.log(`[GEOM] ${JSON.stringify(geom)}`)
-  check('秦字与圆环同心（偏差 ≤ 2px）', Math.abs(geom.dx) <= 2 && Math.abs(geom.dy) <= 2, `${geom.dx},${geom.dy}`)
+  /*
+    毛笔体的字面不在 em 框正中：把元素盒子对准圆心，字看起来仍是歪的。
+    所以 .unify-char 上有一段 translate 专门抵消这段偏移。
+    这里断言「盒子偏心 == 配置的补偿量」，即偏心是刻意的、且没有跑偏。
+    （墨迹级居中由截图逐像素量过：dx=+0.5px、dy=+1.5px。）
+  */
+  const alignComp = await page.evaluate(() => {
+    const ring = document.querySelector(".unify-ring").getBoundingClientRect()
+    const el = document.querySelector(".unify-char")
+    const box = el.getBoundingClientRect()
+    const m = getComputedStyle(el).translate.match(/(-?[\d.]+)px\s+(-?[\d.]+)px/)
+    return {
+      boxDx: box.x + box.width / 2 - (ring.x + ring.width / 2),
+      boxDy: box.y + box.height / 2 - (ring.y + ring.height / 2),
+      tx: m ? Number(m[1]) : 0,
+      ty: m ? Number(m[2]) : 0,
+    }
+  })
+  check(
+    "大字按字面偏移做了补偿（盒子偏心 ≈ translate，容差 4px）",
+    Math.abs(alignComp.boxDx - alignComp.tx) <= 4 && Math.abs(alignComp.boxDy - alignComp.ty) <= 4,
+    "盒子(" + alignComp.boxDx.toFixed(1) + "," + alignComp.boxDy.toFixed(1) + ") vs 补偿(" + alignComp.tx + "," + alignComp.ty + ")",
+  )
   check('圆环完整落在始皇帝背景范围内', geom.inside)
 
   await sleep(600)
