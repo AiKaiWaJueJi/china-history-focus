@@ -158,14 +158,14 @@ try {
   const pageOf = (s) => Number(/第 (\d+) \//.exec(s ?? '')?.[1] ?? 0)
   check('冷却期内连滚只翻一页', pageOf(after) - pageOf(before) === 1, `${pageOf(before)} → ${pageOf(after)}`)
 
-  /* ---------- 末页 ---------- */
-  for (let i = 0; i < 20; i++) {
-    await page.mouse.wheel({ deltaY: 220 })
-    await sleep(560)
-    const text = await page.$eval('.timeline-count', (n) => n.textContent?.trim())
-    if (/第 13 \/ 13 页/.test(text ?? '')) break
-  }
-  await sleep(1400)
+  /* ---------- 末页 ----------
+     不能再用"一路滚到末页"：第 4 页（西周末页）下滚会进「平王东迁」过渡页。
+     改用页码点直接跳末页，测的仍是末页版式。 */
+  await page.evaluate(() => {
+    const dots = document.querySelectorAll('.timeline-dot')
+    dots[dots.length - 1]?.click()
+  })
+  await sleep(1200)
   const lastPage = await page.$$eval('.emp-card', (ns) => ns.length)
   const slots = await page.$$eval('.emp-slot', (ns) => ns.length)
   check('末页仅 1 位帝王 + 2 个空槽', lastPage === 1 && slots === 2, `cards=${lastPage} slots=${slots}`)

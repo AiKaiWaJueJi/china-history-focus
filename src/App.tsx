@@ -53,7 +53,7 @@ function Shell() {
         <Routes>
           <Route path="/" element={<DynastyGallery />} />
           <Route path="/dynasty/:dynastyId" element={<DynastyDetail />} />
-          <Route path="/dynasty/:dynastyId/fall" element={<FallStage />} />
+          <Route path="/dynasty/:dynastyId/fall/:chapter?" element={<FallStage />} />
         <Route path="/dynasty/:dynastyId/endgame" element={<EndgameStage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

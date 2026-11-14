@@ -24,6 +24,11 @@ export interface WheelPagingOptions {
   threshold?: number
   /** 已在最后一页仍继续向下滚时触发（用于进入「终局推演」） */
   onBeyondEnd?: () => void
+  /**
+   * 从某一页继续向下滚时，若返回 true，表示这次翻页已被消费。
+   * 用于「西周 → 东周」这类段间插叙：到段末页不下翻，而是进过渡页。
+   */
+  onLeavePage?: (fromIndex: number) => boolean
 }
 
 export function useWheelPaging({
@@ -33,10 +38,11 @@ export function useWheelPaging({
   cooldown = 520,
   threshold = 18,
   onBeyondEnd,
+  onLeavePage,
 }: WheelPagingOptions) {
   // 用 ref 保存最新值，避免因为重建监听器导致冷却状态丢失
-  const state = useRef({ pageCount, pageIndex, onChange, onBeyondEnd })
-  state.current = { pageCount, pageIndex, onChange, onBeyondEnd }
+  const state = useRef({ pageCount, pageIndex, onChange, onBeyondEnd, onLeavePage })
+  state.current = { pageCount, pageIndex, onChange, onBeyondEnd, onLeavePage }
 
   const lastTime = useRef(0)
   const acc = useRef(0)
@@ -45,8 +51,21 @@ export function useWheelPaging({
     const step = (direction: 1 | -1) => {
       const now = performance.now()
       if (now - lastTime.current < cooldown) return
-      const { pageIndex: current, pageCount: total, onChange: emit, onBeyondEnd: beyond } = state.current
+      const {
+        pageIndex: current,
+        pageCount: total,
+        onChange: emit,
+        onBeyondEnd: beyond,
+        onLeavePage: leave,
+      } = state.current
       const next = current + direction
+
+      // 段末页继续下滚 → 交给调用方决定是否进过渡页
+      if (direction > 0 && leave && leave(current)) {
+        lastTime.current = now
+        acc.current = 0
+        return
+      }
 
       // 已到最后一页还继续向下滚 → 交给调用方（进入终局推演）
       if (next > total - 1) {

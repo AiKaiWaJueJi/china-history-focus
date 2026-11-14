@@ -22,6 +22,17 @@ import './emperor-timeline.css'
 
 const PAGE_SIZE = 3
 
+/**
+ * 段间插叙：进入某个分段之前，先走一屏过渡页。
+ * ---------------------------------------------------------------------------
+ * key1 = dynastyId，key2 = 目标分段的 segmentId。
+ * 触发点不写死页码，而是由「该分段第一位君主所在的页」倒推上一页 ——
+ * 将来增删君主、改动 PAGE_SIZE 都不会错位。
+ */
+const SEGMENT_INTROS: Record<string, Record<string, { chapter: string; label: string }>> = {
+  zhou: { seg_dongzhou: { chapter: 'dongqian', label: '平王东迁' } },
+}
+
 export function DynastyDetail() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
   const navigate = useNavigate()
@@ -57,16 +68,50 @@ export function DynastyDetail() {
     另加 800ms 防抖：用户从上一页滑到末页时惯性还在，
     不设防会出现"还没看清赧王就被弹走"。
   */
-  const lastPageAt = useRef(0)
+  /* 每次换页都记时间：段末页与整表末页共用这一个防抖 */
+  const pageAt = useRef(0)
   useEffect(() => {
-    if (pageCount > 0 && pageIndex === pageCount - 1) lastPageAt.current = performance.now()
-  }, [pageIndex, pageCount])
+    pageAt.current = performance.now()
+  }, [pageIndex])
 
   const goFall = useCallback(() => {
     if (!dynastyId || !endgameData) return
-    if (performance.now() - lastPageAt.current < 800) return
+    if (performance.now() - pageAt.current < 800) return
     navigate(`/dynasty/${dynastyId}/fall`)
   }, [dynastyId, endgameData, navigate])
+
+  /*
+    段间过渡的落点：找到目标分段的第一位君主，它所在页的**上一页**就是触发页。
+    例：东周首位是平王（第 12 位，页 4）→ 触发页 3，正是西周最后一页。
+  */
+  const introGate = useMemo(() => {
+    if (!dynastyId) return null
+    const map = SEGMENT_INTROS[dynastyId]
+    if (!map) return null
+    for (const [segId, cfg] of Object.entries(map)) {
+      const firstIdx = emperors.findIndex((emperor) => emperor.segmentId === segId)
+      if (firstIdx > 0) {
+        return { page: Math.ceil(firstIdx / PAGE_SIZE) - 1, chapter: cfg.chapter, label: cfg.label }
+      }
+    }
+    return null
+  }, [dynastyId, emperors])
+
+  const goIntro = useCallback(() => {
+    if (!dynastyId || !introGate) return
+    if (performance.now() - pageAt.current < 800) return
+    navigate(`/dynasty/${dynastyId}/fall/${introGate.chapter}`)
+  }, [dynastyId, introGate, navigate])
+
+  /* 段末页继续下滚 → 进过渡页，不翻到下一段 */
+  const onLeavePage = useCallback(
+    (from: number) => {
+      if (!introGate || from !== introGate.page) return false
+      goIntro()
+      return true
+    },
+    [introGate, goIntro],
+  )
 
 
 
@@ -76,6 +121,7 @@ export function DynastyDetail() {
     onChange: handleChange,
     // 已在最后一页继续向下滚 → 直接进入终局推演
     onBeyondEnd: endgameData ? goFall : undefined,
+    onLeavePage,
   })
 
   // ESC 返回主页
@@ -100,10 +146,18 @@ export function DynastyDetail() {
     用 location.state.page === 'last' 传递意图（不污染 URL，也不写进 store）。
   */
   useEffect(() => {
-    const wantsLast = (location.state as { page?: string } | null)?.page === 'last'
-    if (!wantsLast || pageCount === 0) return
-    setPageIndex(pageCount - 1)
-    setDirection(-1)
+    if (pageCount === 0) return
+    const target = (location.state as { page?: string | number } | null)?.page
+    // 数字页码：过渡页回来时精确落到某一页（如平王东迁 → 东周首页 4）
+    if (typeof target === 'number') {
+      setPageIndex(Math.max(0, Math.min(target, pageCount - 1)))
+      setDirection(1)
+      return
+    }
+    if (target === 'last') {
+      setPageIndex(pageCount - 1)
+      setDirection(-1)
+    }
   }, [location.state, pageCount])
 
   /* ---------------- 当前页所属分段 → 决定布局 ---------------- */
@@ -252,7 +306,11 @@ export function DynastyDetail() {
             末页不再放大按钮：入口已经改为"继续下滑"。
             这里只留一行小字，告诉用户下滑能进；键盘用户仍可点它。
           */}
-          {endgameData && pageIndex === pageCount - 1 ? (
+          {introGate && pageIndex === introGate.page ? (
+            <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goIntro}>
+              继续下滑 · {introGate.label} ↓
+            </button>
+          ) : endgameData && pageIndex === pageCount - 1 ? (
             <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goFall}>
               继续下滑 · 周室倾覆 ↓
             </button>

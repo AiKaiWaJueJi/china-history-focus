@@ -18,18 +18,50 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
+import fallDongqian from '../../data/fall.zhou.dongqian.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
+import burnPhoto from '../../assets/burn-photo.jpg'
+import marchPhoto from '../../assets/march-photo.jpg'
+import thronePhoto from '../../assets/throne-photo.jpg'
 import './fall.css'
+
+/** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
+const ART: Record<string, string> = {
+  ding: dingPhoto,
+  temple: templePhoto,
+  tally: tallyPhoto,
+  burn: burnPhoto,
+  march: marchPhoto,
+  throne: thronePhoto,
+}
+
+const ART_ALT: Record<string, string> = {
+  ding: '倾覆的青铜鼎',
+  temple: '破败的周代宗庙',
+  tally: '断裂的青铜符节',
+  burn: '焚毁的西周宫室',
+  march: '东迁的车马',
+  throne: '空置的王庭',
+}
 
 interface FallAct {
   id: string
+  /** 影像代号，见 ART 映射表 */
+  art?: string
   year: string
   heading: string
   lines: string[]
   source: { book: string; text: string }
   note?: string
+}
+
+/** 第三幕走完后去哪里 */
+interface FallNext {
+  kind: 'endgame' | 'timeline'
+  /** kind === 'timeline' 时回落的页码；'last' 表示最后一页 */
+  page?: number | 'last'
 }
 
 interface FallData {
@@ -40,11 +72,28 @@ interface FallData {
   acts: FallAct[]
   enterLabel: string
   enterHint: string
+  next?: FallNext
+  /** 第一幕上滚确认后，回到时间轴的哪一页 */
+  back?: { page: number | 'last' }
 }
 
-const FALL: Record<string, FallData> = {
-  zhou: fallZhou as FallData,
+/**
+ * 过渡章节注册表
+ * ---------------------------------------------------------------------------
+ * key 是 URL 里的 chapter 段，缺省用 DEFAULT_CHAPTER。
+ * 周有两个过渡：
+ *   fall      西周覆灭 → 秦取九鼎 → 进沙盘（原有）
+ *   dongqian  犬戎破镐京 → 平王东迁 → 回时间轴东周首页（新增）
+ * 组件完全复用，视觉与交互因此天然一致。
+ */
+const CHAPTERS: Record<string, Record<string, FallData>> = {
+  zhou: {
+    dongqian: fallDongqian as FallData,
+    fall: fallZhou as FallData,
+  },
 }
+
+const DEFAULT_CHAPTER = 'fall'
 
 /** 逐字速度（毫秒/字） */
 const TYPE_SPEED = 46
@@ -52,11 +101,11 @@ const TYPE_SPEED = 46
 const PAGE_COOLDOWN = 620
 
 export function FallStage() {
-  const { dynastyId } = useParams<{ dynastyId: string }>()
+  const { dynastyId, chapter } = useParams<{ dynastyId: string; chapter?: string }>()
   const navigate = useNavigate()
   const prefersReducedMotion = useReducedMotion()
 
-  const data = dynastyId ? FALL[dynastyId] : undefined
+  const data = dynastyId ? CHAPTERS[dynastyId]?.[chapter ?? DEFAULT_CHAPTER] : undefined
   const acts = data?.acts ?? []
 
   const [page, setPage] = useState(0)
@@ -168,19 +217,32 @@ export function FallStage() {
   }, [confirmBack])
 
   const backToTimeline = useCallback(() => {
-    navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
-  }, [dynastyId, navigate])
+    const target = data?.back?.page ?? 'last'
+    navigate(`/dynasty/${dynastyId}`, { state: { page: target } })
+  }, [dynastyId, navigate, data])
 
-  const enterEndgame = useCallback(() => {
-    if (!dynastyId || leaving) return
+  /*
+    第三幕之后的出口由数据决定：
+      endgame  → 终局沙盘（周室倾覆）
+      timeline → 回时间轴指定页（平王东迁 → 东周首页）
+  */
+  const goNext = useCallback(() => {
+    if (!dynastyId || !data || leaving) return
+    const next: FallNext = data.next ?? { kind: 'endgame' }
     setLeaving(true)
-    window.setTimeout(() => navigate(`/dynasty/${dynastyId}/endgame`), 760)
-  }, [dynastyId, leaving, navigate])
+    window.setTimeout(() => {
+      if (next.kind === 'endgame') {
+        navigate(`/dynasty/${dynastyId}/endgame`)
+      } else {
+        navigate(`/dynasty/${dynastyId}`, { state: { page: next.page ?? 'last' } })
+      }
+    }, 760)
+  }, [dynastyId, data, leaving, navigate])
 
   if (!data) {
     return (
       <div className="fall-page fall-page--empty">
-        <p>该朝代没有「周室倾覆」数据</p>
+        <p>该朝代没有对应的过渡章节</p>
         <button type="button" onClick={() => navigate('/')}>
           返回
         </button>
@@ -250,14 +312,8 @@ export function FallStage() {
             <div className="fall-photo-wrap">
               <img
                 className="fall-photo"
-                src={page === 0 ? dingPhoto : page === 1 ? templePhoto : tallyPhoto}
-                alt={
-                  page === 0
-                    ? "倾覆的青铜鼎"
-                    : page === 1
-                      ? "破败的周代宗庙"
-                      : "断裂的青铜符节"
-                }
+                src={ART[act.art ?? 'ding'] ?? ART.ding}
+                alt={ART_ALT[act.art ?? 'ding'] ?? '过渡影像'}
               />
             </div>
           </div>
@@ -289,7 +345,7 @@ export function FallStage() {
 
       {/* 第三幕文字走完才出现；回滚到第二幕即消失 */}
       <div className="fall-foot" data-visible={canEnter}>
-        <button type="button" className="fall-enter" onClick={(e) => { e.stopPropagation(); enterEndgame() }}>
+        <button type="button" className="fall-enter" onClick={(e) => { e.stopPropagation(); goNext() }}>
           <span className="fall-enter-label">{data.enterLabel}</span>
           <span className="fall-enter-hint">{data.enterHint} →</span>
         </button>

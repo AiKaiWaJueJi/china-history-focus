@@ -70,10 +70,11 @@ try {
   const ph0 = await playhead()
   const widths = [ph0.w]
   const lefts = [ph0.left]
-  for (let i = 0; i < 12; i++) {
-    await page.mouse.move(800, 300)
-    await page.mouse.wheel({ deltaY: 220 })
-    await sleep(760)
+  // 逐页点页码点，而不是滚轮连滚 —— 第 4 页下滚会进「平王东迁」过渡页
+  const dotCount = await page.$$eval('.timeline-dot', (ns) => ns.length)
+  for (let i = 1; i < dotCount; i++) {
+    await page.evaluate((idx) => document.querySelectorAll('.timeline-dot')[idx]?.click(), i)
+    await sleep(460)
     const ph = await playhead()
     widths.push(ph.w)
     lefts.push(ph.left)

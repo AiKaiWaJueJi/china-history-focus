@@ -6,6 +6,7 @@
   "acts": [
     {
       "id": "act_ding",
+      "art": "ding",
       "year": "前256年",
       "heading": "秦取九鼎",
       "lines": [
@@ -22,6 +23,7 @@
     },
     {
       "id": "act_si",
+      "art": "temple",
       "year": "前249年",
       "heading": "周既不祀",
       "lines": [
@@ -36,6 +38,7 @@
     },
     {
       "id": "act_gap",
+      "art": "tally",
       "year": "前251 — 前230年",
       "heading": "权力更迭 · 合纵破产",
       "lines": [
@@ -52,5 +55,7 @@
     }
   ],
   "enterLabel": "王朝覆灭",
-  "enterHint": "入秦 · 六国将尽"
+  "enterHint": "入秦 · 六国将尽",
+  "next": { "kind": "endgame" },
+  "back": { "page": "last" }
 }
