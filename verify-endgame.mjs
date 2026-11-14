@@ -86,9 +86,17 @@ try {
   check('末页入口指向周室倾覆', /周室倾覆/.test(ctaText ?? ''), ctaText)
   await page.click('.timeline-btn--endgame')
   await page.waitForSelector('.fall-page', { timeout: 8000 })
-  // 过渡页：等入口浮现（动画约 5.2s，这里直接点击跳过）
-  await page.click('.fall-page')
-  await page.waitForSelector('.fall-enter', { timeout: 4000 })
+  // 过渡页是三页翻页：点一下跳过逐字，滚两次翻到第三幕，再点入口
+  for (let i = 0; i < 2; i += 1) {
+    await page.mouse.click(720, 460)
+    await sleep(200)
+    await page.mouse.move(700, 450)
+    await page.mouse.wheel({ deltaY: 220 })
+    await sleep(700)
+  }
+  await page.mouse.click(720, 460)
+  await sleep(500)
+  await page.waitForSelector('.fall-foot[data-visible="true"]', { timeout: 6000 })
   await page.click('.fall-enter')
   await sleep(1200)
   await page.waitForSelector('.map-stage', { timeout: 10000 })

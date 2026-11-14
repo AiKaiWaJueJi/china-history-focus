@@ -1,11 +1,14 @@
 /**
- * verify-fall.mjs —— 「周室倾覆 / 九鼎入秦」过渡页 + 谥法边框
+ * verify-fall.mjs —— 「周室倾覆 / 九鼎入秦」三页过渡 + 谥法边框
  * ---------------------------------------------------------------------------
  * 要证明的事：
- *   1) 时间轴末页不再直接进沙盘，而是先进过渡页
- *   2) 过渡页三幕俱在、入口按时浮现、顶部有常驻出口
- *   3) 点入口 → 画卷展开 → 进入沙盘
- *   4) 帝王卡按谥法分色，且 hover 时边框提亮
+ *   1) 帝王卡按谥法分色，hover 提亮
+ *   2) 时间轴末页不再直接进沙盘，先入过渡页
+ *   3) 过渡页是三页翻页：文字逐字浮现、走完才能翻页
+ *   4) 【王朝覆灭】只在第三幕文字走完后出现；回滚即消失
+ *   5) 每幕影像左右交替（鼎左 · 宗庙右 · 断符左）
+ *   6) 第一页再上滚 → 弹确认框
+ *   7) 点入口 → 画卷展开 → 沙盘（战前节点为前230）
  */
 import puppeteer from 'puppeteer-core'
 
@@ -40,14 +43,11 @@ try {
 
   const cards = await page.evaluate(() =>
     [...document.querySelectorAll('.emp-card')].map((c) => ({
-      title: c.querySelector('.emp-title')?.textContent?.trim(),
       evaluation: c.getAttribute('data-evaluation'),
       border: getComputedStyle(c.querySelector('.emp-clip')).borderTopColor,
       rule: Boolean(c.querySelector('.emp-rule')),
     })),
   )
-  console.log(`[CARDS] ${JSON.stringify(cards)}`)
-
   check('每张帝王卡都有谥法评价', cards.every((c) => ['good', 'neutral', 'bad'].includes(c.evaluation)))
   check('美谥为鎏金边', cards[0].border === 'rgba(201, 162, 39, 0.5)', cards[0].border)
   check('卡片含谥法本义小字', cards.every((c) => c.rule))
@@ -60,7 +60,7 @@ try {
   )
   check('悬浮时边框提亮', borderHover !== borderIdle, `${borderIdle} → ${borderHover}`)
 
-  /* ---------- 2) 末页入口指向过渡页 ---------- */
+  /* ---------- 2) 末页入口 ---------- */
   await page.$$eval('.timeline-dot', (ns) => ns[ns.length - 1].click())
   await sleep(900)
   const cta = await page.$eval('.timeline-btn--endgame', (n) => n.textContent?.trim()).catch(() => null)
@@ -70,100 +70,153 @@ try {
   await page.waitForSelector('.fall-page', { timeout: 8000 })
   check('进入过渡页', /\/fall$/.test(page.url()), page.url())
 
-  // 这一页必须自己可滚：外层 body 是 overflow:hidden，不能靠窗口滚
-  const scrollable = await page.evaluate(() => {
-    const el = document.querySelector('.fall-page')
-    return {
-      scrollHeight: el.scrollHeight,
-      clientHeight: el.clientHeight,
-      overflowY: getComputedStyle(el).overflowY,
-      canScroll: el.scrollHeight > el.clientHeight + 40,
-    }
-  })
-  console.log(`[SCROLL] ${JSON.stringify(scrollable)}`)
-  check('过渡页自身可纵向滚动', scrollable.canScroll && scrollable.overflowY === 'auto', `${scrollable.scrollHeight}/${scrollable.clientHeight}`)
+  /* ---------- 3) 第一页：逐字浮现 ---------- */
+  const typed = async () =>
+    page.evaluate(() => {
+      const lines = [...document.querySelectorAll('.fall-line')].map((n) => n.textContent ?? '')
+      return lines.join('')
+    })
 
-  // 滚到底：最后一幕必须完整可见（之前"只能看一半"就是这个 bug）
+  await sleep(420)
+  const early = await typed()
+  await sleep(4200)
+  const full = await typed()
+  console.log(`[TYPE] 早期 ${early.length} 字 / 完整 ${full.length} 字`)
+  check('文字逐字浮现（先短后长）', early.length > 0 && early.length < full.length, `${early.length} < ${full.length}`)
+
+  const p1 = await page.evaluate(() => ({
+    page: document.querySelector('.fall-page')?.getAttribute('data-page'),
+    heading: document.querySelector('.fall-heading')?.textContent?.trim(),
+    art: (() => {
+      const r = document.querySelector('.fall-art').getBoundingClientRect()
+      return r.x + r.width / 2 < 720 ? 'left' : 'right'
+    })(),
+    btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
+  }))
+  console.log(`[P1] ${JSON.stringify(p1)}`)
+  check('第一幕为「秦取九鼎」', p1.heading === '秦取九鼎', p1.heading)
+  check('第一幕影像在左', p1.art === 'left', p1.art)
+  check('第一幕不出入口按钮', p1.btn < 0.05, `${p1.btn}`)
+
+  /* ---------- 4) 打字期间滚轮不翻页 ---------- */
   await page.evaluate(() => {
-    const el = document.querySelector('.fall-page')
-    el.scrollTop = el.scrollHeight
+    // 回到第一页重演：刷新页面重新进入
+    location.reload()
   })
-  await sleep(600)
-  const lastActVisible = await page.evaluate(() => {
-    const acts = document.querySelectorAll('.fall-act')
-    const last = acts[acts.length - 1].getBoundingClientRect()
-    const page = document.querySelector('.fall-page').getBoundingClientRect()
-    return { top: Math.round(last.top), bottom: Math.round(last.bottom), pageBottom: Math.round(page.bottom) }
-  })
-  console.log(`[LAST-ACT] ${JSON.stringify(lastActVisible)}`)
-  check('最后一幕能滚入视口', lastActVisible.bottom <= lastActVisible.pageBottom + 2)
+  await page.waitForSelector('.fall-page', { timeout: 8000 })
+  await sleep(500)
+  await page.mouse.move(700, 450)
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(500)
+  const during = await page.evaluate(() => document.querySelector('.fall-page')?.getAttribute('data-page'))
+  check('文字未走完时下滚不翻页', during === '0', `page=${during}`)
 
-  /* ---------- 3) 过渡页内容 ---------- */
-  const fall = await page.evaluate(() => ({
-    title: document.querySelector('.fall-title')?.textContent?.trim(),
-    subtitle: document.querySelector('.fall-subtitle')?.textContent?.trim(),
-    acts: document.querySelectorAll('.fall-act').length,
-    sources: document.querySelectorAll('.fall-source').length,
-    back: document.querySelector('.fall-back')?.textContent?.trim(),
-    ready: document.querySelector('.fall-page')?.getAttribute('data-ready'),
+  // 点击 = 立刻显示完
+  await page.mouse.click(700, 450)
+  await sleep(400)
+  const afterClick = await typed()
+  check('点击可立刻显示完本页', afterClick.length === full.length, `${afterClick.length}/${full.length}`)
+
+  /* ---------- 5) 翻到第二、三页 ---------- */
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(1000)
+  const p2 = await page.evaluate(() => ({
+    page: document.querySelector('.fall-page')?.getAttribute('data-page'),
+    heading: document.querySelector('.fall-heading')?.textContent?.trim(),
+    art: (() => {
+      const r = document.querySelector('.fall-art').getBoundingClientRect()
+      return r.x + r.width / 2 < 720 ? 'left' : 'right'
+    })(),
   }))
-  console.log(`[FALL] ${JSON.stringify(fall)}`)
+  console.log(`[P2] ${JSON.stringify(p2)}`)
+  check('第二幕为「周既不祀」', p2.heading === '周既不祀', p2.heading)
+  check('第二幕影像在右', p2.art === 'right', p2.art)
 
-  check('标题为「九鼎入秦」', fall.title === '九鼎入秦', fall.title)
-  check('副题为「周室倾覆」', fall.subtitle === '周室倾覆', fall.subtitle)
-  check('三幕俱全', fall.acts === 3, `${fall.acts} 幕`)
-  check('每幕附《史记》原文', fall.sources === 3, `${fall.sources} 段`)
-  check('顶部有常驻返回出口', /返回时间轴/.test(fall.back ?? ''), fall.back)
+  // 第二页文字走完才能继续
+  await page.mouse.click(700, 450)
+  await sleep(300)
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(1000)
+  const p3 = await page.evaluate(() => ({
+    page: document.querySelector('.fall-page')?.getAttribute('data-page'),
+    heading: document.querySelector('.fall-heading')?.textContent?.trim(),
+    art: (() => {
+      const r = document.querySelector('.fall-art').getBoundingClientRect()
+      return r.x + r.width / 2 < 720 ? 'left' : 'right'
+    })(),
+    btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
+  }))
+  console.log(`[P3] ${JSON.stringify(p3)}`)
+  check('第三幕标题为权力更迭', /权力更迭/.test(p3.heading ?? ''), p3.heading)
+  check('第三幕影像回到左侧', p3.art === 'left', p3.art)
+  check('第三幕文字未走完时入口不出现', p3.btn < 0.05, `${p3.btn}`)
 
-  // 入场动画未走完时，入口应隐藏
-  check('入场期间入口未出现', fall.ready === 'false', `ready=${fall.ready}`)
+  // 等第三幕打完
+  await sleep(5000)
+  const btnAfter = await page.evaluate(() => ({
+    btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
+  }))
+  check('第三幕文字走完后入口出现', btnAfter.btn > 0.9, `${btnAfter.btn}`)
 
-  /* ---------- 4) 点击跳过 → 入口浮现 ---------- */
-  await page.click('.fall-page')
+  /* ---------- 6) 上滚：入口消失 → 确认框 ---------- */
+  await page.mouse.wheel({ deltaY: -220 })
+  await sleep(900)
+  const back2 = await page.evaluate(() => ({
+    page: document.querySelector('.fall-page')?.getAttribute('data-page'),
+    btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
+  }))
+  console.log(`[BACK2] ${JSON.stringify(back2)}`)
+  check('回滚到第二幕时入口消失', back2.page === '1' && back2.btn < 0.05, `page=${back2.page} btn=${back2.btn}`)
+
+  await page.mouse.wheel({ deltaY: -220 })
+  await sleep(900)
+  await page.mouse.wheel({ deltaY: -220 })
   await sleep(700)
-  const readyAfterClick = await page.evaluate(() => ({
-    ready: document.querySelector('.fall-page')?.getAttribute('data-ready'),
-    btnOpacity: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
-    label: document.querySelector('.fall-enter-label')?.textContent?.trim(),
+  const confirm = await page.evaluate(() => ({
+    open: Boolean(document.querySelector('.fall-confirm')),
+    title: document.querySelector('.fall-confirm-title')?.textContent?.trim(),
   }))
-  console.log(`[ENTER] ${JSON.stringify(readyAfterClick)}`)
-  check('点击后入口浮现', readyAfterClick.ready === 'true' && readyAfterClick.btnOpacity > 0.9)
-  check('入口文字为「王朝覆灭」', readyAfterClick.label === '王朝覆灭', readyAfterClick.label)
+  console.log(`[CONFIRM] ${JSON.stringify(confirm)}`)
+  check('第一页上滚弹出返回确认', confirm.open && /返回.*时间轴/.test(confirm.title ?? ''), confirm.title)
 
-  /* ---------- 5) 进入沙盘：画卷展开 ---------- */
+  // 取消 → 留在原地
+  await page.evaluate(() => {
+    const btns = [...document.querySelectorAll('.fall-confirm-actions button')]
+    btns[btns.length - 1].click()
+  })
+  await sleep(500)
+  const stayed = await page.evaluate(() => ({
+    confirm: Boolean(document.querySelector('.fall-confirm')),
+    page: document.querySelector('.fall-page')?.getAttribute('data-page'),
+  }))
+  check('取消后留在过渡页', !stayed.confirm && stayed.page === '0', JSON.stringify(stayed))
+
+  /* ---------- 7) 三页走完 → 进沙盘 ---------- */
+  // 直接跳到第三页：点两下（跳过打字）+ 滚两次
+  await page.mouse.click(700, 450)
+  await sleep(200)
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(800)
+  await page.mouse.click(700, 450)
+  await sleep(200)
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(800)
+  await page.mouse.click(700, 450)
+  await sleep(500)
+
+  const third = await page.evaluate(() => document.querySelector('.fall-page')?.getAttribute('data-page'))
+  check('可连翻到第三页', third === '2', `page=${third}`)
+
   await page.click('.fall-enter')
   await sleep(260)
-  const unfurl = await page.evaluate(() => ({
-    el: Boolean(document.querySelector('.fall-unfurl')),
-    animation: document.querySelector('.fall-unfurl')
-      ? getComputedStyle(document.querySelector('.fall-unfurl')).animationName
-      : null,
-  }))
-  check('点击后有画卷展开动效', unfurl.el && unfurl.animation === 'fall-unfurl', `${unfurl.animation}`)
+  const unfurl = await page.evaluate(() => Boolean(document.querySelector('.fall-unfurl')))
+  check('点击后有画卷展开动效', unfurl)
 
   await page.waitForSelector('.map-stage', { timeout: 8000 })
   check('展开后进入沙盘', /\/endgame$/.test(page.url()), page.url())
 
-  /* ---------- 6) 沙盘战前节点年份 ---------- */
   const railYear = await page.$eval('.rail-node--zero .rail-node-year', (n) => n.textContent?.trim())
   check('沙盘「战前」节点为前230', railYear === '前230', railYear)
-
-  /* ---------- 7) 上滚返回时间轴 ---------- */
-  await page.goto(`${URL}/dynasty/zhou/fall`, { waitUntil: 'networkidle2' })
-  await sleep(800)
-  // 自动下沉会把 scrollTop 推离 0，先归位再测上滚
-  await page.evaluate(() => {
-    document.querySelector('.fall-page').scrollTop = 0
-  })
-  await sleep(200)
-  await page.mouse.move(720, 300)
-  await page.mouse.wheel({ deltaY: -240 })
-  await sleep(1200)
-  check('过渡页上滚返回时间轴', /\/dynasty\/zhou$/.test(page.url()), page.url())
-  const backPage = await page
-    .$eval('.timeline-count', (n) => n.textContent?.trim())
-    .catch(() => null)
-  check('返回后停在末页', /第 13 \/ 13 页/.test(backPage ?? ''), backPage)
 
   await browser.close()
 } catch (err) {

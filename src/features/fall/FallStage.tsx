@@ -1,18 +1,21 @@
 /**
  * FallStage —— 周室倾覆 / 九鼎入秦（时间轴与沙盘之间的过渡）
  * ===========================================================================
- * 为什么需要这一页：
- *   赧王死于前 256，秦灭六国始于前 230，中间空了二十六年。
- *   直接跳过去，等于把"天命转移"整个略过了——而它恰恰是周秦之间的枢纽。
+ * 三页，可交互翻页，不是一条长卷：
  *
- * 三个要点：
- *   1. **自滚动**：外层 body 是 overflow:hidden，所以这一页自己当滚动容器，
- *      否则内容会被直接截断（这就是之前"只能看一半"的原因）。
- *   2. **自动下沉**：进来后如果用户不动滚轮，页面按每秒约 12px 缓缓下移，
- *      让三幕随文字浮现自然展开；一碰滚轮就交还控制权，且不再自动。
- *   3. **上滚返回**：滚到顶部继续上滚 → 回时间轴末页。
+ *   第一幕 秦取九鼎   → 下滚进第二幕
+ *   第二幕 周既不祀   → 下滚进第三幕
+ *   第三幕 权力更迭   → 文字走完才浮出【王朝覆灭】
+ *
+ * 几条硬规则（都是按要求来的）：
+ *   · 每页文字**逐字浮现**；文字没走完，下滚只是"直接显示完"，不翻页
+ *   · 逐字动画**只触发一次**；回到已看过的页，只播翻页动画、文字直接显示
+ *   · 【王朝覆灭】只在第三幕文字走完后出现；上滚回第二幕即消失
+ *   · 在第一幕再往上滚 → 弹确认框「返回帝王时间轴？」
+ *   · 每幕背景不同且左右交替：鼎（左）→ 宗庙（右）→ 断符（左）
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
 import './fall.css'
@@ -40,97 +43,136 @@ const FALL: Record<string, FallData> = {
   zhou: fallZhou as FallData,
 }
 
-/** 三幕全部浮现所需时间（与 CSS 的 animation-delay 对齐） */
-const REVEAL_MS = 5200
-/** 自动下沉速度：像素/秒。慢到像画卷自己往下走 */
-const AUTO_SPEED = 12
+/** 逐字速度（毫秒/字） */
+const TYPE_SPEED = 46
+/** 翻页冷却，避免触控板一次滑动连翻两页 */
+const PAGE_COOLDOWN = 620
 
 export function FallStage() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
   const navigate = useNavigate()
+  const prefersReducedMotion = useReducedMotion()
+
   const data = dynastyId ? FALL[dynastyId] : undefined
+  const acts = data?.acts ?? []
 
-  const scrollerRef = useRef<HTMLDivElement>(null)
-  const autoRef = useRef(true)
-  const lastWheel = useRef(0)
-
-  const [ready, setReady] = useState(false)
+  const [page, setPage] = useState(0)
+  const [dir, setDir] = useState(1)
+  /** 每页是否已经"演过一遍"；true 之后文字直接显示 */
+  const [played, setPlayed] = useState<boolean[]>(() => acts.map(() => false))
+  const [shown, setShown] = useState(0)
+  const [confirmBack, setConfirmBack] = useState(false)
   const [leaving, setLeaving] = useState(false)
 
-  /* 动画走完 → 出现入口 */
+  const lastWheel = useRef(0)
+  const typingRef = useRef<number | null>(null)
+
+  const totalChars = (acts[page]?.lines ?? []).reduce((n, line) => n + line.length, 0)
+
+  /* ---------- 逐字浮现（每页只演一次） ---------- */
+  useEffect(() => {
+    if (typingRef.current) {
+      window.clearInterval(typingRef.current)
+      typingRef.current = null
+    }
+    const act = acts[page]
+    if (!act) return
+
+    if (played[page] || prefersReducedMotion) {
+      setShown(Number.MAX_SAFE_INTEGER)
+      return
+    }
+
+    setShown(0)
+    let n = 0
+    typingRef.current = window.setInterval(() => {
+      n += 1
+      setShown(n)
+      if (n >= totalChars) {
+        if (typingRef.current) window.clearInterval(typingRef.current)
+        typingRef.current = null
+        setPlayed((prev) => prev.map((v, i) => (i === page ? true : v)))
+      }
+    }, TYPE_SPEED)
+
+    return () => {
+      if (typingRef.current) window.clearInterval(typingRef.current)
+      typingRef.current = null
+    }
+    // totalChars 随 page 变化，不单独列为依赖
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, played, prefersReducedMotion])
+
+  const typingDone = shown >= totalChars
+
+  /** 立刻显示完本页 */
+  const finishTyping = useCallback(() => {
+    if (typingRef.current) {
+      window.clearInterval(typingRef.current)
+      typingRef.current = null
+    }
+    setShown(Number.MAX_SAFE_INTEGER)
+    setPlayed((prev) => prev.map((v, i) => (i === page ? true : v)))
+  }, [page])
+
+  /* ---------- 滚轮翻页 ---------- */
   useEffect(() => {
     if (!data) return
-    const timer = window.setTimeout(() => setReady(true), REVEAL_MS)
-    return () => window.clearTimeout(timer)
-  }, [data])
-
-  /* 自动下沉：用户一碰滚轮就停手，之后不再接管 */
-  useEffect(() => {
-    const el = scrollerRef.current
-    if (!el) return
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduced) return
-
-    let raf = 0
-    let last = 0
-    const tick = (t: number) => {
-      if (!autoRef.current) return
-      if (last) {
-        const dt = t - last
-        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2
-        if (!atBottom) el.scrollTop += (dt / 1000) * AUTO_SPEED
-      }
-      last = t
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-
-    const stop = () => {
-      autoRef.current = false
-    }
-    window.addEventListener('wheel', stop, { passive: true })
-    window.addEventListener('touchstart', stop, { passive: true })
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('wheel', stop)
-      window.removeEventListener('touchstart', stop)
-    }
-  }, [])
-
-  /* 顶部上滚 → 返回时间轴末页 */
-  useEffect(() => {
     const onWheel = (event: WheelEvent) => {
-      if (event.deltaY >= 0) return
-      const el = scrollerRef.current
-      if (!el || el.scrollTop > 2) return
+      if (confirmBack || leaving) return
+      if (Math.abs(event.deltaY) < 24) return
+
       const now = performance.now()
-      if (now - lastWheel.current < 700) return
+      if (now - lastWheel.current < PAGE_COOLDOWN) return
       lastWheel.current = now
-      navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
+
+      if (event.deltaY > 0) {
+        // 文字没走完不翻页（点一下页面可以立刻显示完）
+        if (!typingDone) return
+        if (page < acts.length - 1) {
+          setDir(1)
+          setPage((p) => p + 1)
+        }
+        return
+      }
+
+      // 向上
+      if (page > 0) {
+        setDir(-1)
+        setPage((p) => p - 1)
+      } else {
+        setConfirmBack(true)
+      }
     }
+
     window.addEventListener('wheel', onWheel, { passive: true })
     return () => window.removeEventListener('wheel', onWheel)
-  }, [dynastyId, navigate])
+  }, [data, acts.length, page, typingDone, confirmBack, leaving, finishTyping])
 
-  /* ESC 返回时间轴 */
+  /* ESC：有确认框先关框，否则询问返回 */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       event.preventDefault()
-      navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
+      if (confirmBack) {
+        setConfirmBack(false)
+        return
+      }
+      setConfirmBack(true)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
+  }, [confirmBack])
+
+  const backToTimeline = useCallback(() => {
+    navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
   }, [dynastyId, navigate])
 
-  /* 进入沙盘：先播画卷展开，再导航 */
   const enterEndgame = useCallback(() => {
     if (!dynastyId || leaving) return
     setLeaving(true)
     window.setTimeout(() => navigate(`/dynasty/${dynastyId}/endgame`), 760)
   }, [dynastyId, leaving, navigate])
-
-  const skip = useCallback(() => setReady(true), [])
 
   if (!data) {
     return (
@@ -143,139 +185,199 @@ export function FallStage() {
     )
   }
 
+  const act = acts[page]
+  const canEnter = page === acts.length - 1 && typingDone
+
+  /* 把本页文字按已显示字数切开 */
+  let cursor = shown
+  const visibleLines = act.lines.map((line) => {
+    if (cursor <= 0) return ''
+    const take = Math.min(line.length, cursor)
+    cursor -= line.length
+    return line.slice(0, take)
+  })
+
   return (
-    <div className="fall-page" data-ready={ready} data-leaving={leaving} onClick={skip} ref={scrollerRef}>
-      {/* 极简光影：倾倒的鼎 · 熄灭的宗庙灯火 */}
-      <div className="fall-atmos" aria-hidden="true">
-        {/*
-          一尊倾覆的鼎：圆腹、三足、双耳。
-          腹内不看图也有质感——铜绿斑驳与金文，全部用 SVG pattern + 蒙版画出来，
-          不引入任何位图。
-        */}
-        <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
-          <defs>
-            {/* 铜绿斑驳：大小不一的铜锈点，随机感来自错位的圆心 */}
-            <pattern id="fall-patina" width="27" height="27" patternUnits="userSpaceOnUse">
-              <circle cx="5" cy="6" r="2.4" fill="#5d8f7a" opacity=".3" />
-              <circle cx="19" cy="14" r="1.5" fill="#4a7a6a" opacity=".26" />
-              <circle cx="11" cy="23" r="1.1" fill="#8a6a3a" opacity=".28" />
-              <circle cx="23" cy="4" r="1.3" fill="#6f9c86" opacity=".22" />
-              <circle cx="15" cy="9" r="0.8" fill="#3f6b5d" opacity=".25" />
-              <circle cx="3" cy="20" r="1" fill="#8a6a3a" opacity=".2" />
-            </pattern>
-
-            {/* 腹内阴影：让鼎有厚度 */}
-            <radialGradient id="fall-ding-shade" cx="50%" cy="38%" r="68%">
-              <stop offset="40%" stopColor="#000" stopOpacity="0" />
-              <stop offset="100%" stopColor="#000" stopOpacity=".55" />
-            </radialGradient>
-
-            {/* 只让纹理落在鼎腹里 */}
-            <clipPath id="fall-ding-clip">
-              <path d="M42 66c0 36 26 54 58 54s58-18 58-54z" />
-            </clipPath>
-          </defs>
-          {/* 腹 */}
-          <path
-            d="M42 66c0 36 26 54 58 54s58-18 58-54"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          {/* 口沿 */}
-          <ellipse cx="100" cy="66" rx="58" ry="11" stroke="currentColor" strokeWidth="1.4" />
-          {/* 双耳 */}
-          <path
-            d="M66 58c0-14 16-14 16 0M118 58c0-14 16-14 16 0"
-            stroke="currentColor"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-          />
-          {/* 腹部纹带 */}
-          <path d="M48 84h104" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
-          {/* 三足 */}
-          <path
-            d="M56 112l-8 34M100 120v30M144 112l8 34"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-
-          {/* 腹内：铜绿 + 金文 */}
-          <g clipPath="url(#fall-ding-clip)">
-            <rect x="38" y="56" width="124" height="72" fill="url(#fall-patina)" />
-            <rect x="38" y="56" width="124" height="72" fill="url(#fall-ding-shade)" />
-            {/* 金文：两三行短画，像铸在腹上的铭 */}
-            <g stroke="#e2c27a" strokeWidth="0.9" strokeLinecap="round" opacity=".2">
-              <path d="M62 84v16M68 82v20M74 86v14M80 83v18M86 87v12" />
-              <path d="M96 84v16M102 82v20M108 86v14M114 83v18M120 87v12" />
-              <path d="M128 85v14M134 83v18M140 86v13" />
-            </g>
-            {/* 一道锈蚀的横向裂痕 */}
-            <path d="M48 100h104" stroke="#3f6b5d" strokeWidth="1" opacity=".25" />
-          </g>
-        </svg>
-        <span className="fall-lamp fall-lamp--a" />
-        <span className="fall-lamp fall-lamp--b" />
-        <span className="fall-lamp fall-lamp--c" />
-      </div>
-
-      <button
-        type="button"
-        className="fall-back"
-        onClick={(event) => {
-          event.stopPropagation()
-          navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
-        }}
-      >
-        ↑ 上滚返回时间轴
+        <div
+      className="fall-page"
+      data-page={page}
+      data-leaving={leaving}
+      onClick={() => {
+        if (!typingDone) finishTyping()
+      }}
+    >
+      <button type="button" className="fall-back" onClick={(e) => { e.stopPropagation(); setConfirmBack(true) }}>
+        ↑ 返回时间轴
       </button>
 
-      <header className="fall-head">
-        <p className="fall-subtitle">{data.subtitle}</p>
-        <h1 className="fall-title">{data.title}</h1>
-        <p className="fall-lede">{data.lede}</p>
-      </header>
+      {/* 页名：小尺寸常驻，不抢单幕的标题 */}
+      <div className="fall-brand">
+        <span className="fall-brand-sub">{data.subtitle}</span>
+        <span className="fall-brand-title">{data.title}</span>
+      </div>
 
-      <section className="fall-acts">
-        {data.acts.map((act, i) => (
-          <article key={act.id} className="fall-act" style={{ ['--i' as string]: i }}>
+      {/* 页码 */}
+      <div className="fall-pager" aria-hidden="true">
+        {acts.map((a, i) => (
+          <span key={a.id} className={`fall-dot${i === page ? ' is-on' : ''}`} />
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait" custom={dir} initial={false}>
+        <motion.section
+          key={act.id}
+          className={`fall-act fall-act--${page}`}
+          custom={dir}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? 60 : -60 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? -60 : 60 }}
+          transition={{ duration: prefersReducedMotion ? 0.12 : 0.5, ease: [0.2, 0.9, 0.2, 1] }}
+        >
+          {/* 每幕的专属影像，位置左右交替 */}
+          <div className="fall-art" aria-hidden="true">
+            {page === 0 ? <DingArt /> : page === 1 ? <TempleArt /> : <TallyArt />}
+          </div>
+
+          <div className="fall-copy">
             <p className="fall-year">{act.year}</p>
             <h2 className="fall-heading">{act.heading}</h2>
+
             <div className="fall-lines">
-              {act.lines.map((line, k) => (
-                <p key={k} className="fall-line" style={{ ['--k' as string]: k }}>
+              {visibleLines.map((line, k) => (
+                <p key={k} className="fall-line">
                   {line}
+                  {k === visibleLines.length - 1 && !typingDone ? (
+                    <span className="fall-caret" aria-hidden="true" />
+                  ) : null}
                 </p>
               ))}
             </div>
-            <blockquote className="fall-source">
+
+            <blockquote className={`fall-source${typingDone ? ' is-in' : ''}`}>
               <span className="fall-source-book">{act.source.book}</span>
               <p className="fall-source-text">{act.source.text}</p>
             </blockquote>
+
             {act.note ? <p className="fall-note">{act.note}</p> : null}
-          </article>
-        ))}
-      </section>
+          </div>
+        </motion.section>
+      </AnimatePresence>
 
-      {/* 文末留白，让最后一幕能滚到视口中间 */}
-      <div className="fall-tail" aria-hidden="true" />
-
-      <footer className="fall-foot">
-        <button
-          type="button"
-          className="fall-enter"
-          onClick={(event) => {
-            event.stopPropagation()
-            enterEndgame()
-          }}
-        >
+      {/* 第三幕文字走完才出现；回滚到第二幕即消失 */}
+      <div className="fall-foot" data-visible={canEnter}>
+        <button type="button" className="fall-enter" onClick={(e) => { e.stopPropagation(); enterEndgame() }}>
           <span className="fall-enter-label">{data.enterLabel}</span>
           <span className="fall-enter-hint">{data.enterHint} →</span>
         </button>
-      </footer>
+      </div>
+
+      {confirmBack ? (
+        <div className="fall-confirm-mask" onClick={() => setConfirmBack(false)}>
+          <div className="fall-confirm" onClick={(e) => e.stopPropagation()} role="dialog">
+            <p className="fall-confirm-title">返回帝王时间轴？</p>
+            <p className="fall-confirm-text">周室倾覆尚未看完，返回后可随时再来。</p>
+            <div className="fall-confirm-actions">
+              <button type="button" className="fall-confirm-primary" onClick={backToTimeline}>
+                返回时间轴
+              </button>
+              <button type="button" onClick={() => setConfirmBack(false)}>
+                继续观看
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {leaving ? <div className="fall-unfurl" aria-hidden="true" /> : null}
     </div>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* 三幕的影像                                                                  */
+/* -------------------------------------------------------------------------- */
+
+/** 一尊倾覆的鼎：圆腹、三足、双耳，腹内有铜绿与金文 */
+function DingArt() {
+  return (
+    <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
+      <defs>
+        <pattern id="fall-patina" width="27" height="27" patternUnits="userSpaceOnUse">
+          <circle cx="5" cy="6" r="2.4" fill="#5d8f7a" opacity=".3" />
+          <circle cx="19" cy="14" r="1.5" fill="#4a7a6a" opacity=".26" />
+          <circle cx="11" cy="23" r="1.1" fill="#8a6a3a" opacity=".28" />
+          <circle cx="23" cy="4" r="1.3" fill="#6f9c86" opacity=".22" />
+          <circle cx="15" cy="9" r="0.8" fill="#3f6b5d" opacity=".25" />
+          <circle cx="3" cy="20" r="1" fill="#8a6a3a" opacity=".2" />
+        </pattern>
+        <radialGradient id="fall-ding-shade" cx="50%" cy="38%" r="68%">
+          <stop offset="40%" stopColor="#000" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000" stopOpacity=".55" />
+        </radialGradient>
+        <clipPath id="fall-ding-clip">
+          <path d="M42 66c0 36 26 54 58 54s58-18 58-54z" />
+        </clipPath>
+      </defs>
+
+      <path d="M42 66c0 36 26 54 58 54s58-18 58-54" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <ellipse cx="100" cy="66" rx="58" ry="11" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M66 58c0-14 16-14 16 0M118 58c0-14 16-14 16 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M48 84h104" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
+      <path d="M56 112l-8 34M100 120v30M144 112l8 34" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+
+      <g clipPath="url(#fall-ding-clip)">
+        <rect x="38" y="56" width="124" height="72" fill="url(#fall-patina)" />
+        <rect x="38" y="56" width="124" height="72" fill="url(#fall-ding-shade)" />
+        <g stroke="#e2c27a" strokeWidth="0.9" strokeLinecap="round" opacity=".2">
+          <path d="M62 84v16M68 82v20M74 86v14M80 83v18M86 87v12" />
+          <path d="M96 84v16M102 82v20M108 86v14M114 83v18M120 87v12" />
+          <path d="M128 85v14M134 83v18M140 86v13" />
+        </g>
+        <path d="M48 100h104" stroke="#3f6b5d" strokeWidth="1" opacity=".25" />
+      </g>
+    </svg>
+  )
+}
+
+/** 破败的宗庙：柱、断梁、残幡 */
+function TempleArt() {
+  return (
+    <svg className="fall-temple" viewBox="0 0 200 200" fill="none">
+      {/* 台基 */}
+      <path d="M16 168h168" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M26 156h148" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
+      {/* 四根立柱，第二根断掉 */}
+      <path d="M40 156V72M84 156V72M156 156V72" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M118 156v-46" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M112 110h12" stroke="currentColor" strokeWidth="1.2" opacity=".7" />
+      {/* 屋顶：左半留存，右半塌了 */}
+      <path d="M28 72l30-24h44" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M28 72h56" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M96 48l30 20" stroke="currentColor" strokeWidth="1.2" opacity=".45" strokeDasharray="4 5" />
+      {/* 残幡 */}
+      <path d="M64 72v26l10-6 10 6V72" stroke="currentColor" strokeWidth="1" opacity=".4" />
+      <path d="M170 72v34" stroke="currentColor" strokeWidth="1" opacity=".3" strokeDasharray="6 4" />
+      {/* 门洞里的黑 */}
+      <rect x="52" y="112" width="48" height="44" fill="#000" opacity=".45" />
+    </svg>
+  )
+}
+
+/** 断开的符节：合纵的信物，一分为二 */
+function TallyArt() {
+  return (
+    <svg className="fall-tally" viewBox="0 0 200 180" fill="none">
+      {/* 左半 */}
+      <path d="M30 40h56v100H30z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M30 66h56M30 92h56M30 118h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
+      <path d="M62 40v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
+      {/* 右半（错开一点，表示断裂） */}
+      <path d="M114 52h56v100h-56z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M114 78h56M114 104h56M114 130h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
+      <path d="M138 52v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
+      {/* 断口 */}
+      <path d="M90 44l6 18-8 14 7 20-6 22" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+      <path d="M110 60l-6 16 8 16-7 18" stroke="currentColor" strokeWidth="1" opacity=".35" />
+    </svg>
   )
 }
