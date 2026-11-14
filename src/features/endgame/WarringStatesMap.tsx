@@ -240,6 +240,12 @@ export function WarringStatesMap({
               onMouseEnter={() => setHovered(region.id)}
               onMouseLeave={() => setHovered(null)}
             >
+              {/*
+                透明命中层：沿边再向外描 10px 且填充透明。
+                韩、魏这类窄条在版图上只有十几像素宽，鼠标稍偏一点就点不中；
+                这一层把"可点范围"放宽一圈，肉眼看不出来，手感和正常国家一致。
+              */}
+              <polygon className="region-hit" points={region.points} />
               <polygon className="region-base" points={region.points} />
 
               <g clipPath={`url(#clip-${region.id})`} className="region-ink-wrap">

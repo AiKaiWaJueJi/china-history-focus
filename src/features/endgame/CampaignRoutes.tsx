@@ -39,6 +39,8 @@ function polyline(points: MapPoint[]) {
  */
 function captionAt(points: MapPoint[]) {
   const vs = points.map(toView)
+
+  // 取最长那段：路线越长，文字越不容易和端点挤在一起
   let pick = 1
   let longest = -1
   for (let i = 1; i < vs.length; i++) {
@@ -48,6 +50,7 @@ function captionAt(points: MapPoint[]) {
       pick = i
     }
   }
+
   const a = vs[pick - 1] ?? vs[0]
   const b = vs[pick]
   const mx = (a.x + b.x) / 2
@@ -55,7 +58,21 @@ function captionAt(points: MapPoint[]) {
   const dx = b.x - a.x
   const dy = b.y - a.y
   const len = Math.hypot(dx, dy) || 1
-  return { x: mx + (-dy / len) * 26, y: my + (dx / len) * 26 }
+
+  // 法线的两个方向都试一遍，取"离所有地名最远"的那个
+  const nx = -dy / len
+  const ny = dx / len
+  const cand = [
+    { x: mx + nx * 30, y: my + ny * 30 },
+    { x: mx - nx * 30, y: my - ny * 30 },
+  ]
+
+  // 地名包括起点、中途关隘、目的地（vs 已是 viewBox 坐标）
+  const places = vs
+  const clearOf = (p: { x: number; y: number }) =>
+    Math.min(...places.map((q) => Math.hypot(p.x - q.x, p.y - q.y)))
+
+  return clearOf(cand[0]) >= clearOf(cand[1]) ? cand[0] : cand[1]
 }
 
 /** 末段方向（箭头朝向）与该段中点 */
