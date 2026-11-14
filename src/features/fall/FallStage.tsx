@@ -147,8 +147,34 @@ export function FallStage() {
     <div className="fall-page" data-ready={ready} data-leaving={leaving} onClick={skip} ref={scrollerRef}>
       {/* 极简光影：倾倒的鼎 · 熄灭的宗庙灯火 */}
       <div className="fall-atmos" aria-hidden="true">
-        {/* 一尊倾覆的鼎：圆腹、三足、双耳，只留轮廓 */}
+        {/*
+          一尊倾覆的鼎：圆腹、三足、双耳。
+          腹内不看图也有质感——铜绿斑驳与金文，全部用 SVG pattern + 蒙版画出来，
+          不引入任何位图。
+        */}
         <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
+          <defs>
+            {/* 铜绿斑驳：大小不一的铜锈点，随机感来自错位的圆心 */}
+            <pattern id="fall-patina" width="27" height="27" patternUnits="userSpaceOnUse">
+              <circle cx="5" cy="6" r="2.4" fill="#5d8f7a" opacity=".3" />
+              <circle cx="19" cy="14" r="1.5" fill="#4a7a6a" opacity=".26" />
+              <circle cx="11" cy="23" r="1.1" fill="#8a6a3a" opacity=".28" />
+              <circle cx="23" cy="4" r="1.3" fill="#6f9c86" opacity=".22" />
+              <circle cx="15" cy="9" r="0.8" fill="#3f6b5d" opacity=".25" />
+              <circle cx="3" cy="20" r="1" fill="#8a6a3a" opacity=".2" />
+            </pattern>
+
+            {/* 腹内阴影：让鼎有厚度 */}
+            <radialGradient id="fall-ding-shade" cx="50%" cy="38%" r="68%">
+              <stop offset="40%" stopColor="#000" stopOpacity="0" />
+              <stop offset="100%" stopColor="#000" stopOpacity=".55" />
+            </radialGradient>
+
+            {/* 只让纹理落在鼎腹里 */}
+            <clipPath id="fall-ding-clip">
+              <path d="M42 66c0 36 26 54 58 54s58-18 58-54z" />
+            </clipPath>
+          </defs>
           {/* 腹 */}
           <path
             d="M42 66c0 36 26 54 58 54s58-18 58-54"
@@ -174,6 +200,20 @@ export function FallStage() {
             strokeWidth="1.4"
             strokeLinecap="round"
           />
+
+          {/* 腹内：铜绿 + 金文 */}
+          <g clipPath="url(#fall-ding-clip)">
+            <rect x="38" y="56" width="124" height="72" fill="url(#fall-patina)" />
+            <rect x="38" y="56" width="124" height="72" fill="url(#fall-ding-shade)" />
+            {/* 金文：两三行短画，像铸在腹上的铭 */}
+            <g stroke="#e2c27a" strokeWidth="0.9" strokeLinecap="round" opacity=".2">
+              <path d="M62 84v16M68 82v20M74 86v14M80 83v18M86 87v12" />
+              <path d="M96 84v16M102 82v20M108 86v14M114 83v18M120 87v12" />
+              <path d="M128 85v14M134 83v18M140 86v13" />
+            </g>
+            {/* 一道锈蚀的横向裂痕 */}
+            <path d="M48 100h104" stroke="#3f6b5d" strokeWidth="1" opacity=".25" />
+          </g>
         </svg>
         <span className="fall-lamp fall-lamp--a" />
         <span className="fall-lamp fall-lamp--b" />
