@@ -42,6 +42,9 @@ const SEGMENT_INTROS: Record<string, Record<string, { chapter: string; label: st
     seg_xin: { chapter: 'xin', label: '王莽篡漢' },
     seg_donghan: { chapter: 'zhongxing', label: '光武中兴' },
   },
+  jin: {
+    seg_dongjin: { chapter: 'yongjia', label: '衣冠南渡' },
+  },
 }
 
 interface IntroGate {

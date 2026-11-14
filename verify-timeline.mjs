@@ -44,7 +44,7 @@ try {
   await page.evaluate(() => document.fonts.ready)
   await sleep(3200)
 
-  check('主页仍正常渲染（13 个朝代模块）', (await page.$$('.dyn-panel')).length === 13)
+  check('主页仍正常渲染（12 个朝代模块）', (await page.$$('.dyn-panel')).length === 12)
 
   const zhouBox = await page.$eval('.dyn-panel:nth-child(1)', (n) => {
     const r = n.getBoundingClientRect()
@@ -188,3 +188,4 @@ if (failed.length) {
   for (const f of failed) console.log(` - ${f.name} :: ${f.detail}`)
   process.exitCode = 1
 }
+

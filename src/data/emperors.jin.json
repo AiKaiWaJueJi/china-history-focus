@@ -1,0 +1,415 @@
+{
+  "dynastyId": "jin",
+  "name": "晋",
+  "period": "265 — 420",
+  "emperors": [
+    {
+      "id": "jin_wu",
+      "posthumousTitle": "晋武帝",
+      "personalName": "司马炎",
+      "reign": "265 — 290",
+      "startYear": 265,
+      "endYear": 290,
+      "segmentId": "seg_xijin",
+      "portrait": "/portraits/jin-wu.svg",
+      "events": [
+        {
+          "id": "ev_jinwu_shan",
+          "name": "受禅建晋",
+          "dimension": "political",
+          "year": 265
+        },
+        {
+          "id": "ev_jinwu_miewu",
+          "name": "灭吴统一",
+          "dimension": "military",
+          "year": 280
+        },
+        {
+          "id": "ev_jinwu_taikang",
+          "name": "太康之治",
+          "dimension": "political",
+          "year": 285
+        },
+        {
+          "id": "ev_jinwu_fengwang",
+          "name": "分封诸王",
+          "dimension": "political",
+          "year": 277
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武"
+    },
+    {
+      "id": "jin_hui",
+      "posthumousTitle": "晋惠帝",
+      "personalName": "司马衷",
+      "reign": "290 — 307",
+      "startYear": 290,
+      "endYear": 307,
+      "segmentId": "seg_xijin",
+      "portrait": "/portraits/jin-hui.svg",
+      "events": [
+        {
+          "id": "ev_jinhui_jia",
+          "name": "贾后专权",
+          "dimension": "political",
+          "year": 290
+        },
+        {
+          "id": "ev_jinhui_bawang",
+          "name": "八王之乱",
+          "dimension": "political",
+          "year": 291
+        },
+        {
+          "id": "ev_jinhui_huang",
+          "name": "天下荒乱",
+          "dimension": "political",
+          "year": 300
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "柔质慈民曰惠"
+    },
+    {
+      "id": "jin_huai",
+      "posthumousTitle": "晋怀帝",
+      "personalName": "司马炽",
+      "reign": "307 — 313",
+      "startYear": 307,
+      "endYear": 313,
+      "segmentId": "seg_xijin",
+      "portrait": "/portraits/jin-huai.svg",
+      "events": [
+        {
+          "id": "ev_jinhuai_yongjia",
+          "name": "永嘉之乱",
+          "dimension": "military",
+          "year": 311
+        },
+        {
+          "id": "ev_jinhuai_luoyang",
+          "name": "洛阳陷落",
+          "dimension": "military",
+          "year": 311
+        },
+        {
+          "id": "ev_jinhuai_being",
+          "name": "怀帝蒙尘",
+          "dimension": "political",
+          "year": 313
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "慈仁短折曰怀"
+    },
+    {
+      "id": "jin_min",
+      "posthumousTitle": "晋愍帝",
+      "personalName": "司马邺",
+      "reign": "313 — 316",
+      "startYear": 313,
+      "endYear": 316,
+      "segmentId": "seg_xijin",
+      "portrait": "/portraits/jin-min.svg",
+      "events": [
+        {
+          "id": "ev_jinmin_changan",
+          "name": "长安陷落",
+          "dimension": "military",
+          "year": 316
+        },
+        {
+          "id": "ev_jinmin_xijinwang",
+          "name": "西晋亡",
+          "dimension": "political",
+          "year": 316
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "在国逢难曰愍"
+    },
+    {
+      "id": "jin_yuan",
+      "posthumousTitle": "晋元帝",
+      "personalName": "司马睿",
+      "reign": "317 — 323",
+      "startYear": 317,
+      "endYear": 323,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-yuan.svg",
+      "events": [
+        {
+          "id": "ev_jinyuan_jiankang",
+          "name": "建康称帝",
+          "dimension": "political",
+          "year": 317
+        },
+        {
+          "id": "ev_jinyuan_wangma",
+          "name": "王与马共天下",
+          "dimension": "political",
+          "year": 318
+        },
+        {
+          "id": "ev_jinyuan_zuti",
+          "name": "祖逖北伐",
+          "dimension": "military",
+          "year": 320
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "行义说民曰元"
+    },
+    {
+      "id": "jin_ming",
+      "posthumousTitle": "晋明帝",
+      "personalName": "司马绍",
+      "reign": "323 — 325",
+      "startYear": 323,
+      "endYear": 325,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-ming.svg",
+      "events": [
+        {
+          "id": "ev_jinming_wangdun",
+          "name": "王敦之乱",
+          "dimension": "political",
+          "year": 324
+        },
+        {
+          "id": "ev_jinming_pingdun",
+          "name": "平定王敦",
+          "dimension": "military",
+          "year": 325
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明"
+    },
+    {
+      "id": "jin_cheng",
+      "posthumousTitle": "晋成帝",
+      "personalName": "司马衍",
+      "reign": "325 — 342",
+      "startYear": 325,
+      "endYear": 342,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-cheng.svg",
+      "events": [
+        {
+          "id": "ev_jincheng_sujun",
+          "name": "苏峻之乱",
+          "dimension": "military",
+          "year": 327
+        },
+        {
+          "id": "ev_jincheng_pingsu",
+          "name": "平定苏峻",
+          "dimension": "military",
+          "year": 329
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "安民立政曰成"
+    },
+    {
+      "id": "jin_kang",
+      "posthumousTitle": "晋康帝",
+      "personalName": "司马岳",
+      "reign": "342 — 344",
+      "startYear": 342,
+      "endYear": 344,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-kang.svg",
+      "events": [
+        {
+          "id": "ev_jinkang_yubing",
+          "name": "庾冰辅政",
+          "dimension": "political",
+          "year": 342
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "温柔好乐曰康"
+    },
+    {
+      "id": "jin_mu",
+      "posthumousTitle": "晋穆帝",
+      "personalName": "司马聃",
+      "reign": "344 — 361",
+      "startYear": 344,
+      "endYear": 361,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-mu.svg",
+      "events": [
+        {
+          "id": "ev_jinmu_chenghan",
+          "name": "灭成汉",
+          "dimension": "military",
+          "year": 347
+        },
+        {
+          "id": "ev_jinmu_huanwen",
+          "name": "桓温北伐",
+          "dimension": "military",
+          "year": 354
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "布德执义曰穆"
+    },
+    {
+      "id": "jin_ai",
+      "posthumousTitle": "晋哀帝",
+      "personalName": "司马丕",
+      "reign": "361 — 365",
+      "startYear": 361,
+      "endYear": 365,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-ai.svg",
+      "events": [
+        {
+          "id": "ev_jinai_huanwen",
+          "name": "桓温专权",
+          "dimension": "political",
+          "year": 363
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "蚤孤短折曰哀"
+    },
+    {
+      "id": "jin_haixi",
+      "posthumousTitle": "晋海西公",
+      "personalName": "司马奕",
+      "reign": "365 — 371",
+      "startYear": 365,
+      "endYear": 371,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-haixi.svg",
+      "events": [
+        {
+          "id": "ev_jinhaixi_feidi",
+          "name": "桓温废帝",
+          "dimension": "political",
+          "year": 371
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "废为海西公，无谥"
+    },
+    {
+      "id": "jin_jianwen",
+      "posthumousTitle": "晋简文帝",
+      "personalName": "司马昱",
+      "reign": "371 — 372",
+      "startYear": 371,
+      "endYear": 372,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-jianwen.svg",
+      "events": [
+        {
+          "id": "ev_jinjianwen_jiwei",
+          "name": "即位",
+          "dimension": "political",
+          "year": 371
+        },
+        {
+          "id": "ev_jinjianwen_huanwen",
+          "name": "桓温卒",
+          "dimension": "political",
+          "year": 373
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "一德不懈曰简"
+    },
+    {
+      "id": "jin_xiaowu",
+      "posthumousTitle": "晋孝武帝",
+      "personalName": "司马曜",
+      "reign": "372 — 396",
+      "startYear": 372,
+      "endYear": 396,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-xiaowu.svg",
+      "events": [
+        {
+          "id": "ev_jinxiaowu_feishui",
+          "name": "淝水之战",
+          "dimension": "military",
+          "year": 383
+        },
+        {
+          "id": "ev_jinxiaowu_xiean",
+          "name": "谢安辅政",
+          "dimension": "political",
+          "year": 385
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武"
+    },
+    {
+      "id": "jin_an",
+      "posthumousTitle": "晋安帝",
+      "personalName": "司马德宗",
+      "reign": "396 — 418",
+      "startYear": 396,
+      "endYear": 418,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-an.svg",
+      "events": [
+        {
+          "id": "ev_jinan_huanxuan",
+          "name": "桓玄篡晋",
+          "dimension": "political",
+          "year": 403
+        },
+        {
+          "id": "ev_jinan_liuyu",
+          "name": "刘裕起兵",
+          "dimension": "military",
+          "year": 404
+        },
+        {
+          "id": "ev_jinan_beifa",
+          "name": "义熙北伐",
+          "dimension": "military",
+          "year": 409
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "好和不争曰安"
+    },
+    {
+      "id": "jin_gong",
+      "posthumousTitle": "晋恭帝",
+      "personalName": "司马德文",
+      "reign": "418 — 420",
+      "startYear": 418,
+      "endYear": 420,
+      "segmentId": "seg_dongjin",
+      "portrait": "/portraits/jin-gong.svg",
+      "events": [
+        {
+          "id": "ev_jingong_beifa",
+          "name": "刘裕北伐",
+          "dimension": "military",
+          "year": 416
+        },
+        {
+          "id": "ev_jingong_shan",
+          "name": "禅宋",
+          "dimension": "political",
+          "year": 420
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "尊贤贵义曰恭"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "dynastyId": "jin",
+  "segments": [
+    {
+      "id": "seg_xijin",
+      "name": "西晋",
+      "startYear": 265,
+      "endYear": 316,
+      "accent": "#5f8f86",
+      "desc": "洛阳为都 · 太康之世",
+      "markers": [
+        {
+          "id": "m_bawang",
+          "name": "八王之乱",
+          "year": 291,
+          "note": "宗室相残"
+        },
+        {
+          "id": "m_yongjia",
+          "name": "永嘉之乱",
+          "year": 311,
+          "note": "洛阳倾覆"
+        }
+      ]
+    },
+    {
+      "id": "seg_dongjin",
+      "name": "东晋",
+      "startYear": 317,
+      "endYear": 420,
+      "accent": "#7fa89e",
+      "desc": "建康为都 · 门阀共治",
+      "markers": [
+        {
+          "id": "m_feishui",
+          "name": "淝水之战",
+          "year": 383,
+          "note": "以少胜多"
+        },
+        {
+          "id": "m_yixi",
+          "name": "义熙北伐",
+          "year": 409,
+          "note": "刘裕崛起"
+        }
+      ]
+    }
+  ]
+}

@@ -11,9 +11,11 @@
 import zhouRaw from './emperors.zhou.json'
 import qinRaw from './emperors.qin.json'
 import hanRaw from './emperors.han.json'
+import jinRaw from './emperors.jin.json'
 import segmentsZhouRaw from './segments.zhou.json'
 import segmentsQinRaw from './segments.qin.json'
 import segmentsHanRaw from './segments.han.json'
+import segmentsJinRaw from './segments.jin.json'
 import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
@@ -21,6 +23,7 @@ import endgameHanRaw from './endgame.han.json'
 import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
 import fallHanRaw from './fall.han.json'
+import fallJinRaw from './fall.jin.json'
 import type {
   DynastyEmperors,
   DynastyEndgame,
@@ -32,12 +35,14 @@ const EMPERORS: Record<string, DynastyEmperors> = {
   zhou: zhouRaw as DynastyEmperors,
   qin: qinRaw as DynastyEmperors,
   han: hanRaw as DynastyEmperors,
+  jin: jinRaw as DynastyEmperors,
 }
 
 const SEGMENTS: Record<string, DynastySegments> = {
   zhou: segmentsZhouRaw as DynastySegments,
   qin: segmentsQinRaw as DynastySegments,
   han: segmentsHanRaw as DynastySegments,
+  jin: segmentsJinRaw as DynastySegments,
 }
 
 const LORDS: Record<string, DynastyLords> = {
@@ -82,6 +87,7 @@ const FALL: Record<string, unknown> = {
   zhou: fallZhouRaw,
   qin: fallQinRaw,
   han: fallHanRaw,
+  jin: fallJinRaw,
 }
 
 /** 该朝代是否有收尾可走（沙盘或过渡页）——决定时间轴末页要不要出现"继续下滑" */

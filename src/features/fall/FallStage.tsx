@@ -23,6 +23,8 @@ import fallQin from '../../data/fall.qin.json'
 import fallHan from '../../data/fall.han.json'
 import fallHanXin from '../../data/fall.han.xin.json'
 import fallHanZhongxing from '../../data/fall.han.zhongxing.json'
+import fallJin from '../../data/fall.jin.json'
+import fallJinYongjia from '../../data/fall.jin.yongjia.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
@@ -41,6 +43,12 @@ import hanWangtian from '../../assets/han-wangtian.jpg'
 import hanKunyang from '../../assets/han-kunyang.jpg'
 import hanGengshi from '../../assets/han-gengshi.jpg'
 import hanZhongxing from '../../assets/han-zhongxing.jpg'
+import jinBawang from '../../assets/jin-bawang.jpg'
+import jinYongjia from '../../assets/jin-yongjia.jpg'
+import jinNandu from '../../assets/jin-nandu.jpg'
+import jinHuanxuan from '../../assets/jin-huanxuan.jpg'
+import jinBeifa from '../../assets/jin-beifa.jpg'
+import jinShanrang from '../../assets/jin-shanrang.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -63,6 +71,12 @@ const ART: Record<string, string> = {
   han_kunyang: hanKunyang,
   han_gengshi: hanGengshi,
   han_zhongxing: hanZhongxing,
+  jin_bawang: jinBawang,
+  jin_yongjia: jinYongjia,
+  jin_nandu: jinNandu,
+  jin_huanxuan: jinHuanxuan,
+  jin_beifa: jinBeifa,
+  jin_shanrang: jinShanrang,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -84,6 +98,12 @@ const ART_ALT: Record<string, string> = {
   han_kunyang: '昆阳之战·暴雨滍水',
   han_gengshi: '赤眉入长安·宫室残破',
   han_zhongxing: '光武洛阳即位',
+  jin_bawang: '西晋宫阙残破·青铜鼎与兵甲',
+  jin_yongjia: '永嘉之乱·铜驼荆棘',
+  jin_nandu: '衣冠南渡·长江渡口',
+  jin_huanxuan: '建康宫门·兵甲玉玺',
+  jin_beifa: '义熙北伐·洛阳故都',
+  jin_shanrang: '晋宋禅让·受禅坛',
 }
 
 interface FallAct {
@@ -138,6 +158,10 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
     fall: fallHan as FallData,
     xin: fallHanXin as FallData,
     zhongxing: fallHanZhongxing as FallData,
+  },
+  jin: {
+    fall: fallJin as FallData,
+    yongjia: fallJinYongjia as FallData,
   },
 }
 

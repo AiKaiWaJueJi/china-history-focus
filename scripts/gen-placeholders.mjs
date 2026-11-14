@@ -410,6 +410,13 @@ for (const emperor of qinFile.emperors) {
   writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, qinDynasty))
 }
 console.log(`qin portraits: ${qinFile.emperors.length}`)
+// ---- 晋朝 15 帝：暂用程序化占位画像（不找图，保持默认风格）----
+const jinFile = JSON.parse(readFileSync(join(PROJECT, 'src/data/emperors.jin.json'), 'utf8'))
+const jinDynasty = data.dynasties.find((d) => d.id === jinFile.dynastyId)
+for (const emperor of jinFile.emperors) {
+  writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, jinDynasty))
+}
+console.log(`jin portraits: ${jinFile.emperors.length}`)
 /* 汉朝不用程序化占位图：27 帝已换成 public/portraits/han-*.webp（历史画像）。
    若将来新增汉朝帝纪，请按同样规格补图，不要再生成 han-*.svg，避免两套画像并存。 */
 console.log(`artifacts: ${data.dynasties.length} (${data.dynasties.map((d) => d.id).join(', ')})`)
