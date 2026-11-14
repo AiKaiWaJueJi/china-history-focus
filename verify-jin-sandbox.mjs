@@ -1,4 +1,4 @@
-﻿/**
+/**
  * verify-jin-sandbox.mjs —— 晋末「十六国 · 南北分合」势力沙盘
  * ---------------------------------------------------------------------------
  * 这不是灭国战，检查的是：区域数、逐幕势力归属、关键年份（316/352/376/398/420）
@@ -132,7 +132,7 @@ try {
     `${p420.regions.hexi}/${p420.regions.longyou}`,
   )
   check('420 年图例含宋与北魏', p420.chips.some((c) => c?.startsWith('宋')) && p420.chips.some((c) => c?.startsWith('北魏')), p420.chips.join(' '))
-  check('末幕按钮为「推演结束 · 入宋」', (await page.$eval('.jc-actions .jc-primary', (n) => n.textContent?.trim())) === '推演结束 · 入宋')
+  check('末幕按钮为「进入南北朝」', (await page.$eval('.jc-actions .jc-primary', (n) => n.textContent?.trim())) === '进入南北朝 →')
 
   await page.keyboard.press('ArrowLeft')
   await sleep(400)
@@ -141,6 +141,16 @@ try {
   await page.keyboard.press('Escape')
   await sleep(700)
   check('ESC 回到晋时间轴', page.url().endsWith('/dynasty/jin'), page.url())
+
+  // 420 年收尾按钮必须把用户送进南北朝时间轴（而不是回主页）
+  await page.goto(`${BASE}/dynasty/jin/endgame`, { waitUntil: 'networkidle2' })
+  await page.waitForSelector('.jin-chronicle')
+  await sleep(500)
+  await page.click('.jc-node[data-step="12"]')
+  await sleep(500)
+  await page.click('.jc-actions .jc-primary')
+  await page.waitForSelector('.nanbei', { timeout: 8000 })
+  check('420 年「进入南北朝」跳转到南北朝时间轴', page.url().endsWith('/dynasty/southern_northern'), page.url())
 
   check('无控制台错误', errors.length === 0, errors.join(' | '))
 
@@ -153,6 +163,7 @@ try {
 const failed = results.filter((r) => !r.pass)
 console.log(`\n===== ${results.length - failed.length}/${results.length} passed =====`)
 if (failed.length) process.exitCode = 1
+
 
 
 

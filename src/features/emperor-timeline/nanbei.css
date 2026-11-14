@@ -1,4 +1,4 @@
-﻿.nanbei {
+.nanbei {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -128,8 +128,11 @@
 
 .nbc-canvas {
   position: relative;
-  min-height: 100%;
-  padding-bottom: 10px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4px;
 }
 
 .nbc-axis {
@@ -178,12 +181,17 @@
 
 .nbc-rows {
   position: relative;
-  margin-top: 6px;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
 }
 
 .nbc-row {
   display: flex;
-  height: 112px;
+  flex: 1 1 0;
+  min-height: 96px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.045);
 }
 
@@ -579,4 +587,66 @@
 
 .nbc-empty {
   text-align: center;
+}
+
+
+.nbc-emp[data-evaluation='good'] {
+  border-color: rgba(201, 162, 39, 0.72);
+}
+
+.nbc-emp[data-evaluation='bad'] {
+  border-color: rgba(168, 68, 58, 0.78);
+}
+
+.nbc-emp[data-evaluation='neutral'] {
+  border-color: rgba(111, 139, 131, 0.5);
+}
+
+.nbc-emp[data-evaluation='good']:hover,
+.nbc-emp[data-evaluation='bad']:hover,
+.nbc-emp[data-evaluation='neutral']:hover {
+  border-color: #f0d99b;
+}
+
+.nbc-legend-eval {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.nbc-legend-eval i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.nbc-eval-good { background: #c9a227; }
+.nbc-eval-neutral { background: #6f8b83; }
+.nbc-eval-bad { background: #a8443a; }
+
+.nbc-polity small {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.nbc-endgame {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 162, 39, 0.42);
+  background: linear-gradient(180deg, rgba(100, 38, 26, 0.42), rgba(22, 14, 10, 0.8));
+  color: #ffeccb;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nbc-endgame:hover {
+  border-color: rgba(240, 215, 150, 0.8);
 }

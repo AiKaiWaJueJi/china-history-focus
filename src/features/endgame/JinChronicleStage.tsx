@@ -46,27 +46,29 @@ interface ChronicleStep {
   routes?: ChronicleRoute[]
 }
 
-interface ChronicleData {
+export interface ChronicleData {
   dynastyId: string
   title: string
   subtitle: string
   intro: string
+  mapNote?: string
+  finishLabel?: string
+  finishTo?: string
   pre: ChronicleStep
   steps: ChronicleStep[]
   regions: ChronicleRegion[]
   regimes: ChronicleRegime[]
 }
 
-const DATA = chronicle as ChronicleData
-const STEPS: ChronicleStep[] = [DATA.pre, ...DATA.steps]
-
-const REGIME_BY_ID = new Map(DATA.regimes.map((r) => [r.id, r]))
-
 function shortTitle(title: string) {
   return title.length > 6 ? `${title.slice(0, 6)}…` : title
 }
 
-export function JinChronicleStage() {
+export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?: ChronicleData }) {
+  const DATA = data
+  const STEPS = [DATA.pre, ...DATA.steps]
+  const REGIME_BY_ID = new Map(DATA.regimes.map((r) => [r.id, r]))
+  const backTo = DATA.dynastyId === 'jin' ? '/dynasty/jin' : '/dynasty/southern_northern'
   const navigate = useNavigate()
   const [index, setIndex] = useState(0)
   const [hoverRegime, setHoverRegime] = useState<string | null>(null)
@@ -88,7 +90,7 @@ export function JinChronicleStage() {
         event.preventDefault()
         go(-1)
       } else if (event.key === 'Escape') {
-        navigate('/dynasty/jin')
+        navigate(backTo)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -120,8 +122,8 @@ export function JinChronicleStage() {
   return (
     <div className="jin-chronicle" onWheel={onWheel}>
       <header className="jc-head">
-        <button type="button" className="jc-back" onClick={() => navigate('/dynasty/jin')}>
-          ↑ 返回晋时间轴
+        <button type="button" className="jc-back" onClick={() => navigate(backTo)}>
+          ↑ 返回时间轴
         </button>
         <div className="jc-title">
           <h1>{DATA.title}</h1>
@@ -218,7 +220,10 @@ export function JinChronicleStage() {
               </span>
             ))}
           </div>
-          <p className="jc-mapnote">区域为示意分区，以归属为主，不描精确边界；河西诸凉、河南拉锯见右侧注记。</p>
+          <p className="jc-mapnote">
+            {DATA.mapNote ??
+              '区域为示意分区，以归属为主，不描精确边界；河西诸凉、河南拉锯见右侧注记。'}
+          </p>
         </div>
 
         <aside className="jc-panel">
@@ -248,8 +253,8 @@ export function JinChronicleStage() {
               ← 上一幕
             </button>
             {last ? (
-              <button type="button" className="jc-primary" onClick={() => navigate('/')}>
-                推演结束 · 入宋
+              <button type="button" className="jc-primary" onClick={() => navigate(DATA.finishTo ?? '/')}>
+                {DATA.finishLabel ?? '推演结束 · 入宋'}
               </button>
             ) : (
               <button type="button" className="jc-primary" onClick={() => go(1)}>

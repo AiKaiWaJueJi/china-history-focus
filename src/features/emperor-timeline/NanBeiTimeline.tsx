@@ -7,7 +7,7 @@
  * 横向以 420—589 年为单位铺开，帝王卡按在位年份定位；
  * 易代节点（479/502/534/550/557/577/589）是菱形，点开是全屏过渡页。
  */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import raw from '../../data/nanbei.json'
 import './nanbei.css'
@@ -25,6 +25,7 @@ interface Polity {
   start: number
   end: number
   full: string
+  members?: string
 }
 
 interface Emperor {
@@ -34,6 +35,7 @@ interface Emperor {
   name: string
   start: number
   end: number
+  evaluation?: 'good' | 'neutral' | 'bad'
 }
 
 interface NodeAct {
@@ -84,9 +86,40 @@ function displayTitle(title: string) {
 
 export function NanBeiTimeline() {
   const navigate = useNavigate()
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const lastWheel = useRef(0)
+  const [page, setPage] = useState(1)
+  const [pages, setPages] = useState(1)
   const [selected, setSelected] = useState<Emperor | null>(null)
   const [nodeId, setNodeId] = useState<string | null>(null)
   const [actIndex, setActIndex] = useState(0)
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const update = () => {
+      const total = Math.max(1, Math.ceil(el.scrollWidth / el.clientWidth))
+      setPages(total)
+      setPage(Math.min(total, Math.round(el.scrollLeft / el.clientWidth) + 1))
+    }
+    update()
+    const onWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) < 8) return
+      event.preventDefault()
+      const now = performance.now()
+      if (now - lastWheel.current < 520) return
+      lastWheel.current = now
+      el.scrollBy({ left: (event.deltaY > 0 ? 1 : -1) * el.clientWidth, behavior: 'smooth' })
+    }
+    el.addEventListener('scroll', update, { passive: true })
+    el.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('resize', update)
+    return () => {
+      el.removeEventListener('scroll', update)
+      el.removeEventListener('wheel', onWheel)
+      window.removeEventListener('resize', update)
+    }
+  }, [])
 
   const node = DATA.nodes.find((n) => n.id === nodeId) ?? null
 
@@ -117,6 +150,13 @@ export function NanBeiTimeline() {
           <h1>{DATA.title}</h1>
           <span>{DATA.period}</span>
         </div>
+        <button
+          type="button"
+          className="nbc-endgame"
+          onClick={() => navigate('/dynasty/southern_northern/endgame')}
+        >
+          收尾沙盘 · 隋灭陈 →
+        </button>
         <p className="nbc-intro">{DATA.intro}</p>
       </header>
 
@@ -133,11 +173,21 @@ export function NanBeiTimeline() {
           易代节点 · 点击查看过渡页
         </span>
         <span className="nbc-legend-note">短祚（1—2 年）以圆点表示，点开可看详情</span>
+        <span className="nbc-legend-eval">
+          <i className="nbc-eval-good" />
+          美谥
+          <i className="nbc-eval-neutral" />
+          平谥
+          <i className="nbc-eval-bad" />
+          恶谥
+        </span>
       </div>
 
-      <p className="nbc-scroll-hint">横向滚动查看 420—589 全程 · 点击帝王看详情 · 点击菱形看过渡页</p>
+      <p className="nbc-scroll-hint">
+        滚轮 / 触控板上下滚动 = 左右翻页 · 第 {page} / {pages} 页 · 点击帝王看详情 · 点击菱形看过渡页
+      </p>
 
-      <div className="nbc-scroll">
+      <div className="nbc-scroll" ref={scrollRef}>
         <div className="nbc-canvas" style={{ width: LABEL + WIDTH }}>
           <div className="nbc-axis" style={{ marginLeft: LABEL, width: WIDTH }}>
             {ticks().map((year) => (
@@ -197,6 +247,7 @@ export function NanBeiTimeline() {
                         <span>
                           {polity.name}
                           <em>{polity.full}</em>
+                          {polity.members ? <small>{polity.members}</small> : null}
                         </span>
                       </div>
                     ))}
@@ -209,6 +260,7 @@ export function NanBeiTimeline() {
                           type="button"
                           className={`nbc-emp${short ? ' is-short' : ''}`}
                           data-emp={emperor.id}
+                          data-evaluation={emperor.evaluation ?? 'neutral'}
                           style={{ left: (emperor.start - START) * SCALE, width }}
                           onClick={() => setSelected(emperor)}
                           title={`${emperor.title} ${emperor.name}（${emperor.start}—${emperor.end}）`}

@@ -748,5 +748,7 @@
       "name": "宋",
       "color": "#3f6a5e"
     }
-  ]
+  ],
+  "finishLabel": "进入南北朝 →",
+  "finishTo": "/dynasty/southern_northern"
 }

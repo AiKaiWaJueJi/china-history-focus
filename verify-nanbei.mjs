@@ -45,8 +45,8 @@ try {
   }))
   console.log('[SHELL]', JSON.stringify(shell))
   check('标题为「南北朝」', shell.title === '南北朝', shell.title)
-  check('四行并行（北魏 / 东魏·北齐 / 西魏·北周 / 南朝）', shell.rows === 4 && shell.labels.join(',') === '北魏,东魏·北齐,西魏·北周,南朝', shell.labels.join(','))
-  check('9 个政权块、54 位帝王、7 个易代节点', shell.polities === 9 && shell.emperors === 54 && shell.nodes === 7, `${shell.polities}/${shell.emperors}/${shell.nodes}`)
+  check('五行并行（十六国余部 / 北魏 / 东魏·北齐 / 西魏·北周 / 南朝）', shell.rows === 5 && shell.labels.join(',') === '十六国余部,北魏,东魏·北齐,西魏·北周,南朝', shell.labels.join(','))
+  check('10 个政权块、54 位帝王、8 个易代节点', shell.polities === 10 && shell.emperors === 54 && shell.nodes === 8, `${shell.polities}/${shell.emperors}/${shell.nodes}`)
   check('横向时间轴可滚动（420—589 超出视口）', shell.scrollW > shell.clientW + 400, `${shell.scrollW}/${shell.clientW}`)
 
   const axis = await page.evaluate(() => ({
@@ -55,7 +55,7 @@ try {
     years: [...document.querySelectorAll('.nbc-node')].map((n) => n.getAttribute('data-year')),
   }))
   check('年份轴从 420 到 589', axis.first === '420' && axis.last === '589', `${axis.first}/${axis.last}`)
-  check('节点年份为 479/502/534/550/557/577/589', axis.years.join(',') === '479,502,534,550,557,577,589', axis.years.join(','))
+  check('节点年份为 439/479/502/534/550/557/577/589', axis.years.join(',') === '439,479,502,534,550,557,577,589', axis.years.join(','))
 
   await page.click('[data-node="n479"]')
   await sleep(500)
@@ -105,3 +105,4 @@ try {
 const failed = results.filter((r) => !r.pass)
 console.log(`\n===== ${results.length - failed.length}/${results.length} passed =====`)
 if (failed.length) process.exitCode = 1
+

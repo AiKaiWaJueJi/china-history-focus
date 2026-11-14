@@ -16,6 +16,7 @@ import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
+import { NanBeiEndStage } from './features/endgame/NanBeiEndStage'
 import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
 
@@ -28,7 +29,9 @@ function DynastyRoute() {
 /** 晋末用「十六国势力变迁图」，不是灭国战沙盘，单独分流 */
 function EndgameRoute() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
-  return dynastyId === 'jin' ? <JinChronicleStage /> : <EndgameStage />
+  if (dynastyId === 'jin') return <JinChronicleStage />
+  if (dynastyId === 'southern_northern') return <NanBeiEndStage />
+  return <EndgameStage />
 }
 
 function Shell() {

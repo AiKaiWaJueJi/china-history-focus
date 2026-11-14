@@ -1,0 +1,266 @@
+{
+  "dynastyId": "southern_northern",
+  "title": "南北朝收尾 · 隋灭陈",
+  "subtitle": "576 — 589",
+  "intro": "北周灭北齐，北方一统；杨坚代周建隋，开皇九年渡江灭陈。此图以关中、河北、中原、山东、巴蜀、荆襄、江淮、江南、岭南九块示意。",
+  "pre": {
+    "id": "s576",
+    "year": "576年",
+    "yearValue": 576,
+    "title": "北周 · 北齐 · 陈",
+    "summary": "北周据关中、巴蜀；北齐据河北、中原、山东；陈据荆襄、江淮、江南、岭南。三国鼎立之势已成。",
+    "source": {
+      "bookName": "《周书·武帝纪》",
+      "text": "齐、陈分据，周有半壁。"
+    },
+    "control": {
+      "guanzhong": "beizhou",
+      "bashu": "beizhou",
+      "hebei": "beiqi",
+      "zhongyuan": "beiqi",
+      "shandong": "beiqi",
+      "jingxiang": "chen",
+      "jianghuai": "chen",
+      "jiangnan": "chen",
+      "lingnan": "chen"
+    }
+  },
+  "steps": [
+    {
+      "id": "s577",
+      "year": "577年",
+      "yearValue": 577,
+      "title": "北周灭北齐",
+      "summary": "周武帝亲征，克晋阳、邺城，北齐后主被俘。北周尽有北方，与陈隔江对峙。",
+      "source": {
+        "bookName": "《周书·武帝纪》",
+        "text": "齐平，北方遂一。"
+      },
+      "control": {
+        "guanzhong": "beizhou",
+        "bashu": "beizhou",
+        "hebei": "beizhou",
+        "zhongyuan": "beizhou",
+        "shandong": "beizhou",
+        "jingxiang": "chen",
+        "jianghuai": "chen",
+        "jiangnan": "chen",
+        "lingnan": "chen"
+      },
+      "routes": [
+        {
+          "id": "r577",
+          "label": "周武帝自长安东出，克晋阳、邺城",
+          "points": [
+            [
+              450,
+              380
+            ],
+            [
+              620,
+              390
+            ],
+            [
+              700,
+              250
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s581",
+      "year": "581年",
+      "yearValue": 581,
+      "title": "隋代北周",
+      "summary": "杨坚受周静帝禅，国号隋，改元开皇。北方疆域不变，政权由宇文氏转入杨氏。",
+      "source": {
+        "bookName": "《隋书·高祖纪》",
+        "text": "受周禅，国号隋，改元开皇。"
+      },
+      "control": {
+        "guanzhong": "sui",
+        "bashu": "sui",
+        "hebei": "sui",
+        "zhongyuan": "sui",
+        "shandong": "sui",
+        "jingxiang": "chen",
+        "jianghuai": "chen",
+        "jiangnan": "chen",
+        "lingnan": "chen"
+      }
+    },
+    {
+      "id": "s588",
+      "year": "588年",
+      "yearValue": 588,
+      "title": "隋军伐陈",
+      "summary": "隋以杨广、杨素、韩擒虎、贺若弼分道伐陈；陈后主仍在建康享乐。",
+      "source": {
+        "bookName": "《隋书·高祖纪》",
+        "text": "命将出师，伐陈。"
+      },
+      "control": {
+        "guanzhong": "sui",
+        "bashu": "sui",
+        "hebei": "sui",
+        "zhongyuan": "sui",
+        "shandong": "sui",
+        "jingxiang": "chen",
+        "jianghuai": "chen",
+        "jiangnan": "chen",
+        "lingnan": "chen"
+      },
+      "routes": [
+        {
+          "id": "r588",
+          "label": "隋军自江淮渡江，直指建康",
+          "points": [
+            [
+              620,
+              390
+            ],
+            [
+              680,
+              510
+            ],
+            [
+              840,
+              540
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s589",
+      "year": "589年",
+      "yearValue": 589,
+      "title": "陈亡 · 南北一统",
+      "summary": "建康陷，陈后主被俘。隋尽取陈地，南北朝结束；自西晋末年以来近三百年的分裂告终。",
+      "source": {
+        "bookName": "《隋书·高祖纪》",
+        "text": "开皇九年，平陈，天下为一。"
+      },
+      "control": {
+        "guanzhong": "sui",
+        "bashu": "sui",
+        "hebei": "sui",
+        "zhongyuan": "sui",
+        "shandong": "sui",
+        "jingxiang": "sui",
+        "jianghuai": "sui",
+        "jiangnan": "sui",
+        "lingnan": "sui"
+      }
+    }
+  ],
+  "regions": [
+    {
+      "id": "guanzhong",
+      "name": "关中",
+      "label": [
+        450,
+        380
+      ],
+      "points": "143.5,127.3 150,120 280,95 380,60 441.3,57.8 542.8,253 531.8,439.7 362.3,464"
+    },
+    {
+      "id": "hebei",
+      "name": "河北",
+      "label": [
+        700,
+        250
+      ],
+      "points": "441.3,57.8 520,55 650,80 760,120 900,95 941,139 723.6,356.4 542.8,253"
+    },
+    {
+      "id": "zhongyuan",
+      "name": "中原",
+      "label": [
+        620,
+        390
+      ],
+      "points": "573.7,488.1 531.8,439.7 542.8,253 723.6,356.4 726.3,411.9"
+    },
+    {
+      "id": "shandong",
+      "name": "山东",
+      "label": [
+        830,
+        380
+      ],
+      "points": "941,139 970,170 990,280 930,360 975.6,451.2 771.4,464 726.3,411.9 723.6,356.4"
+    },
+    {
+      "id": "bashu",
+      "name": "巴蜀",
+      "label": [
+        250,
+        510
+      ],
+      "points": "70,210 143.5,127.3 362.3,464 356.9,583.8 250,560 140,470 70,360 50,270"
+    },
+    {
+      "id": "jingxiang",
+      "name": "荆襄",
+      "label": [
+        470,
+        520
+      ],
+      "points": "431.6,600.2 430,600 356.9,583.8 362.3,464 531.8,439.7 573.7,488.1 575.3,520.4"
+    },
+    {
+      "id": "jianghuai",
+      "name": "江淮",
+      "label": [
+        680,
+        510
+      ],
+      "points": "740.7,627.7 650,630 643.2,629.1 575.3,520.4 573.7,488.1 726.3,411.9 771.4,464"
+    },
+    {
+      "id": "jiangnan",
+      "name": "江南",
+      "label": [
+        840,
+        540
+      ],
+      "points": "975.6,451.2 980,460 930,560 850,625 740.7,627.7 771.4,464"
+    },
+    {
+      "id": "lingnan",
+      "name": "岭南",
+      "label": [
+        520,
+        610
+      ],
+      "points": "643.2,629.1 431.6,600.2 575.3,520.4"
+    }
+  ],
+  "regimes": [
+    {
+      "id": "beizhou",
+      "name": "北周",
+      "color": "#7a5f3a"
+    },
+    {
+      "id": "beiqi",
+      "name": "北齐",
+      "color": "#8a6a3f"
+    },
+    {
+      "id": "chen",
+      "name": "陈",
+      "color": "#3e5f70"
+    },
+    {
+      "id": "sui",
+      "name": "隋",
+      "color": "#3f6a5e"
+    }
+  ],
+  "mapNote": "九块区域为示意分区，以归属为主；关中、巴蜀归北周/隋，河北、中原、山东归北齐，荆襄、江淮、江南、岭南归陈。",
+  "finishLabel": "推演结束 · 回时间轴",
+  "finishTo": "/dynasty/southern_northern"
+}
