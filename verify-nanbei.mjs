@@ -97,19 +97,80 @@ try {
   check('第一页「上一页」禁用', p1.prevDisabled === true)
   check('泳道不超出舞台', p1.lastCardRight !== null && p1.lastCardRight <= p1.lane + 1, `${p1.lastCardRight} vs ${p1.lane}`)
 
-  // 悬停帝王卡 → 事件浮层
+  // 悬停帝王卡 → 两侧事件枝（左右展开，不再上下顶出屏幕）
   await page.hover('[data-emp="wei_taiwu"]')
   await sleep(400)
   const hover = await page.evaluate(() => {
-    const events = document.querySelectorAll('[data-emp="wei_taiwu"] .emp-events')
+    const slot = document.querySelector('[data-emp="wei_taiwu"]')
+    const branches = [...slot.querySelectorAll('.nbc-branch')]
+    const box = slot.getBoundingClientRect()
     return {
-      groups: events.length,
-      visible: [...events].some((e) => Number(getComputedStyle(e).opacity) > 0.5),
-      items: document.querySelectorAll('[data-emp="wei_taiwu"] .emp-event').length,
+      branches: branches.length,
+      visible: branches.some((b) => Number(getComputedStyle(b).opacity) > 0.5),
+      items: slot.querySelectorAll('.nbc-branch-item').length,
+      flip: slot.getAttribute('data-flip'),
+      // 事件枝必须在卡片左右两侧（水平方向），而不是上下
+      sides: branches.map((b) => {
+        const r = b.getBoundingClientRect()
+        return r.right <= box.left + 2 ? 'left' : r.left >= box.right - 2 ? 'right' : 'overlap'
+      }),
     }
   })
-  check('悬停帝王卡浮出事件枝', hover.groups > 0 && hover.visible && hover.items >= 2, JSON.stringify(hover))
+  check(
+    '悬停帝王卡在左右两侧浮出事件枝',
+    hover.branches > 0 && hover.visible && hover.items >= 2 && hover.sides.every((s) => s !== 'overlap'),
+    JSON.stringify(hover),
+  )
   check('没有右下角详情弹窗（已取消）', p1.detailPopup === 0)
+
+  // 在位条：长度 = 在位年数，卡片居中
+  const bars = await page.evaluate(() => {
+    const scale = Number(document.querySelector('.nbc-axis')?.getAttribute('data-scale'))
+    const lane = document.querySelector('.nbc-lane').getBoundingClientRect()
+    return {
+      scale,
+      bars: [...document.querySelectorAll('.nbc-reign')].map((bar) => ({
+        years: bar.getAttribute('data-years'),
+        px: Math.round(bar.getBoundingClientRect().width),
+        left: Math.round(bar.getBoundingClientRect().left - lane.left),
+      })),
+    }
+  })
+  const barMatchesReign = bars.bars.every((bar) => {
+    const [start, end] = (bar.years ?? '').split('—').map(Number)
+    const from = 420
+    const to = 439
+    const clipped = Math.min(end, to) - Math.max(start, from)
+    return Math.abs(bar.px - Math.max(2, clipped * bars.scale)) <= 3
+  })
+  check(
+    '在位条长度 == 在位年数（本页裁切）',
+    bars.bars.length === p1.cards.length && barMatchesReign,
+    `${bars.bars.length} 条 / scale ${bars.scale} / ${bars.bars.slice(0, 3).map((b) => `${b.years}:${b.px}px`).join(' ')}`,
+  )
+
+  // 卡片居中于在位条（取未被推移的卡：太武帝，423—452）
+  const centered = await page.evaluate(() => {
+    const slot = document.querySelector('[data-emp="wei_taiwu"]')
+    const lane = document.querySelector('.nbc-lane').getBoundingClientRect()
+    const bar = document.querySelector('.nbc-reign[data-years="423—452"]')
+    const sr = slot.getBoundingClientRect()
+    const br = bar.getBoundingClientRect()
+    return {
+      cardCenter: Math.round(sr.left - lane.left + sr.width / 2),
+      barCenter: Math.round(br.left - lane.left + br.width / 2),
+    }
+  })
+  check(
+    '卡片居中于在位条',
+    Math.abs(centered.cardCenter - centered.barCenter) <= 2,
+    `${centered.cardCenter} vs ${centered.barCenter}`,
+  )
+  check(
+    '贴左边界的卡在右侧展开、贴右边界在左侧展开',
+    hover.flip === 'right' || hover.flip === 'split',
+    String(hover.flip),
+  )
 
   // 第 2 页：只剩两行，行高被拉开；太武帝再次完整出现
   await page.evaluate(() => document.querySelectorAll('.nbc-dot')[1].click())

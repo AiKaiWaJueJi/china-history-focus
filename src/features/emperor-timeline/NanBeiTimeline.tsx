@@ -14,7 +14,7 @@
  *      落在即位之年上；在位横跨两页的（如太武帝）两页各出现一次完整模块；
  *   5. 朝代更替由行名 + 卡上的完整庙号表达，不再画政权大色块（旧版 .nbc-polity 已删）。
  */
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import raw from '../../data/nanbei.json'
@@ -168,39 +168,85 @@ const CARD_GAP = 6
 /** 卡高上限：再高就压到行线，画像也够用了 */
 const CARD_MAX_H = 180
 
+interface PlacedEmperor {
+  emperor: PageEmperor
+  /** 在位条：本页窗口内裁切后的起止（px） */
+  barLeft: number
+  barWidth: number
+  /** 卡片左缘：默认居中于在位条；被挤时只做最小右推 */
+  cardLeft: number
+  /** hover 展开方向：贴边时改单侧，避免文字出界 */
+  flip: 'split' | 'left' | 'right'
+}
+
 /**
- * 一行的落点：卡片等宽，按即位年放；挤在一起时先依次右推，
- * 若整行越出泳道就整体左移（不压缩间距），最终一定落在泳道内。
- * 元年即崩的（元凶劭、海陵王……）不再画圆点，也是一个完整模块。
+ * 一行落点：
+ *   1. 每位帝王先铺一条「在位条」，长度 = 在位年数（本页裁切）；
+ *   2. 卡片默认**居中于在位条**，既不破坏竖卡比例，又能读出在位长短；
+ *   3. 同年连号即位时卡片会互相压住，只做「不压前卡」的最小右推，
+ *      让每张卡都能看见（在位条仍是真实长度，不受推移影响）。
  */
-function placeCards(emperors: PageEmperor[], from: number, scale: number, width: number, laneW: number) {
+function placeCards(
+  emperors: PageEmperor[],
+  from: number,
+  scale: number,
+  cardW: number,
+  laneW: number,
+): PlacedEmperor[] {
   if (emperors.length === 0) return []
-  const lefts = emperors.map((emperor) =>
-    Math.max(0, Math.min((emperor.left - from) * scale, laneW - width)),
-  )
+
+  const items = emperors.map((emperor) => {
+    const startPx = Math.max(0, Math.min((emperor.left - from) * scale, laneW))
+    const endPx = Math.max(startPx, Math.min(laneW, (emperor.end - from) * scale))
+    const barWidth = Math.max(2, endPx - startPx)
+    const centered = Math.max(0, Math.min(startPx + barWidth / 2 - cardW / 2, laneW - cardW))
+    return { emperor, startPx, barWidth, centered }
+  })
+
+  const lefts = items.map((item) => item.centered)
   for (let i = 1; i < lefts.length; i++) {
-    lefts[i] = Math.max(lefts[i], lefts[i - 1] + width + CARD_GAP)
+    lefts[i] = Math.max(lefts[i], lefts[i - 1] + cardW + CARD_GAP)
   }
-  /*
-    连号即位（528 孝庄 / 530 长广 / 531 节闵 / 532 孝武）时前推会级联出界：
-    从尾部回推把级联压回来，再前推兜一次底。总宽由 fitW 保证放得下。
-  */
-  if (lefts[lefts.length - 1] + width > laneW) {
-    let limit = laneW - width
+  // 右推级联出界：从尾部回推压回来，再前推兜底
+  if (lefts[lefts.length - 1] + cardW > laneW) {
+    let limit = laneW - cardW
     for (let i = lefts.length - 1; i >= 0; i--) {
       lefts[i] = Math.min(lefts[i], limit)
-      limit = lefts[i] - width - CARD_GAP
+      limit = lefts[i] - cardW - CARD_GAP
     }
     let cursor = 0
     for (let i = 0; i < lefts.length; i++) {
       lefts[i] = Math.max(lefts[i], cursor)
-      cursor = lefts[i] + width + CARD_GAP
+      cursor = lefts[i] + cardW + CARD_GAP
     }
   }
-  return emperors.map((emperor, i) => ({ emperor, left: lefts[i] }))
+
+  /* hover 展开需要的横向余量 */
+  const REACH = 170
+  return items.map((item, i) => {
+    const center = lefts[i] + cardW / 2
+    const flip =
+      center < REACH ? 'right' : center > laneW - REACH ? 'left' : 'split'
+    return {
+      emperor: item.emperor,
+      barLeft: item.startPx,
+      barWidth: item.barWidth,
+      cardLeft: lefts[i],
+      flip,
+    }
+  })
 }
 
 /* ---------------- 单页版面 ---------------- */
+
+/** hover 时卡片两侧的事件分组：左边军事、右边政治·文教（贴边时合并到同一侧） */
+function branchGroups(emperor: Emperor) {
+  const events = emperor.events ?? []
+  return [
+    { key: 'military', label: '军事', items: events.filter((event) => event.dimension === 'military') },
+    { key: 'civic', label: '政治 · 文教', items: events.filter((event) => event.dimension !== 'military') },
+  ].filter((group) => group.items.length > 0)
+}
 
 interface PageBodyProps {
   page: PageSpec
@@ -279,16 +325,56 @@ function PageBody({ page, width, height, onOpenNode }: PageBodyProps) {
               {placed.length === 0 ? (
                 <span className="nbc-empty">十六国余部诸政权未入帝系，仅标行属</span>
               ) : (
-                placed.map(({ emperor, left }) => (
-                  <div
-                    key={emperor.id}
-                    className="nbc-slot"
-                    data-emp={emperor.id}
-                    style={{ left, width: cardW, height: cardH }}
-                  >
-                    <EmperorCard emperor={toRecord(emperor)} index={0} compact={cardW < 150} />
-                  </div>
-                ))
+                placed.map(({ emperor, barLeft, barWidth, cardLeft, flip }) => {
+                  const groups = branchGroups(emperor)
+                  const leftGroups =
+                    flip === 'left' ? groups : flip === 'split' ? groups.slice(0, 1) : []
+                  const rightGroups =
+                    flip === 'right' ? groups : flip === 'split' ? groups.slice(1) : []
+                  return (
+                    <Fragment key={emperor.id}>
+                      {/* 在位条：长度就是在位年数，卡片居中压在它上面 */}
+                      <span
+                        className="nbc-reign"
+                        style={{ left: barLeft, width: barWidth }}
+                        data-years={`${emperor.start}—${emperor.end}`}
+                        aria-hidden
+                      />
+                      <div
+                        className="nbc-slot"
+                        data-emp={emperor.id}
+                        data-flip={flip}
+                        style={{ left: cardLeft, width: cardW, height: cardH }}
+                      >
+                        <EmperorCard emperor={toRecord(emperor)} index={0} compact={cardW < 150} />
+                        {[
+                          { side: 'left' as const, groups: leftGroups },
+                          { side: 'right' as const, groups: rightGroups },
+                        ].map(({ side, groups: sideGroups }) =>
+                          sideGroups.length > 0 ? (
+                            <div key={side} className={`nbc-branch nbc-branch--${side}`}>
+                              {sideGroups.map((group) => (
+                                <div className="nbc-branch-group" key={group.key}>
+                                  <span className="nbc-branch-label">{group.label}</span>
+                                  {group.items.map((event) => (
+                                    <span
+                                      className="nbc-branch-item"
+                                      key={event.id}
+                                      data-dimension={event.dimension}
+                                    >
+                                      {event.name}
+                                      <em>{event.year}</em>
+                                    </span>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          ) : null,
+                        )}
+                      </div>
+                    </Fragment>
+                  )
+                })
               )}
             </div>
           </div>

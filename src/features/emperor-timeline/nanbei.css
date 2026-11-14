@@ -335,6 +335,129 @@
   height: 100%;
 }
 
+/*
+  EmperorCard 自带的事件浮层是「卡片上/下」展开的，在这一页会顶出屏幕或压住邻行，
+  所以这里关掉它，换成 .nbc-branch 的左右展开。
+*/
+.nbc-slot .emp-events {
+  display: none;
+}
+
+/* 在位条：长度 = 在位年数，卡片居中压在它上面 */
+.nbc-reign {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--row-accent) 55%, transparent),
+    color-mix(in srgb, var(--row-accent) 26%, transparent)
+  );
+  box-shadow: 0 0 14px -6px color-mix(in srgb, var(--row-accent) 80%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 两端小竖线，像量尺的起止 */
+.nbc-reign::before,
+.nbc-reign::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--row-accent) 72%, transparent);
+}
+
+.nbc-reign::before {
+  left: 0;
+}
+
+.nbc-reign::after {
+  right: 0;
+}
+
+/* ---------------- hover：卡片左右两侧的事件枝 ---------------- */
+
+.nbc-branch {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+  z-index: 3;
+}
+
+.nbc-branch--left {
+  right: calc(100% + 14px);
+  align-items: flex-end;
+}
+
+.nbc-branch--right {
+  left: calc(100% + 14px);
+  align-items: flex-start;
+}
+
+.nbc-slot:hover .nbc-branch,
+.nbc-slot:focus-within .nbc-branch {
+  opacity: 1;
+}
+
+.nbc-branch-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nbc-branch--left .nbc-branch-group {
+  align-items: flex-end;
+}
+
+.nbc-branch-label {
+  font-family: var(--font-thin);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: rgba(232, 207, 142, 0.6);
+  white-space: nowrap;
+}
+
+.nbc-branch-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 12, 14, 0.95);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-thin);
+  font-size: 11px;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px -14px #000;
+}
+
+.nbc-branch-item[data-dimension='military'] {
+  border-color: rgba(168, 68, 58, 0.45);
+}
+
+.nbc-branch-item[data-dimension='culture'] {
+  border-color: rgba(111, 139, 131, 0.45);
+}
+
+.nbc-branch-item em {
+  font-style: normal;
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
 /* 窄卡：文字缩小一号，避免庙号折行 */
 .nbc-slot .emp-card--compact .emp-title {
   font-size: clamp(1rem, 1.6vw, 1.35rem);
@@ -609,4 +732,34 @@
   .nbc-intro {
     display: none;
   }
+}
+
+/* 悬停时压暗邻卡：两侧事件枝会伸进邻卡的范围，暗下去归属才清楚（沿用 pager 的既有做法） */
+.nbc-lane:has(.nbc-slot:hover) .nbc-slot:not(:hover),
+.nbc-lane:has(.nbc-slot:focus-within) .nbc-slot:not(:focus-within) {
+  opacity: 0.32;
+  transition: opacity 200ms ease;
+}
+
+.nbc-slot:hover,
+.nbc-slot:focus-within {
+  z-index: 40;
+}
+
+/* 两侧事件枝：给一层软底，文字压在邻卡上也不糊 */
+.nbc-branch {
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.nbc-branch--left {
+  background: linear-gradient(90deg, rgba(6, 8, 10, 0) 0%, rgba(6, 8, 10, 0.82) 38%, rgba(6, 8, 10, 0.92) 100%);
+}
+
+.nbc-branch--right {
+  background: linear-gradient(270deg, rgba(6, 8, 10, 0) 0%, rgba(6, 8, 10, 0.82) 38%, rgba(6, 8, 10, 0.92) 100%);
+}
+
+.nbc-branch-group + .nbc-branch-group {
+  margin-top: 4px;
 }
