@@ -1,15 +1,26 @@
 /**
- * NanBeiTimeline —— 南北朝多行帝王时间轴
+ * NanBeiTimeline —— 南北朝多行帝王时间轴（8 页强制分页）
  * ===========================================================================
  * 南朝与北朝是并行的，不能用"一条时间轴翻页"来表达。
- * 这里按四行并行：
- *   北魏 / 东魏·北齐 / 西魏·北周 / 南朝（宋齐梁陈）
- * 横向以 420—589 年为单位铺开，帝王卡按在位年份定位；
- * 易代节点（479/502/534/550/557/577/589）是菱形，点开是全屏过渡页。
+ * 这里按行并行：
+ *   十六国余部 / 北魏 / 东魏·北齐 / 西魏·北周 / 南朝（宋齐梁陈）
+ *
+ * 分页模型（2026-11 重构，见 docs/HANDOFF.md）：
+ *   1. 420—589 按易代节点切成 8 段，一段一页；滚轮不是横向自由滚动，而是强制翻页；
+ *   2. 每页只挂载「本段还活着」的行（420—439 三行、502—534 两行……），
+ *      行距由 `grid-template-rows: repeat(activeRows, 1fr)` 自动拉开，
+ *      卸载掉的行不会留下空槽；
+ *   3. 比例尺**按页自适应**：本段窗口铺满一屏、上下封顶。7 年的 550—557
+ *      不会被压成两个字的宽度，40 年的 439—479 也不会把一张卡拉成整屏；
+ *   4. 跨页的帝王卡 / 政权块按本页窗口裁切，断口用 data-cut 标记（虚线收边）。
+ *
+ * 每页右端固定收在本页的易代节点上（439/479/…/589），菱形点开是全屏过渡页。
  */
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import raw from '../../data/nanbei.json'
+import { useWheelPaging } from './useWheelPaging'
 import './nanbei.css'
 
 interface Row {
@@ -64,18 +75,81 @@ interface NanBeiData {
 }
 
 const DATA = raw as NanBeiData
-const START = 420
-const END = 589
-const SCALE = 16
-const LABEL = 96
-const WIDTH = (END - START) * SCALE
-
 const polityById = new Map(DATA.polities.map((p) => [p.id, p]))
 
-function ticks() {
-  const out: number[] = []
-  for (let y = 420; y <= 580; y += 20) out.push(y)
-  out.push(589)
+/* ---------------- 分页几何 ---------------- */
+
+/** 8 页：每页都是「以某个易代节点收束」的纪年窗口，首尾相接铺满 420—589 */
+const PAGES = [
+  { from: 420, to: 439 },
+  { from: 439, to: 479 },
+  { from: 479, to: 502 },
+  { from: 502, to: 534 },
+  { from: 534, to: 550 },
+  { from: 550, to: 557 },
+  { from: 557, to: 577 },
+  { from: 577, to: 589 },
+] as const
+
+/** 每页独立比例尺：本窗口铺满一屏，短窗口放大但有封顶（否则一张卡会铺满整屏） */
+const LABEL = 96
+const GUTTER = 64
+const MIN_SCALE = 12
+const MAX_SCALE = 96
+
+type PagePolity = Polity & { left: number; right: number }
+type PageEmperor = Emperor & { left: number; right: number; cutStart: boolean; cutEnd: boolean }
+
+interface PageRow {
+  row: Row
+  polities: PagePolity[]
+  emperors: PageEmperor[]
+  /** 本段之前这块地归谁（如 535 年前的西魏行属北魏） */
+  hint: string | null
+}
+
+interface PageSpec {
+  from: number
+  to: number
+  rows: PageRow[]
+  node: TimelineNode | null
+}
+
+function buildPage(from: number, to: number): PageSpec {
+  const rows = DATA.rows
+    .map((row) => {
+      const polities = DATA.polities
+        .filter((p) => p.row === row.id && p.start < to && p.end > from)
+        .map((p) => ({ ...p, left: Math.max(p.start, from), right: Math.min(p.end, to) }))
+      const emperors = DATA.emperors
+        .filter((e) => {
+          const polity = polityById.get(e.polity)
+          return Boolean(polity && polity.row === row.id && e.start < to && e.end > from)
+        })
+        .map((e) => ({
+          ...e,
+          left: Math.max(e.start, from),
+          right: Math.min(e.end, to),
+          cutStart: e.start < from,
+          cutEnd: e.end > to,
+        }))
+        .sort((a, b) => a.left - b.left)
+      // 本行第一个政权若比本页起点晚 3 年以上，才值得提示「之前这块归北魏」
+      const hint =
+        polities.length > 0 && polities[0].start - from >= 3 ? `${polities[0].start} 年前属北魏` : null
+      return { row, polities, emperors, hint }
+    })
+    .filter((item) => item.polities.length > 0)
+
+  return { from, to, rows, node: DATA.nodes.find((n) => n.year === to) ?? null }
+}
+
+const PAGE_SPECS: PageSpec[] = PAGES.map((p) => buildPage(p.from, p.to))
+
+/** 刻度：本页起点 + 段内的整十年；收束年交给节点标 */
+function pageTicks(from: number, to: number) {
+  const out: number[] = [from]
+  for (let year = Math.ceil((from + 3) / 10) * 10; year <= to - 3; year += 10) out.push(year)
   return out
 }
 
@@ -84,46 +158,224 @@ function displayTitle(title: string) {
   return title.replace(/^(宋|南齐|齐|梁|陈|北魏|东魏|西魏|北齐|北周)/, '')
 }
 
+interface PlacedEmperor extends PageEmperor {
+  px: number
+  width: number
+  short: boolean
+  cut: 'start' | 'end' | 'both' | null
+}
+
+/**
+ * 帝王卡在本页泳道上的落点。
+ * 短祚圆点要躲开前一个圆点：555 年贞阳侯与敬帝同时、都是圆点，
+ * 不推开就只剩一个（点开还能选，但看不出有两个人）。
+ */
+function placeEmperors(emperors: PageEmperor[], from: number, scale: number, laneW: number): PlacedEmperor[] {
+  let dotEdge = -Infinity
+  return emperors.map((emperor) => {
+    const short = emperor.end - emperor.start <= 2
+    const base = (emperor.left - from) * scale
+    let px = short ? Math.max(base, dotEdge) : base
+    if (short) dotEdge = px + 22
+    px = Math.max(0, Math.min(px, laneW - (short ? 20 : 0)))
+    const spanPx = (emperor.right - emperor.left) * scale
+    const width = Math.max(20, Math.min(short ? 20 : Math.max(spanPx, 54), laneW - px))
+    const cut = short
+      ? null
+      : emperor.cutStart && emperor.cutEnd
+        ? 'both'
+        : emperor.cutStart
+          ? 'start'
+          : emperor.cutEnd
+            ? 'end'
+            : null
+    return { ...emperor, px, width, short, cut }
+  })
+}
+
+/* ---------------- 单页版面 ---------------- */
+
+interface PageBodyProps {
+  page: PageSpec
+  width: number
+  onOpenNode: (id: string) => void
+  onSelect: (emperor: Emperor) => void
+}
+
+function PageBody({ page, width, onOpenNode, onSelect }: PageBodyProps) {
+  const span = page.to - page.from
+  // 短窗口（550—557 只有 7 年）必须放大，否则卡片会被压成两个字的宽度
+  const scale =
+    width > 0
+      ? Math.max(MIN_SCALE, Math.min(MAX_SCALE, (width - LABEL - GUTTER - 6) / span))
+      : 32
+  const laneW = span * scale
+  const nodeX = LABEL + laneW + GUTTER / 2
+  const rows = page.rows.map((row) => ({
+    ...row,
+    placed: placeEmperors(row.emperors, page.from, scale, laneW),
+  }))
+
+  return (
+    <>
+      <div className="nbc-axis" data-lane={Math.round(laneW)} data-scale={Math.round(scale * 10) / 10}>
+        {pageTicks(page.from, page.to).map((year) => (
+          <span
+            key={year}
+            className={`nbc-tick${year === page.from ? ' is-edge' : ''}`}
+            style={{ left: LABEL + (year - page.from) * scale }}
+          >
+            {year}
+          </span>
+        ))}
+        {page.node ? (
+          <button
+            type="button"
+            className="nbc-node"
+            style={{ left: nodeX }}
+            data-node={page.node.id}
+            data-year={page.node.year}
+            data-title={page.node.title}
+            onClick={() => onOpenNode(page.node!.id)}
+            title={`${page.node.year} · ${page.node.title}`}
+          >
+            <em>{page.node.year}</em>
+            <i className="nbc-diamond" />
+          </button>
+        ) : null}
+      </div>
+
+      <div
+        className="nbc-rows"
+        data-rows={page.rows.length}
+        style={{ gridTemplateRows: `repeat(${page.rows.length}, minmax(0, 1fr))` }}
+      >
+        {rows.map(({ row, polities, placed, hint }) => (
+          <div
+            key={row.id}
+            className={`nbc-row nbc-row-${row.id}`}
+            data-row={row.id}
+            style={{ gridTemplateColumns: `${LABEL}px ${laneW}px ${GUTTER}px` }}
+          >
+            <div className="nbc-rowlabel">
+              <b>{row.name}</b>
+              <em>{row.note}</em>
+            </div>
+            <div className="nbc-lane">
+              <div className="nbc-band">
+                {hint ? <span className="nbc-empty">{hint}</span> : null}
+                {polities.map((polity) => (
+                  <div
+                    key={polity.id}
+                    className="nbc-polity"
+                    data-polity={polity.id}
+                    style={{
+                      left: (polity.left - page.from) * scale,
+                      width: (polity.right - polity.left) * scale,
+                    }}
+                  >
+                    <span>
+                      {polity.name}
+                      <em>{polity.full}</em>
+                      {polity.members ? <small>{polity.members}</small> : null}
+                    </span>
+                  </div>
+                ))}
+                {placed.map((emperor) => (
+                  <button
+                    key={emperor.id}
+                    type="button"
+                    className={`nbc-emp${emperor.short ? ' is-short' : ''}${
+                      emperor.width >= 150 ? ' is-wide' : ''
+                    }${!emperor.short && emperor.width < 78 ? ' is-tight' : ''}`}
+                    data-emp={emperor.id}
+                    data-evaluation={emperor.evaluation ?? 'neutral'}
+                    data-cut={emperor.cut ?? undefined}
+                    style={{ left: emperor.px, width: emperor.width }}
+                    onClick={() => onSelect(emperor)}
+                    title={`${emperor.title} ${emperor.name}（${emperor.start}—${emperor.end}）`}
+                  >
+                    <b>{emperor.short ? displayTitle(emperor.title).slice(0, 1) : displayTitle(emperor.title)}</b>
+                    <em>
+                      {emperor.cut === 'start' || emperor.cut === 'both' ? '← ' : ''}
+                      {emperor.start}—{emperor.end}
+                      {emperor.cut === 'end' || emperor.cut === 'both' ? ' →' : ''}
+                    </em>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {page.node ? <div className="nbc-node-line" style={{ left: nodeX }} aria-hidden /> : null}
+    </>
+  )
+}
+
+/* ---------------- 主组件 ---------------- */
+
+const pageVariants = {
+  enter: (dir: number) => ({ x: dir >= 0 ? '42%' : '-42%', opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir >= 0 ? '-42%' : '42%', opacity: 0 }),
+}
+
 export function NanBeiTimeline() {
   const navigate = useNavigate()
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const lastWheel = useRef(0)
-  const [page, setPage] = useState(1)
-  const [pages, setPages] = useState(1)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [stageWidth, setStageWidth] = useState(0)
+  const [pageIndex, setPageIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
   const [selected, setSelected] = useState<Emperor | null>(null)
   const [nodeId, setNodeId] = useState<string | null>(null)
   const [actIndex, setActIndex] = useState(0)
+  const prefersReducedMotion = useReducedMotion()
 
-  useEffect(() => {
-    const el = scrollRef.current
+  /* 版面宽度可测：全页统一比例尺，取最长窗口铺满 */
+  useLayoutEffect(() => {
+    const el = stageRef.current
     if (!el) return
-    const update = () => {
-      const total = Math.max(1, Math.ceil(el.scrollWidth / el.clientWidth))
-      setPages(total)
-      setPage(Math.min(total, Math.round(el.scrollLeft / el.clientWidth) + 1))
-    }
+    const update = () => setStageWidth(el.clientWidth)
     update()
-    const onWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 8) return
-      event.preventDefault()
-      const now = performance.now()
-      if (now - lastWheel.current < 520) return
-      lastWheel.current = now
-      el.scrollBy({ left: (event.deltaY > 0 ? 1 : -1) * el.clientWidth, behavior: 'smooth' })
-    }
-    el.addEventListener('scroll', update, { passive: true })
-    el.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('resize', update)
-    return () => {
-      el.removeEventListener('scroll', update)
-      el.removeEventListener('wheel', onWheel)
-      window.removeEventListener('resize', update)
-    }
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
   }, [])
+
+  const page = PAGE_SPECS[pageIndex]
+  const activeRows = useMemo(() => new Set(page.rows.map((r) => r.row.id)), [page])
+  const pageEmperorCount = page.rows.reduce((sum, r) => sum + r.emperors.length, 0)
+
+  const goPage = (next: number) => {
+    const target = Math.max(0, Math.min(PAGES.length - 1, next))
+    setPageIndex((current) => {
+      if (target === current) return current
+      setDirection(target > current ? 1 : -1)
+      setSelected(null)
+      return target
+    })
+  }
+
+  const { canPrev, canNext } = useWheelPaging({
+    pageCount: PAGES.length,
+    pageIndex,
+    // 弹层/详情打开时，滚轮不翻页
+    onChange: (next) => {
+      if (nodeId || selected) return
+      goPage(next)
+    },
+    // 末页继续下滚 → 收尾沙盘
+    onBeyondEnd: () => {
+      if (nodeId || selected) return
+      navigate('/dynasty/southern_northern/endgame')
+    },
+  })
 
   const node = DATA.nodes.find((n) => n.id === nodeId) ?? null
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       if (nodeId) setNodeId(null)
@@ -162,7 +414,10 @@ export function NanBeiTimeline() {
 
       <div className="nbc-legend">
         {DATA.rows.map((row) => (
-          <span key={row.id} className={`nbc-legend-row nbc-row-${row.id}`}>
+          <span
+            key={row.id}
+            className={`nbc-legend-row nbc-row-${row.id}${activeRows.has(row.id) ? '' : ' is-idle'}`}
+          >
             <i />
             {row.name}
             <em>{row.note}</em>
@@ -183,111 +438,57 @@ export function NanBeiTimeline() {
         </span>
       </div>
 
-      <p className="nbc-scroll-hint">
-        滚轮 / 触控板上下滚动 = 左右翻页 · 第 {page} / {pages} 页 · 点击帝王看详情 · 点击菱形看过渡页
-      </p>
+      <div className="nbc-stage" ref={stageRef} data-page={pageIndex + 1} aria-live="polite">
+        <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+          <motion.div
+            key={pageIndex}
+            className="nbc-page"
+            data-page={pageIndex + 1}
+            data-from={page.from}
+            data-to={page.to}
+            custom={direction}
+            variants={pageVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={
+              prefersReducedMotion
+                ? { duration: 0.12 }
+                : { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 }
+            }
+          >
+            <PageBody page={page} width={stageWidth} onOpenNode={openNode} onSelect={setSelected} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-      <div className="nbc-scroll" ref={scrollRef}>
-        <div className="nbc-canvas" style={{ width: LABEL + WIDTH }}>
-          <div className="nbc-axis" style={{ marginLeft: LABEL, width: WIDTH }}>
-            {ticks().map((year) => (
-              <span key={year} className="nbc-tick" style={{ left: (year - START) * SCALE }}>
-                {year}
-              </span>
-            ))}
-            {DATA.nodes.map((n) => (
-              <button
-                key={n.id}
-                type="button"
-                className="nbc-node"
-                style={{ left: (n.year - START) * SCALE }}
-                data-node={n.id}
-                data-year={n.year}
-                data-title={n.title}
-                onClick={() => openNode(n.id)}
-                title={`${n.year} · ${n.title}`}
-              >
-                <em>{n.year}</em>
-                <i className="nbc-diamond" />
-              </button>
-            ))}
-          </div>
-
-          <div className="nbc-rows">
-            {DATA.rows.map((row) => {
-              const polities = DATA.polities.filter((p) => p.row === row.id)
-              const emperors = DATA.emperors.filter((e) => polityById.get(e.polity)?.row === row.id)
-              return (
-                <div key={row.id} className={`nbc-row nbc-row-${row.id}`}>
-                  <div className="nbc-rowlabel">
-                    <b>{row.name}</b>
-                    <em>{row.note}</em>
-                  </div>
-                  <div className="nbc-lane" style={{ width: WIDTH }}>
-                    {polities[0] && polities[0].start > START ? (
-                      <span
-                        className="nbc-empty"
-                        style={{
-                          left: Math.max(8, ((polities[0].start - START) * SCALE) / 2 - 70),
-                        }}
-                      >
-                        {polities[0].start} 年前属北魏
-                      </span>
-                    ) : null}
-                    {polities.map((polity) => (
-                      <div
-                        key={polity.id}
-                        className="nbc-polity"
-                        data-polity={polity.id}
-                        style={{
-                          left: (polity.start - START) * SCALE,
-                          width: (polity.end - polity.start) * SCALE,
-                        }}
-                      >
-                        <span>
-                          {polity.name}
-                          <em>{polity.full}</em>
-                          {polity.members ? <small>{polity.members}</small> : null}
-                        </span>
-                      </div>
-                    ))}
-                    {emperors.map((emperor) => {
-                      const short = emperor.end - emperor.start <= 2
-                      const width = short ? 20 : Math.max((emperor.end - emperor.start) * SCALE, 54)
-                      return (
-                        <button
-                          key={emperor.id}
-                          type="button"
-                          className={`nbc-emp${short ? ' is-short' : ''}`}
-                          data-emp={emperor.id}
-                          data-evaluation={emperor.evaluation ?? 'neutral'}
-                          style={{ left: (emperor.start - START) * SCALE, width }}
-                          onClick={() => setSelected(emperor)}
-                          title={`${emperor.title} ${emperor.name}（${emperor.start}—${emperor.end}）`}
-                        >
-                          <b>{short ? displayTitle(emperor.title).slice(0, 1) : displayTitle(emperor.title)}</b>
-                          <em>
-                            {emperor.start}—{emperor.end}
-                          </em>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {DATA.nodes.map((n) => (
-            <div
-              key={n.id}
-              className="nbc-node-line"
-              style={{ left: LABEL + (n.year - START) * SCALE }}
-              aria-hidden
+      <footer className="nbc-foot">
+        <span className="nbc-foot-meta">
+          第 {pageIndex + 1} / {PAGES.length} 页 · {page.from}—{page.to} 年（{page.to - page.from} 年）·{' '}
+          {pageEmperorCount} 位帝王
+          {page.node ? ` · 本页收束：${page.node.title}` : ''}
+        </span>
+        <span className="nbc-foot-hint">滚轮 / ← → 翻页 · ESC 返回</span>
+        <div className="nbc-dots">
+          {PAGES.map((window, index) => (
+            <button
+              key={window.from}
+              type="button"
+              className={`nbc-dot${index === pageIndex ? ' is-active' : ''}`}
+              aria-label={`第 ${index + 1} 页 · ${window.from}—${window.to}`}
+              onClick={() => goPage(index)}
             />
           ))}
         </div>
-      </div>
+        <div className="nbc-step">
+          <button type="button" disabled={!canPrev} onClick={() => goPage(pageIndex - 1)}>
+            ← 上一页
+          </button>
+          <button type="button" disabled={!canNext} onClick={() => goPage(pageIndex + 1)}>
+            下一页 →
+          </button>
+        </div>
+      </footer>
 
       {selected ? (
         <aside className="nbc-detail" data-emp-detail={selected.id}>
@@ -359,4 +560,3 @@ export function NanBeiTimeline() {
     </div>
   )
 }
-

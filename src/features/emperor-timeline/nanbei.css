@@ -1,4 +1,6 @@
 .nanbei {
+  /* 帝王卡高度：行少时也不至于塌成一条线 */
+  --card-h: clamp(56px, 8vh, 76px);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -115,31 +117,35 @@
 .nbc-row-xi { --row-accent: #6f5a72; }
 .nbc-row-nan { --row-accent: #4f6f86; }
 
-.nbc-scroll {
+.nbc-stage {
+  position: relative;
   flex: 1 1 auto;
   min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
   background: rgba(7, 9, 11, 0.6);
-  scrollbar-width: thin;
 }
 
-.nbc-canvas {
+.nbc-page {
   position: relative;
   height: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
 
 .nbc-axis {
   position: relative;
+  flex: 0 0 auto;
   height: 50px;
   margin-top: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nbc-tick.is-edge {
+  color: rgba(240, 216, 160, 0.62);
 }
 
 .nbc-tick {
@@ -179,27 +185,24 @@
   box-shadow: 0 0 14px rgba(255, 236, 203, 0.95);
 }
 
+/* 行容器：只挂载本页存活行，行数由 inline grid-template-rows 决定 */
 .nbc-rows {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   margin-top: 4px;
 }
 
+/* 每行 = 行名 96px | 泳道 laneW px | 节点留白 64px（列宽 inline 注入） */
 .nbc-row {
-  display: flex;
-  flex: 1 1 0;
-  min-height: 96px;
+  display: grid;
+  min-height: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.045);
 }
 
 .nbc-rowlabel {
-  position: sticky;
-  left: 0;
   z-index: 5;
-  flex: 0 0 96px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -228,12 +231,26 @@
 .nbc-lane {
   position: relative;
   height: 100%;
+  min-width: 0;
+}
+
+/*
+  行内「内容带」：只占行高的 76%，垂直居中。
+  行被卸载得越少、剩下的行越高 → 带子跟着变高，政权色块铺满，
+  帝王卡仍保持固定高度并居中，不会变成细长的竖条。
+*/
+.nbc-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8%;
+  bottom: 8%;
 }
 
 .nbc-polity {
   position: absolute;
-  top: 4px;
-  height: 94px;
+  top: 0;
+  bottom: 0;
   border-radius: 7px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--row-accent) 16%, transparent), transparent 80%);
   border: 1px solid color-mix(in srgb, var(--row-accent) 34%, transparent);
@@ -262,13 +279,14 @@
 
 .nbc-emp {
   position: absolute;
-  top: 30px;
-  height: 56px;
+  top: 50%;
+  margin-top: calc(var(--card-h) / -2);
+  height: var(--card-h);
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
-  padding: 0 4px;
+  padding: 0 7px;
   box-sizing: border-box;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -278,6 +296,32 @@
   overflow: hidden;
   text-align: left;
   transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+/* 长在位期的卡够宽时，年份甩到右端，避免左边一坨文字右边一片空 */
+.nbc-emp.is-wide {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+/* 跨页裁切：断口用虚线收边，提示"这朝还没完，下一页接着看" */
+.nbc-emp[data-cut='end'],
+.nbc-emp[data-cut='both'] {
+  border-right-style: dashed;
+  border-right-color: rgba(232, 207, 142, 0.45);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.nbc-emp[data-cut='start'],
+.nbc-emp[data-cut='both'] {
+  border-left-style: dashed;
+  border-left-color: rgba(232, 207, 142, 0.45);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .nbc-emp b {
@@ -297,6 +341,23 @@
   color: rgba(255, 255, 255, 0.36);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 卡片太窄（裁切后只剩一两年）时，标题居中、年份让位 */
+.nbc-emp.is-tight {
+  align-items: center;
+  padding: 0 3px;
+  text-align: center;
+}
+
+.nbc-emp.is-tight b {
+  font-size: 10px;
+}
+
+.nbc-emp.is-tight em {
+  font-size: 8px;
 }
 
 .nbc-emp:hover,
@@ -308,7 +369,8 @@
 }
 
 .nbc-emp.is-short {
-  top: 90px;
+  top: calc(50% + var(--card-h) / 2 + 8px);
+  margin-top: 0;
   height: 20px;
   padding: 0;
   align-items: center;
@@ -328,8 +390,8 @@
 
 .nbc-node-line {
   position: absolute;
-  top: 48px;
-  bottom: 8px;
+  top: 54px;
+  bottom: 6px;
   border-left: 1px dashed rgba(232, 207, 142, 0.26);
   pointer-events: none;
   z-index: 3;
@@ -539,7 +601,9 @@
 
 .nbc-empty {
   position: absolute;
-  top: 38px;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
   z-index: 2;
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -555,19 +619,98 @@
   color: rgba(255, 255, 255, 0.24);
 }
 
-.nbc-scroll-hint {
-  margin: 0 2px 6px;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.28);
+.nbc-legend-row.is-idle {
+  opacity: 0.3;
 }
 
+/* ---------------- 底部：页码 / 上一页下一页 ---------------- */
+
+.nbc-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 2px 2px;
+  flex: 0 0 auto;
+}
+
+.nbc-foot-meta {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.46);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nbc-foot-hint {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.26);
+  white-space: nowrap;
+}
+
+.nbc-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.nbc-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+
+.nbc-dot:hover {
+  background: rgba(232, 207, 142, 0.6);
+}
+
+.nbc-dot.is-active {
+  background: #e8cf8e;
+  box-shadow: 0 0 8px rgba(232, 207, 142, 0.75);
+}
+
+.nbc-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nbc-step button {
+  padding: 5px 11px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(12, 14, 16, 0.7);
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.nbc-step button:hover:not(:disabled) {
+  border-color: rgba(232, 207, 142, 0.55);
+  color: #f2e3bd;
+}
+
+.nbc-step button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+/*
+  节点气泡：节点永远落在页尾，气泡朝左长，否则会被舞台裁掉。
+  content 只在 :hover 时生成 —— 否则不可见的气泡也会占布局，把舞台撑出横向溢出。
+*/
 .nbc-node::after {
-  content: attr(data-title);
+  content: '';
   position: absolute;
   top: 36px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   padding: 4px 8px;
   border-radius: 5px;
   border: 1px solid rgba(232, 207, 142, 0.3);
@@ -582,6 +725,7 @@
 }
 
 .nbc-node:hover::after {
+  content: attr(data-title);
   opacity: 1;
 }
 
