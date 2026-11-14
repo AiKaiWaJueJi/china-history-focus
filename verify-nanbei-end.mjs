@@ -1,5 +1,6 @@
 /**
- * verify-nanbei-end.mjs —— 南北朝收尾沙盘（隋灭陈）
+ * verify-nanbei-end.mjs —— 南北朝收尾沙盘（大一统模板）
+ * 577 周灭齐（战报两页：周灭齐 / 隋代周）→ 588 渡江 → 589 灭陈
  */
 import puppeteer from 'puppeteer-core'
 
@@ -17,12 +18,6 @@ const check = (name, pass, detail = '') => {
   results.push({ name, pass })
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? ' :: ' + detail : ''}`)
 }
-const state = () => ({
-  title: document.querySelector('.jc-title h1')?.textContent?.trim(),
-  year: document.querySelector('.jc-stepno span')?.textContent?.trim(),
-  regions: Object.fromEntries([...document.querySelectorAll('.jc-region')].map((n) => [n.dataset.region, n.dataset.regime])),
-  chips: [...document.querySelectorAll('.jc-chip')].map((n) => n.textContent?.trim()),
-})
 
 try {
   const page = await browser.newPage()
@@ -31,41 +26,48 @@ try {
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 160)))
 
   await page.goto(`${BASE}/dynasty/southern_northern/endgame`, { waitUntil: 'networkidle2', timeout: 60000 })
-  await page.waitForSelector('.jin-chronicle')
+  await page.waitForSelector('.map-stage')
   await sleep(900)
 
-  const first = await page.evaluate(state)
-  console.log('[576]', JSON.stringify(first.regions))
-  check('收尾沙盘标题为「南北朝收尾 · 隋灭陈」', first.title === '南北朝收尾 · 隋灭陈', first.title)
-  check('九块区域、五幕（576 开局）', Object.keys(first.regions).length === 9 && first.year === '576年', `${Object.keys(first.regions).length}/${first.year}`)
-  check(
-    '576 年：关中/巴蜀属北周，河北/中原/山东属北齐，江南属陈',
-    first.regions.guanzhong === 'beizhou' &&
-      first.regions.bashu === 'beizhou' &&
-      first.regions.hebei === 'beiqi' &&
-      first.regions.jiangnan === 'chen',
-    JSON.stringify(first.regions),
-  )
+  const shell = await page.evaluate(() => ({
+    title: document.querySelector('.endgame-title')?.textContent?.trim(),
+    regions: [...document.querySelectorAll('.region')].map((n) => n.dataset.nation),
+    neutralPE: document.querySelector('.region.is-neutral') ? getComputedStyle(document.querySelector('.region.is-neutral')).pointerEvents : 'missing',
+    rails: [...document.querySelectorAll('.rail-node')].map((n) => n.innerText.trim()),
+  }))
+  console.log('[SHELL]', JSON.stringify(shell))
+  check('标准大一统沙盘：4 个区域（周/齐/陈/突厥）', shell.regions.length === 4 && shell.regions.includes('tujue'), shell.regions.join(','))
+  check('突厥不可点击（pointer-events:none）', shell.neutralPE === 'none', shell.neutralPE)
+  check('底部无「北周/隋」重复容器，且陈只出现一次', shell.rails.join('|').includes('北齐') && shell.rails.filter((x) => x.includes('陈')).length === 1, shell.rails.join(' / '))
 
-  await page.click('.jc-node[data-step="1"]')
-  await sleep(700)
-  const p577 = await page.evaluate(state)
-  check(
-    '577 年：北周灭北齐，取河北、中原、山东',
-    p577.regions.hebei === 'beizhou' && p577.regions.zhongyuan === 'beizhou' && p577.regions.shandong === 'beizhou',
-    JSON.stringify(p577.regions),
-  )
+  await page.click('.rail-node:nth-child(2)')
+  await sleep(1200)
+  const report1 = await page.evaluate(() => ({
+    panel: Boolean(document.querySelector('.battle-panel')),
+    title: document.querySelector('.battle-title')?.textContent?.trim(),
+    pager: Boolean(document.querySelector('.battle-pager')),
+    next: [...document.querySelectorAll('.battle-page-btn')].map((n) => n.textContent?.trim()),
+  }))
+  check('点击北齐打开「周灭北齐」战报', report1.panel && report1.title === '周灭北齐', report1.title)
+  check('战报内有第二页按钮', report1.pager && report1.next.some((t) => t?.includes('隋代周')), report1.next.join(' / '))
 
-  await page.click('.jc-node[data-step="4"]')
-  await sleep(700)
-  const last = await page.evaluate(state)
-  check('589 年：九块尽归隋', Object.values(last.regions).every((r) => r === 'sui') && last.chips.some((c) => c?.startsWith('隋')), JSON.stringify(last.chips))
-  const label = await page.$eval('.jc-actions .jc-primary', (n) => n.textContent?.trim())
-  check('末幕按钮为「推演结束 · 回时间轴」', label === '推演结束 · 回时间轴', label)
+  await page.click('.battle-page-btn--primary')
+  await sleep(500)
+  const report2 = await page.evaluate(() => ({
+    title: document.querySelector('.battle-title')?.textContent?.trim(),
+    back: [...document.querySelectorAll('.battle-page-btn')].map((n) => n.textContent?.trim()),
+  }))
+  check('第二页为「隋代北周」', report2.title === '隋代北周', report2.title)
+  check('第二页有返回按钮', report2.back.some((t) => t?.includes('返回上一战报')), report2.back.join(' / '))
 
-  await page.click('.jc-actions .jc-primary')
-  await sleep(800)
-  check('推演结束回到南北朝时间轴', page.url().endsWith('/dynasty/southern_northern'), page.url())
+  await page.click('.battle-page-btn:not(.battle-page-btn--primary)')
+  await sleep(400)
+  check('返回按钮可回到第一页', (await page.$eval('.battle-title', (n) => n.textContent?.trim())) === '周灭北齐')
+  await page.click('.battle-close')
+  await sleep(400)
+
+  const mapLabel = await page.evaluate(() => [...document.querySelectorAll('.region-label')].map((n) => n.textContent?.trim()))
+  check('北周容器在 577 后显示为隋', mapLabel.includes('隋'), mapLabel.join('/'))
   check('无控制台错误', errors.length === 0, errors.join(' | '))
 
   await browser.close()

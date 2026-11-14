@@ -20,6 +20,7 @@ import { FigureModal } from './FigureModal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { MAPS } from './mapGeometry'
+import { SUI_MAP } from './mapGeometry'
 import { CHUHAN_MAP } from './chuhanMap'
 import { SANGUO_MAP } from './sanguoMap'
 import { useEndgameStore } from './useEndgameStore'
@@ -304,7 +305,9 @@ export function EndgameStage() {
       ? CHUHAN_MAP
       : endgame.mapId === 'sanguo'
         ? SANGUO_MAP
-        : MAPS[endgame.mapId ?? 'zhanguo']
+        : endgame.mapId === 'sui'
+          ? SUI_MAP
+          : MAPS[endgame.mapId ?? 'zhanguo']
 
   /*
     当前推演年份：第 0 幕用 preYearValue，之后用"上一幕"的年份。
@@ -314,6 +317,12 @@ export function EndgameStage() {
 
   return (
     <div className="endgame-page" data-index={index}>
+      {endgame.dynastyId === 'southern_northern' && index === 1 && !focusedEvent ? (
+        <div className="sui-usurp-focus" key="sui-usurp">
+          <span>581</span>
+          杨坚称帝 · 改国号隋
+        </div>
+      ) : null}
       <div className="endgame-vignette" aria-hidden="true" />
 
       <header className="endgame-head">

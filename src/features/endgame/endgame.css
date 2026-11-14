@@ -3249,3 +3249,102 @@
 .endgame-body.is-focused .strategic-layer {
   opacity: 0.25;
 }
+
+/* 突厥：不可吞并的边患，只作为背景势力显示 */
+.region.is-neutral .region-base {
+  opacity: 0.42;
+  filter: saturate(0.35);
+}
+
+.battle-pager {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.battle-page-btn {
+  padding: 7px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(12, 14, 16, 0.7);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.battle-page-btn--primary {
+  margin-left: auto;
+  border-color: rgba(201, 162, 39, 0.5);
+  background: linear-gradient(180deg, rgba(120, 40, 28, 0.45), rgba(24, 12, 9, 0.9));
+  color: #ffeccb;
+}
+
+.battle-page-hint {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* 突厥：不可点击、无 hover，仅作为贴合的边患背景 */
+.region.is-neutral {
+  pointer-events: none !important;
+}
+
+.region.is-neutral .region-base {
+  opacity: 0.5 !important;
+  filter: saturate(0.3) !important;
+  stroke-dasharray: none !important;
+}
+
+.region.is-neutral .region-edge {
+  opacity: 0.55 !important;
+}
+
+.region.is-neutral .region-label,
+.region.is-neutral .capital {
+  opacity: 0.65;
+}
+
+.sui-usurp-focus {
+  position: absolute;
+  top: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 207, 142, 0.55);
+  background: rgba(12, 10, 8, 0.86);
+  color: #ffeccb;
+  font-family: var(--font-thin);
+  font-size: 18px;
+  letter-spacing: 0.16em;
+  box-shadow: 0 0 30px -10px rgba(232, 207, 142, 0.8);
+  animation: sui-focus 4.2s ease forwards;
+  pointer-events: none;
+}
+
+.sui-usurp-focus span {
+  margin-right: 10px;
+  font-size: 12px;
+  color: rgba(232, 207, 142, 0.7);
+  letter-spacing: 0.1em;
+}
+
+@keyframes sui-focus {
+  0% { opacity: 0; transform: translate(-50%, -6px); }
+  12%, 72% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -6px); }
+}
+
+@keyframes battle-page-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.battle-panel {
+  animation: battle-page-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}

@@ -219,6 +219,8 @@ export interface EndgameEvent {
   campaigns: CampaignPhase[]
   /** 本节出现的人物（正文中会被高亮成可点击标签） */
   figures: EndgameFigure[]
+  /** 同一战报的后续页（如周灭齐 → 隋代周），在战报内翻页 */
+  battlePages?: EndgameEvent[]
 }
 
 export interface EndgameNext {
@@ -231,7 +233,7 @@ export interface EndgameNext {
 export interface DynastyEndgame {
   dynastyId: string
   /** 沙盘地图：zhanguo（战国七雄）/ chuhan（楚汉相争）/ sanguo（三国鼎立）。缺省按战国处理 */
-  mapId?: 'zhanguo' | 'chuhan' | 'sanguo'
+  mapId?: 'zhanguo' | 'chuhan' | 'sanguo' | 'sui'
   /** 「战前」节点显示的年份 */
   preYear?: string
   /** 「战前」节点的年份数值（用于按 aliveFrom/aliveTo 决定哪些势力已登场） */

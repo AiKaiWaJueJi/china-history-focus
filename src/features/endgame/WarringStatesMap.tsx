@@ -216,7 +216,7 @@ export function WarringStatesMap({
 
       <svg
         className="map-svg"
-        viewBox="0 0 1000 640"
+        viewBox={mapSpec.viewBox ?? '0 0 1000 640'}
         preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label={mapSpec.ariaLabel ?? `${attackerName}与诸侯版图`}
@@ -287,13 +287,14 @@ export function WarringStatesMap({
           const isQin = region.id === mapSpec.attacker.id
           const captured = isCaptured(region.id)
           const isNewest = Boolean(event && event.order === index)
+          const neutral = region.neutral === true
 
           return (
             <g
               key={region.id}
               className={`region${captured ? ' is-captured' : ''}${isNewest ? ' is-newest' : ''}${
                 hoverActive && hoveredId === region.id ? ' is-hovered' : ''
-              }${isQin ? ' is-qin' : ''}${focusedNation === region.id ? ' is-focused' : ''}${
+              }${isQin ? ' is-qin' : ''}${neutral ? ' is-neutral' : ''}${focusedNation === region.id ? ' is-focused' : ''}${
                 annexingNation === region.id ? ' is-annexing' : ''
               }`}
               data-nation={region.id}

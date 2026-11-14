@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战国七雄示意版图（无缝嵌合版）
  * ===========================================================================
  * 与上一版的区别：上一版七块各自独立，中间留有空隙，看起来像漂浮的拼图。
@@ -29,6 +29,8 @@ export interface MapRegion {
    */
   aliveFrom?: number
   aliveTo?: number
+  /** 不可吞并的边患（如突厥），不参与终章一统 */
+  neutral?: boolean
 }
 
 /* -------------------------------------------------------------------------- */
@@ -190,6 +192,8 @@ export interface MapSpec {
   empireName?: string
   /** 地图的无障碍名称；缺省按攻方生成 */
   ariaLabel?: string
+  /** SVG viewBox；缺省 1000×640。南北朝收尾用 1000×480 以贴合宽屏容器 */
+  viewBox?: string
   /** 悬停攻方时的第二行文案（缺省「六国复其疆」） */
   resetHint?: string
   /** 要地/关隘：只做方位注记，不参与推演 */
@@ -214,3 +218,52 @@ export const ZHANGUO_MAP: MapSpec = {
 export const MAPS: Record<string, MapSpec> = {
   zhanguo: ZHANGUO_MAP,
 }
+
+/* ---------- 南北朝收尾：北周/隋 → 北齐 → 陈；突厥为不可吞并的边患 ---------- */
+export const SUI_MAP: MapSpec = {
+  attacker: {
+    id: 'beizhou',
+    name: '北周',
+    points: '0,165 480,155 480,480 0,480',
+    label: [210, 340],
+    capital: { name: '长安', x: 320, y: 340 },
+  },
+  regions: [
+    {
+      id: 'qi',
+      name: '北齐',
+      points: '480,155 760,175 1000,160 1000,330 760,345 480,320',
+      label: [760, 250],
+      capital: { name: '邺', x: 760, y: 255 },
+    },
+    {
+      id: 'chen',
+      name: '陈',
+      points: '480,320 760,345 1000,330 1000,480 480,480',
+      label: [760, 410],
+      capital: { name: '建康', x: 820, y: 415 },
+    },
+    {
+      id: 'tujue',
+      name: '突厥',
+      neutral: true,
+      points: '0,0 1000,0 1000,160 760,175 480,155 0,165',
+      label: [470, 90],
+    },
+  ],
+  rivers: ['M 470,455 C 560,500 660,500 760,470'],
+  ariaLabel: '南北朝收尾版图（北周/北齐/陈/突厥）',
+  viewBox: '0 0 1000 480',
+  resetHint: '三国复其疆',
+  empireName: '隋',
+  successor: { year: 577, name: '隋' },
+  points: [
+    { id: 'sui_luoyang', name: '洛阳', kind: 'city', regionId: 'qi', x: 560, y: 285, description: '577 年周军东出' },
+    { id: 'sui_jinyang', name: '晋阳', kind: 'city', regionId: 'qi', x: 640, y: 200, description: '北齐军事重镇' },
+    { id: 'sui_yangtze', name: '长江', kind: 'pass', regionId: 'chen', x: 760, y: 370, description: '589 年隋军渡江' },
+  ],
+}
+
+MAPS.sui = SUI_MAP
+
+

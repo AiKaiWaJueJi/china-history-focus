@@ -20,6 +20,7 @@ import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
 import endgameHanRaw from './endgame.han.json'
+import endgameNanbeiRaw from './endgame.nanbei.json'
 import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
 import fallHanRaw from './fall.han.json'
@@ -56,6 +57,8 @@ const ENDGAME: Record<string, DynastyEndgame> = {
   qin: endgameChuhanRaw as DynastyEndgame,
   // 汉：三国归晋（三国地图）——汉末到晋统一，挂在这里
   han: endgameHanRaw as DynastyEndgame,
+  // 南北朝：周灭齐 → 隋代周 → 渡江 → 灭陈（大一统模板）
+  southern_northern: endgameNanbeiRaw as DynastyEndgame,
 }
 
 export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {

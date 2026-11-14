@@ -9,7 +9,7 @@
  *   标题 '方正小标简宋', serif
  *   正文 '仿宋GB2312', 'FangSong', serif
  */
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import type { EndgameEvent, EndgameFigure } from '../../core/emperorTypes'
 import { SourceQuote } from './SourceQuote'
 
@@ -54,15 +54,21 @@ interface BattlePanelProps {
 }
 
 export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaignHover }: BattlePanelProps) {
+  const pages = event.battlePages?.length ? [event, ...event.battlePages] : [event]
+  const [page, setPage] = useState(0)
+  useEffect(() => setPage(0), [event.id])
+  const active = pages[Math.min(page, pages.length - 1)]
+
   return (
     <aside
+      key={page}
       className={'battle-panel' + (closing ? ' is-closing' : '')}
-      aria-label={event.desc + '详细战报'}
+      aria-label={active.desc + '详细战报'}
     >
       <header className="battle-head">
         <div>
-          <span className="battle-year">{event.year}</span>
-          <h2 className="battle-title">{event.desc}</h2>
+          <span className="battle-year">{active.year}</span>
+          <h2 className="battle-title">{active.desc}</h2>
         </div>
         <button type="button" className="battle-close" onClick={onClose} aria-label="关闭战报">
           ×
@@ -72,29 +78,29 @@ export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaign
       <div className="battle-section">
         <span className="battle-section-label">战前形势</span>
         <p className="battle-text">
-          {renderWithFigures(event.detail.situation, event.figures, onFigureClick)}
+          {renderWithFigures(active.detail.situation, active.figures, onFigureClick)}
         </p>
       </div>
 
       <div className="battle-section">
         <span className="battle-section-label">战役经过</span>
         <p className="battle-text">
-          {renderWithFigures(event.detail.course, event.figures, onFigureClick)}
+          {renderWithFigures(active.detail.course, active.figures, onFigureClick)}
         </p>
       </div>
 
       <div className="battle-section">
         <span className="battle-section-label">结局</span>
         <p className="battle-text">
-          {renderWithFigures(event.detail.result, event.figures, onFigureClick)}
+          {renderWithFigures(active.detail.result, active.figures, onFigureClick)}
         </p>
       </div>
 
       {/* 进军序列：hover 任一条，右侧地图会重新点亮对应路线（不带文字） */}
-      {event.campaigns?.length ? (
+      {active.campaigns?.length ? (
         <div className="campaign-list">
           <span className="campaign-list-label">进军序列</span>
-          {event.campaigns.map((campaign, i) => (
+          {active.campaigns.map((campaign, i) => (
             <Fragment key={`${campaign.phase}-${i}`}>
               <button
                 type="button"
@@ -132,24 +138,45 @@ export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaign
       ) : null}
 
       {/* 史实注记：异说 / 避讳 / 图例范围，和叙事正文分开 */}
-      {event.note ? (
+      {active.note ? (
         <div className="battle-section battle-note">
           <span className="battle-section-label">史实注记</span>
-          <p className="battle-text">{event.note}</p>
+          <p className="battle-text">{active.note}</p>
         </div>
       ) : null}
 
       {/* 三段式正文之后：史料原文 */}
+      {pages.length > 1 ? (
+        <div className="battle-pager">
+          {page > 0 ? (
+            <button type="button" className="battle-page-btn" onClick={() => setPage((v) => v - 1)}>
+              ← 返回上一战报
+            </button>
+          ) : null}
+          {page < pages.length - 1 ? (
+            <button
+              type="button"
+              className="battle-page-btn battle-page-btn--primary"
+              onClick={() => setPage((v) => v + 1)}
+            >
+              下一战报 · 隋代周 →
+            </button>
+          ) : (
+            <span className="battle-page-hint">已是最后一页</span>
+          )}
+        </div>
+      ) : null}
+
       <SourceQuote
-        bookName={event.sourceText.bookName}
-        text={event.sourceText.text}
-        translation={event.sourceText.translation}
+        bookName={active.sourceText.bookName}
+        text={active.sourceText.text}
+        translation={active.sourceText.translation}
       />
 
-      {event.figures.length > 0 ? (
+      {active.figures.length > 0 ? (
         <div className="battle-figures">
           <span className="battle-figures-label">相关人物</span>
-          {event.figures.map((figure) => (
+          {active.figures.map((figure) => (
             <button
               key={figure.id}
               type="button"

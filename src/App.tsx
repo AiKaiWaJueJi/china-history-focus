@@ -16,7 +16,6 @@ import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
-import { NanBeiEndStage } from './features/endgame/NanBeiEndStage'
 import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
 
@@ -30,7 +29,6 @@ function DynastyRoute() {
 function EndgameRoute() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
   if (dynastyId === 'jin') return <JinChronicleStage />
-  if (dynastyId === 'southern_northern') return <NanBeiEndStage />
   return <EndgameStage />
 }
 

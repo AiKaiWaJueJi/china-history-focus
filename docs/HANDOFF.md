@@ -236,7 +236,7 @@ interface MapSpec {
 
 ## 5. 验收
 
-### 5.1 十八套 UI 脚本（共 383 条断言）
+### 5.1 十八套 UI 脚本（共 385 条断言）
 
 ```bash
 node verify-gallery.mjs      # 24  主页
@@ -256,7 +256,7 @@ node verify-han-visuals.mjs  #  6  漢朝过渡章节配图（新图、1600×900
 node verify-jin.mjs          # 12  晋朝时间轴（15 帝 / 6 页 / 永嘉南渡 / 晋宋禅代 / 入沙盘）
 node verify-jin-sandbox.mjs  # 16  十六国沙盘（14 区域 / 316、352、376、398、420 归属 / 行军路线 / 悬停 / 不溢出）
 node verify-nanbei.mjs       # 14  南北朝五行时间轴（54 帝 / 8 节点 / 节点弹层 / 帝王详情）
-node verify-nanbei-end.mjs   #  8  南北朝收尾沙盘（576→577→581→589，隋灭陈）
+node verify-nanbei-end.mjs   # 10  南北朝收尾沙盘（标准大一统模板 / 突厥中立 / 战报两页）
 ```
 
 ### 5.2 几何验收（21 条）
@@ -369,4 +369,4 @@ node check-sanguo-geo.mjs    # 9  三国四块：同上 + 存活区间 + 登场�
 - **南北朝是独立组件**：`NanBeiTimeline` 不进 `DynastyDetail` 的分页模型，路由用 `DynastyRoute` 分流；只读 `nanbei.json`。四行由 `rows` + `polities` 的 `row` 字段决定，横向位置 = `(year-420)*16px`；改朝代/年份只改 JSON，不要改组件里的 scale（除非同步轴与节点）。
 - **南北朝节点是弹层不是路由**：`nodes[].acts` 提供 2—3 幕文本与出处，点击菱形打开全屏 overlay；不依赖 FallStage，因此不需要给每个节点单独建章节路由。
 - **南北朝时间轴以滚轮翻页**：纵向滚轮被转成横向整页滚动（每页 ≈ 一屏 420—589 的一段），页面提示第 n 页；不是自由横向拖拽。
-- **南北朝收尾沙盘复用 JinChronicleStage**：`NanBeiEndStage` 只换数据（`nanbei.chronicle.json`），不复制地图/路线逻辑；`finishLabel/finishTo` 让 420 入南北朝、589 回时间轴。
+- **南北朝收尾沙盘复用标准模板**：`EndgameStage + SUI_MAP`，不再用 JinChronicleStage；577 战报的 `battlePages` 内嵌 581 页，避免在底部多出一个「北周」容器。
