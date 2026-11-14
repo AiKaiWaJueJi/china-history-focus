@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <!-- 背景：灰黑，中心略亮 -->
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#16181c" />
+      <stop offset="60%" stop-color="#0b0c0e" />
+      <stop offset="100%" stop-color="#050607" />
+    </radialGradient>
+
+    <!-- 青铜底色 -->
+    <linearGradient id="bronze" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#6b5a34" />
+      <stop offset="45%" stop-color="#4a3f27" />
+      <stop offset="100%" stop-color="#2a2418" />
+    </linearGradient>
+
+    <!-- 铜绿斑驳 -->
+    <pattern id="patina" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="6" cy="7" r="3.4" fill="#3f6b5d" opacity=".45" />
+      <circle cx="24" cy="17" r="2.2" fill="#4a7a6a" opacity=".38" />
+      <circle cx="14" cy="29" r="1.6" fill="#5d8f7a" opacity=".3" />
+      <circle cx="29" cy="5" r="1.9" fill="#2f5a4c" opacity=".4" />
+      <circle cx="19" cy="11" r="1.1" fill="#3f6b5d" opacity=".35" />
+      <circle cx="4" cy="25" r="1.4" fill="#6f9c86" opacity=".22" />
+    </pattern>
+
+    <!-- 腹内阴影，让鼎有厚度 -->
+    <radialGradient id="bellyShade" cx="46%" cy="34%" r="70%">
+      <stop offset="35%" stop-color="#000" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000" stop-opacity=".62" />
+    </radialGradient>
+
+    <!-- 地面投影 -->
+    <radialGradient id="ground" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity=".55" />
+      <stop offset="100%" stop-color="#000" stop-opacity="0" />
+    </radialGradient>
+
+    <clipPath id="belly">
+      <path d="M330 430c0 150 120 226 270 226s270-76 270-226z" />
+    </clipPath>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bg)" />
+
+  <!-- 地面 -->
+  <ellipse cx="600" cy="748" rx="440" ry="82" fill="url(#ground)" />
+  <path d="M170 744h860" stroke="#2a2418" stroke-width="1.2" opacity=".45" />
+
+  <!-- 鼎：整体倾斜，倾倒状态 -->
+  <g transform="translate(618 486) rotate(-31) translate(-600 -470)">
+    <!-- 三足 -->
+    <path d="M395 626l-16 48" stroke="#5a4a2e" stroke-width="9" stroke-linecap="round" />
+    <path d="M600 640v56" stroke="#5a4a2e" stroke-width="9" stroke-linecap="round" />
+    <path d="M805 626l16 48" stroke="#5a4a2e" stroke-width="9" stroke-linecap="round" />
+    <path d="M395 626l-16 48" stroke="#8a7442" stroke-width="2.4" stroke-linecap="round" opacity=".7" />
+    <path d="M600 640v56" stroke="#8a7442" stroke-width="2.4" stroke-linecap="round" opacity=".7" />
+    <path d="M805 626l16 48" stroke="#8a7442" stroke-width="2.4" stroke-linecap="round" opacity=".7" />
+
+    <!-- 鼎腹 -->
+    <path d="M330 430c0 150 120 226 270 226s270-76 270-226z" fill="url(#bronze)" />
+
+    <!-- 腹内：铜绿 + 金文 + 阴影 -->
+    <g clip-path="url(#belly)">
+      <rect x="320" y="410" width="560" height="270" fill="url(#patina)" />
+      <rect x="320" y="410" width="560" height="270" fill="url(#bellyShade)" />
+
+      <!-- 金文：三行，长短不齐，像铸铭 -->
+      <g stroke="#d8b25c" stroke-width="4" stroke-linecap="round" opacity=".55">
+        <path d="M410 500v46M424 492v60M438 504v40M452 496v54M466 508v34" />
+        <path d="M496 502v44M510 494v58M524 506v38M538 498v52M552 510v30" />
+        <path d="M582 504v40M596 496v54M610 508v34M624 500v48M638 512v28" />
+        <path d="M668 506v38M682 498v52M696 510v32M710 502v46M724 512v28" />
+        <path d="M754 506v40M768 498v52M782 510v30" />
+      </g>
+
+      <!-- 饕餮纹饰带：一圈回纹 -->
+      <g stroke="#c9a227" stroke-width="2" opacity=".35" fill="none">
+        <path d="M352 470h60v-14h42v14h56v-14h44v14h58v-14h46v14h58v-14h42v14h54" />
+      </g>
+
+      <!-- 锈蚀横痕 -->
+      <path d="M330 566h540" stroke="#2f5a4c" stroke-width="3" opacity=".35" />
+      <path d="M380 596h430" stroke="#2f5a4c" stroke-width="2" opacity=".25" />
+    </g>
+
+    <!-- 口沿 -->
+    <ellipse cx="600" cy="430" rx="270" ry="46" fill="#1a1610" />
+    <ellipse cx="600" cy="430" rx="270" ry="46" fill="none" stroke="#8a7442" stroke-width="3" />
+    <ellipse cx="600" cy="432" rx="248" ry="38" fill="none" stroke="#3f3320" stroke-width="1.4" opacity=".8" />
+
+    <!-- 双耳 -->
+    <path d="M372 410c0-70 76-70 76 0" fill="none" stroke="#5a4a2e" stroke-width="12" stroke-linecap="round" />
+    <path d="M372 410c0-70 76-70 76 0" fill="none" stroke="#8a7442" stroke-width="3" stroke-linecap="round" opacity=".7" />
+    <path d="M752 410c0-70 76-70 76 0" fill="none" stroke="#5a4a2e" stroke-width="12" stroke-linecap="round" />
+    <path d="M752 410c0-70 76-70 76 0" fill="none" stroke="#8a7442" stroke-width="3" stroke-linecap="round" opacity=".7" />
+
+    <!-- 腹身轮廓 -->
+    <path d="M330 430c0 150 120 226 270 226s270-76 270-226" fill="none" stroke="#8a7442" stroke-width="3.4" />
+  </g>
+
+  <!-- 倾倒时洒出的祭物痕迹 -->
+  <ellipse cx="392" cy="742" rx="118" ry="22" fill="#000" opacity=".38" />
+  <path d="M300 738c34-12 78-16 128-8" stroke="#3a3020" stroke-width="10" stroke-linecap="round" opacity=".55" />
+
+  <!-- 碎裂的祭器：几块不等边多边形 -->
+  <g fill="#4a3f27" stroke="#8a7442" stroke-width="1.6" opacity=".85">
+    <path d="M214 726l44-14 16 20-34 16z" />
+    <path d="M300 762l30-8 12 16-26 10z" />
+    <path d="M944 712l46-6 8 22-44 8z" />
+    <path d="M866 768l34-12 12 18-30 12z" />
+  </g>
+  <g fill="#3f6b5d" opacity=".3">
+    <path d="M268 744l20-6 7 10-16 7z" />
+    <path d="M906 744l18-8 8 12-16 6z" />
+  </g>
+
+  <!-- 光：左上一点冷光，右下更暗 -->
+  <path d="M0 0h340L0 340z" fill="#7d8a94" opacity=".05" />
+
+  <!-- 题字 -->
+  <text x="600" y="866" text-anchor="middle" font-family="KaiTi, 楷体, STKaiti, serif"
+        font-size="34" letter-spacing="14" fill="#c9a227" opacity=".75">九 鼎 倾 覆</text>
+</svg>
