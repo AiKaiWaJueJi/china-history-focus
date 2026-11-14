@@ -10,12 +10,19 @@
  * 因此 DynastyGallery / DynastyPanel 一行都没改。
  */
 import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { EndgameStage } from './features/endgame/EndgameStage'
+import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
+
+/** 晋末用「十六国势力变迁图」，不是灭国战沙盘，单独分流 */
+function EndgameRoute() {
+  const { dynastyId } = useParams<{ dynastyId: string }>()
+  return dynastyId === 'jin' ? <JinChronicleStage /> : <EndgameStage />
+}
 
 function Shell() {
   const location = useLocation()
@@ -54,7 +61,7 @@ function Shell() {
           <Route path="/" element={<DynastyGallery />} />
           <Route path="/dynasty/:dynastyId" element={<DynastyDetail />} />
           <Route path="/dynasty/:dynastyId/fall/:chapter?" element={<FallStage />} />
-        <Route path="/dynasty/:dynastyId/endgame" element={<EndgameStage />} />
+          <Route path="/dynasty/:dynastyId/endgame" element={<EndgameRoute />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

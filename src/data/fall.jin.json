@@ -56,8 +56,8 @@
       "note": "晋宋禅代沿用了汉魏以来的禅让程序；此后宋、齐、梁、陈的更替也照此办理。东晋的灭亡，不是被外敌攻灭，而是被权臣「受禅」取代。"
     }
   ],
-  "enterLabel": "南北朝 · 刘宋",
-  "enterHint": "南朝自此始 · 待续",
-  "next": { "kind": "home" },
+  "enterLabel": "十六国 · 南北分合",
+  "enterHint": "再看北方乱战 · 316—420",
+  "next": { "kind": "endgame" },
   "back": { "page": "last" }
 }

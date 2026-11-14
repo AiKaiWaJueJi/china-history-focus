@@ -1,0 +1,584 @@
+{
+  "dynastyId": "jin",
+  "title": "十六国 · 南北分合",
+  "subtitle": "316 — 420",
+  "intro": "西晋亡后，北方进入十六国竞逐；南方东晋立国，至刘裕受禅建宋。此图按「区域—势力」逐年示意，重点不在边界精确，而在谁在何时据有哪一方。",
+  "pre": {
+    "id": "s316",
+    "year": "316年",
+    "yearValue": 316,
+    "title": "西晋之亡",
+    "summary": "刘曜围长安，愍帝出降，西晋亡。北方由汉赵、石勒、前凉、成汉、慕容部分据；南方司马睿在建康承晋统。",
+    "source": {
+      "bookName": "《晋书·愍帝纪》",
+      "text": "帝乘羊车，肉袒衔璧，舆榇出降。"
+    },
+    "note": "此时石勒仍名义上属汉赵，但已据襄国、河北；图中把「石勒」单列，是为显示 319 年称赵王的前身。陇右在 316 年后为前凉、汉赵、仇池等角逐，图中暂系前凉。",
+    "control": {
+      "hexi": "qianliang",
+      "longyou": "qianliang",
+      "shuofang": "hanzhao",
+      "bingzhou": "hanzhao",
+      "hebei": "houzhao",
+      "liaoxi": "murong",
+      "guanzhong": "hanzhao",
+      "zhongyuan": "houzhao",
+      "shandong": "dongjin",
+      "bashu": "chenghan",
+      "jingxiang": "dongjin",
+      "jianghuai": "dongjin",
+      "jiangnan": "dongjin"
+    }
+  },
+  "steps": [
+    {
+      "id": "s319",
+      "year": "319年",
+      "yearValue": 319,
+      "title": "石勒称赵王",
+      "summary": "石勒脱离汉赵，自称赵王，都襄国，后赵立。北方形成前赵（关中、并州）与后赵（河北、中原）东西对峙。",
+      "source": {
+        "bookName": "《晋书·石勒载记》",
+        "text": "勒自称赵王，都襄国。"
+      },
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "hanzhao",
+        "bingzhou": "hanzhao",
+        "hebei": "houzhao",
+        "liaoxi": "murong",
+        "guanzhong": "hanzhao",
+        "zhongyuan": "houzhao",
+        "shandong": "dongjin",
+        "bashu": "chenghan",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s329",
+      "year": "329年",
+      "yearValue": 329,
+      "title": "后赵灭前赵",
+      "summary": "洛阳之战，石勒擒刘曜；次年取关中，前赵亡。后赵据有关中、并州、河北、中原、山东，北方几近一统。",
+      "source": {
+        "bookName": "《晋书·刘曜载记》",
+        "text": "曜为勒所擒，前赵遂亡。"
+      },
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "houzhao",
+        "bingzhou": "houzhao",
+        "hebei": "houzhao",
+        "liaoxi": "murong",
+        "guanzhong": "houzhao",
+        "zhongyuan": "houzhao",
+        "shandong": "houzhao",
+        "bashu": "chenghan",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s337",
+      "year": "337年",
+      "yearValue": 337,
+      "title": "后赵极盛 · 前燕称王",
+      "summary": "石虎总后赵之政，据北方大部；辽东慕容皝称燕王，前燕立。河西前凉、巴蜀成汉仍割据。",
+      "source": {
+        "bookName": "《晋书·慕容皝载记》",
+        "text": "皝自称燕王，署置百官。"
+      },
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "houzhao",
+        "bingzhou": "houzhao",
+        "hebei": "houzhao",
+        "liaoxi": "qianyan",
+        "guanzhong": "houzhao",
+        "zhongyuan": "houzhao",
+        "shandong": "houzhao",
+        "bashu": "chenghan",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s349",
+      "year": "349年",
+      "yearValue": 349,
+      "title": "后赵崩 · 冉魏立",
+      "summary": "石虎死，诸子相残，后赵大乱；冉闵 350 年才建冉魏，352 年为前燕所灭。此图以关键年为单位，349 年仍系后赵。",
+      "source": {
+        "bookName": "《晋书·石季龙载记》",
+        "text": "季龙死，诸子相残，冉闵遂灭赵。"
+      },
+      "note": "冉魏（350—352）存在时间很短，未单列一幕；河北、中原在 349 年仍属后赵，下一幕 352 年已归前燕。",
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "houzhao",
+        "bingzhou": "houzhao",
+        "hebei": "houzhao",
+        "liaoxi": "qianyan",
+        "guanzhong": "houzhao",
+        "zhongyuan": "houzhao",
+        "shandong": "houzhao",
+        "bashu": "dongjin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s352",
+      "year": "352年",
+      "yearValue": 352,
+      "title": "前燕入中原 · 前秦立关中",
+      "summary": "慕容儁灭冉魏，前燕据河北；苻健称帝于长安，前秦立。山东段龛、洛阳仍属东晋；并州张平、朔方代国、河西与陇右前凉并立。",
+      "source": {
+        "bookName": "《晋书·慕容儁载记》",
+        "text": "儁灭冉闵，入邺，遂有河北。"
+      },
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "dai",
+        "bingzhou": "zhangping",
+        "hebei": "qianyan",
+        "liaoxi": "qianyan",
+        "guanzhong": "qianqin",
+        "zhongyuan": "dongjin",
+        "shandong": "dongjin",
+        "bashu": "dongjin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      },
+      "note": "山东（青州）此时为段龛所据，洛阳亦在东晋手中；前燕要到 356 年后才逐步取之。"
+    },
+    {
+      "id": "s370",
+      "year": "370年",
+      "yearValue": 370,
+      "title": "前秦灭前燕",
+      "summary": "王猛伐燕，克邺，慕容暐降。前秦取河北、中原、山东、辽东，与河西前凉、陇右、代国及南方东晋对峙。",
+      "source": {
+        "bookName": "《晋书·苻坚载记》",
+        "text": "坚遣王猛伐燕，克邺，慕容暐出降。"
+      },
+      "control": {
+        "hexi": "qianliang",
+        "longyou": "qianliang",
+        "shuofang": "dai",
+        "bingzhou": "qianqin",
+        "hebei": "qianqin",
+        "liaoxi": "qianqin",
+        "guanzhong": "qianqin",
+        "zhongyuan": "qianqin",
+        "shandong": "qianqin",
+        "bashu": "dongjin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s376",
+      "year": "376年",
+      "yearValue": 376,
+      "title": "前秦统一北方",
+      "summary": "前秦灭前凉、代，取河西、陇右、朔方；373 年又取东晋梁、益二州。北方尽归前秦，与东晋隔淮汉对峙。",
+      "source": {
+        "bookName": "《晋书·苻坚载记》",
+        "text": "坚灭前凉、代，北方略定。"
+      },
+      "control": {
+        "hexi": "qianqin",
+        "longyou": "qianqin",
+        "shuofang": "qianqin",
+        "bingzhou": "qianqin",
+        "hebei": "qianqin",
+        "liaoxi": "qianqin",
+        "guanzhong": "qianqin",
+        "zhongyuan": "qianqin",
+        "shandong": "qianqin",
+        "bashu": "qianqin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s383",
+      "year": "383年",
+      "yearValue": 383,
+      "title": "淝水之战",
+      "summary": "苻坚举众南下，谢玄、谢石以八万北府兵破之于淝水。前秦声威顿挫，北方诸族随即复起。",
+      "source": {
+        "bookName": "《晋书·谢玄传》",
+        "text": "玄等大破坚于淝水，坚众奔溃。"
+      },
+      "note": "淝水本身不改变疆域；此幕保留前秦极盛版图，是为了让下一幕的崩解有对照。",
+      "control": {
+        "hexi": "qianqin",
+        "longyou": "qianqin",
+        "shuofang": "qianqin",
+        "bingzhou": "qianqin",
+        "hebei": "qianqin",
+        "liaoxi": "qianqin",
+        "guanzhong": "qianqin",
+        "zhongyuan": "qianqin",
+        "shandong": "qianqin",
+        "bashu": "qianqin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s398",
+      "year": "398年",
+      "yearValue": 398,
+      "title": "北魏入中原 · 燕分南北",
+      "summary": "拓跋珪定都平城，取并州、河北；后燕退保辽东，慕容德南徙滑台、广固，建南燕。后秦据关中，洛阳仍属东晋；西秦据陇右，河西诸凉并立。",
+      "source": {
+        "bookName": "《魏书·太祖纪》",
+        "text": "帝定都平城，遂有河北。"
+      },
+      "note": "河西在 397 年后分裂为后凉、南凉、北凉、西凉，图中合为「河西诸凉」；洛阳要到 399 年才为后秦所取，故 398 年仍系东晋。",
+      "control": {
+        "hexi": "liang",
+        "longyou": "xiqin",
+        "shuofang": "beiwei",
+        "bingzhou": "beiwei",
+        "hebei": "beiwei",
+        "liaoxi": "houyan",
+        "guanzhong": "houqin",
+        "zhongyuan": "dongjin",
+        "shandong": "nanyan",
+        "bashu": "dongjin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s407",
+      "year": "407年",
+      "yearValue": 407,
+      "title": "夏立 · 北燕代后燕",
+      "summary": "赫连勃勃建夏，据朔方；冯跋取代后燕，建北燕于龙城；谯纵据成都，巴蜀脱离东晋。北方成北魏、夏、后秦、南燕、北燕、西秦、诸凉并立之局。",
+      "source": {
+        "bookName": "《晋书·赫连勃勃载记》",
+        "text": "勃勃自称天王、大单于，国号夏。"
+      },
+      "control": {
+        "hexi": "liang",
+        "longyou": "xiqin",
+        "shuofang": "xia",
+        "bingzhou": "beiwei",
+        "hebei": "beiwei",
+        "liaoxi": "beiyan",
+        "guanzhong": "houqin",
+        "zhongyuan": "houqin",
+        "shandong": "nanyan",
+        "bashu": "qiaoshu",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s417",
+      "year": "417年",
+      "yearValue": 417,
+      "title": "刘裕灭后秦",
+      "summary": "刘裕北伐，410 年灭南燕取山东，413 年平谯蜀复巴蜀，417 年克长安、灭后秦，取关中、中原。东晋疆域达到南朝极盛。",
+      "source": {
+        "bookName": "《宋书·武帝纪》",
+        "text": "公灭后秦，入长安，关中父老望见晋旗。"
+      },
+      "note": "刘裕取关中后急于南归，只留诸将守长安；418 年赫连勃勃反攻，关中得而复失。",
+      "control": {
+        "hexi": "liang",
+        "longyou": "xiqin",
+        "shuofang": "xia",
+        "bingzhou": "beiwei",
+        "hebei": "beiwei",
+        "liaoxi": "beiyan",
+        "guanzhong": "dongjin",
+        "zhongyuan": "dongjin",
+        "shandong": "dongjin",
+        "bashu": "dongjin",
+        "jingxiang": "dongjin",
+        "jianghuai": "dongjin",
+        "jiangnan": "dongjin"
+      }
+    },
+    {
+      "id": "s420",
+      "year": "420年",
+      "yearValue": 420,
+      "title": "刘宋代晋",
+      "summary": "刘裕受晋恭帝禅，建宋，改元永初。南方进入刘宋；北方仍为北魏、夏、北燕、西秦、北凉并立，十六国尚未结束。",
+      "source": {
+        "bookName": "《宋书·武帝纪》",
+        "text": "晋帝禅位，宋台建，改元永初。"
+      },
+      "note": "关中在 418 年为夏所取，故 420 年宋有江南、荆襄、江淮、巴蜀、山东与中原，而关中属夏。中原河南一带为宋魏拉锯，图中暂系于宋；河西 420 年仍为北凉、西凉并立，421 年北凉才灭西凉，图中合为北凉。",
+      "control": {
+        "hexi": "beiliang",
+        "longyou": "xiqin",
+        "shuofang": "xia",
+        "bingzhou": "beiwei",
+        "hebei": "beiwei",
+        "liaoxi": "beiyan",
+        "guanzhong": "xia",
+        "zhongyuan": "song",
+        "shandong": "song",
+        "bashu": "song",
+        "jingxiang": "song",
+        "jianghuai": "song",
+        "jiangnan": "song"
+      }
+    }
+  ],
+  "regions": [
+    {
+      "id": "hexi",
+      "name": "河西",
+      "label": [
+        160,
+        250
+      ],
+      "points": "70,170 200,150 270,230 250,340 130,360 60,280"
+    },
+    {
+      "id": "longyou",
+      "name": "陇右",
+      "label": [
+        310,
+        350
+      ],
+      "points": "250,340 270,230 330,250 380,320 350,430 250,420"
+    },
+    {
+      "id": "shuofang",
+      "name": "朔方",
+      "label": [
+        410,
+        160
+      ],
+      "points": "330,90 480,80 520,170 460,250 350,240 300,150"
+    },
+    {
+      "id": "bingzhou",
+      "name": "并州",
+      "label": [
+        550,
+        270
+      ],
+      "points": "460,250 520,170 610,200 620,310 540,350 460,310"
+    },
+    {
+      "id": "hebei",
+      "name": "河北",
+      "label": [
+        700,
+        270
+      ],
+      "points": "610,200 760,170 800,270 760,360 650,380 620,310"
+    },
+    {
+      "id": "liaoxi",
+      "name": "辽西",
+      "label": [
+        860,
+        210
+      ],
+      "points": "760,170 900,120 960,220 900,300 800,270"
+    },
+    {
+      "id": "guanzhong",
+      "name": "关中",
+      "label": [
+        450,
+        380
+      ],
+      "points": "380,320 460,310 540,350 540,440 420,450 350,430"
+    },
+    {
+      "id": "zhongyuan",
+      "name": "中原",
+      "label": [
+        610,
+        400
+      ],
+      "points": "540,350 650,380 700,440 600,470 540,440"
+    },
+    {
+      "id": "shandong",
+      "name": "山东",
+      "label": [
+        810,
+        380
+      ],
+      "points": "700,440 760,360 800,270 900,300 930,420 820,460"
+    },
+    {
+      "id": "bashu",
+      "name": "巴蜀",
+      "label": [
+        290,
+        510
+      ],
+      "points": "250,420 350,430 420,450 400,570 280,590 180,500"
+    },
+    {
+      "id": "jingxiang",
+      "name": "荆襄",
+      "label": [
+        480,
+        510
+      ],
+      "points": "420,450 540,440 600,470 560,580 400,570"
+    },
+    {
+      "id": "jianghuai",
+      "name": "江淮",
+      "label": [
+        690,
+        510
+      ],
+      "points": "600,470 700,440 820,460 800,570 640,590 560,580"
+    },
+    {
+      "id": "jiangnan",
+      "name": "江南",
+      "label": [
+        810,
+        550
+      ],
+      "points": "820,460 930,420 970,520 900,620 700,620 640,590 800,570"
+    }
+  ],
+  "regimes": [
+    {
+      "id": "hanzhao",
+      "name": "漢趙（前趙）",
+      "color": "#a85a44"
+    },
+    {
+      "id": "houzhao",
+      "name": "石勒／後趙",
+      "color": "#c08a45"
+    },
+    {
+      "id": "qianliang",
+      "name": "前涼",
+      "color": "#6f8f7a"
+    },
+    {
+      "id": "chenghan",
+      "name": "成漢",
+      "color": "#7a6f9a"
+    },
+    {
+      "id": "dongjin",
+      "name": "晉室／東晉",
+      "color": "#4f7f9a"
+    },
+    {
+      "id": "murong",
+      "name": "慕容部",
+      "color": "#9a6f7f"
+    },
+    {
+      "id": "qianyan",
+      "name": "前燕",
+      "color": "#9a6f7f"
+    },
+    {
+      "id": "qianqin",
+      "name": "前秦",
+      "color": "#8a6b3f"
+    },
+    {
+      "id": "zhangping",
+      "name": "張平",
+      "color": "#777777"
+    },
+    {
+      "id": "dai",
+      "name": "代",
+      "color": "#6f7f8f"
+    },
+    {
+      "id": "ranwei",
+      "name": "冉魏",
+      "color": "#8a5f5f"
+    },
+    {
+      "id": "beiwei",
+      "name": "北魏",
+      "color": "#4f7f6a"
+    },
+    {
+      "id": "houyan",
+      "name": "後燕",
+      "color": "#7a6f8f"
+    },
+    {
+      "id": "nanyan",
+      "name": "南燕",
+      "color": "#a07f5f"
+    },
+    {
+      "id": "houqin",
+      "name": "後秦",
+      "color": "#a05a4a"
+    },
+    {
+      "id": "xia",
+      "name": "夏",
+      "color": "#8f4f3f"
+    },
+    {
+      "id": "beiyan",
+      "name": "北燕",
+      "color": "#7f6f8a"
+    },
+    {
+      "id": "xiqin",
+      "name": "西秦",
+      "color": "#6f6f8a"
+    },
+    {
+      "id": "liang",
+      "name": "河西諸涼",
+      "color": "#8a7f5f"
+    },
+    {
+      "id": "qiaoshu",
+      "name": "譙蜀",
+      "color": "#7f5f8f"
+    },
+    {
+      "id": "beiliang",
+      "name": "北涼",
+      "color": "#8a7f5f"
+    },
+    {
+      "id": "song",
+      "name": "宋",
+      "color": "#4f8f7f"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-﻿import puppeteer from 'puppeteer-core'
+import puppeteer from 'puppeteer-core'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -85,6 +85,19 @@ try {
   await page.click('.timeline-btn--endgame')
   await sleep(900)
   check('末页进入「晋宋禅代」', page.url().includes('/dynasty/jin/fall'), page.url())
+
+  // 收尾过渡走完 → 应进入十六国势力沙盘（不是回主页）
+  await sleep(800)
+  for (let i = 0; i < 2; i += 1) {
+    await page.mouse.move(700, 450)
+    await page.mouse.wheel({ deltaY: 220 })
+    await sleep(700)
+  }
+  await page.mouse.click(720, 460)
+  await sleep(600)
+  await page.click('.fall-enter')
+  await page.waitForSelector('.jin-chronicle', { timeout: 8000 })
+  check('收尾过渡可进入十六国沙盘', /\/dynasty\/jin\/endgame$/.test(page.url()), page.url())
 
   await browser.close()
 } catch (err) {
