@@ -19,6 +19,7 @@ import { BattlePanel } from './BattlePanel'
 import { FigureModal } from './FigureModal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
+import { MAPS } from './mapGeometry'
 import { useEndgameStore } from './useEndgameStore'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
@@ -339,6 +340,7 @@ export function EndgameStage() {
         ) : null}
 
         <WarringStatesMap
+          mapSpec={MAPS[endgame.mapId ?? 'zhanguo']}
           events={events}
           index={index}
           campaigns={mapCampaigns}
@@ -419,7 +421,8 @@ export function EndgameStage() {
         />
       </div>
 
-      <StepRail events={events} index={index} onSelect={handleStep} />
+      <StepRail
+          preYear={endgame.preYear ?? '前230'} events={events} index={index} onSelect={handleStep} />
 
 
       <FigureModal figure={profile} onClose={() => openProfile(null)} />

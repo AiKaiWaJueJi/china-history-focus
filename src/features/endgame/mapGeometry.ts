@@ -170,3 +170,72 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
   },
 ]
 
+
+/* ========================================================================== */
+/* 楚汉之争（前206—前202）                                                     */
+/* ========================================================================== */
+/*
+ * 复用战国图的地理骨架：同一片土地，只是势力换了人。
+ * 关键改动只有两处：
+ *   1. 「秦」变成「汉」的对手盘——三秦（雍、塞、翟）据关中；
+ *   2. 西南角新增「巴蜀·汉中」，作为刘邦的根基。
+ *      历史上汉中与关中隔秦岭，画成一块独立区域正合地理。
+ */
+export const HAN_BASE: MapRegion = {
+  id: 'han_base',
+  name: '汉',
+  // 巴蜀 · 汉中：西南一隅，与关中隔秦岭
+  points: '40,420 150,392 215,462 198,558 108,602 32,548',
+  label: [118, 500],
+  capital: { name: '汉中', x: 96, y: 470 },
+}
+
+/** 三秦：雍（章邯）、塞（司马欣）、翟（董翳）分王关中，故仍以「关中」为一名 */
+export const GUANZHONG_REGION: MapRegion = {
+  id: 'guanzhong',
+  name: '三秦',
+  points: '60,130 250,80 350,180 330,300 350,430 320,520 250,560 150,470 72,340',
+  label: [196, 336],
+  capital: { name: '废丘', x: 248, y: 404 },
+}
+
+/** 项羽所王：梁楚九郡，都彭城 */
+export const CHUHAN_REGIONS: MapRegion[] = [
+  GUANZHONG_REGION,
+  { ...SIX_STATES.find((r) => r.id === 'wei')!, id: 'wei', capital: { name: '平阳', x: 640, y: 302 } },
+  { ...SIX_STATES.find((r) => r.id === 'han')!, name: '韩', capital: { name: '阳翟', x: 512, y: 438 } },
+  { ...SIX_STATES.find((r) => r.id === 'zhao')!, capital: { name: '襄国', x: 500, y: 232 } },
+  { ...SIX_STATES.find((r) => r.id === 'qi')!, capital: { name: '临淄', x: 888, y: 330 } },
+  { ...SIX_STATES.find((r) => r.id === 'yan')!, capital: { name: '蓟', x: 860, y: 130 } },
+  { ...SIX_STATES.find((r) => r.id === 'chu')!, name: '西楚', capital: { name: '彭城', x: 720, y: 500 } },
+]
+
+/** 一张沙盘地图所需的全部几何 */
+export interface MapSpec {
+  /** 进攻方（始终高亮，不参与"被吞并"） */
+  attacker: MapRegion
+  /** 被逐一吞并的势力 */
+  regions: MapRegion[]
+  /** 装饰性水道 */
+  rivers: string[]
+}
+
+export const ZHANGUO_MAP: MapSpec = {
+  attacker: QIN_REGION,
+  regions: SIX_STATES,
+  rivers: RIVERS,
+}
+
+export const CHUHAN_MAP: MapSpec = {
+  attacker: HAN_BASE,
+  regions: CHUHAN_REGIONS,
+  rivers: [
+    'M 80,268 C 200,250 280,232 360,254 C 450,278 520,262 600,278 C 700,298 820,276 960,300',
+    'M 300,500 C 400,486 470,502 560,514 C 660,528 740,516 850,530',
+  ],
+}
+
+export const MAPS: Record<string, MapSpec> = {
+  zhanguo: ZHANGUO_MAP,
+  chuhan: CHUHAN_MAP,
+}

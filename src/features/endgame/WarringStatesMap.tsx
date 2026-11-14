@@ -4,7 +4,7 @@
  * 视觉分层（自下而上）：
  *   1. .map-photo             上传的战国地图（压暗）—— 时代质感
  *   2. .map-photo--emperor    秦始皇像（模糊），一统时淡入
- *   3. .empire-layer          秦 + 已灭诸国的**并集轮廓**：靠 drop-shadow 得到
+ *   3. .empire-layer          {mapSpec.attacker.name} + 已灭诸国的**并集轮廓**：靠 drop-shadow 得到
  *                             一圈只包外缘的光晕（不会画出内部接缝）
  *   4. 各国 polygon           石色底 + 秦色覆盖层
  *   5. 国名 / 国都            灭国后消散
@@ -17,11 +17,13 @@
 import { useMemo } from 'react'
 import type { EndgameEvent } from '../../core/emperorTypes'
 import type { CampaignPhase } from '../../core/emperorTypes'
-import { ALL_REGIONS, QIN_REGION, RIVERS } from './mapGeometry'
+import { ZHANGUO_MAP, type MapRegion, type MapSpec } from './mapGeometry'
 import { CampaignRoutes } from './CampaignRoutes'
 import { useEndgameStore } from './useEndgameStore'
 
 interface WarringStatesMapProps {
+  /** 沙盘地图：战国（默认）或楚汉 */
+  mapSpec?: MapSpec
   events: EndgameEvent[]
   /** 当前正在播放/已播放完的战役序列（按国家） */
   campaigns: CampaignPhase[]
@@ -62,7 +64,7 @@ function areaCentroid(points: string) {
 }
 
 /** 秦 + 已灭诸国的面积加权重心 */
-function mergedCentroid(regions: typeof ALL_REGIONS) {
+function mergedCentroid(regions: MapRegion[], attacker: MapRegion) {
   let total = 0
   let x = 0
   let y = 0
@@ -72,11 +74,12 @@ function mergedCentroid(regions: typeof ALL_REGIONS) {
     x += c.x * c.area
     y += c.y * c.area
   }
-  if (total === 0) return { x: QIN_REGION.label[0], y: QIN_REGION.label[1] }
+  if (total === 0) return { x: attacker.label[0], y: attacker.label[1] }
   return { x: x / total, y: y / total }
 }
 
 export function WarringStatesMap({
+  mapSpec = ZHANGUO_MAP,
   events,
   campaigns,
   campaignIndex,
@@ -102,19 +105,22 @@ export function WarringStatesMap({
     return map
   }, [events])
 
+  /** 当前地图的全部区域：进攻方 + 待吞并势力 */
+  const allRegions: MapRegion[] = [mapSpec.attacker, ...mapSpec.regions]
+
   const isCaptured = (id: string) => {
-    if (id === 'qin') return true
+    if (id === mapSpec.attacker.id) return true
     const event = eventsByNation.get(id)
     return event ? event.order <= index : false
   }
 
-  /** 秦字的落点：随版图扩张移到合并后的重心 */
+  /** 进攻方字样的落点：随版图扩张移到合并后的重心 */
   const labelShift = useMemo(() => {
-    const captured = ALL_REGIONS.filter((region) => isCaptured(region.id))
-    const center = mergedCentroid(captured)
+    const captured = allRegions.filter((region) => isCaptured(region.id))
+    const center = mergedCentroid(captured, mapSpec.attacker)
     return {
-      dx: center.x - QIN_REGION.label[0],
-      dy: center.y - QIN_REGION.label[1],
+      dx: center.x - mapSpec.attacker.label[0],
+      dy: center.y - mapSpec.attacker.label[1],
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, events])
@@ -129,7 +135,7 @@ export function WarringStatesMap({
 
   const hoveredEvent = hoverActive && !focusedNation ? (eventsByNation.get(hoveredId!) ?? null) : null
   const hoveredRegion = hoverActive
-    ? (ALL_REGIONS.find((region) => region.id === hoveredId) ?? null)
+    ? (allRegions.find((region) => region.id === hoveredId) ?? null)
     : null
 
   return (
@@ -177,7 +183,7 @@ export function WarringStatesMap({
             <stop offset="100%" stopColor="#9c7326" />
           </linearGradient>
 
-          {ALL_REGIONS.map((region) => (
+          {allRegions.map((region) => (
             <clipPath key={region.id} id={`clip-${region.id}`}>
               <polygon points={region.points} />
             </clipPath>
@@ -186,7 +192,7 @@ export function WarringStatesMap({
 
         <rect className="map-bg" x="0" y="0" width="1000" height="640" onClick={onExitFocus} />
 
-        {RIVERS.map((d, i) => (
+        {mapSpec.rivers.map((d, i) => (
           <path key={i} className="map-river" d={d} />
         ))}
 
@@ -196,7 +202,7 @@ export function WarringStatesMap({
           drop-shadow 生成"整块疆域"的外缘光晕 —— 内部接缝不会发光。
         */}
         <g className="empire-layer" aria-hidden="true">
-          {ALL_REGIONS.map((region) => (
+          {allRegions.map((region) => (
             <polygon
               key={region.id}
               points={region.points}
@@ -207,7 +213,7 @@ export function WarringStatesMap({
 
         {/* 聚焦战报时整体压暗的就是这一层 */}
         <g className="regions-layer">
-        {ALL_REGIONS.map((region) => {
+        {allRegions.map((region) => {
           const event = eventsByNation.get(region.id) ?? null
           const isQin = region.id === 'qin'
           const captured = isCaptured(region.id)
@@ -286,20 +292,20 @@ export function WarringStatesMap({
           )
         })}
         {/*
-          秦字单独一层，画在所有国家之后 ——
+          攻方字样单独一层，画在所有国家之后 ——
           之前它在自己的 <g> 里（秦是第一个渲染的），移动后会被邻国的图块盖住。
         */}
         </g>
         <g className="qin-label-layer" aria-hidden="true">
           <text
             className="region-label region-label--qin"
-            x={QIN_REGION.label[0]}
-            y={QIN_REGION.label[1]}
+            x={mapSpec.attacker.label[0]}
+            y={mapSpec.attacker.label[1]}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }}
           >
-            秦
+            {mapSpec.attacker.name}
           </text>
         </g>
         {/* 行军路线：在版图之上、不参与聚焦压暗 */}
@@ -345,7 +351,7 @@ export function WarringStatesMap({
               ))}
             </ul>
           ) : (
-            <span className="map-tip-brief">尚未入秦图 · 点击推演至此</span>
+            <span className="map-tip-brief">尚未归{mapSpec.attacker.name} · 点击推演至此</span>
           )}
           <span className="map-tip-action">
             {hoveredEvent.order <= index ? '点击查看详情 →' : ''}
@@ -358,11 +364,11 @@ export function WarringStatesMap({
         <div
           className="map-tip is-qin-tip"
           style={{
-            left: `${(QIN_REGION.label[0] / 1000) * 100}%`,
-            top: `${(QIN_REGION.label[1] / 640) * 100}%`,
+            left: `${(mapSpec.attacker.label[0] / 1000) * 100}%`,
+            top: `${(mapSpec.attacker.label[1] / 640) * 100}%`,
           }}
         >
-          <span className="map-tip-title">秦</span>
+          <span className="map-tip-title">{mapSpec.attacker.name}</span>
           <span className="map-tip-brief">点击回到战前 · 六国复其疆</span>
         </div>
       ) : null}
@@ -370,7 +376,7 @@ export function WarringStatesMap({
 
       {overlay}
 
-      <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「秦」回到战前</p>
+      <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「{mapSpec.attacker.name}」回到战前</p>
     </div>
   )
 }

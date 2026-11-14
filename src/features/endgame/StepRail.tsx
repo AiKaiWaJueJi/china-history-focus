@@ -12,9 +12,11 @@ interface StepRailProps {
   events: EndgameEvent[]
   index: number
   onSelect: (value: number) => void
+  /** 「战前」节点的年份，由沙盘数据给出（周：前230 / 楚汉：前206） */
+  preYear: string
 }
 
-export function StepRail({ events, index, onSelect }: StepRailProps) {
+export function StepRail({ events, index, onSelect, preYear }: StepRailProps) {
   // 与地图双向联动：地图上悬浮哪一国，这里对应的节点就亮起流光
   const hovered = useEndgameStore((s) => s.hoveredNation)
   const setHovered = useEndgameStore((s) => s.setHovered)
@@ -28,7 +30,7 @@ export function StepRail({ events, index, onSelect }: StepRailProps) {
         onMouseEnter={() => setHovered(null)}
       >
         <span className="rail-node-name">战前</span>
-        <span className="rail-node-year">前230</span>
+        <span className="rail-node-year">{preYear}</span>
       </button>
 
       {events.map((event) => {

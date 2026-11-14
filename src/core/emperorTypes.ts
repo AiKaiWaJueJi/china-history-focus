@@ -223,6 +223,10 @@ export interface EndgameNext {
 
 export interface DynastyEndgame {
   dynastyId: string
+  /** 沙盘地图：zhanguo（战国七雄）/ chuhan（楚汉相争）。缺省按战国处理 */
+  mapId?: 'zhanguo' | 'chuhan'
+  /** 「战前」节点显示的年份 */
+  preYear?: string
   title: string
   subtitle: string
   intro: string

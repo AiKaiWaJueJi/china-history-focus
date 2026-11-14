@@ -58,6 +58,6 @@
   ],
   "enterLabel": "汉兴 · 楚汉相争",
   "enterHint": "再看一朝 · 汉",
-  "next": { "kind": "home" },
+  "next": { "kind": "endgame" },
   "back": { "page": "last" }
 }

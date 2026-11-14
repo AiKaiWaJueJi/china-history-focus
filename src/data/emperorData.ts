@@ -14,6 +14,7 @@ import segmentsZhouRaw from './segments.zhou.json'
 import segmentsQinRaw from './segments.qin.json'
 import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
+import endgameChuhanRaw from './endgame.chuhan.json'
 import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
 import type {
@@ -38,7 +39,10 @@ const LORDS: Record<string, DynastyLords> = {
 }
 
 const ENDGAME: Record<string, DynastyEndgame> = {
+  // 周：秦灭六国（战国地图）
   zhou: endgameZhouRaw as DynastyEndgame,
+  // 秦：楚汉相争（楚汉地图）——秦亡后到汉立之间的五年，挂在这里
+  qin: endgameChuhanRaw as DynastyEndgame,
 }
 
 export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {

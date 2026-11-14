@@ -137,11 +137,20 @@ try {
   check('文字走完后入口出现', entrance.btn > 0.9, String(entrance.btn))
   check('入口文案为「汉兴 · 楚汉相争」', /汉兴/.test(entrance.label ?? ''), entrance.label)
 
-  /* ---------- 6) 点入口回主页 ---------- */
+  /* ---------- 6) 点入口进楚汉沙盘 ---------- */
   await page.click('.fall-enter')
-  await sleep(1400)
-  await page.waitForSelector('.gallery-stage, .app-main', { timeout: 8000 })
-  check('点击后回到朝代主页', new globalThis.URL(page.url()).pathname === '/', page.url())
+  await sleep(1600)
+  await page.waitForSelector('.map-stage', { timeout: 10000 })
+  const sandbox = await page.evaluate(() => ({
+    path: location.pathname,
+    title: document.querySelector('.endgame-title')?.textContent?.trim(),
+    rail: [...document.querySelectorAll('.rail-node')].map((n) => n.textContent?.trim()),
+  }))
+  console.log(`[SANDBOX] ${JSON.stringify(sandbox)}`)
+  check('秦亡之后进入楚汉沙盘', /\/dynasty\/qin\/endgame$/.test(sandbox.path), sandbox.path)
+  check('沙盘标题为「楚汉相争」', sandbox.title === '楚汉相争', sandbox.title)
+  check('沙盘有 7 个吞并节点（三秦至西楚）', sandbox.rail.length === 8, String(sandbox.rail.length))
+  check('「战前」节点用楚汉年份', (sandbox.rail[0] ?? '').includes('前206'), sandbox.rail[0])
 
   /* ---------- 7) 上滚确认 + 返回 ---------- */
   await page.goto(`${BASE}/dynasty/qin/fall`, { waitUntil: 'networkidle2' })
