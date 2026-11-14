@@ -3,7 +3,7 @@
  * ===========================================================================
  * 与上一版最大的区别：
  *   旧版：phase(idle/playing/sealed) + fallen 计数，由计时器自动推进 → 不可逆
- *   新版：**单一整数 index（0..6）**，由用户点击设定 → 天然可逆、可跳转
+ *   新版：**单一整数 index（0..N）**，由用户点击设定 → 天然可逆、可跳转
  *
  * 为什么一个整数就够：
  *   "哪些国家已亡"完全由 index 派生（order <= index），不另存数组。
@@ -13,7 +13,7 @@
  * 派生规则：
  *   captured(event) = event.order <= index
  *   battleEvents    = events.slice(0, index)
- *   isFinished      = index === 6
+ *   isFinished      = index === events.length（周 6 / 楚汉 7，total 由页面注入）
  */
 import { create } from 'zustand'
 

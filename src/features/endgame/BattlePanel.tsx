@@ -131,6 +131,14 @@ export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaign
         </div>
       ) : null}
 
+      {/* 史实注记：异说 / 避讳 / 图例范围，和叙事正文分开 */}
+      {event.note ? (
+        <div className="battle-section battle-note">
+          <span className="battle-section-label">史实注记</span>
+          <p className="battle-text">{event.note}</p>
+        </div>
+      ) : null}
+
       {/* 三段式正文之后：史料原文 */}
       <SourceQuote
         bookName={event.sourceText.bookName}

@@ -20,16 +20,15 @@ const PLAYHEAD_WIDTH = 7.5
 
 interface SegmentAxisProps {
   segments: TimelineSegment[]
-  emperors: EmperorRecord[]
-  pageIndex: number
-  pageSize: number
+  /** 当前页的君主（分页由父级按分段切好，播放头据此定位） */
+  currentPage: EmperorRecord[]
   /** 点击某一年份 → 跳到对应页 */
   onJumpToYear: (year: number) => void
 }
 
 type BandStyle = CSSProperties & { '--accent': string }
 
-export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToYear }: SegmentAxisProps) {
+export function SegmentAxis({ segments, currentPage, onJumpToYear }: SegmentAxisProps) {
   if (segments.length === 0) return null
 
   const domainStart = Math.min(...segments.map((s) => s.startYear))
@@ -40,9 +39,8 @@ export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToY
   const pos = (year: number) => ((year - domainStart) / span) * 100
 
   // 当前页覆盖的时间窗（用于"播放头"）
-  const pageEmperors = emperors.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
-  const pageStart = pageEmperors[0]?.startYear
-  const pageEnd = pageEmperors[pageEmperors.length - 1]?.endYear ?? pageStart
+  const pageStart = currentPage[0]?.startYear
+  const pageEnd = currentPage[currentPage.length - 1]?.endYear ?? pageStart
 
   return (
     <div className="seg-axis" role="group" aria-label="时代分段">
@@ -50,6 +48,8 @@ export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToY
         {segments.map((segment) => {
           const left = pos(segment.startYear)
           const width = pos(segment.endYear) - left
+          /* 超短段（如新朝 14 年、秦朝 14 年）：只留段名，年份会把邻段挤花 */
+          const narrow = width < 8
           const style: BandStyle = {
             left: `${left}%`,
             width: `${width}%`,
@@ -59,7 +59,7 @@ export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToY
             <button
               key={segment.id}
               type="button"
-              className="seg-band"
+              className={`seg-band${narrow ? ' is-narrow' : ''}`}
               style={style}
               onClick={() => onJumpToYear(segment.startYear)}
               title={`${segment.name} ${formatYear(segment.startYear)}—${formatYear(segment.endYear)} · 点击跳转`}
@@ -75,13 +75,13 @@ export function SegmentAxis({ segments, emperors, pageIndex, pageSize, onJumpToY
           )
         })}
 
-        {/* 段内子时期标志点（春秋 / 战国） */}
+        {/* 段内子时期标志点（春秋 / 战国…）：相邻太近时上下错开，避免标签叠字 */}
         {segments.flatMap((segment) =>
-          (segment.markers ?? []).map((marker) => (
+          (segment.markers ?? []).map((marker, index) => (
             <button
               key={marker.id}
               type="button"
-              className="seg-marker"
+              className={`seg-marker${index % 2 === 1 ? ' is-alt' : ''}`}
               style={{ left: `${pos(marker.year)}%` }}
               onClick={() => onJumpToYear(marker.year)}
               title={`${marker.name} 始于 ${formatYear(marker.year)}${marker.note ? ' · ' + marker.note : ''}`}

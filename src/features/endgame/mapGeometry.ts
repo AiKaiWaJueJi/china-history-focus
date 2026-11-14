@@ -22,6 +22,13 @@ export interface MapRegion {
   label: [number, number]
   /** 国都（示意坐标，落在该国轮廓内） */
   capital?: { name: string; x: number; y: number }
+  /**
+   * 该势力在推演时间轴上的存续区间（负数＝公元前）。
+   * 一次分封就位的地图（战国 / 楚汉）可不填；
+   * 五代十国、三国那种"陆续登场"的朝代必须填，地图按当前年份决定是否渲染。
+   */
+  aliveFrom?: number
+  aliveTo?: number
 }
 
 /* -------------------------------------------------------------------------- */
@@ -170,101 +177,6 @@ export const STRATEGIC_POINTS: StrategicPoint[] = [
   },
 ]
 
-
-/* ========================================================================== */
-/* 楚汉之争（前206—前202）                                                     */
-/* ========================================================================== */
-/*
- * 复用战国图的地理骨架：同一片土地，只是势力换了人。
- * 关键改动只有两处：
- *   1. 「秦」变成「汉」的对手盘——三秦（雍、塞、翟）据关中；
- *   2. 西南角新增「巴蜀·汉中」，作为刘邦的根基。
- *      历史上汉中与关中隔秦岭，画成一块独立区域正合地理。
- */
-/* ========================================================================== */
-/* 楚汉之争（前 206 年项羽分封之后的势力分布）                                  */
-/* ========================================================================== */
-/*
- * 与战国图的关系：同一片地理基底，但**疆域按前 206 年分封重画**。
- *
- * 三条与史实相关的改动：
- *   1. 汉据巴蜀、汉中，隔秦岭与关中相望——画成与三秦、西楚共享边线的一块，
- *      不再是漂浮的六边形；
- *   2. 项羽王梁楚九郡，都彭城；英布为九江王，据淮南。
- *      故把原先笼统的「楚」按淮水一线拆为「西楚」与「九江」；
- *   3. 赵、燕、齐、魏、韩沿用其地，边界按分封后的实际控制区微调。
- */
-export interface MapRegion {
-  id: string
-  name: string
-  points: string
-  label: [number, number]
-  capital?: { name: string; x: number; y: number }
-  /**
-   * 该势力在推演时间轴上的存续区间（负数＝公元前）。
-   * 楚汉各国都是前 206 年一次性分封，故缺省不填；
-   * 五代十国那种"陆续登场"的朝代必须填，地图按当前年份决定是否渲染。
-   */
-  aliveFrom?: number
-  aliveTo?: number
-}
-
-/** 汉：巴蜀 · 汉中，紧贴三秦与西楚的西南边缘（共享顶点 72,340 / 150,470 / 250,560 / 380,610） */
-export const HAN_BASE: MapRegion = {
-  id: 'han_base',
-  name: '汉',
-  points: '72,340 150,470 250,560 380,610 400,540 300,470 190,400',
-  label: [196, 566],
-  capital: { name: '南郑', x: 168, y: 470 },
-  aliveFrom: -206,
-  aliveTo: -202,
-}
-
-/** 三秦：雍（章邯）、塞（司马欣）、翟（董翳）分王关中 */
-export const GUANZHONG_REGION: MapRegion = {
-  id: 'guanzhong',
-  name: '三秦',
-  // 西南侧让出汉的边界（72,340 → 150,470 → 250,560）
-  points: '60,130 250,80 350,180 330,300 350,430 400,540 300,470 190,400 90,360',
-  label: [196, 336],
-  capital: { name: '废丘', x: 248, y: 404 },
-  aliveFrom: -206,
-  aliveTo: -205,
-}
-
-/** 西楚：项羽自王，梁楚九郡，都彭城 */
-export const XICHU_REGION: MapRegion = {
-  id: 'chu',
-  name: '西楚',
-  points: '560,400 580,470 760,420 930,470 840,545 700,600 620,560 520,520 470,460',
-  label: [704, 540],
-  capital: { name: '彭城', x: 742, y: 470 },
-  aliveFrom: -206,
-  aliveTo: -202,
-}
-
-/** 九江：英布所王，据淮南 */
-export const JIUJIANG_REGION: MapRegion = {
-  id: 'jiujiang',
-  name: '九江',
-  points: '520,520 620,560 700,600 840,545 780,596 640,626 500,612 430,566',
-  label: [600, 600],
-  capital: { name: '六', x: 660, y: 566 },
-  aliveFrom: -206,
-  aliveTo: -203,
-}
-
-export const CHUHAN_REGIONS: MapRegion[] = [
-  GUANZHONG_REGION,
-  { ...SIX_STATES.find((r) => r.id === 'wei')!, capital: { name: '平阳', x: 640, y: 302 }, aliveFrom: -206, aliveTo: -205 },
-  { ...SIX_STATES.find((r) => r.id === 'han')!, name: '韩', capital: { name: '阳翟', x: 512, y: 438 }, aliveFrom: -206, aliveTo: -205 },
-  { ...SIX_STATES.find((r) => r.id === 'zhao')!, capital: { name: '襄国', x: 500, y: 232 }, aliveFrom: -206, aliveTo: -204 },
-  { ...SIX_STATES.find((r) => r.id === 'qi')!, capital: { name: '临淄', x: 888, y: 330 }, aliveFrom: -206, aliveTo: -203 },
-  { ...SIX_STATES.find((r) => r.id === 'yan')!, capital: { name: '蓟', x: 860, y: 130 }, aliveFrom: -206, aliveTo: -204 },
-  XICHU_REGION,
-  JIUJIANG_REGION,
-]
-
 /** 一张沙盘地图所需的全部几何 */
 export interface MapSpec {
   /** 进攻方（始终高亮，不参与"被吞并"） */
@@ -275,26 +187,29 @@ export interface MapSpec {
   rivers: string[]
   /** 第 0 幕「一统」时显示的合体名（如「秦」）；缺省等于 attacker.name */
   empireName?: string
+  /** 地图的无障碍名称；缺省按攻方生成 */
+  ariaLabel?: string
+  /** 悬停攻方时的第二行文案（缺省「六国复其疆」） */
+  resetHint?: string
+  /** 要地/关隘：只做方位注记，不参与推演 */
+  points?: StrategicPoint[]
+  /**
+   * 攻方易代：某年之后，攻方在地图上的国号改为 name。
+   * 三国归晋用得上——265 年司马炎受魏禅，此后灭吴的是晋军，
+   * 但疆域未变，所以只换国号、不换版图。
+   */
+  successor?: { year: number; name: string }
 }
 
 export const ZHANGUO_MAP: MapSpec = {
   attacker: QIN_REGION,
   regions: SIX_STATES,
   rivers: RIVERS,
-}
-
-export const CHUHAN_MAP: MapSpec = {
-  attacker: HAN_BASE,
-  regions: CHUHAN_REGIONS,
-  rivers: [
-    'M 80,268 C 200,250 280,232 360,254 C 450,278 520,262 600,278 C 700,298 820,276 960,300',
-    'M 300,500 C 400,486 470,502 560,514 C 660,528 740,516 850,530',
-  ],
-  // 前 206 年之前，这片土地只有一个名字
-  empireName: '秦',
+  ariaLabel: '战国七雄版图',
+  resetHint: '六国复其疆',
+  points: STRATEGIC_POINTS,
 }
 
 export const MAPS: Record<string, MapSpec> = {
   zhanguo: ZHANGUO_MAP,
-  chuhan: CHUHAN_MAP,
 }

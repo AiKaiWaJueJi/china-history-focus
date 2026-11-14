@@ -45,7 +45,7 @@ try {
     attacker: document.querySelector('.map-label-qin, [class*="attacker"]')?.textContent?.trim() ?? null,
   }))
   console.log(`[SHELL] ${JSON.stringify(shell)}`)
-  check('标题为「楚汉相争」', shell.title === '楚汉相争', shell.title)
+  check('标题为「楚漢相争」', shell.title === '楚漢相争', shell.title)
   check('战前节点为前206', (shell.rail[0] ?? '').includes('前206'), shell.rail[0])
   check('七国节点顺序正确（破赵在前、燕降在后）', shell.rail.slice(1).join(',').includes('三秦前206,魏前205,韩前205,赵前204,燕前204,齐前203,西楚前202'), shell.rail.slice(1).join(','))
 
@@ -54,7 +54,7 @@ try {
     const svg = document.querySelector('.map-stage svg')
     return svg ? svg.textContent ?? '' : ''
   })
-  check('地图上出现「汉」字', mapText.includes('汉'), mapText.slice(0, 40))
+  check('地图上出现「漢」字', mapText.includes('漢'), mapText.slice(0, 40))
   check('地图上不再以「秦」为攻方标签', !/^\s*秦\s*$/.test(mapText), 'ok')
 
   /* ---------- 3) 点节点展开战报 ---------- */
@@ -98,7 +98,7 @@ try {
     return { text: el?.textContent?.trim() ?? null, visible: Boolean(el) }
   })
   console.log(`[ENTRY] ${JSON.stringify(entry)}`)
-  check('出现下一朝「汉」的入口', (entry.text ?? '').includes('汉'), entry.text)
+  check('出现下一朝「漢」的入口', (entry.text ?? '').includes('漢'), entry.text)
 
   /* ---------- 6) 战国沙盘未受影响 ---------- */
   await page.goto(`${BASE}/dynasty/zhou/endgame`, { waitUntil: 'networkidle2' })

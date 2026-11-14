@@ -210,6 +210,11 @@ export interface EndgameEvent {
   detail: EndgameDetail
   /** 史料原文 */
   sourceText: EndgameSource
+  /**
+   * 史实注记：异说、避讳、存疑、图例范围等，战报里以独立小节呈现。
+   * 与 detail 的"结局"分开写，避免把考据塞进叙事正文。
+   */
+  note?: string
   /** 战役序列：按 phase 顺序播放的进军路线 */
   campaigns: CampaignPhase[]
   /** 本节出现的人物（正文中会被高亮成可点击标签） */
@@ -225,10 +230,12 @@ export interface EndgameNext {
 
 export interface DynastyEndgame {
   dynastyId: string
-  /** 沙盘地图：zhanguo（战国七雄）/ chuhan（楚汉相争）。缺省按战国处理 */
-  mapId?: 'zhanguo' | 'chuhan'
+  /** 沙盘地图：zhanguo（战国七雄）/ chuhan（楚汉相争）/ sanguo（三国鼎立）。缺省按战国处理 */
+  mapId?: 'zhanguo' | 'chuhan' | 'sanguo'
   /** 「战前」节点显示的年份 */
   preYear?: string
+  /** 「战前」节点的年份数值（用于按 aliveFrom/aliveTo 决定哪些势力已登场） */
+  preYearValue?: number
   /** 终章出现的统一者国号（周之沙盘=秦，楚汉之沙盘=汉） */
   unifiedName?: string
   title: string

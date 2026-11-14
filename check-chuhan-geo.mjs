@@ -131,6 +131,14 @@ check('每个节点都有对应疆域', data.events.every((e) => Boolean(byId[e.
 check('没有多余的疆域（除汉之外）', regions.filter((r) => r.id !== geo.attacker).length === data.events.length,
   `${regions.length - 1} 块 vs ${data.events.length} 幕`)
 
+/* ---------- 6) 要地/关隘方位 ---------- */
+const badPoints = (geo.points ?? []).filter((p) => !byId[p.regionId] || !inside([p.x, p.y], byId[p.regionId].pts))
+check(
+  '要地/关隘都在所属疆域内',
+  badPoints.length === 0,
+  badPoints.length ? badPoints.map((p) => p.name).join(',') : `${(geo.points ?? []).length} 处`,
+)
+
 const failed = results.filter((r) => !r.pass)
 console.log(`\n===== ${results.length - failed.length}/${results.length} passed =====`)
 if (failed.length) process.exitCode = 1

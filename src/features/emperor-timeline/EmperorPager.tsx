@@ -13,9 +13,11 @@ import { EmperorCard } from './EmperorCard'
 import type { EmperorCardLayout } from './EmperorCard'
 
 interface EmperorPagerProps {
-  emperors: EmperorRecord[]
+  /** 当前页要显示的君主（分页由父级按分段切好，这里不再自己 slice） */
+  pageEmperors: EmperorRecord[]
   pageIndex: number
   direction: number
+  /** 一页的槽位数（用于补空槽，保证卡片宽度一致） */
   pageSize: number
   layout?: EmperorCardLayout
   compact?: boolean
@@ -28,7 +30,7 @@ const variants = {
 }
 
 export function EmperorPager({
-  emperors,
+  pageEmperors,
   pageIndex,
   direction,
   pageSize,
@@ -36,8 +38,6 @@ export function EmperorPager({
   compact = false,
 }: EmperorPagerProps) {
   const prefersReducedMotion = useReducedMotion()
-  const start = pageIndex * pageSize
-  const pageEmperors = emperors.slice(start, start + pageSize)
   const emptySlots = Math.max(0, pageSize - pageEmperors.length)
 
   return (

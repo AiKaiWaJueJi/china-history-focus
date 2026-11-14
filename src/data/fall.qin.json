@@ -56,8 +56,8 @@
       "note": "自前221 称帝至前207 出降，首尾计十五年。贾谊《过秦论》所谓「一夫作难而七庙隳」，即指此十五年。"
     }
   ],
-  "enterLabel": "汉兴 · 楚汉相争",
-  "enterHint": "再看一朝 · 汉",
+  "enterLabel": "漢兴 · 楚漢相争",
+  "enterHint": "再看一朝 · 漢",
   "next": { "kind": "endgame" },
   "back": { "page": "last" }
 }

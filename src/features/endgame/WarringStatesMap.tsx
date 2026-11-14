@@ -22,8 +22,10 @@ import { CampaignRoutes } from './CampaignRoutes'
 import { useEndgameStore } from './useEndgameStore'
 
 interface WarringStatesMapProps {
-  /** 沙盘地图：战国（默认）或楚汉 */
+  /** 沙盘地图：战国（默认）或楚汉 / 三国 */
   mapSpec?: MapSpec
+  /** 当前推演年份（负数＝公元前）；缺省则不做"陆续登场"过滤 */
+  currentYear?: number
   events: EndgameEvent[]
   /** 当前正在播放/已播放完的战役序列（按国家） */
   campaigns: CampaignPhase[]
@@ -39,7 +41,7 @@ interface WarringStatesMapProps {
   unified: boolean
   onConquer: (event: EndgameEvent) => void
   onExitFocus: () => void
-  /** 点「秦」= 回到战前（六国复其疆） */
+  /** 点攻方（周=秦 / 楚汉=汉）= 回到战前 */
   onReset: () => void
   overlay?: React.ReactNode
 }
@@ -80,6 +82,7 @@ function mergedCentroid(regions: MapRegion[], attacker: MapRegion) {
 
 export function WarringStatesMap({
   mapSpec = ZHANGUO_MAP,
+  currentYear,
   events,
   campaigns,
   campaignIndex,
@@ -106,7 +109,10 @@ export function WarringStatesMap({
   }, [events])
 
   /** 当前地图的全部区域：进攻方 + 待吞并势力 */
-  const allRegions: MapRegion[] = [mapSpec.attacker, ...mapSpec.regions]
+  const allRegions: MapRegion[] = useMemo(
+    () => [mapSpec.attacker, ...mapSpec.regions],
+    [mapSpec],
+  )
 
   const isCaptured = (id: string) => {
     if (id === mapSpec.attacker.id) return true
@@ -114,16 +120,69 @@ export function WarringStatesMap({
     return event ? event.order <= index : false
   }
 
+  /*
+    「陆续登场」：只对**尚未归入攻方**的势力做存活过滤。
+    · 尚未出生（currentYear < aliveFrom）→ 不渲染，等年份推进时淡入；
+    · 已亡而未被吞并（currentYear > aliveTo）→ 不渲染；
+    · 已归入版图的势力始终渲染——否则会凭空消失，疆域看起来像被挖了一块。
+    楚汉图每块虽带存续区间，但都在被吞并之前出场，过滤不改变现有表现；
+    战国图没有该字段，完全不过滤。
+  */
+  const visibleRegions = useMemo(() => {
+    if (currentYear === undefined) return allRegions
+    return allRegions.filter((region) => {
+      if (region.id === mapSpec.attacker.id) return true
+      if (isCaptured(region.id)) return true
+      if (region.aliveFrom !== undefined && currentYear < region.aliveFrom) return false
+      if (region.aliveTo !== undefined && currentYear > region.aliveTo) return false
+      return true
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allRegions, currentYear, index, events, mapSpec])
+
+  /** 只渲染"所属势力已出现在图上"的要地，避免关隘悬在空白处 */
+  const visiblePoints = useMemo(
+    () => (mapSpec.points ?? []).filter((point) => visibleRegions.some((region) => region.id === point.regionId)),
+    [mapSpec, visibleRegions],
+  )
+
   /** 进攻方字样的落点：随版图扩张移到合并后的重心 */
   const labelShift = useMemo(() => {
-    const captured = allRegions.filter((region) => isCaptured(region.id))
+    const captured = visibleRegions.filter((region) => isCaptured(region.id))
     const center = mergedCentroid(captured, mapSpec.attacker)
     return {
       dx: center.x - mapSpec.attacker.label[0],
       dy: center.y - mapSpec.attacker.label[1],
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, events])
+  }, [index, events, visibleRegions, mapSpec])
+
+  /*
+    攻方国号：默认用地图自带的 attacker.name；
+    若声明了 successor 且当前年份已过易代之年，则换国号（三国：265 魏→晋）。
+    版图本身不变，只换称谓。
+  */
+  const attackerName =
+    mapSpec.successor && currentYear !== undefined && currentYear >= mapSpec.successor.year
+      ? mapSpec.successor.name
+      : mapSpec.attacker.name
+
+  /*
+    尚未登场的势力：画成虚线幽灵轮廓。
+    只是"占位"，不可点、不带国名国都——否则 220 年开局的三国图会缺一大块，
+    看起来像地图坏了；也不能让它可点，那会点出一个"穿越"的战报。
+  */
+  const unbornRegions = useMemo(() => {
+    if (currentYear === undefined) return [] as MapRegion[]
+    return allRegions.filter((region) => {
+      if (region.id === mapSpec.attacker.id) return false
+      if (isCaptured(region.id)) return false
+      if (region.aliveFrom !== undefined && currentYear < region.aliveFrom) return true
+      if (region.aliveTo !== undefined && currentYear > region.aliveTo) return true
+      return false
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allRegions, currentYear, index, events, mapSpec])
 
   /*
     一统之后地图层已经退场，此时底部节点的悬浮不该再牵动它：
@@ -135,7 +194,7 @@ export function WarringStatesMap({
 
   const hoveredEvent = hoverActive && !focusedNation ? (eventsByNation.get(hoveredId!) ?? null) : null
   const hoveredRegion = hoverActive
-    ? (allRegions.find((region) => region.id === hoveredId) ?? null)
+    ? (visibleRegions.find((region) => region.id === hoveredId) ?? null)
     : null
 
   return (
@@ -160,7 +219,7 @@ export function WarringStatesMap({
         viewBox="0 0 1000 640"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="战国七雄版图"
+        aria-label={mapSpec.ariaLabel ?? `${attackerName}与诸侯版图`}
       >
         <defs>
           {/* 六国石色：中性、偏暖，与秦色拉开距离 */}
@@ -184,7 +243,7 @@ export function WarringStatesMap({
             <stop offset="100%" stopColor="#9c7326" />
           </linearGradient>
 
-          {allRegions.map((region) => (
+          {visibleRegions.map((region) => (
             <clipPath key={region.id} id={`clip-${region.id}`}>
               <polygon points={region.points} />
             </clipPath>
@@ -203,7 +262,7 @@ export function WarringStatesMap({
           drop-shadow 生成"整块疆域"的外缘光晕 —— 内部接缝不会发光。
         */}
         <g className="empire-layer" aria-hidden="true">
-          {allRegions.map((region) => (
+          {visibleRegions.map((region) => (
             <polygon
               key={region.id}
               points={region.points}
@@ -212,9 +271,18 @@ export function WarringStatesMap({
           ))}
         </g>
 
+        {/* 未登场势力的幽灵轮廓：先把"将来的疆域"占住，避免开局缺一块 */}
+        {unbornRegions.length > 0 ? (
+          <g className="unborn-layer" aria-hidden="true">
+            {unbornRegions.map((region) => (
+              <polygon key={region.id} points={region.points} className="region-unborn" />
+            ))}
+          </g>
+        ) : null}
+
         {/* 聚焦战报时整体压暗的就是这一层 */}
         <g className="regions-layer">
-        {allRegions.map((region) => {
+        {visibleRegions.map((region) => {
           const event = eventsByNation.get(region.id) ?? null
           const isQin = region.id === mapSpec.attacker.id
           const captured = isCaptured(region.id)
@@ -301,6 +369,22 @@ export function WarringStatesMap({
           之前它在自己的 <g> 里（秦是第一个渲染的），移动后会被邻国的图块盖住。
         */}
         </g>
+
+        {/* 要地 / 关隘：只标方位，不参与推演；聚焦战报时一起压暗 */}
+        {visiblePoints.length > 0 ? (
+          <g className="strategic-layer" aria-hidden="true">
+            {visiblePoints.map((point) => (
+              <g key={point.id} className={`strategic-point kind-${point.kind}`}>
+                <title>{point.description}</title>
+                <circle cx={point.x} cy={point.y} r={3.2} />
+                <text x={point.x + 7} y={point.y + 4}>
+                  {point.name}
+                </text>
+              </g>
+            ))}
+          </g>
+        ) : null}
+
         {/* 第 0 幕：尚未分封，整块疆域只有一个名字 */}
         {index === 0 && mapSpec.empireName ? (
           <text className="map-empire-name" x="500" y="322" textAnchor="middle" dominantBaseline="middle">
@@ -317,7 +401,7 @@ export function WarringStatesMap({
             dominantBaseline="middle"
             style={{ transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }}
           >
-            {mapSpec.attacker.name}
+            {attackerName}
           </text>
         </g>
         {/* 行军路线：在版图之上、不参与聚焦压暗 */}
@@ -363,7 +447,7 @@ export function WarringStatesMap({
               ))}
             </ul>
           ) : (
-            <span className="map-tip-brief">尚未归{mapSpec.attacker.name} · 点击推演至此</span>
+            <span className="map-tip-brief">尚未归{attackerName} · 点击推演至此</span>
           )}
           <span className="map-tip-action">
             {hoveredEvent.order <= index ? '点击查看详情 →' : ''}
@@ -371,8 +455,8 @@ export function WarringStatesMap({
         </div>
       ) : null}
 
-      {/* 悬浮「秦」时的提示：它不是战报入口，而是"回到战前"的开关 */}
-      {hoveredId === 'qin' ? (
+      {/* 悬浮攻方时的提示：它不是战报入口，而是"回到战前"的开关 */}
+      {hoveredId === mapSpec.attacker.id ? (
         <div
           className="map-tip is-qin-tip"
           style={{
@@ -380,15 +464,19 @@ export function WarringStatesMap({
             top: `${(mapSpec.attacker.label[1] / 640) * 100}%`,
           }}
         >
-          <span className="map-tip-title">{mapSpec.attacker.name}</span>
-          <span className="map-tip-brief">点击回到战前 · 六国复其疆</span>
+          <span className="map-tip-title">{attackerName}</span>
+          <span className="map-tip-brief">
+            点击回到战前 · {mapSpec.resetHint ?? '六国复其疆'}
+          </span>
         </div>
       ) : null}
 
 
       {overlay}
 
-      <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「{mapSpec.attacker.name}」回到战前</p>
+      <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「{attackerName}」回到战前</p>
     </div>
   )
 }
+
+

@@ -135,7 +135,7 @@ try {
     label: document.querySelector('.fall-enter-label')?.textContent?.trim(),
   }))
   check('文字走完后入口出现', entrance.btn > 0.9, String(entrance.btn))
-  check('入口文案为「汉兴 · 楚汉相争」', /汉兴/.test(entrance.label ?? ''), entrance.label)
+  check('入口文案为「汉兴 · 楚汉相争」', /漢兴/.test(entrance.label ?? ''), entrance.label)
 
   /* ---------- 6) 点入口进楚汉沙盘 ---------- */
   await page.click('.fall-enter')
@@ -148,7 +148,7 @@ try {
   }))
   console.log(`[SANDBOX] ${JSON.stringify(sandbox)}`)
   check('秦亡之后进入楚汉沙盘', /\/dynasty\/qin\/endgame$/.test(sandbox.path), sandbox.path)
-  check('沙盘标题为「楚汉相争」', sandbox.title === '楚汉相争', sandbox.title)
+  check('沙盘标题为「楚汉相争」', sandbox.title === '楚漢相争', sandbox.title)
   check('沙盘有 8 个节点（战前 + 七国）', sandbox.rail.length === 8, String(sandbox.rail.length))
   check('「战前」节点用楚汉年份', (sandbox.rail[0] ?? '').includes('前206'), sandbox.rail[0])
 

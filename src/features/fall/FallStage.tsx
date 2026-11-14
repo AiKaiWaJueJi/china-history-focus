@@ -1,4 +1,4 @@
-/**
+﻿/**
  * FallStage —— 周室倾覆 / 九鼎入秦（时间轴与沙盘之间的过渡）
  * ===========================================================================
  * 三页，可交互翻页，不是一条长卷：
@@ -20,6 +20,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
 import fallDongqian from '../../data/fall.zhou.dongqian.json'
 import fallQin from '../../data/fall.qin.json'
+import fallHan from '../../data/fall.han.json'
+import fallHanXin from '../../data/fall.han.xin.json'
+import fallHanZhongxing from '../../data/fall.han.zhongxing.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
@@ -29,6 +32,15 @@ import thronePhoto from '../../assets/throne-photo.jpg'
 import nightridePhoto from '../../assets/nightride-photo.jpg'
 import uprisingPhoto from '../../assets/uprising-photo.jpg'
 import surrenderPhoto from '../../assets/surrender-photo.jpg'
+import hanDongzhuo from '../../assets/han-dongzhuo.jpg'
+import hanFengtianzi from '../../assets/han-fengtianzi.jpg'
+import hanShanrang from '../../assets/han-shanrang.jpg'
+import hanWangshi from '../../assets/han-wangshi.jpg'
+import hanJushe from '../../assets/han-jushe.jpg'
+import hanWangtian from '../../assets/han-wangtian.jpg'
+import hanKunyang from '../../assets/han-kunyang.jpg'
+import hanGengshi from '../../assets/han-gengshi.jpg'
+import hanZhongxing from '../../assets/han-zhongxing.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -42,6 +54,15 @@ const ART: Record<string, string> = {
   nightride: nightridePhoto,
   uprising: uprisingPhoto,
   surrender: surrenderPhoto,
+  han_dongzhuo: hanDongzhuo,
+  han_fengtianzi: hanFengtianzi,
+  han_shanrang: hanShanrang,
+  han_wangshi: hanWangshi,
+  han_jushe: hanJushe,
+  han_wangtian: hanWangtian,
+  han_kunyang: hanKunyang,
+  han_gengshi: hanGengshi,
+  han_zhongxing: hanZhongxing,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -54,6 +75,15 @@ const ART_ALT: Record<string, string> = {
   nightride: '夜行的辒车',
   uprising: '大泽乡揭竿',
   surrender: '素车白马出降',
+  han_dongzhuo: '董卓甲士入洛阳宫',
+  han_fengtianzi: '曹操奉迎漢献帝车驾',
+  han_shanrang: '漢魏受禅坛',
+  han_wangshi: '西漢外戚王氏朝会',
+  han_jushe: '王莽居摄与孺子婴',
+  han_wangtian: '新朝王田诏令',
+  han_kunyang: '昆阳之战·暴雨滍水',
+  han_gengshi: '赤眉入长安·宫室残破',
+  han_zhongxing: '光武洛阳即位',
 }
 
 interface FallAct {
@@ -103,6 +133,11 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
   },
   qin: {
     fall: fallQin as FallData,
+  },
+  han: {
+    fall: fallHan as FallData,
+    xin: fallHanXin as FallData,
+    zhongxing: fallHanZhongxing as FallData,
   },
 }
 
@@ -476,3 +511,4 @@ export function FallStage() {
 //     </svg>
 //   )
 // }
+

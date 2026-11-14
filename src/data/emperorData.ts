@@ -10,13 +10,17 @@
  */
 import zhouRaw from './emperors.zhou.json'
 import qinRaw from './emperors.qin.json'
+import hanRaw from './emperors.han.json'
 import segmentsZhouRaw from './segments.zhou.json'
 import segmentsQinRaw from './segments.qin.json'
+import segmentsHanRaw from './segments.han.json'
 import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
+import endgameHanRaw from './endgame.han.json'
 import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
+import fallHanRaw from './fall.han.json'
 import type {
   DynastyEmperors,
   DynastyEndgame,
@@ -27,11 +31,13 @@ import type {
 const EMPERORS: Record<string, DynastyEmperors> = {
   zhou: zhouRaw as DynastyEmperors,
   qin: qinRaw as DynastyEmperors,
+  han: hanRaw as DynastyEmperors,
 }
 
 const SEGMENTS: Record<string, DynastySegments> = {
   zhou: segmentsZhouRaw as DynastySegments,
   qin: segmentsQinRaw as DynastySegments,
+  han: segmentsHanRaw as DynastySegments,
 }
 
 const LORDS: Record<string, DynastyLords> = {
@@ -43,6 +49,8 @@ const ENDGAME: Record<string, DynastyEndgame> = {
   zhou: endgameZhouRaw as DynastyEndgame,
   // 秦：楚汉相争（楚汉地图）——秦亡后到汉立之间的五年，挂在这里
   qin: endgameChuhanRaw as DynastyEndgame,
+  // 汉：三国归晋（三国地图）——汉末到晋统一，挂在这里
+  han: endgameHanRaw as DynastyEndgame,
 }
 
 export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {
@@ -73,6 +81,7 @@ export function getDynastyEndgame(dynastyId: string | undefined): DynastyEndgame
 const FALL: Record<string, unknown> = {
   zhou: fallZhouRaw,
   qin: fallQinRaw,
+  han: fallHanRaw,
 }
 
 /** 该朝代是否有收尾可走（沙盘或过渡页）——决定时间轴末页要不要出现"继续下滑" */
@@ -83,7 +92,9 @@ export function hasDynastyClosing(dynastyId: string | undefined): boolean {
 
 /**
  * 末页入口按钮上的收尾称谓。
- * 有沙盘用沙盘的副题（周：周室倾覆）；只有过渡页时用过渡页标题（秦：秦亡）。
+ * 优先用过渡页副题（周：周室倾覆 / 秦：秦亡）；
+ * 没有过渡页的朝代才退回沙盘副题。
+ * 注意别反了：这里曾错取沙盘副题，导致周显示成"秦灭六国"。
  */
 export function getDynastyClosingLabel(dynastyId: string | undefined): string {
   if (!dynastyId) return ''

@@ -1,0 +1,134 @@
+{
+  "note": "三国疆域示意：以战国/楚汉图的手工剖分为底，只重划三处——魏取北与中原，蜀取西南（巴蜀+荆西），吴取东南，辽东自燕东切出。四块共享顶点，面积守恒。",
+  "attacker": "wei",
+  "regions": [
+    {
+      "id": "wei",
+      "name": "魏",
+      "points": "60,130 250,80 430,60 620,62 800,70 790,205 980,230 985,380 930,470 760,420 560,400 580,470 320,520 350,430 150,470 72,340",
+      "label": [
+        480,
+        250
+      ],
+      "capital": {
+        "name": "洛阳",
+        "x": 560,
+        "y": 340
+      },
+      "aliveFrom": 220
+    },
+    {
+      "id": "shu",
+      "name": "蜀",
+      "points": "150,470 350,430 320,520 580,470 540,622 380,610 250,560",
+      "label": [
+        360,
+        548
+      ],
+      "capital": {
+        "name": "成都",
+        "x": 300,
+        "y": 566
+      },
+      "aliveFrom": 221,
+      "aliveTo": 263
+    },
+    {
+      "id": "wu",
+      "name": "吴",
+      "points": "580,470 560,400 760,420 930,470 840,545 700,600 540,622",
+      "label": [
+        740,
+        520
+      ],
+      "capital": {
+        "name": "建业",
+        "x": 790,
+        "y": 492
+      },
+      "aliveFrom": 229,
+      "aliveTo": 280
+    },
+    {
+      "id": "liaodong",
+      "name": "辽东",
+      "points": "800,70 950,90 980,230 790,205",
+      "label": [
+        886,
+        140
+      ],
+      "capital": {
+        "name": "襄平",
+        "x": 892,
+        "y": 166
+      },
+      "aliveFrom": 190,
+      "aliveTo": 238
+    }
+  ],
+  "points": [
+    {
+      "id": "sp_yinping",
+      "name": "阴平",
+      "kind": "pass",
+      "regionId": "wei",
+      "x": 300,
+      "y": 422,
+      "description": "邓艾自阴平行无人之地七百里，偷渡入蜀。"
+    },
+    {
+      "id": "sp_jieting",
+      "name": "街亭",
+      "kind": "battle",
+      "regionId": "wei",
+      "x": 400,
+      "y": 380,
+      "description": "228 年马谡失街亭，诸葛亮第一次北伐无功而返。"
+    },
+    {
+      "id": "sp_chencang",
+      "name": "陈仓",
+      "kind": "city",
+      "regionId": "wei",
+      "x": 280,
+      "y": 380,
+      "description": "诸葛亮围陈仓，郝昭拒守；关中出入之要。"
+    },
+    {
+      "id": "sp_jiange",
+      "name": "剑阁",
+      "kind": "pass",
+      "regionId": "shu",
+      "x": 505,
+      "y": 492,
+      "description": "姜维退守剑阁，钟会十万众不能进。"
+    },
+    {
+      "id": "sp_hefei",
+      "name": "合肥",
+      "kind": "city",
+      "regionId": "wei",
+      "x": 720,
+      "y": 400,
+      "description": "魏吴淮南前线，张辽八百破孙权十万。"
+    },
+    {
+      "id": "sp_jiangling",
+      "name": "江陵",
+      "kind": "city",
+      "regionId": "wu",
+      "x": 600,
+      "y": 500,
+      "description": "荆州重镇，王濬、杜预伐吴会师于此。"
+    },
+    {
+      "id": "sp_yiling",
+      "name": "夷陵",
+      "kind": "battle",
+      "regionId": "wu",
+      "x": 585,
+      "y": 530,
+      "description": "222 年陆逊火烧连营，破刘备于夷陵。"
+    }
+  ]
+}

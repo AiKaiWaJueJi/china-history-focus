@@ -12,6 +12,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import type { EmperorRecord } from '../../core/emperorTypes'
 import { dynastyById } from '../../data'
 import {
   getDynastyEmperors,
@@ -37,6 +38,17 @@ const PAGE_SIZE = 3
  */
 const SEGMENT_INTROS: Record<string, Record<string, { chapter: string; label: string }>> = {
   zhou: { seg_dongzhou: { chapter: 'dongqian', label: '平王东迁' } },
+  han: {
+    seg_xin: { chapter: 'xin', label: '王莽篡漢' },
+    seg_donghan: { chapter: 'zhongxing', label: '光武中兴' },
+  },
+}
+
+interface IntroGate {
+  /** 触发页：在这一页继续下滚就进过渡页 */
+  page: number
+  chapter: string
+  label: string
 }
 
 export function DynastyDetail() {
@@ -59,7 +71,43 @@ export function DynastyDetail() {
   const segments = segmentsData?.segments ?? []
   const lords = lordsData?.lords ?? []
 
-  const pageCount = data ? Math.ceil(emperors.length / PAGE_SIZE) : 0
+  /*
+    分页按**分段**切：同一页绝不含两个时代的君主。
+    段长不一定是 3 的倍数（新朝只有 1 位王莽），固定 3 张一排会把王莽
+    和光武帝塞进同一页，段间过渡就失去了合法插入点。
+    周（西周 12 / 东周 25）恰好都能被 3 整除，分页结果与旧版完全一致。
+  */
+  const pages = useMemo(() => {
+    const out: EmperorRecord[][] = []
+    let group: EmperorRecord[] = []
+    let groupSeg: string | undefined
+    const flush = () => {
+      for (let i = 0; i < group.length; i += PAGE_SIZE) out.push(group.slice(i, i + PAGE_SIZE))
+      group = []
+    }
+    for (const emperor of emperors) {
+      if (groupSeg !== undefined && emperor.segmentId !== groupSeg) flush()
+      groupSeg = emperor.segmentId
+      group.push(emperor)
+    }
+    flush()
+    return out
+  }, [emperors])
+
+  const pageCount = pages.length
+
+  /** 帝王序号 → 所在页（跳年份用） */
+  const pageOfEmperor = useCallback(
+    (emperorIndex: number) => {
+      let acc = 0
+      for (let p = 0; p < pages.length; p++) {
+        acc += pages[p].length
+        if (emperorIndex < acc) return p
+      }
+      return Math.max(0, pages.length - 1)
+    },
+    [pages],
+  )
 
   const handleChange = useCallback((next: number) => {
     setPageIndex((current) => {
@@ -89,36 +137,42 @@ export function DynastyDetail() {
   }, [dynastyId, hasClosing, navigate])
 
   /*
-    段间过渡的落点：找到目标分段的第一位君主，它所在页的**上一页**就是触发页。
-    例：东周首位是平王（第 12 位，页 4）→ 触发页 3，正是西周最后一页。
+    段间过渡的落点：目标分段第一位君主所在页的**上一页**就是触发页。
+    分页按分段切，所以目标分段的首页一定以它的第一位君主开头。
+    例：东周首位平王 → 页 4，触发页 3；汉：新朝页 4 / 东汉页 5，触发页 3 / 4。
+    一个朝代可以有多处段间过渡（如汉有两处），因此这里返回的是列表。
   */
-  const introGate = useMemo(() => {
-    if (!dynastyId) return null
+  const introGates = useMemo<IntroGate[]>(() => {
+    if (!dynastyId) return []
     const map = SEGMENT_INTROS[dynastyId]
-    if (!map) return null
-    for (const [segId, cfg] of Object.entries(map)) {
-      const firstIdx = emperors.findIndex((emperor) => emperor.segmentId === segId)
-      if (firstIdx > 0) {
-        return { page: Math.ceil(firstIdx / PAGE_SIZE) - 1, chapter: cfg.chapter, label: cfg.label }
-      }
-    }
-    return null
-  }, [dynastyId, emperors])
+    if (!map) return []
+    return Object.entries(map).flatMap(([segId, cfg]) => {
+      const page = pages.findIndex((group) => group[0]?.segmentId === segId)
+      return page > 0 ? [{ page: page - 1, chapter: cfg.chapter, label: cfg.label }] : []
+    })
+  }, [dynastyId, pages])
 
-  const goIntro = useCallback(() => {
-    if (!dynastyId || !introGate) return
-    if (performance.now() - pageAt.current < 800) return
-    navigate(`/dynasty/${dynastyId}/fall/${introGate.chapter}`)
-  }, [dynastyId, introGate, navigate])
+  /** 当前页如果正好是某个段末页，就是这一页的过渡入口 */
+  const introGate = introGates.find((gate) => gate.page === pageIndex) ?? null
+
+  const goIntro = useCallback(
+    (gate: IntroGate) => {
+      if (!dynastyId) return
+      if (performance.now() - pageAt.current < 800) return
+      navigate(`/dynasty/${dynastyId}/fall/${gate.chapter}`)
+    },
+    [dynastyId, navigate],
+  )
 
   /* 段末页继续下滚 → 进过渡页，不翻到下一段 */
   const onLeavePage = useCallback(
     (from: number) => {
-      if (!introGate || from !== introGate.page) return false
-      goIntro()
+      const gate = introGates.find((item) => item.page === from)
+      if (!gate) return false
+      goIntro(gate)
       return true
     },
-    [introGate, goIntro],
+    [introGates, goIntro],
   )
 
 
@@ -169,7 +223,7 @@ export function DynastyDetail() {
   }, [location.state, pageCount])
 
   /* ---------------- 当前页所属分段 → 决定布局 ---------------- */
-  const pageEmperors = emperors.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE)
+  const pageEmperors = pages[pageIndex] ?? []
   const pageSegmentId = pageEmperors[0]?.segmentId
 
   // 东周才出现"天子与诸侯并立"，并且需要真的有诸侯数据
@@ -209,9 +263,9 @@ export function DynastyDetail() {
       if (emperors.length === 0) return
       let index = emperors.findIndex((emperor) => emperor.startYear >= year)
       if (index < 0) index = emperors.length - 1
-      handleChange(Math.floor(index / PAGE_SIZE))
+      handleChange(pageOfEmperor(index))
     },
-    [emperors, handleChange],
+    [emperors, pageOfEmperor, handleChange],
   )
 
   if (!dynasty) {
@@ -249,9 +303,7 @@ export function DynastyDetail() {
       {segments.length > 0 ? (
         <SegmentAxis
           segments={segments}
-          emperors={emperors}
-          pageIndex={pageIndex}
-          pageSize={PAGE_SIZE}
+          currentPage={pageEmperors}
           onJumpToYear={jumpToYear}
         />
       ) : null}
@@ -268,7 +320,7 @@ export function DynastyDetail() {
           <>
             <div className="zhou-layer">
               <EmperorPager
-                emperors={emperors}
+                pageEmperors={pageEmperors}
                 pageIndex={pageIndex}
                 direction={direction}
                 pageSize={PAGE_SIZE}
@@ -280,7 +332,7 @@ export function DynastyDetail() {
           </>
         ) : (
           <EmperorPager
-            emperors={emperors}
+            pageEmperors={pageEmperors}
             pageIndex={pageIndex}
             direction={direction}
             pageSize={PAGE_SIZE}
@@ -314,8 +366,12 @@ export function DynastyDetail() {
             末页不再放大按钮：入口已经改为"继续下滑"。
             这里只留一行小字，告诉用户下滑能进；键盘用户仍可点它。
           */}
-          {introGate && pageIndex === introGate.page ? (
-            <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goIntro}>
+          {introGate ? (
+            <button
+              type="button"
+              className="timeline-btn timeline-btn--endgame"
+              onClick={() => goIntro(introGate)}
+            >
               继续下滑 · {introGate.label} ↓
             </button>
           ) : hasClosing && pageIndex === pageCount - 1 ? (

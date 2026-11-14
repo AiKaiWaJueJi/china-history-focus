@@ -1022,6 +1022,22 @@
   color: rgba(226, 200, 125, 0.78);
 }
 
+/* 史实注记：比三段正文低一级，用虚线边和偏灰的字表示"考据层" */
+.battle-note {
+  border-left-style: dashed;
+  border-left-color: rgba(255, 255, 255, 0.16);
+}
+
+.battle-note .battle-section-label {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.battle-note .battle-text {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* ---------- 悬浮卡片里的要点列表 ---------- */
 .map-tip-list {
   margin: 4px 0 0;
@@ -3180,4 +3196,56 @@
 .map-stage[data-unified='true'] .regions-layer,
 .map-stage[data-unified='true'] .region {
   pointer-events: none;
+}
+/* ==========================================================================
+   v46：未登场势力的幽灵轮廓（三国 aliveFrom 过滤）
+   --------------------------------------------------------------------------
+   蜀 221、吴 229 才立；220 年开局时它们不该是可点疆域，
+   但地图也不能"缺一块"。用虚线幽灵占住位置：不可点、不带国名国都。
+   ========================================================================== */
+.unborn-layer {
+  pointer-events: none;
+}
+
+.region-unborn {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 7;
+  stroke-linejoin: round;
+}
+
+/* ==========================================================================
+   v49：要地与关隘（方位注记）
+   --------------------------------------------------------------------------
+   只交代"这里为什么重要"，不参与推演、不可点；
+   聚焦战报时随疆域一起压暗，但保留轮廓，便于对照战报里的地名。
+   ========================================================================== */
+.strategic-layer {
+  pointer-events: none;
+  transition: opacity 340ms ease;
+}
+
+.strategic-point circle {
+  fill: #e2c87d;
+  opacity: 0.65;
+}
+
+.strategic-point.kind-pass circle {
+  fill: #d9a95a;
+  opacity: 0.85;
+}
+
+.strategic-point text {
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  fill: rgba(240, 225, 190, 0.6);
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.62);
+  stroke-width: 2.4;
+}
+
+.endgame-body.is-focused .strategic-layer {
+  opacity: 0.25;
 }

@@ -21,6 +21,7 @@ import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { MAPS } from './mapGeometry'
 import { CHUHAN_MAP } from './chuhanMap'
+import { SANGUO_MAP } from './sanguoMap'
 import { useEndgameStore } from './useEndgameStore'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
@@ -230,7 +231,7 @@ export function EndgameStage() {
     : []
 
   /*
-    点「秦」= 回到战前。
+    点攻方（周=秦 / 楚汉=汉）= 回到战前。
     若战报正开着，先让它播完 240ms 退场动画再归零，避免面板"啪"地消失。
   */
   const handleReset = useCallback(() => {
@@ -248,7 +249,7 @@ export function EndgameStage() {
     (value: number) => {
       /*
         底部国家容器优先级最高：一旦点它，正在播的行军序列立即作废。
-        并且点节点 = 跳到该节点 + 展开对应战报：这排节点是"六国被灭的次序"
+        并且点节点 = 跳到该节点 + 展开对应战报：这排节点是"各国被吞并的次序"
         （前230、前228…），不是等距时间轴，点谁就该看谁那场仗。
       */
       useCampaignStore.getState().clearCampaign()
@@ -297,6 +298,20 @@ export function EndgameStage() {
     )
   }
 
+  /* 地图选择：楚汉与三国各有自己的配置，其余走战国 */
+  const mapSpec =
+    endgame.mapId === 'chuhan'
+      ? CHUHAN_MAP
+      : endgame.mapId === 'sanguo'
+        ? SANGUO_MAP
+        : MAPS[endgame.mapId ?? 'zhanguo']
+
+  /*
+    当前推演年份：第 0 幕用 preYearValue，之后用"上一幕"的年份。
+    地图据此判断哪些势力已经登场（MapRegion.aliveFrom / aliveTo）。
+  */
+  const currentYear = index === 0 ? endgame.preYearValue : events[index - 1]?.yearValue
+
   return (
     <div className="endgame-page" data-index={index}>
       <div className="endgame-vignette" aria-hidden="true" />
@@ -341,7 +356,8 @@ export function EndgameStage() {
         ) : null}
 
         <WarringStatesMap
-          mapSpec={endgame.mapId === 'chuhan' ? CHUHAN_MAP : MAPS[endgame.mapId ?? 'zhanguo']}
+          mapSpec={mapSpec}
+          currentYear={currentYear}
           events={events}
           index={index}
           campaigns={mapCampaigns}
@@ -369,7 +385,7 @@ export function EndgameStage() {
                   <p className="conquer-confirm-text">
                     将先推进
                     {pendingBacklog
-                      .map((e) => ` ${e.desc.replace('秦灭', '')}（${e.year}）`)
+                      .map((e) => ` ${e.target}（${e.year}）`)
                       .join(' →')}
                     ，再演 {pendingConquer.desc}
                   </p>
@@ -388,16 +404,16 @@ export function EndgameStage() {
                 </div>
               ) : null}
               {/*
-              整个终章（秦字 + 大秦帝国入口）都只在 showFinale 时挂载：
+              整个终章（统一者字样 + 下一朝入口）都只在 showFinale 时挂载：
               之前入口卡片跟着 isFinished 渲染，导致"战报还开着、入口已经出现"。
               */}
             {showFinale ? (
               <>
-                {/* 一统主角：七国版图消散后，秦字独立占据版图中心 */}
+                {/* 一统主角：诸国版图消散后，统一者字样独立占据版图中心 */}
                 <div className="unify-hero" aria-hidden="true">
                   {/*
                     缩放交给 .unify-core 统一做：
-                    秦字与圆环是同一个盒子的两个子元素，天然同步、天然同心。
+                    字样与圆环是同一个盒子的两个子元素，天然同步、天然同心。
                     之前两者各自动画，才会出现"不同步"和"不居中"。
                   */}
                   <div className="unify-core">

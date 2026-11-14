@@ -390,6 +390,7 @@ for (const d of data.dynasties) writeFileSync(join(artDir, `${d.id}.svg`), artif
 const porDir = join(PROJECT, 'public/portraits')
 mkdirSync(porDir, { recursive: true })
 for (const e of data.emperors) {
+  if (e.dynastyId === 'han') continue // 汉朝画像用历史影像 .webp，不生成占位 SVG
   const d = data.dynasties.find((x) => x.id === e.dynastyId)
   writeFileSync(join(porDir, `${e.id.replace('e_', '').replace(/_/g, '-')}.svg`), portraitSvg(e, d))
 }
@@ -409,5 +410,7 @@ for (const emperor of qinFile.emperors) {
   writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, qinDynasty))
 }
 console.log(`qin portraits: ${qinFile.emperors.length}`)
+/* 汉朝不用程序化占位图：27 帝已换成 public/portraits/han-*.webp（历史画像）。
+   若将来新增汉朝帝纪，请按同样规格补图，不要再生成 han-*.svg，避免两套画像并存。 */
 console.log(`artifacts: ${data.dynasties.length} (${data.dynasties.map((d) => d.id).join(', ')})`)
 console.log(`portraits: ${data.emperors.length}`)

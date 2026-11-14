@@ -146,6 +146,34 @@
   font-variant-numeric: tabular-nums;
 }
 
+/*
+  超短段（新朝、秦朝各 14 年）：只显示段名，年份收进 title 提示。
+  段宽不足 8% 时，"名 + 起止年"必然压到邻段上。
+*/
+.seg-band.is-narrow .seg-band-range {
+  display: none;
+}
+
+.seg-band.is-narrow .seg-band-name {
+  letter-spacing: 0.04em;
+}
+
+/*
+  近距标志点（如党锢 166 与黄巾 184）：每隔一个下移一行。
+  竖线、圆点、标签一起下移，保持"同一条标尺"的读法。
+*/
+.seg-marker.is-alt .seg-marker-line {
+  height: 30px;
+}
+
+.seg-marker.is-alt .seg-marker-dot {
+  top: 26px;
+}
+
+.seg-marker.is-alt .seg-marker-label {
+  top: 38px;
+}
+
 /* 播放头：当前页覆盖的时间窗 */
 .seg-playhead {
   position: absolute;
@@ -1044,4 +1072,74 @@
 .emp-card:hover .emp-rule,
 .emp-card:focus-visible .emp-rule {
   opacity: 1;
+}
+/* ==========================================================================
+   v51：谥法评价的边框可读性
+   --------------------------------------------------------------------------
+   换成历史画像后，原来 1px、半透明的评价色被照片吃掉，看不出美/平/恶。
+   这里把评价色做成「2px 外框 + 顶部一道细光带 + 悬浮外发光」，
+   三种评价在未悬浮时也能一眼分辨；周、漢共用同一套 EmperorCard，自动生效。
+   ========================================================================== */
+.emp-card[data-evaluation='good'] {
+  --eval: #c9a227;
+  --eval-bright: #f0d99b;
+}
+
+.emp-card[data-evaluation='bad'] {
+  --eval: #a8443a;
+  --eval-bright: #e57a62;
+}
+
+.emp-card[data-evaluation='neutral'] {
+  --eval: #6f8b83;
+  --eval-bright: #a9c8bf;
+}
+
+.emp-card .emp-clip {
+  border-width: 2px;
+  border-color: color-mix(in srgb, var(--eval, rgba(255, 255, 255, 0.12)) 82%, transparent);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 10px 26px -20px rgba(0, 0, 0, 0.95);
+}
+
+/* 顶部一道评价色光带：即使边框在深色照片里不明显，也能从上沿读出来 */
+.emp-card .emp-clip::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--eval-bright) 16%,
+    var(--eval-bright) 84%,
+    transparent 100%
+  );
+  opacity: 0.88;
+}
+
+.emp-card:hover .emp-clip,
+.emp-card:focus-visible .emp-clip {
+  border-color: var(--eval-bright);
+  box-shadow:
+    0 0 0 1px var(--eval-bright),
+    0 0 24px -8px var(--eval-bright);
+}
+
+/* 谥法本义那行小字也按评价上色，悬浮时能直接读到"美/平/恶"对应的色调 */
+.emp-card[data-evaluation='good'] .emp-rule {
+  color: #f0d99b;
+}
+
+.emp-card[data-evaluation='bad'] .emp-rule {
+  color: #e8a08e;
+}
+
+.emp-card[data-evaluation='neutral'] .emp-rule {
+  color: #b7cec7;
 }

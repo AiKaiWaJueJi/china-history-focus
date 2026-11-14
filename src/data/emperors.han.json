@@ -1,0 +1,859 @@
+{
+  "dynastyId": "han",
+  "name": "漢",
+  "period": "前202 — 220",
+  "emperors": [
+    {
+      "id": "han_gao",
+      "posthumousTitle": "漢高祖",
+      "personalName": "刘邦",
+      "reign": "前202 — 前195",
+      "startYear": -202,
+      "endYear": -195,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-gao.webp",
+      "events": [
+        {
+          "id": "ev_gao_yuefa",
+          "name": "约法三章",
+          "dimension": "political",
+          "year": -206
+        },
+        {
+          "id": "ev_gao_gaixia",
+          "name": "垓下灭楚",
+          "dimension": "military",
+          "year": -202
+        },
+        {
+          "id": "ev_gao_baideng",
+          "name": "白登之围",
+          "dimension": "military",
+          "year": -200
+        },
+        {
+          "id": "ev_gao_junguo",
+          "name": "郡国并行",
+          "dimension": "political",
+          "year": -195
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "功德盛大曰高"
+    },
+    {
+      "id": "han_hui",
+      "posthumousTitle": "漢惠帝",
+      "personalName": "刘盈",
+      "reign": "前195 — 前188",
+      "startYear": -195,
+      "endYear": -188,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-hui.webp",
+      "events": [
+        {
+          "id": "ev_hui_xiaogui",
+          "name": "萧规曹随",
+          "dimension": "political",
+          "year": -193
+        },
+        {
+          "id": "ev_hui_renzhi",
+          "name": "人彘之祸",
+          "dimension": "political",
+          "year": -194
+        },
+        {
+          "id": "ev_hui_changan",
+          "name": "修筑长安城",
+          "dimension": "culture",
+          "year": -190
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "柔质慈民曰惠"
+    },
+    {
+      "id": "han_wen",
+      "posthumousTitle": "漢文帝",
+      "personalName": "刘恒",
+      "reign": "前180 — 前157",
+      "startYear": -180,
+      "endYear": -157,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-wen.webp",
+      "events": [
+        {
+          "id": "ev_wen_rouxing",
+          "name": "废除肉刑",
+          "dimension": "political",
+          "year": -167
+        },
+        {
+          "id": "ev_wen_tiying",
+          "name": "缇萦上书",
+          "dimension": "political",
+          "year": -167
+        },
+        {
+          "id": "ev_wen_qingyao",
+          "name": "轻徭薄赋",
+          "dimension": "political",
+          "year": -168
+        },
+        {
+          "id": "ev_wen_heqin",
+          "name": "匈奴和亲",
+          "dimension": "military",
+          "year": -162
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文"
+    },
+    {
+      "id": "han_jing",
+      "posthumousTitle": "漢景帝",
+      "personalName": "刘启",
+      "reign": "前157 — 前141",
+      "startYear": -157,
+      "endYear": -141,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-jing.webp",
+      "events": [
+        {
+          "id": "ev_jing_qiguo",
+          "name": "七国之乱",
+          "dimension": "military",
+          "year": -154
+        },
+        {
+          "id": "ev_jing_xuefan",
+          "name": "削藩之议",
+          "dimension": "political",
+          "year": -155
+        },
+        {
+          "id": "ev_jing_wenjing",
+          "name": "文景之治",
+          "dimension": "political",
+          "year": -150
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "布义行刚曰景"
+    },
+    {
+      "id": "han_wu",
+      "posthumousTitle": "漢武帝",
+      "personalName": "刘彻",
+      "reign": "前141 — 前87",
+      "startYear": -141,
+      "endYear": -87,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-wu.webp",
+      "events": [
+        {
+          "id": "ev_wu_ruzhu",
+          "name": "独尊儒术",
+          "dimension": "culture",
+          "year": -134
+        },
+        {
+          "id": "ev_wu_zhangqian",
+          "name": "张骞通西域",
+          "dimension": "culture",
+          "year": -138
+        },
+        {
+          "id": "ev_wu_xiongnu",
+          "name": "卫霍击匈奴",
+          "dimension": "military",
+          "year": -119
+        },
+        {
+          "id": "ev_wu_wugu",
+          "name": "巫蛊之祸",
+          "dimension": "political",
+          "year": -91
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武"
+    },
+    {
+      "id": "han_zhao",
+      "posthumousTitle": "漢昭帝",
+      "personalName": "刘弗陵",
+      "reign": "前87 — 前74",
+      "startYear": -87,
+      "endYear": -74,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-zhao.webp",
+      "events": [
+        {
+          "id": "ev_zhao_huoguang",
+          "name": "霍光辅政",
+          "dimension": "political",
+          "year": -87
+        },
+        {
+          "id": "ev_zhao_yanTie",
+          "name": "盐铁会议",
+          "dimension": "political",
+          "year": -81
+        },
+        {
+          "id": "ev_zhao_xiongnu",
+          "name": "匈奴犯边",
+          "dimension": "military",
+          "year": -80
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "容仪恭美曰昭"
+    },
+    {
+      "id": "han_xuan",
+      "posthumousTitle": "漢宣帝",
+      "personalName": "刘询",
+      "reign": "前74 — 前49",
+      "startYear": -74,
+      "endYear": -49,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-xuan.webp",
+      "events": [
+        {
+          "id": "ev_xuan_zhongxing",
+          "name": "昭宣中兴",
+          "dimension": "political",
+          "year": -68
+        },
+        {
+          "id": "ev_xuan_duhu",
+          "name": "西域都护",
+          "dimension": "political",
+          "year": -60
+        },
+        {
+          "id": "ev_xuan_huhanye",
+          "name": "呼韩邪来朝",
+          "dimension": "military",
+          "year": -51
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "圣善周闻曰宣"
+    },
+    {
+      "id": "han_yuan",
+      "posthumousTitle": "漢元帝",
+      "personalName": "刘奭",
+      "reign": "前49 — 前33",
+      "startYear": -49,
+      "endYear": -33,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-yuan.webp",
+      "events": [
+        {
+          "id": "ev_yuan_zhaojun",
+          "name": "昭君出塞",
+          "dimension": "culture",
+          "year": -33
+        },
+        {
+          "id": "ev_yuan_chengtang",
+          "name": "陈汤灭郅支",
+          "dimension": "military",
+          "year": -36
+        },
+        {
+          "id": "ev_yuan_baoyantie",
+          "name": "罢盐铁官",
+          "dimension": "political",
+          "year": -44
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "行义说民曰元"
+    },
+    {
+      "id": "han_cheng",
+      "posthumousTitle": "漢成帝",
+      "personalName": "刘骜",
+      "reign": "前33 — 前7",
+      "startYear": -33,
+      "endYear": -7,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-cheng.webp",
+      "events": [
+        {
+          "id": "ev_cheng_zhaofeiyan",
+          "name": "赵飞燕入宫",
+          "dimension": "political",
+          "year": -18
+        },
+        {
+          "id": "ev_cheng_wangshi",
+          "name": "外戚王氏专权",
+          "dimension": "political",
+          "year": -20
+        },
+        {
+          "id": "ev_cheng_liuxiang",
+          "name": "刘向校书",
+          "dimension": "culture",
+          "year": -26
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "安民立政曰成"
+    },
+    {
+      "id": "han_ai",
+      "posthumousTitle": "漢哀帝",
+      "personalName": "刘欣",
+      "reign": "前7 — 前1",
+      "startYear": -7,
+      "endYear": -1,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-ai.webp",
+      "events": [
+        {
+          "id": "ev_ai_xiantian",
+          "name": "限田限奴",
+          "dimension": "political",
+          "year": -7
+        },
+        {
+          "id": "ev_ai_dongxian",
+          "name": "董贤得宠",
+          "dimension": "political",
+          "year": -3
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "蚤孤短折曰哀"
+    },
+    {
+      "id": "han_ping",
+      "posthumousTitle": "漢平帝",
+      "personalName": "刘衎",
+      "reign": "前1 — 6",
+      "startYear": -1,
+      "endYear": 6,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-ping.webp",
+      "events": [
+        {
+          "id": "ev_ping_wangmang",
+          "name": "王莽执政",
+          "dimension": "political",
+          "year": 1
+        },
+        {
+          "id": "ev_ping_hanhuang",
+          "name": "郡国旱蝗",
+          "dimension": "political",
+          "year": 2
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "执事有制曰平"
+    },
+    {
+      "id": "han_ruzi",
+      "posthumousTitle": "孺子婴",
+      "personalName": "刘婴",
+      "reign": "6 — 8",
+      "startYear": 6,
+      "endYear": 8,
+      "segmentId": "seg_xihan",
+      "portrait": "/portraits/han-ruzi.webp",
+      "events": [
+        {
+          "id": "ev_ruzi_jushe",
+          "name": "王莽居摄",
+          "dimension": "political",
+          "year": 6
+        },
+        {
+          "id": "ev_ruzi_hanwang",
+          "name": "西漢亡",
+          "dimension": "political",
+          "year": 8
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "孺子婴无谥，王莽摄政所立"
+    },
+    {
+      "id": "han_mang",
+      "posthumousTitle": "新·王莽",
+      "personalName": "王莽",
+      "reign": "9 — 23",
+      "startYear": 9,
+      "endYear": 23,
+      "segmentId": "seg_xin",
+      "portrait": "/portraits/han-mang.webp",
+      "events": [
+        {
+          "id": "ev_mang_cuanhan",
+          "name": "篡漢称帝",
+          "dimension": "political",
+          "year": 9
+        },
+        {
+          "id": "ev_mang_wangtian",
+          "name": "王田私属",
+          "dimension": "political",
+          "year": 9
+        },
+        {
+          "id": "ev_mang_lvlin",
+          "name": "绿林赤眉",
+          "dimension": "military",
+          "year": 18
+        },
+        {
+          "id": "ev_mang_kunyang",
+          "name": "昆阳之战",
+          "dimension": "military",
+          "year": 23
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "王莽无谥，新朝一世而亡"
+    },
+    {
+      "id": "han_guangwu",
+      "posthumousTitle": "漢光武帝",
+      "personalName": "刘秀",
+      "reign": "25 — 57",
+      "startYear": 25,
+      "endYear": 57,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-guangwu.webp",
+      "events": [
+        {
+          "id": "ev_guangwu_chengdi",
+          "name": "称帝鄗南",
+          "dimension": "political",
+          "year": 25
+        },
+        {
+          "id": "ev_guangwu_tongyi",
+          "name": "统一天下",
+          "dimension": "military",
+          "year": 36
+        },
+        {
+          "id": "ev_guangwu_dutian",
+          "name": "度田令",
+          "dimension": "political",
+          "year": 39
+        },
+        {
+          "id": "ev_guangwu_rouddao",
+          "name": "柔道治国",
+          "dimension": "political",
+          "year": 41
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "能绍前业曰光，克定祸乱曰武"
+    },
+    {
+      "id": "han_ming",
+      "posthumousTitle": "漢明帝",
+      "personalName": "刘庄",
+      "reign": "57 — 75",
+      "startYear": 57,
+      "endYear": 75,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-ming.webp",
+      "events": [
+        {
+          "id": "ev_ming_mingzhang",
+          "name": "明章之治",
+          "dimension": "political",
+          "year": 66
+        },
+        {
+          "id": "ev_ming_baima",
+          "name": "佛教东传",
+          "dimension": "culture",
+          "year": 68
+        },
+        {
+          "id": "ev_ming_wangjing",
+          "name": "王景治河",
+          "dimension": "political",
+          "year": 69
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明"
+    },
+    {
+      "id": "han_zhang",
+      "posthumousTitle": "漢章帝",
+      "personalName": "刘炟",
+      "reign": "75 — 88",
+      "startYear": 75,
+      "endYear": 88,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-zhang.webp",
+      "events": [
+        {
+          "id": "ev_zhang_baihu",
+          "name": "白虎观会议",
+          "dimension": "culture",
+          "year": 79
+        },
+        {
+          "id": "ev_zhang_banchao",
+          "name": "班超定西域",
+          "dimension": "military",
+          "year": 80
+        },
+        {
+          "id": "ev_zhang_kuandhou",
+          "name": "宽厚之政",
+          "dimension": "political",
+          "year": 85
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "温克令仪曰章"
+    },
+    {
+      "id": "han_he",
+      "posthumousTitle": "漢和帝",
+      "personalName": "刘肇",
+      "reign": "88 — 106",
+      "startYear": 88,
+      "endYear": 106,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-he.webp",
+      "events": [
+        {
+          "id": "ev_he_yanran",
+          "name": "燕然勒石",
+          "dimension": "military",
+          "year": 89
+        },
+        {
+          "id": "ev_he_cailun",
+          "name": "蔡伦造纸",
+          "dimension": "culture",
+          "year": 105
+        },
+        {
+          "id": "ev_he_zhengzhong",
+          "name": "宦官封侯",
+          "dimension": "political",
+          "year": 102
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "不刚不柔曰和"
+    },
+    {
+      "id": "han_shang",
+      "posthumousTitle": "漢殇帝",
+      "personalName": "刘隆",
+      "reign": "106 — 106",
+      "startYear": 106,
+      "endYear": 106,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-shang.webp",
+      "events": [
+        {
+          "id": "ev_shang_jimei",
+          "name": "生百余日即位",
+          "dimension": "political",
+          "year": 106
+        },
+        {
+          "id": "ev_shang_dengtaihou",
+          "name": "邓太后临朝",
+          "dimension": "political",
+          "year": 106
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "短折不成曰殇"
+    },
+    {
+      "id": "han_an",
+      "posthumousTitle": "漢安帝",
+      "personalName": "刘祜",
+      "reign": "106 — 125",
+      "startYear": 106,
+      "endYear": 125,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-an.webp",
+      "events": [
+        {
+          "id": "ev_an_dengzhi",
+          "name": "邓骘专权",
+          "dimension": "political",
+          "year": 107
+        },
+        {
+          "id": "ev_an_qiang",
+          "name": "西羌之乱",
+          "dimension": "military",
+          "year": 110
+        },
+        {
+          "id": "ev_an_feitaizi",
+          "name": "废太子刘保",
+          "dimension": "political",
+          "year": 124
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "好和不争曰安"
+    },
+    {
+      "id": "han_shao_yi",
+      "posthumousTitle": "少帝",
+      "personalName": "刘懿",
+      "reign": "125 — 125",
+      "startYear": 125,
+      "endYear": 125,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-shao-yi.webp",
+      "events": [
+        {
+          "id": "ev_shaoyi_yantaihou",
+          "name": "阎太后立帝",
+          "dimension": "political",
+          "year": 125
+        },
+        {
+          "id": "ev_shaoyi_zhengbian",
+          "name": "宦官政变",
+          "dimension": "political",
+          "year": 125
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "少帝无谥，废黜不列庙"
+    },
+    {
+      "id": "han_shun",
+      "posthumousTitle": "漢顺帝",
+      "personalName": "刘保",
+      "reign": "125 — 144",
+      "startYear": 125,
+      "endYear": 144,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-shun.webp",
+      "events": [
+        {
+          "id": "ev_shun_dizhenyi",
+          "name": "张衡地动仪",
+          "dimension": "culture",
+          "year": 132
+        },
+        {
+          "id": "ev_shun_liangji",
+          "name": "梁冀专权",
+          "dimension": "political",
+          "year": 136
+        },
+        {
+          "id": "ev_shun_yangjia",
+          "name": "阳嘉新制",
+          "dimension": "political",
+          "year": 133
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "慈和遍服曰顺"
+    },
+    {
+      "id": "han_chong",
+      "posthumousTitle": "漢冲帝",
+      "personalName": "刘炳",
+      "reign": "144 — 145",
+      "startYear": 144,
+      "endYear": 145,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-chong.webp",
+      "events": [
+        {
+          "id": "ev_chong_jimei",
+          "name": "幼年即位",
+          "dimension": "political",
+          "year": 144
+        },
+        {
+          "id": "ev_chong_liangtaihou",
+          "name": "梁太后临朝",
+          "dimension": "political",
+          "year": 145
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "幼少在位曰冲"
+    },
+    {
+      "id": "han_zhi",
+      "posthumousTitle": "漢质帝",
+      "personalName": "刘缵",
+      "reign": "145 — 146",
+      "startYear": 145,
+      "endYear": 146,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-zhi.webp",
+      "events": [
+        {
+          "id": "ev_zhi_liangji",
+          "name": "梁冀鸩帝",
+          "dimension": "political",
+          "year": 146
+        },
+        {
+          "id": "ev_zhi_qingyi",
+          "name": "童谣讥梁冀",
+          "dimension": "culture",
+          "year": 146
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "名实不爽曰质"
+    },
+    {
+      "id": "han_huan",
+      "posthumousTitle": "漢桓帝",
+      "personalName": "刘志",
+      "reign": "146 — 168",
+      "startYear": 146,
+      "endYear": 168,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-huan.webp",
+      "events": [
+        {
+          "id": "ev_huan_danggu",
+          "name": "党锢之祸",
+          "dimension": "political",
+          "year": 166
+        },
+        {
+          "id": "ev_huan_pingqiang",
+          "name": "段颎平羌",
+          "dimension": "military",
+          "year": 167
+        },
+        {
+          "id": "ev_huan_poliyan",
+          "name": "宦官专权",
+          "dimension": "political",
+          "year": 159
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "辟土服远曰桓"
+    },
+    {
+      "id": "han_ling",
+      "posthumousTitle": "漢灵帝",
+      "personalName": "刘宏",
+      "reign": "168 — 189",
+      "startYear": 168,
+      "endYear": 189,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-ling.webp",
+      "events": [
+        {
+          "id": "ev_ling_huangjin",
+          "name": "黄巾起义",
+          "dimension": "military",
+          "year": 184
+        },
+        {
+          "id": "ev_ling_maiguan",
+          "name": "卖官鬻爵",
+          "dimension": "political",
+          "year": 178
+        },
+        {
+          "id": "ev_ling_hejin",
+          "name": "何进召董卓",
+          "dimension": "political",
+          "year": 189
+        }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "乱而不损曰灵"
+    },
+    {
+      "id": "han_shao_bian",
+      "posthumousTitle": "少帝",
+      "personalName": "刘辩",
+      "reign": "189 — 189",
+      "startYear": 189,
+      "endYear": 189,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-shao-bian.webp",
+      "events": [
+        {
+          "id": "ev_shaobian_hejin",
+          "name": "何进被杀",
+          "dimension": "political",
+          "year": 189
+        },
+        {
+          "id": "ev_shaobian_dongzhuo",
+          "name": "董卓入洛",
+          "dimension": "political",
+          "year": 189
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "少帝无谥，废黜不列庙"
+    },
+    {
+      "id": "han_xian",
+      "posthumousTitle": "漢献帝",
+      "personalName": "刘协",
+      "reign": "189 — 220",
+      "startYear": 189,
+      "endYear": 220,
+      "segmentId": "seg_donghan",
+      "portrait": "/portraits/han-xian.webp",
+      "events": [
+        {
+          "id": "ev_xian_qianDu",
+          "name": "董卓迁都",
+          "dimension": "political",
+          "year": 190
+        },
+        {
+          "id": "ev_xian_yingdi",
+          "name": "迎帝都许",
+          "dimension": "political",
+          "year": 196
+        },
+        {
+          "id": "ev_xian_guandu",
+          "name": "官渡之战",
+          "dimension": "military",
+          "year": 200
+        },
+        {
+          "id": "ev_xian_chibi",
+          "name": "赤壁之战",
+          "dimension": "military",
+          "year": 208
+        }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "聪明睿智曰献"
+    }
+  ]
+}

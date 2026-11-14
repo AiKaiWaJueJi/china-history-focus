@@ -36,7 +36,7 @@ type FontKey = keyof typeof DYNASTY_FONT_FAMILY
  * 「台阁体 / 行书」按明代台阁体的实际面貌归到 thin，而不是行书。
  */
 const RULES: ReadonlyArray<readonly [RegExp, FontKey]> = [
-  [/瘦金|台阁|馆阁|汉隶|隶书/, 'thin'],
+  [/瘦金|台阁|馆阁|汉隶|漢隶|隶书/, 'thin'],
   [/行草|草书/, 'caoshu'],
   [/行书|行楷/, 'xingshu'],
   [/楷书/, 'kaishu'],

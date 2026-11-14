@@ -8,7 +8,7 @@
  * 『楚』改名『西楚』，所以整块大陆依然严丝合缝。
  */
 import geo from '../../data/chuhan.geo.json'
-import type { MapRegion, MapSpec } from './mapGeometry'
+import type { MapRegion, MapSpec, StrategicPoint } from './mapGeometry'
 
 export const CHUHAN_REGIONS: MapRegion[] = geo.regions.map((r) => ({
   id: r.id,
@@ -29,4 +29,8 @@ export const CHUHAN_MAP: MapSpec = {
     'M 80,268 C 200,250 280,232 360,254 C 450,278 520,262 600,278 C 700,298 820,276 960,300',
     'M 300,500 C 400,486 470,502 560,514 C 660,528 740,516 850,530',
   ],
+  ariaLabel: '楚漢相争版图',
+  // 点「汉」回到前 206 年项羽分封之局
+  resetHint: '十八王复其疆',
+  points: ((geo as { points?: StrategicPoint[] }).points ?? []),
 }

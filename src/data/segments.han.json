@@ -1,0 +1,71 @@
+{
+  "dynastyId": "han",
+  "segments": [
+    {
+      "id": "seg_xihan",
+      "name": "西漢",
+      "startYear": -202,
+      "endYear": 8,
+      "accent": "#9b3a2e",
+      "desc": "长安为都 · 与民休息",
+      "markers": [
+        {
+          "id": "m_wenjing",
+          "name": "文景之治",
+          "year": -180,
+          "note": "轻徭薄赋"
+        },
+        {
+          "id": "m_hanwu",
+          "name": "漢武盛世",
+          "year": -141,
+          "note": "凿空西域"
+        }
+      ]
+    },
+    {
+      "id": "seg_xin",
+      "name": "新",
+      "startYear": 9,
+      "endYear": 23,
+      "accent": "#6f7a55",
+      "desc": "莽篡漢祚 · 十有五年",
+      "markers": [
+        {
+          "id": "m_kunyang",
+          "name": "昆阳之战",
+          "year": 23,
+          "note": "光武初起"
+        }
+      ]
+    },
+    {
+      "id": "seg_donghan",
+      "name": "东漢",
+      "startYear": 25,
+      "endYear": 220,
+      "accent": "#b06a3f",
+      "desc": "洛阳为都 · 光武中兴",
+      "markers": [
+        {
+          "id": "m_mingzhang",
+          "name": "明章之治",
+          "year": 57,
+          "note": "吏治清明"
+        },
+        {
+          "id": "m_danggu",
+          "name": "党锢之祸",
+          "year": 166,
+          "note": "清议受压"
+        },
+        {
+          "id": "m_huangjin",
+          "name": "黄巾之乱",
+          "year": 184,
+          "note": "州郡割据"
+        }
+      ]
+    }
+  ]
+}
