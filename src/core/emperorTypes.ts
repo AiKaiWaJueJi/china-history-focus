@@ -229,6 +229,8 @@ export interface DynastyEndgame {
   mapId?: 'zhanguo' | 'chuhan'
   /** 「战前」节点显示的年份 */
   preYear?: string
+  /** 终章出现的统一者国号（周之沙盘=秦，楚汉之沙盘=汉） */
+  unifiedName?: string
   title: string
   subtitle: string
   intro: string

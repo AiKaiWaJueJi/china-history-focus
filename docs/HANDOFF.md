@@ -116,6 +116,22 @@ interface MapSpec { attacker: MapRegion; regions: MapRegion[]; rivers: string[] 
 > 但**能不用就不用**：九江曾靠这条被"顺带归汉"，结果时间轴上看不到它何时亡，最后被删掉了。
 > 除非确实同一天灭亡，否则给独立节点。
 
+### 3.6b 终章那个大字（统一者）
+
+沙盘推演到最后一幕，屏幕中央会浮出一个巨大的红色国号。**它不是写死的"秦"**：
+
+```json
+// endgame.*.json
+"unifiedName": "秦"   // 周之沙盘：秦统一六国
+"unifiedName": "汉"   // 楚汉沙盘：汉统一天下
+```
+
+`EndgameStage` 渲染 `endgame.unifiedName ?? dynasty.name`。
+
+> 注意这是「**谁完成了统一**」，不是「下一朝」。
+> 二者现在恰好一致，但汉末的沙盘若做到三国归晋，统一者是晋而下一朝的顺序未必相同——
+> 所以保持成独立字段，不要从 `next.dynastyId` 推。
+
 ### 3.7 过渡页的图片处理
 
 `.fall-photo-wrap` 三层：

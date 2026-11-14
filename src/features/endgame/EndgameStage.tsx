@@ -402,7 +402,7 @@ export function EndgameStage() {
                   */}
                   <div className="unify-core">
                     <span className="unify-ring" />
-                    <span className="unify-char">秦</span>
+                    <span className="unify-char">{endgame.unifiedName ?? dynasty?.name ?? ""}</span>
                   </div>
                 </div>
 
