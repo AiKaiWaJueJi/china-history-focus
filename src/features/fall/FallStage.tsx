@@ -18,6 +18,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
+import dingPhoto from '../../assets/ding-photo.jpg'
 import './fall.css'
 
 interface FallAct {
@@ -235,7 +236,13 @@ export function FallStage() {
         >
           {/* 每幕的专属影像，位置左右交替 */}
           <div className="fall-art" aria-hidden="true">
-            {page === 0 ? <DingArt /> : page === 1 ? <TempleArt /> : <TallyArt />}
+            {page === 0 ? (
+              <img className="fall-photo" src={dingPhoto} alt="倾覆的青铜鼎" />
+            ) : page === 1 ? (
+              <TempleArt />
+            ) : (
+              <TallyArt />
+            )}
           </div>
 
           <div className="fall-copy">
@@ -296,48 +303,48 @@ export function FallStage() {
 /* -------------------------------------------------------------------------- */
 /* 三幕的影像                                                                  */
 /* -------------------------------------------------------------------------- */
-
-/** 一尊倾覆的鼎：圆腹、三足、双耳，腹内有铜绿与金文 */
-function DingArt() {
-  return (
-    <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
-      <defs>
-        <pattern id="fall-patina" width="27" height="27" patternUnits="userSpaceOnUse">
-          <circle cx="5" cy="6" r="2.4" fill="#5d8f7a" opacity=".3" />
-          <circle cx="19" cy="14" r="1.5" fill="#4a7a6a" opacity=".26" />
-          <circle cx="11" cy="23" r="1.1" fill="#8a6a3a" opacity=".28" />
-          <circle cx="23" cy="4" r="1.3" fill="#6f9c86" opacity=".22" />
-          <circle cx="15" cy="9" r="0.8" fill="#3f6b5d" opacity=".25" />
-          <circle cx="3" cy="20" r="1" fill="#8a6a3a" opacity=".2" />
-        </pattern>
-        <radialGradient id="fall-ding-shade" cx="50%" cy="38%" r="68%">
-          <stop offset="40%" stopColor="#000" stopOpacity="0" />
-          <stop offset="100%" stopColor="#000" stopOpacity=".55" />
-        </radialGradient>
-        <clipPath id="fall-ding-clip">
-          <path d="M42 66c0 36 26 54 58 54s58-18 58-54z" />
-        </clipPath>
-      </defs>
-
-      <path d="M42 66c0 36 26 54 58 54s58-18 58-54" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <ellipse cx="100" cy="66" rx="58" ry="11" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M66 58c0-14 16-14 16 0M118 58c0-14 16-14 16 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-      <path d="M48 84h104" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
-      <path d="M56 112l-8 34M100 120v30M144 112l8 34" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-
-      <g clipPath="url(#fall-ding-clip)">
-        <rect x="38" y="56" width="124" height="72" fill="url(#fall-patina)" />
-        <rect x="38" y="56" width="124" height="72" fill="url(#fall-ding-shade)" />
-        <g stroke="#e2c27a" strokeWidth="0.9" strokeLinecap="round" opacity=".2">
-          <path d="M62 84v16M68 82v20M74 86v14M80 83v18M86 87v12" />
-          <path d="M96 84v16M102 82v20M108 86v14M114 83v18M120 87v12" />
-          <path d="M128 85v14M134 83v18M140 86v13" />
-        </g>
-        <path d="M48 100h104" stroke="#3f6b5d" strokeWidth="1" opacity=".25" />
-      </g>
-    </svg>
-  )
-}
+// 
+// /** 一尊倾覆的鼎：圆腹、三足、双耳，腹内有铜绿与金文 */
+// function DingArt() {
+//   return (
+//     <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
+//       <defs>
+//         <pattern id="fall-patina" width="27" height="27" patternUnits="userSpaceOnUse">
+//           <circle cx="5" cy="6" r="2.4" fill="#5d8f7a" opacity=".3" />
+//           <circle cx="19" cy="14" r="1.5" fill="#4a7a6a" opacity=".26" />
+//           <circle cx="11" cy="23" r="1.1" fill="#8a6a3a" opacity=".28" />
+//           <circle cx="23" cy="4" r="1.3" fill="#6f9c86" opacity=".22" />
+//           <circle cx="15" cy="9" r="0.8" fill="#3f6b5d" opacity=".25" />
+//           <circle cx="3" cy="20" r="1" fill="#8a6a3a" opacity=".2" />
+//         </pattern>
+//         <radialGradient id="fall-ding-shade" cx="50%" cy="38%" r="68%">
+//           <stop offset="40%" stopColor="#000" stopOpacity="0" />
+//           <stop offset="100%" stopColor="#000" stopOpacity=".55" />
+//         </radialGradient>
+//         <clipPath id="fall-ding-clip">
+//           <path d="M42 66c0 36 26 54 58 54s58-18 58-54z" />
+//         </clipPath>
+//       </defs>
+// 
+//       <path d="M42 66c0 36 26 54 58 54s58-18 58-54" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+//       <ellipse cx="100" cy="66" rx="58" ry="11" stroke="currentColor" strokeWidth="1.4" />
+//       <path d="M66 58c0-14 16-14 16 0M118 58c0-14 16-14 16 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+//       <path d="M48 84h104" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
+//       <path d="M56 112l-8 34M100 120v30M144 112l8 34" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+// 
+//       <g clipPath="url(#fall-ding-clip)">
+//         <rect x="38" y="56" width="124" height="72" fill="url(#fall-patina)" />
+//         <rect x="38" y="56" width="124" height="72" fill="url(#fall-ding-shade)" />
+//         <g stroke="#e2c27a" strokeWidth="0.9" strokeLinecap="round" opacity=".2">
+//           <path d="M62 84v16M68 82v20M74 86v14M80 83v18M86 87v12" />
+//           <path d="M96 84v16M102 82v20M108 86v14M114 83v18M120 87v12" />
+//           <path d="M128 85v14M134 83v18M140 86v13" />
+//         </g>
+//         <path d="M48 100h104" stroke="#3f6b5d" strokeWidth="1" opacity=".25" />
+//       </g>
+//     </svg>
+//   )
+// }
 
 /** 破败的宗庙：柱、断梁、残幡 */
 function TempleArt() {

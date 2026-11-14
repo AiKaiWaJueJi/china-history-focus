@@ -463,3 +463,16 @@
   letter-spacing: 0.22em;
   color: rgba(201, 162, 39, 0.78);
 }
+/* 第一幕改为实拍：照片要融进暗场，不做成一张"贴上去的图" */
+.fall-photo {
+  width: min(46vw, 620px);
+  height: auto;
+  border-radius: 2px;
+  filter: brightness(0.86) contrast(1.05) saturate(0.92);
+  /*
+    四边渐隐：半径必须小于元素本身，边缘才会真的落到 transparent，
+    之前写 140% 只会在框外虚化，看上去还是一张贴上去的矩形。
+  */
+  -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, #000 52%, transparent 100%);
+  mask-image: radial-gradient(78% 78% at 50% 50%, #000 52%, transparent 100%);
+}
