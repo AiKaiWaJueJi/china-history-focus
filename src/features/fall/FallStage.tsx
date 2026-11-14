@@ -246,7 +246,9 @@ export function FallStage() {
           {/* 每幕的专属影像，位置左右交替 */}
           <div className="fall-art" aria-hidden="true">
             {page === 0 ? (
-              <img className="fall-photo" src={dingPhoto} alt="倾覆的青铜鼎" />
+              <div className="fall-photo-wrap">
+                <img className="fall-photo" src={dingPhoto} alt="倾覆的青铜鼎" />
+              </div>
             ) : page === 1 ? (
               <TempleArt />
             ) : (
