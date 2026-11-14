@@ -19,7 +19,7 @@ const check = (name, pass, detail = '') => {
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? ' :: ' + detail : ''}`)
 }
 
-const HOVER_INDEX = 7 // 唐（中轴线右侧）
+const HOVER_INDEX = 6 // 唐（中轴线右侧；已移除三国模块）
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 const browser = await puppeteer.launch({
@@ -58,10 +58,10 @@ try {
     })),
   )
 
-  check('13 个朝代模块同时挂载', panels.length === 13, `实际 ${panels.length}`)
+  check('12 个朝代模块同时挂载', panels.length === 12, `实际 ${panels.length}`)
   check(
-    '13 张背景图各不相同（各自对应器物）',
-    new Set(panels.map((p) => p.bg)).size === 13,
+    '12 张背景图各不相同（各自对应器物）',
+    new Set(panels.map((p) => p.bg)).size === 12,
     `distinct=${new Set(panels.map((p) => p.bg)).size}`,
   )
 
@@ -257,3 +257,4 @@ if (failed.length) {
   for (const f of failed) console.log(` - ${f.name} :: ${f.detail}`)
   process.exitCode = 1
 }
+

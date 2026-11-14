@@ -52,23 +52,6 @@
       "notes": "新朝为王莽篡漢的短暂政权"
     },
     {
-      "id": "three_kingdoms",
-      "name": "三国",
-      "period": "220年-280年",
-      "startYear": 220,
-      "endYear": 280,
-      "capital": "洛阳（曹魏）",
-      "subPeriods": ["曹魏", "蜀汉", "东吴"],
-      "representativeItem": "连弩",
-      "fontStyle": "楷书",
-      "accent": "#4f6b57",
-      "accentSoft": "#b3cdb9",
-      "artifact": "/artifacts/three_kingdoms.svg",
-      "emperorIds": [],
-      "eventIds": [],
-      "notes": "以魏为正统，蜀汉、东吴并立"
-    },
-    {
       "id": "jin",
       "name": "晋",
       "period": "266年-420年",

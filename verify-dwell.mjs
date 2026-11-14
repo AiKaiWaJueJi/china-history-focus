@@ -1,4 +1,4 @@
-/**
+﻿/**
  * verify-dwell.mjs —— 指针意图控制器的验收
  * ---------------------------------------------------------------------------
  * 本轮要证明四件事：
@@ -103,7 +103,7 @@ try {
   const sameCoordResult = await page.evaluate(
     ([x, y]) => {
       const panels = Array.from(document.querySelectorAll('.dyn-panel'))
-      const neighbor = panels[8] // 唐 的右邻
+      const neighbor = panels[7] // 唐 的右邻
       neighbor.dispatchEvent(
         new PointerEvent('pointermove', {
           clientX: x,
@@ -157,3 +157,4 @@ if (failed.length) {
   for (const f of failed) console.log(` - ${f.name} :: ${f.detail}`)
   process.exitCode = 1
 }
+
