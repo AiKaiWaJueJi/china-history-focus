@@ -94,7 +94,7 @@ for (const node of data.nodes) {
     lede: meta.lede,
     acts: node.acts.map((act, i) => ({
       id: `${node.id}_a${i + 1}`,
-      art: `${node.id}_${i + 1}`,
+      art: `nb${node.id}_${i + 1}`,
       year: meta.years[i],
       heading: act.heading,
       lines: act.lines,

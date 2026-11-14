@@ -63,6 +63,18 @@ import nb502_3 from '../../assets/nb502_3.jpg'
 import nb534_1 from '../../assets/nb534_1.jpg'
 import nb534_2 from '../../assets/nb534_2.jpg'
 import nb534_3 from '../../assets/nb534_3.jpg'
+import nb577_1 from '../../assets/nb577_1.jpg'
+import nb577_2 from '../../assets/nb577_2.jpg'
+import nb577_3 from '../../assets/nb577_3.jpg'
+import nb589_1 from '../../assets/nb589_1.jpg'
+import nb589_2 from '../../assets/nb589_2.jpg'
+import nb589_3 from '../../assets/nb589_3.jpg'
+import nb550_1 from '../../assets/nb550_1.jpg'
+import nb550_2 from '../../assets/nb550_2.jpg'
+import nb550_3 from '../../assets/nb550_3.jpg'
+import nb557_1 from '../../assets/nb557_1.jpg'
+import nb557_2 from '../../assets/nb557_2.jpg'
+import nb557_3 from '../../assets/nb557_3.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -103,6 +115,18 @@ const ART: Record<string, string> = {
   nb534_1,
   nb534_2,
   nb534_3,
+  nb577_1,
+  nb577_2,
+  nb577_3,
+  nb589_1,
+  nb589_2,
+  nb589_3,
+  nb550_1,
+  nb550_2,
+  nb550_3,
+  nb557_1,
+  nb557_2,
+  nb557_3,
 }
 
 const ART_ALT: Record<string, string> = {
