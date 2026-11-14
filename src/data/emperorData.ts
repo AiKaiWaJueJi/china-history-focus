@@ -14,6 +14,8 @@ import segmentsZhouRaw from './segments.zhou.json'
 import segmentsQinRaw from './segments.qin.json'
 import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
+import fallZhouRaw from './fall.zhou.json'
+import fallQinRaw from './fall.qin.json'
 import type {
   DynastyEmperors,
   DynastyEndgame,
@@ -58,6 +60,34 @@ export function getDynastyLords(dynastyId: string | undefined): DynastyLords | n
 export function getDynastyEndgame(dynastyId: string | undefined): DynastyEndgame | null {
   if (!dynastyId) return null
   return ENDGAME[dynastyId] ?? null
+}
+
+/**
+ * 朝代收尾的过渡章节（周有两章：段间「平王东迁」+ 收尾「九鼎入秦」）。
+ * 与 endgame 分开登记：有的朝代有沙盘，有的只有过渡页。
+ */
+const FALL: Record<string, unknown> = {
+  zhou: fallZhouRaw,
+  qin: fallQinRaw,
+}
+
+/** 该朝代是否有收尾可走（沙盘或过渡页）——决定时间轴末页要不要出现"继续下滑" */
+export function hasDynastyClosing(dynastyId: string | undefined): boolean {
+  if (!dynastyId) return false
+  return Boolean(ENDGAME[dynastyId] || FALL[dynastyId])
+}
+
+/**
+ * 末页入口按钮上的收尾称谓。
+ * 有沙盘用沙盘的副题（周：周室倾覆）；只有过渡页时用过渡页标题（秦：秦亡）。
+ */
+export function getDynastyClosingLabel(dynastyId: string | undefined): string {
+  if (!dynastyId) return ''
+  // 过渡页的副题就是这一朝的收尾称谓（周：周室倾覆 / 秦：秦亡）
+  const fall = FALL[dynastyId] as { subtitle?: string } | undefined
+  if (fall?.subtitle) return fall.subtitle
+  const endgame = ENDGAME[dynastyId] as { subtitle?: string } | undefined
+  return endgame?.subtitle ?? ''
 }
 
 export function hasDynastyEmperors(dynastyId: string | undefined): boolean {

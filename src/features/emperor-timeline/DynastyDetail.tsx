@@ -13,7 +13,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
-import { getDynastyEmperors, getDynastyEndgame, getDynastyLords, getDynastySegments } from '../../data/emperorData'
+import {
+  getDynastyEmperors,
+  getDynastyLords,
+  getDynastySegments,
+  hasDynastyClosing,
+  getDynastyClosingLabel,
+} from '../../data/emperorData'
 import { EmperorPager } from './EmperorPager'
 import { LordsRow } from './LordsRow'
 import { SegmentAxis } from './SegmentAxis'
@@ -42,7 +48,9 @@ export function DynastyDetail() {
   const data = getDynastyEmperors(dynastyId)
   const segmentsData = getDynastySegments(dynastyId)
   const lordsData = getDynastyLords(dynastyId)
-  const endgameData = getDynastyEndgame(dynastyId)
+  /** 有没有收尾（沙盘或过渡页）——秦这类没有沙盘的朝代，也要能进过渡页 */
+  const hasClosing = hasDynastyClosing(dynastyId)
+  const closingLabel = getDynastyClosingLabel(dynastyId)
 
   const [pageIndex, setPageIndex] = useState(0)
   const [direction, setDirection] = useState(1)
@@ -75,10 +83,10 @@ export function DynastyDetail() {
   }, [pageIndex])
 
   const goFall = useCallback(() => {
-    if (!dynastyId || !endgameData) return
+    if (!dynastyId || !hasClosing) return
     if (performance.now() - pageAt.current < 800) return
     navigate(`/dynasty/${dynastyId}/fall`)
-  }, [dynastyId, endgameData, navigate])
+  }, [dynastyId, hasClosing, navigate])
 
   /*
     段间过渡的落点：找到目标分段的第一位君主，它所在页的**上一页**就是触发页。
@@ -120,7 +128,7 @@ export function DynastyDetail() {
     pageIndex,
     onChange: handleChange,
     // 已在最后一页继续向下滚 → 直接进入终局推演
-    onBeyondEnd: endgameData ? goFall : undefined,
+    onBeyondEnd: hasClosing ? goFall : undefined,
     onLeavePage,
   })
 
@@ -310,9 +318,9 @@ export function DynastyDetail() {
             <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goIntro}>
               继续下滑 · {introGate.label} ↓
             </button>
-          ) : endgameData && pageIndex === pageCount - 1 ? (
+          ) : hasClosing && pageIndex === pageCount - 1 ? (
             <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goFall}>
-              继续下滑 · 周室倾覆 ↓
+              继续下滑 · {closingLabel} ↓
             </button>
           ) : (
             <button

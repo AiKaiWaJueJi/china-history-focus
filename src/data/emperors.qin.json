@@ -2,7 +2,7 @@
   "dynastyId": "qin",
   "name": "秦",
   "period": "前221 — 前207",
-  "note": "秦朝帝王数据：为『终局推演』的落地页补齐，完整覆盖秦朝三位统治者。events 为要点摘录。",
+  "note": "秦朝三位统治者。秦废谥法，故无美恶谥可循——卡片上的『谥法』一栏统一标注这一制度事实，而不是给秦君套周谥。",
   "emperors": [
     {
       "id": "qin_shi",
@@ -14,12 +14,6 @@
       "segmentId": "seg_qin",
       "portrait": "/portraits/qin-shi.svg",
       "events": [
-        {
-          "id": "q_huangdi",
-          "name": "始称皇帝",
-          "dimension": "political",
-          "year": -221
-        },
         {
           "id": "q_junxian",
           "name": "废分封·行郡县",
@@ -84,22 +78,22 @@
       "id": "qin_ziying",
       "posthumousTitle": "秦王",
       "personalName": "子婴",
-      "reign": "前207",
+      "reign": "前207（在位四十六日）",
       "startYear": -207,
       "endYear": -207,
       "segmentId": "seg_qin",
       "portrait": "/portraits/qin-ziying.svg",
       "events": [
         {
-          "id": "q_jiangliu",
-          "name": "子婴降刘邦",
+          "id": "q_zhu_gao",
+          "name": "诛赵高",
           "dimension": "political",
           "year": -207
         },
         {
-          "id": "q_qinwang",
-          "name": "秦亡",
-          "dimension": "military",
+          "id": "q_jiang_zhidao",
+          "name": "素车白马·降轵道",
+          "dimension": "political",
           "year": -207
         }
       ],

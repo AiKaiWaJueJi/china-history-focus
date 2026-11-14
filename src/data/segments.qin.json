@@ -7,7 +7,11 @@
       "startYear": -221,
       "endYear": -207,
       "accent": "#a05a3a",
-      "desc": "六王毕 · 四海一"
+      "desc": "六王毕 · 四海一",
+      "markers": [
+        { "id": "m_shaqiu", "name": "沙丘", "year": -210, "note": "始皇崩 · 赵高矫诏" },
+        { "id": "m_daze", "name": "大泽乡", "year": -209, "note": "陈胜吴广起" }
+      ]
     }
   ]
 }

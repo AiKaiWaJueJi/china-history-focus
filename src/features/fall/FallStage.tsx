@@ -19,12 +19,16 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
 import fallDongqian from '../../data/fall.zhou.dongqian.json'
+import fallQin from '../../data/fall.qin.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
 import burnPhoto from '../../assets/burn-photo.jpg'
 import marchPhoto from '../../assets/march-photo.jpg'
 import thronePhoto from '../../assets/throne-photo.jpg'
+import nightridePhoto from '../../assets/nightride-photo.jpg'
+import uprisingPhoto from '../../assets/uprising-photo.jpg'
+import surrenderPhoto from '../../assets/surrender-photo.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -35,6 +39,9 @@ const ART: Record<string, string> = {
   burn: burnPhoto,
   march: marchPhoto,
   throne: thronePhoto,
+  nightride: nightridePhoto,
+  uprising: uprisingPhoto,
+  surrender: surrenderPhoto,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -44,6 +51,9 @@ const ART_ALT: Record<string, string> = {
   burn: '焚毁的西周宫室',
   march: '东迁的车马',
   throne: '空置的王庭',
+  nightride: '夜行的辒车',
+  uprising: '大泽乡揭竿',
+  surrender: '素车白马出降',
 }
 
 interface FallAct {
@@ -59,7 +69,7 @@ interface FallAct {
 
 /** 第三幕走完后去哪里 */
 interface FallNext {
-  kind: 'endgame' | 'timeline'
+  kind: 'endgame' | 'timeline' | 'home'
   /** kind === 'timeline' 时回落的页码；'last' 表示最后一页 */
   page?: number | 'last'
 }
@@ -90,6 +100,9 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
   zhou: {
     dongqian: fallDongqian as FallData,
     fall: fallZhou as FallData,
+  },
+  qin: {
+    fall: fallQin as FallData,
   },
 }
 
@@ -233,6 +246,8 @@ export function FallStage() {
     window.setTimeout(() => {
       if (next.kind === 'endgame') {
         navigate(`/dynasty/${dynastyId}/endgame`)
+      } else if (next.kind === 'home') {
+        navigate('/')
       } else {
         navigate(`/dynasty/${dynastyId}`, { state: { page: next.page ?? 'last' } })
       }
