@@ -142,7 +142,8 @@ export function WarringStatesMap({
     <div
       className="map-stage"
       data-dimmed={dimmed}
-      data-unified={unified}
+      data-unified={unified}
+
       /*
         向下滚动 = 跳过行军动画，直接看战报。
         比双击好操作：双击容易误触，滚轮是"往下翻 = 继续推进"的自然隐喻。
@@ -243,7 +244,11 @@ export function WarringStatesMap({
                 if (!event) return
                 onConquer(event)
               }}
-              onMouseEnter={() => setHovered(region.id)}
+              onMouseEnter={() => {
+                // 终章态（版图已消散、只剩统一大字）不该再产生 hover
+                if (unified) return
+                setHovered(region.id)
+              }}
               onMouseLeave={() => setHovered(null)}
             >
               {/*

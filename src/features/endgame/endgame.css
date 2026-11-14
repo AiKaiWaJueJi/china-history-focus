@@ -3171,3 +3171,13 @@
 .unify-char {
   translate: -0.018em -0.072em;
 }
+/* ==========================================================================
+   终章态：版图已消散，只剩中央的统一大字。
+   地图层仍留在 DOM 里（为了淡出动画），但它不该再接收任何指针事件 ——
+   否则鼠标划过原地图的位置，底部节点still 会被点亮，看起来像还有东西。
+   ========================================================================== */
+.map-stage[data-unified='true'] .map-svg,
+.map-stage[data-unified='true'] .regions-layer,
+.map-stage[data-unified='true'] .region {
+  pointer-events: none;
+}
