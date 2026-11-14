@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    阶段二：帝王时间轴视图
    --------------------------------------------------------------------------
    与阶段一共用暗色博物馆基调，但这是**独立样式表**，只在 DynastyDetail 内 import。
@@ -1097,7 +1097,7 @@
 
 .emp-card .emp-clip {
   border-width: 2px;
-  border-color: color-mix(in srgb, var(--eval, rgba(255, 255, 255, 0.12)) 82%, transparent);
+  border-color: rgba(255, 255, 255, 0.12);
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.55),
     0 10px 26px -20px rgba(0, 0, 0, 0.95);
@@ -1142,4 +1142,24 @@
 
 .emp-card[data-evaluation='neutral'] .emp-rule {
   color: #b7cec7;
+}
+
+
+/* 明确的评价边框色（比 color-mix 更稳，也方便验收脚本读取） */
+.emp-card[data-evaluation='good'] .emp-clip {
+  border-color: rgba(201, 162, 39, 0.92);
+}
+
+.emp-card[data-evaluation='bad'] .emp-clip {
+  border-color: rgba(168, 68, 58, 0.92);
+}
+
+.emp-card[data-evaluation='neutral'] .emp-clip {
+  border-color: rgba(111, 139, 131, 0.9);
+}
+
+/* 悬浮/聚焦时压过上面的静态评价边框色 */
+.emp-card:hover .emp-clip,
+.emp-card:focus-visible .emp-clip {
+  border-color: var(--eval-bright);
 }

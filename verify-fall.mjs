@@ -4,7 +4,7 @@
  * 要证明的事：
  *   1) 帝王卡按谥法分色，hover 提亮
  *   2) 时间轴末页不再直接进沙盘，先入过渡页
- *   3) 过渡页是三页翻页：文字逐字浮现、走完才能翻页
+ *   3) 过渡页是三页翻页：文字逐字浮现；下滚跳过当前一幕，点击只跳过打字
  *   4) 【王朝覆灭】只在第三幕文字走完后出现；回滚即消失
  *   5) 每幕影像左右交替（鼎左 · 宗庙右 · 断符左）
  *   6) 第一页再上滚 → 弹确认框
@@ -49,7 +49,7 @@ try {
     })),
   )
   check('每张帝王卡都有谥法评价', cards.every((c) => ['good', 'neutral', 'bad'].includes(c.evaluation)))
-  check('美谥为鎏金边', cards[0].border === 'rgba(201, 162, 39, 0.5)', cards[0].border)
+  check('美谥为鎏金边', cards[0].border === 'rgba(201, 162, 39, 0.92)', cards[0].border)
   check('卡片含谥法本义小字', cards.every((c) => c.rule))
 
   const borderIdle = cards[0].border
@@ -98,29 +98,17 @@ try {
   check('第一幕影像在左', p1.art === 'left', p1.art)
   check('第一幕不出入口按钮', p1.btn < 0.05, `${p1.btn}`)
 
-  /* ---------- 4) 打字期间滚轮不翻页 ---------- */
+  /* ---------- 4) 下滚 = 跳过当前一幕 ---------- */
   await page.evaluate(() => {
-    // 回到第一页重演：刷新页面重新进入
     location.reload()
   })
   await page.waitForSelector('.fall-page', { timeout: 8000 })
-  await sleep(500)
+  // 等过入场惯性保护（620ms）；此时第一幕仍在逐字
+  await sleep(950)
   await page.mouse.move(700, 450)
   await page.mouse.wheel({ deltaY: 220 })
-  await sleep(500)
-  const during = await page.evaluate(() => document.querySelector('.fall-page')?.getAttribute('data-page'))
-  check('文字未走完时下滚不翻页', during === '0', `page=${during}`)
-
-  // 点击 = 立刻显示完
-  await page.mouse.click(700, 450)
-  await sleep(400)
-  const afterClick = await typed()
-  check('点击可立刻显示完本页', afterClick.length === full.length, `${afterClick.length}/${full.length}`)
-
-  /* ---------- 5) 翻到第二、三页 ---------- */
-  await page.mouse.wheel({ deltaY: 220 })
-  await sleep(1000)
-  const p2 = await page.evaluate(() => ({
+  await sleep(900)
+  const skip1 = await page.evaluate(() => ({
     page: document.querySelector('.fall-page')?.getAttribute('data-page'),
     heading: document.querySelector('.fall-heading')?.textContent?.trim(),
     art: (() => {
@@ -128,15 +116,14 @@ try {
       return r.x + r.width / 2 < 720 ? 'left' : 'right'
     })(),
   }))
-  console.log(`[P2] ${JSON.stringify(p2)}`)
-  check('第二幕为「周既不祀」', p2.heading === '周既不祀', p2.heading)
-  check('第二幕影像在右', p2.art === 'right', p2.art)
+  console.log(`[SKIP1] ${JSON.stringify(skip1)}`)
+  check('文字未走完时下滚直接跳过第一幕', skip1.page === '1', `page=${skip1.page}`)
+  check('跳过第一幕后落在第二幕', skip1.heading === '周既不祀', skip1.heading)
+  check('第二幕影像在右', skip1.art === 'right', skip1.art)
 
-  // 第二页文字走完才能继续
-  await page.mouse.click(700, 450)
-  await sleep(300)
+  /* ---------- 5) 再滚一次跳过第二幕 ---------- */
   await page.mouse.wheel({ deltaY: 220 })
-  await sleep(1000)
+  await sleep(900)
   const p3 = await page.evaluate(() => ({
     page: document.querySelector('.fall-page')?.getAttribute('data-page'),
     heading: document.querySelector('.fall-heading')?.textContent?.trim(),
@@ -147,16 +134,18 @@ try {
     btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
   }))
   console.log(`[P3] ${JSON.stringify(p3)}`)
+  check('再滚一次跳过第二幕，落到第三幕', p3.page === '2', `page=${p3.page}`)
   check('第三幕标题为权力更迭', /权力更迭/.test(p3.heading ?? ''), p3.heading)
   check('第三幕影像回到左侧', p3.art === 'left', p3.art)
   check('第三幕文字未走完时入口不出现', p3.btn < 0.05, `${p3.btn}`)
 
-  // 等第三幕打完
-  await sleep(5000)
-  const btnAfter = await page.evaluate(() => ({
-    btn: Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
-  }))
-  check('第三幕文字走完后入口出现', btnAfter.btn > 0.9, `${btnAfter.btn}`)
+  // 点击 = 立刻显示完，并浮出入口
+  await page.mouse.click(700, 450)
+  await sleep(500)
+  const btnAfterClick = await page.evaluate(() =>
+    Number(getComputedStyle(document.querySelector('.fall-foot')).opacity),
+  )
+  check('点击可立刻显示完本页并出现入口', btnAfterClick > 0.9, `${btnAfterClick}`)
 
   /* ---------- 6) 上滚：入口消失 → 确认框 ---------- */
   await page.mouse.wheel({ deltaY: -220 })
@@ -192,17 +181,13 @@ try {
   check('取消后留在过渡页', !stayed.confirm && stayed.page === '0', JSON.stringify(stayed))
 
   /* ---------- 7) 三页走完 → 进沙盘 ---------- */
-  // 直接跳到第三页：点两下（跳过打字）+ 滚两次
-  await page.mouse.click(700, 450)
-  await sleep(200)
+  // 每次下滚跳过一幕：第一幕 → 第二幕 → 第三幕；再点一下结束第三幕逐字
+  await page.mouse.wheel({ deltaY: 220 })
+  await sleep(800)
   await page.mouse.wheel({ deltaY: 220 })
   await sleep(800)
   await page.mouse.click(700, 450)
-  await sleep(200)
-  await page.mouse.wheel({ deltaY: 220 })
-  await sleep(800)
-  await page.mouse.click(700, 450)
-  await sleep(500)
+  await sleep(600)
 
   const third = await page.evaluate(() => document.querySelector('.fall-page')?.getAttribute('data-page'))
   check('可连翻到第三页', third === '2', `page=${third}`)
@@ -232,3 +217,4 @@ if (failed.length) {
   for (const f of failed) console.log(` - ${f.name} :: ${f.detail}`)
   process.exitCode = 1
 }
+

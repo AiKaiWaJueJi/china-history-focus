@@ -1,4 +1,4 @@
-﻿/**
+/**
  * FallStage —— 周室倾覆 / 九鼎入秦（时间轴与沙盘之间的过渡）
  * ===========================================================================
  * 三页，可交互翻页，不是一条长卷：
@@ -8,7 +8,7 @@
  *   第三幕 权力更迭   → 文字走完才浮出【王朝覆灭】
  *
  * 几条硬规则（都是按要求来的）：
- *   · 每页文字**逐字浮现**；文字没走完，下滚只是"直接显示完"，不翻页
+ *   · 每页文字**逐字浮现**；此时下滚 = 跳过当前一幕（直接进下一幕），点击页面则只跳过打字
  *   · 逐字动画**只触发一次**；回到已看过的页，只播翻页动画、文字直接显示
  *   · 【王朝覆灭】只在第三幕文字走完后出现；上滚回第二幕即消失
  *   · 在第一幕再往上滚 → 弹确认框「返回帝王时间轴？」
@@ -167,6 +167,11 @@ export function FallStage() {
   const lastWheel = useRef(0)
   const typingRef = useRef<number | null>(null)
 
+  /* 刚进入过渡页时先吃掉惯性滚动：否则"从时间轴滑进来"的那一下会立刻跳幕 */
+  useEffect(() => {
+    lastWheel.current = performance.now()
+  }, [])
+
   const totalChars = (acts[page]?.lines ?? []).reduce((n, line) => n + line.length, 0)
 
   /* ---------- 逐字浮现（每页只演一次） ---------- */
@@ -227,8 +232,18 @@ export function FallStage() {
       lastWheel.current = now
 
       if (event.deltaY > 0) {
-        // 文字没走完不翻页（点一下页面可以立刻显示完）
-        if (!typingDone) return
+        /*
+          下滚 = 跳过当前一幕：
+          · 正在逐字 → 直接结束这一幕的动画并进入下一幕，不再让用户干等；
+          · 已是最后一幕 → 直接显示完，入口按钮随之出现。
+          进入页面的惯性滚动由上面的 lastWheel 初始化吃掉，不会一进来就跳。
+        */
+        if (typingRef.current) {
+          window.clearInterval(typingRef.current)
+          typingRef.current = null
+        }
+        setPlayed((prev) => prev.map((v, i) => (i === page ? true : v)))
+        setShown(Number.MAX_SAFE_INTEGER)
         if (page < acts.length - 1) {
           setDir(1)
           setPage((p) => p + 1)
