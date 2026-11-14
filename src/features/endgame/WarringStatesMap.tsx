@@ -142,8 +142,7 @@ export function WarringStatesMap({
     <div
       className="map-stage"
       data-dimmed={dimmed}
-      data-unified={unified}
-      data-undivided={index === 0 && mapSpec.empireName ? 'true' : 'false'}
+      data-unified={unified}
       /*
         向下滚动 = 跳过行军动画，直接看战报。
         比双击好操作：双击容易误触，滚轮是"往下翻 = 继续推进"的自然隐喻。

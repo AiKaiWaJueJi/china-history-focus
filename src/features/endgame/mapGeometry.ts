@@ -86,7 +86,7 @@ export const QIN_REGION: MapRegion = {
   id: 'qin',
   name: '秦',
   // N1 → N2 → M1 → M2 → M3 → M4 → N14 → N15 → N16
-  points: '60,130 250,80 350,180 330,300 350,430 320,520 250,470 150,400 90,360',
+  points: '60,130 250,80 350,180 330,300 350,430 400,540 300,470 190,400 90,360',
   label: [200, 330],
   capital: { name: '咸阳', x: 250, y: 402 },
 }
@@ -213,8 +213,8 @@ export interface MapRegion {
 export const HAN_BASE: MapRegion = {
   id: 'han_base',
   name: '汉',
-  points: '72,340 150,470 250,560 380,610 320,520 250,470 150,400',
-  label: [178, 512],
+  points: '72,340 150,470 250,560 380,610 400,540 300,470 190,400',
+  label: [196, 566],
   capital: { name: '南郑', x: 168, y: 470 },
   aliveFrom: -206,
   aliveTo: -202,
@@ -225,7 +225,7 @@ export const GUANZHONG_REGION: MapRegion = {
   id: 'guanzhong',
   name: '三秦',
   // 西南侧让出汉的边界（72,340 → 150,470 → 250,560）
-  points: '60,130 250,80 350,180 330,300 350,430 320,520 250,470 150,400 90,360',
+  points: '60,130 250,80 350,180 330,300 350,430 400,540 300,470 190,400 90,360',
   label: [196, 336],
   capital: { name: '废丘', x: 248, y: 404 },
   aliveFrom: -206,
@@ -237,7 +237,7 @@ export const XICHU_REGION: MapRegion = {
   id: 'chu',
   name: '西楚',
   points: '560,400 580,470 760,420 930,470 840,545 700,600 620,560 520,520 470,460',
-  label: [720, 486],
+  label: [704, 540],
   capital: { name: '彭城', x: 742, y: 470 },
   aliveFrom: -206,
   aliveTo: -202,
@@ -248,7 +248,7 @@ export const JIUJIANG_REGION: MapRegion = {
   id: 'jiujiang',
   name: '九江',
   points: '520,520 620,560 700,600 840,545 780,596 640,626 500,612 430,566',
-  label: [636, 570],
+  label: [600, 600],
   capital: { name: '六', x: 660, y: 566 },
   aliveFrom: -206,
   aliveTo: -203,
