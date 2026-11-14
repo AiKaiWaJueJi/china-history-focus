@@ -14,6 +14,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { EndgameStage } from './features/endgame/EndgameStage'
+import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
 
 function Shell() {
@@ -52,7 +53,8 @@ function Shell() {
         <Routes>
           <Route path="/" element={<DynastyGallery />} />
           <Route path="/dynasty/:dynastyId" element={<DynastyDetail />} />
-          <Route path="/dynasty/:dynastyId/endgame" element={<EndgameStage />} />
+          <Route path="/dynasty/:dynastyId/fall" element={<FallStage />} />
+        <Route path="/dynasty/:dynastyId/endgame" element={<EndgameStage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

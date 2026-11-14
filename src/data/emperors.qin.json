@@ -14,12 +14,39 @@
       "segmentId": "seg_qin",
       "portrait": "/portraits/qin-shi.svg",
       "events": [
-        { "id": "q_huangdi", "name": "始称皇帝", "dimension": "political", "year": -221 },
-        { "id": "q_junxian", "name": "废分封·行郡县", "dimension": "political", "year": -221 },
-        { "id": "q_tongwen", "name": "书同文·车同轨", "dimension": "culture", "year": -220 },
-        { "id": "q_xiongnu", "name": "北击匈奴·筑长城", "dimension": "military", "year": -214 },
-        { "id": "q_fenshu", "name": "焚书坑儒", "dimension": "culture", "year": -213 }
-      ]
+        {
+          "id": "q_huangdi",
+          "name": "始称皇帝",
+          "dimension": "political",
+          "year": -221
+        },
+        {
+          "id": "q_junxian",
+          "name": "废分封·行郡县",
+          "dimension": "political",
+          "year": -221
+        },
+        {
+          "id": "q_tongwen",
+          "name": "书同文·车同轨",
+          "dimension": "culture",
+          "year": -220
+        },
+        {
+          "id": "q_xiongnu",
+          "name": "北击匈奴·筑长城",
+          "dimension": "military",
+          "year": -214
+        },
+        {
+          "id": "q_fenshu",
+          "name": "焚书坑儒",
+          "dimension": "culture",
+          "year": -213
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "秦废谥法，无谥可循"
     },
     {
       "id": "qin_er",
@@ -31,10 +58,27 @@
       "segmentId": "seg_qin",
       "portrait": "/portraits/qin-er.svg",
       "events": [
-        { "id": "q_shaqiu", "name": "沙丘之变", "dimension": "political", "year": -210 },
-        { "id": "q_daze", "name": "大泽乡起义", "dimension": "military", "year": -209 },
-        { "id": "q_julu", "name": "巨鹿之战", "dimension": "military", "year": -207 }
-      ]
+        {
+          "id": "q_shaqiu",
+          "name": "沙丘之变",
+          "dimension": "political",
+          "year": -210
+        },
+        {
+          "id": "q_daze",
+          "name": "大泽乡起义",
+          "dimension": "military",
+          "year": -209
+        },
+        {
+          "id": "q_julu",
+          "name": "巨鹿之战",
+          "dimension": "military",
+          "year": -207
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "秦废谥法，无谥可循"
     },
     {
       "id": "qin_ziying",
@@ -46,9 +90,21 @@
       "segmentId": "seg_qin",
       "portrait": "/portraits/qin-ziying.svg",
       "events": [
-        { "id": "q_jiangliu", "name": "子婴降刘邦", "dimension": "political", "year": -207 },
-        { "id": "q_qinwang", "name": "秦亡", "dimension": "military", "year": -207 }
-      ]
+        {
+          "id": "q_jiangliu",
+          "name": "子婴降刘邦",
+          "dimension": "political",
+          "year": -207
+        },
+        {
+          "id": "q_qinwang",
+          "name": "秦亡",
+          "dimension": "military",
+          "year": -207
+        }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "秦废谥法，无谥可循"
     }
   ]
 }

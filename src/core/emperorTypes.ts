@@ -28,6 +28,16 @@ export interface EmperorRecord {
   segmentId: string
   portrait: string
   events: EmperorEvent[]
+  /**
+   * 谥法评价（《逸周书·谥法解》的美/平/恶三类）：
+   *   good    美谥（文、武、成、康…）
+   *   neutral 平谥（共、夷、顷…）
+   *   bad     恶谥（厉、幽、灵…）
+   * 注意：这是"制度给的评价"，不是"历史功过"——昭王南征不返，谥法仍是美谥。
+   */
+  evaluation: 'good' | 'neutral' | 'bad'
+  /** 谥法本义，如「克定祸乱曰武」；卡片上以小字呈现 */
+  posthumousRule: string
 }
 
 export interface DynastyEmperors {

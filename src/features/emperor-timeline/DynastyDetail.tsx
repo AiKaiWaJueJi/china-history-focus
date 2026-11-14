@@ -10,7 +10,7 @@
  * 隔离原则：本文件与 features/emperor-timeline/* 全部独立，
  * 不改动阶段一（DynastyGallery / DynastyPanel / squeezeLayout）。
  */
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { dynastyById } from '../../data'
 import { getDynastyEmperors, getDynastyEndgame, getDynastyLords, getDynastySegments } from '../../data/emperorData'
@@ -49,18 +49,33 @@ export function DynastyDetail() {
     })
   }, [])
 
-  /** 进入终局推演（只有配置了 endgame 数据的朝代才有） */
-  const goEndgame = useCallback(() => {
+  /*
+    越过最后一页 → 先进「周室倾覆」过渡页，而不是直接进沙盘。
+    赧王卒于前 256，灭六国始于前 230，中间空了二十六年，
+    这一段需要一屏把"天命转移"讲完，否则时间线是断的。
+
+    另加 800ms 防抖：用户从上一页滑到末页时惯性还在，
+    不设防会出现"还没看清赧王就被弹走"。
+  */
+  const lastPageAt = useRef(0)
+  useEffect(() => {
+    if (pageCount > 0 && pageIndex === pageCount - 1) lastPageAt.current = performance.now()
+  }, [pageIndex, pageCount])
+
+  const goFall = useCallback(() => {
     if (!dynastyId || !endgameData) return
-    navigate(`/dynasty/${dynastyId}/endgame`)
+    if (performance.now() - lastPageAt.current < 800) return
+    navigate(`/dynasty/${dynastyId}/fall`)
   }, [dynastyId, endgameData, navigate])
+
+
 
   const { canPrev, canNext } = useWheelPaging({
     pageCount,
     pageIndex,
     onChange: handleChange,
     // 已在最后一页继续向下滚 → 直接进入终局推演
-    onBeyondEnd: endgameData ? goEndgame : undefined,
+    onBeyondEnd: endgameData ? goFall : undefined,
   })
 
   // ESC 返回主页
@@ -233,10 +248,13 @@ export function DynastyDetail() {
             ← 上一页
           </button>
 
-          {/* 到达末页时，"下一页"变成进入终局推演的入口 */}
+          {/*
+            末页不再放大按钮：入口已经改为"继续下滑"。
+            这里只留一行小字，告诉用户下滑能进；键盘用户仍可点它。
+          */}
           {endgameData && pageIndex === pageCount - 1 ? (
-            <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goEndgame}>
-              王朝覆灭 · {endgameData.subtitle} →
+            <button type="button" className="timeline-btn timeline-btn--endgame" onClick={goFall}>
+              继续下滑 · 周室倾覆 ↓
             </button>
           ) : (
             <button

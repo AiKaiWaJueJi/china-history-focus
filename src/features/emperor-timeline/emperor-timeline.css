@@ -970,3 +970,78 @@
     transform: none;
   }
 }
+
+/* ==========================================================================
+   v3：谥法边框
+   --------------------------------------------------------------------------
+   颜色按《逸周书·谥法解》的美/平/恶三类给：
+     good    鎏金（美谥）
+     bad     暗赤（恶谥）
+     neutral 青石（平谥）
+   注意这是"制度评价"，不是"历史功过"——昭王南征不返，谥法仍是美谥。
+   ========================================================================== */
+
+.emp-card[data-evaluation='good'] {
+  --eval: rgba(201, 162, 39, 0.5);
+  --eval-bright: #e8cf8e;
+}
+
+.emp-card[data-evaluation='bad'] {
+  --eval: rgba(150, 58, 48, 0.55);
+  --eval-bright: #d4604a;
+}
+
+.emp-card[data-evaluation='neutral'] {
+  --eval: rgba(118, 136, 136, 0.4);
+  --eval-bright: #9dbdb2;
+}
+
+/* 常态：一圈很细的色边，不抢戏 */
+.emp-card .emp-clip {
+  border-color: var(--eval, rgba(255, 255, 255, 0.08));
+}
+
+/* 悬浮：边框提亮 + 呼吸灯（只动 hover 的这一张，不会拖累其余 36 张） */
+.emp-card:hover .emp-clip,
+.emp-card:focus-visible .emp-clip {
+  border-color: var(--eval-bright);
+  animation: eval-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes eval-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px var(--eval-bright),
+      0 0 10px -4px var(--eval-bright);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px var(--eval-bright),
+      0 0 26px -2px var(--eval-bright);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emp-card:hover .emp-clip,
+  .emp-card:focus-visible .emp-clip {
+    animation: none;
+    box-shadow: 0 0 0 1px var(--eval-bright);
+  }
+}
+
+/* 谥法本义：极小的一行，像注脚 */
+.emp-rule {
+  margin: 2px 0 0;
+  font-family: var(--font-thin);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: rgba(226, 200, 125, 0.5);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.emp-card:hover .emp-rule,
+.emp-card:focus-visible .emp-rule {
+  opacity: 1;
+}

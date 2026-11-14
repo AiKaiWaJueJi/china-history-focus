@@ -1,0 +1,320 @@
+/**
+ * 周室倾覆 / 九鼎入秦 —— 过渡页样式
+ * ===========================================================================
+ * 基调：礼崩乐坏的苍凉。背景是极暗的暖褐，叠一层竖向暗纹（像旧帛），
+ * 四角压暗，正文用楷体竖排之外的横排大字，字距放宽。
+ *
+ * 动画分两级：
+ *   1. 入场：标题与三幕错峰浮现（纯 CSS，--i 控制延迟）
+ *   2. 入口：三幕走完才出现【王朝覆灭】，点击后画卷向下展开
+ */
+.fall-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 96px 8vw 120px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(60, 40, 22, 0.55), transparent 60%),
+    linear-gradient(180deg, #0a0806 0%, #120d09 55%, #080605 100%);
+  color: #e8e2d4;
+  overflow-x: hidden;
+}
+
+/* 旧帛竖纹 */
+.fall-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.012) 0px,
+    rgba(255, 255, 255, 0.012) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+  mix-blend-mode: screen;
+}
+
+/* 四角压暗 */
+.fall-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(90% 70% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+/* ---------- 顶部出口 ---------- */
+.fall-back {
+  position: fixed;
+  /* 站点 header 占着顶部，别撞上去 */
+  top: 86px;
+  left: 34px;
+  z-index: 6;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(226, 200, 125, 0.22);
+  background: rgba(10, 8, 6, 0.6);
+  color: rgba(240, 220, 170, 0.62);
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+.fall-back:hover {
+  color: #e8cf8e;
+  border-color: rgba(226, 200, 125, 0.5);
+}
+
+/* ---------- 标题 ---------- */
+.fall-head {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto 72px;
+  text-align: center;
+}
+
+.fall-subtitle {
+  margin: 0 0 14px;
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 13px;
+  letter-spacing: 0.6em;
+  color: rgba(226, 200, 125, 0.55);
+  text-indent: 0.6em;
+}
+
+.fall-title {
+  margin: 0;
+  font-family: 'KaiTi', '楷体', 'STKaiti', 'Kaiti SC', serif;
+  font-size: clamp(3rem, 7vw, 5.6rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: #efe2bf;
+  text-shadow:
+    0 0 42px rgba(214, 176, 92, 0.28),
+    0 2px 0 rgba(0, 0, 0, 0.6);
+  animation: fall-title-in 1600ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+@keyframes fall-title-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.5em;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.22em;
+    filter: blur(0);
+  }
+}
+
+.fall-lede {
+  margin: 26px auto 0;
+  max-width: 620px;
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 14.5px;
+  line-height: 2.05;
+  color: rgba(232, 226, 212, 0.66);
+  animation: fall-fade-up 1200ms ease 700ms both;
+}
+
+/* ---------- 三幕 ---------- */
+.fall-acts {
+  position: relative;
+  z-index: 2;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+}
+
+.fall-act {
+  /* --i 由 JSX 传入：0/1/2，错峰 1.1s */
+  animation: fall-fade-up 1100ms ease calc(1100ms + var(--i, 0) * 1100ms) both;
+}
+
+.fall-year {
+  margin: 0 0 6px;
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 13px;
+  letter-spacing: 0.34em;
+  color: rgba(226, 200, 125, 0.62);
+}
+
+.fall-heading {
+  margin: 0 0 18px;
+  font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+  font-size: clamp(1.7rem, 2.8vw, 2.3rem);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: #efe6cf;
+}
+
+.fall-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fall-line {
+  margin: 0;
+  font-family: '仿宋GB2312', 'FangSong', 'STFangsong', serif;
+  font-size: 16px;
+  line-height: 2;
+  color: rgba(240, 234, 222, 0.86);
+  /* 每句再错峰 140ms，像一句一句写出来 */
+  animation: fall-fade-up 900ms ease calc(1300ms + var(--i, 0) * 1100ms + var(--k, 0) * 140ms) both;
+}
+
+.fall-source {
+  margin: 22px 0 0;
+  padding: 14px 18px;
+  border-left: 2px solid rgba(226, 200, 125, 0.28);
+  background: rgba(226, 200, 125, 0.04);
+  border-radius: 0 4px 4px 0;
+}
+
+.fall-source-book {
+  display: block;
+  margin-bottom: 6px;
+  font-family: '方正小标简宋', var(--font-thin, serif);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: rgba(226, 200, 125, 0.66);
+}
+
+.fall-source-text {
+  margin: 0;
+  font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+  font-size: 13.5px;
+  line-height: 1.95;
+  color: rgba(232, 226, 212, 0.6);
+}
+
+.fall-note {
+  margin: 14px 0 0;
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 12px;
+  line-height: 1.9;
+  color: rgba(200, 190, 170, 0.45);
+}
+
+/* ---------- 入口 ---------- */
+/*
+  入口固定在底部：三幕加起来有近三屏，如果放在文末，
+  用户得滚到底才看得见——"底部出现"应该指视口底部。
+*/
+.fall-foot {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  z-index: 8;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+.fall-page[data-ready='true'] .fall-foot {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.fall-enter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 46px;
+  border-radius: 4px;
+  border: 1px solid rgba(226, 200, 125, 0.4);
+  background: rgba(28, 20, 10, 0.55);
+  cursor: pointer;
+  transition:
+    border-color 260ms ease,
+    background 260ms ease,
+    box-shadow 260ms ease;
+}
+
+.fall-enter:hover {
+  border-color: rgba(232, 207, 142, 0.8);
+  background: rgba(44, 32, 14, 0.7);
+  box-shadow: 0 0 26px -8px rgba(226, 200, 125, 0.6);
+}
+
+.fall-enter-label {
+  font-family: 'KaiTi', '楷体', serif;
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: #efe2bf;
+}
+
+.fall-enter-hint {
+  font-family: '仿宋GB2312', 'FangSong', serif;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  color: rgba(226, 200, 125, 0.55);
+}
+
+/* 画卷展开 */
+.fall-unfurl {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  transform-origin: top center;
+  background: linear-gradient(180deg, #0b0906 0%, #131009 70%, #0b0906 100%);
+  animation: fall-unfurl 760ms cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+
+@keyframes fall-unfurl {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fall-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 减少动效偏好：全部直接呈现 */
+@media (prefers-reduced-motion: reduce) {
+  .fall-title,
+  .fall-lede,
+  .fall-act,
+  .fall-line {
+    animation: none;
+  }
+}
+
+.fall-page--empty {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  color: rgba(232, 226, 212, 0.7);
+}

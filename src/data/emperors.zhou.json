@@ -32,7 +32,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -1046,
-      "endYear": -1043
+      "endYear": -1043,
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "zhou_cheng",
@@ -62,7 +64,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -1042,
-      "endYear": -1021
+      "endYear": -1021,
+      "evaluation": "good",
+      "posthumousRule": "安民立政曰成"
     },
     {
       "id": "zhou_kang",
@@ -86,7 +90,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -1020,
-      "endYear": -996
+      "endYear": -996,
+      "evaluation": "good",
+      "posthumousRule": "安乐抚民曰康"
     },
     {
       "id": "zhou_zhao",
@@ -110,7 +116,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -995,
-      "endYear": -977
+      "endYear": -977,
+      "evaluation": "good",
+      "posthumousRule": "容仪恭美曰昭"
     },
     {
       "id": "zhou_mu",
@@ -140,7 +148,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -976,
-      "endYear": -922
+      "endYear": -922,
+      "evaluation": "good",
+      "posthumousRule": "布德执义曰穆"
     },
     {
       "id": "zhou_gong",
@@ -158,7 +168,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -922,
-      "endYear": -900
+      "endYear": -900,
+      "evaluation": "neutral",
+      "posthumousRule": "执事坚固曰共"
     },
     {
       "id": "zhou_yi",
@@ -182,7 +194,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -899,
-      "endYear": -892
+      "endYear": -892,
+      "evaluation": "good",
+      "posthumousRule": "温柔贤善曰懿"
     },
     {
       "id": "zhou_xiao",
@@ -206,7 +220,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -891,
-      "endYear": -886
+      "endYear": -886,
+      "evaluation": "good",
+      "posthumousRule": "慈惠爱亲曰孝"
     },
     {
       "id": "zhou_yi_wai",
@@ -230,7 +246,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -885,
-      "endYear": -878
+      "endYear": -878,
+      "evaluation": "neutral",
+      "posthumousRule": "安心好静曰夷"
     },
     {
       "id": "zhou_li",
@@ -260,7 +278,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -877,
-      "endYear": -841
+      "endYear": -841,
+      "evaluation": "bad",
+      "posthumousRule": "杀戮无辜曰厉"
     },
     {
       "id": "zhou_xuan",
@@ -290,7 +310,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -827,
-      "endYear": -782
+      "endYear": -782,
+      "evaluation": "good",
+      "posthumousRule": "圣善周闻曰宣"
     },
     {
       "id": "zhou_you",
@@ -320,7 +342,9 @@
       ],
       "segmentId": "seg_xizhou",
       "startYear": -781,
-      "endYear": -771
+      "endYear": -771,
+      "evaluation": "bad",
+      "posthumousRule": "动静乱常曰幽"
     },
     {
       "id": "zhou_ping",
@@ -344,7 +368,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -770,
-      "endYear": -720
+      "endYear": -720,
+      "evaluation": "neutral",
+      "posthumousRule": "治而无眚曰平"
     },
     {
       "id": "zhou_huan",
@@ -362,7 +388,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -719,
-      "endYear": -697
+      "endYear": -697,
+      "evaluation": "good",
+      "posthumousRule": "辟土服远曰桓"
     },
     {
       "id": "zhou_zhuang",
@@ -380,7 +408,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -696,
-      "endYear": -682
+      "endYear": -682,
+      "evaluation": "good",
+      "posthumousRule": "兵甲亟作曰庄"
     },
     {
       "id": "zhou_xi",
@@ -404,7 +434,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -681,
-      "endYear": -677
+      "endYear": -677,
+      "evaluation": "neutral",
+      "posthumousRule": "质渊受谏曰釐"
     },
     {
       "id": "zhou_hui",
@@ -428,7 +460,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -676,
-      "endYear": -652
+      "endYear": -652,
+      "evaluation": "good",
+      "posthumousRule": "柔质慈民曰惠"
     },
     {
       "id": "zhou_xiang",
@@ -458,7 +492,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -651,
-      "endYear": -619
+      "endYear": -619,
+      "evaluation": "good",
+      "posthumousRule": "辟地有德曰襄"
     },
     {
       "id": "zhou_qing",
@@ -476,7 +512,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -618,
-      "endYear": -613
+      "endYear": -613,
+      "evaluation": "neutral",
+      "posthumousRule": "甄心动惧曰顷"
     },
     {
       "id": "zhou_kuang",
@@ -494,7 +532,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -612,
-      "endYear": -607
+      "endYear": -607,
+      "evaluation": "good",
+      "posthumousRule": "贞心大度曰匡"
     },
     {
       "id": "zhou_ding",
@@ -518,7 +558,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -606,
-      "endYear": -586
+      "endYear": -586,
+      "evaluation": "good",
+      "posthumousRule": "纯行不爽曰定"
     },
     {
       "id": "zhou_jian",
@@ -542,7 +584,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -585,
-      "endYear": -572
+      "endYear": -572,
+      "evaluation": "good",
+      "posthumousRule": "一德不懈曰简"
     },
     {
       "id": "zhou_ling",
@@ -566,7 +610,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -571,
-      "endYear": -545
+      "endYear": -545,
+      "evaluation": "bad",
+      "posthumousRule": "乱而不损曰灵"
     },
     {
       "id": "zhou_jing",
@@ -590,7 +636,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -544,
-      "endYear": -520
+      "endYear": -520,
+      "evaluation": "good",
+      "posthumousRule": "由义而济曰景"
     },
     {
       "id": "zhou_dao",
@@ -614,7 +662,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -520,
-      "endYear": -520
+      "endYear": -520,
+      "evaluation": "neutral",
+      "posthumousRule": "年中早夭曰悼"
     },
     {
       "id": "zhou_jing_2",
@@ -644,7 +694,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -519,
-      "endYear": -476
+      "endYear": -476,
+      "evaluation": "good",
+      "posthumousRule": "夙夜警戒曰敬"
     },
     {
       "id": "zhou_yuan",
@@ -668,7 +720,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -475,
-      "endYear": -469
+      "endYear": -469,
+      "evaluation": "good",
+      "posthumousRule": "能思辩众曰元"
     },
     {
       "id": "zhou_zhending",
@@ -692,7 +746,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -468,
-      "endYear": -441
+      "endYear": -441,
+      "evaluation": "good",
+      "posthumousRule": "清白守节曰贞"
     },
     {
       "id": "zhou_ai",
@@ -710,7 +766,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -441,
-      "endYear": -441
+      "endYear": -441,
+      "evaluation": "bad",
+      "posthumousRule": "蚤孤短折曰哀"
     },
     {
       "id": "zhou_si",
@@ -728,7 +786,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -441,
-      "endYear": -441
+      "endYear": -441,
+      "evaluation": "neutral",
+      "posthumousRule": "追悔前过曰思"
     },
     {
       "id": "zhou_kao",
@@ -752,7 +812,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -440,
-      "endYear": -426
+      "endYear": -426,
+      "evaluation": "neutral",
+      "posthumousRule": "大虑行节曰考"
     },
     {
       "id": "zhou_weilie",
@@ -776,7 +838,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -425,
-      "endYear": -402
+      "endYear": -402,
+      "evaluation": "good",
+      "posthumousRule": "猛以刚果曰威"
     },
     {
       "id": "zhou_an",
@@ -800,7 +864,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -401,
-      "endYear": -376
+      "endYear": -376,
+      "evaluation": "neutral",
+      "posthumousRule": "好和不争曰安"
     },
     {
       "id": "zhou_lie",
@@ -824,7 +890,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -375,
-      "endYear": -369
+      "endYear": -369,
+      "evaluation": "good",
+      "posthumousRule": "有功安民曰烈"
     },
     {
       "id": "zhou_xian",
@@ -854,7 +922,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -368,
-      "endYear": -321
+      "endYear": -321,
+      "evaluation": "good",
+      "posthumousRule": "行见中外曰显"
     },
     {
       "id": "zhou_shenjing",
@@ -878,7 +948,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -320,
-      "endYear": -315
+      "endYear": -315,
+      "evaluation": "neutral",
+      "posthumousRule": "敏以敬慎曰慎"
     },
     {
       "id": "zhou_nan",
@@ -908,7 +980,9 @@
       ],
       "segmentId": "seg_dongzhou",
       "startYear": -314,
-      "endYear": -256
+      "endYear": -256,
+      "evaluation": "bad",
+      "posthumousRule": "赧非谥法正字，后世以其亡国而名之"
     }
   ]
 }

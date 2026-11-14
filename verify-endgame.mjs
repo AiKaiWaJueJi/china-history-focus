@@ -83,9 +83,14 @@ try {
   await sleep(1000)
 
   const ctaText = await page.$eval('.timeline-btn--endgame', (n) => n.textContent?.trim()).catch(() => null)
-  check('末页入口为「王朝覆灭」', /王朝覆灭/.test(ctaText ?? ''), ctaText)
+  check('末页入口指向周室倾覆', /周室倾覆/.test(ctaText ?? ''), ctaText)
   await page.click('.timeline-btn--endgame')
-  await sleep(1000)
+  await page.waitForSelector('.fall-page', { timeout: 8000 })
+  // 过渡页：等入口浮现（动画约 5.2s，这里直接点击跳过）
+  await page.click('.fall-page')
+  await page.waitForSelector('.fall-enter', { timeout: 4000 })
+  await page.click('.fall-enter')
+  await sleep(1200)
   await page.waitForSelector('.map-stage', { timeout: 10000 })
   await sleep(600)
 
@@ -824,7 +829,13 @@ try {
   await page.mouse.move(800, 450)
   await page.mouse.wheel({ deltaY: 240 })
   await sleep(1200)
-  check('末页下滚仍可进入王朝覆灭', /\/endgame$/.test(page.url()), page.url())
+  check('末页下滚进入周室倾覆', /\/fall$/.test(page.url()), page.url())
+  // 过渡页：跳过动画 → 进入沙盘，后面的字体检查要在沙盘上跑
+  await page.click('.fall-page')
+  await page.waitForSelector('.fall-enter', { timeout: 4000 }).catch(() => null)
+  await page.click('.fall-enter')
+  await sleep(1200)
+  await page.waitForSelector('.map-stage', { timeout: 10000 }).catch(() => null)
 
   /* ---------- 10) 字体 ---------- */
   const fonts = await page.evaluate(() => {

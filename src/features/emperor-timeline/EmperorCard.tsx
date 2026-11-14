@@ -54,6 +54,7 @@ export function EmperorCard({
       tabIndex={0}
       data-index={index}
       data-layout={layout}
+      data-evaluation={emperor.evaluation}
     >
       <div className="emp-clip">
         <div className="emp-media" />
@@ -62,6 +63,9 @@ export function EmperorCard({
           <h2 className="emp-title">{emperor.posthumousTitle}</h2>
           <p className="emp-name">{emperor.personalName}</p>
           <p className="emp-reign">{emperor.reign}</p>
+          {emperor.posthumousRule ? (
+            <p className="emp-rule">谥法 · {emperor.posthumousRule}</p>
+          ) : null}
         </div>
         <span className="emp-corner" aria-hidden="true" />
       </div>

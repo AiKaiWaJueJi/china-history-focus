@@ -28,7 +28,7 @@ export function StepRail({ events, index, onSelect }: StepRailProps) {
         onMouseEnter={() => setHovered(null)}
       >
         <span className="rail-node-name">战前</span>
-        <span className="rail-node-year">前256</span>
+        <span className="rail-node-year">前230</span>
       </button>
 
       {events.map((event) => {
