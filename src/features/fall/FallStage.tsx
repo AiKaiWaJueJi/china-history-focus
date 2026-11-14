@@ -19,6 +19,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import fallZhou from '../../data/fall.zhou.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
+import templePhoto from '../../assets/temple-photo.jpg'
+import tallyPhoto from '../../assets/tally-photo.jpg'
 import './fall.css'
 
 interface FallAct {
@@ -245,15 +247,19 @@ export function FallStage() {
         >
           {/* 每幕的专属影像，位置左右交替 */}
           <div className="fall-art" aria-hidden="true">
-            {page === 0 ? (
-              <div className="fall-photo-wrap">
-                <img className="fall-photo" src={dingPhoto} alt="倾覆的青铜鼎" />
-              </div>
-            ) : page === 1 ? (
-              <TempleArt />
-            ) : (
-              <TallyArt />
-            )}
+            <div className="fall-photo-wrap">
+              <img
+                className="fall-photo"
+                src={page === 0 ? dingPhoto : page === 1 ? templePhoto : tallyPhoto}
+                alt={
+                  page === 0
+                    ? "倾覆的青铜鼎"
+                    : page === 1
+                      ? "破败的周代宗庙"
+                      : "断裂的青铜符节"
+                }
+              />
+            </div>
           </div>
 
           <div className="fall-copy">
@@ -358,44 +364,44 @@ export function FallStage() {
 // }
 
 /** 破败的宗庙：柱、断梁、残幡 */
-function TempleArt() {
-  return (
-    <svg className="fall-temple" viewBox="0 0 200 200" fill="none">
-      {/* 台基 */}
-      <path d="M16 168h168" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M26 156h148" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
-      {/* 四根立柱，第二根断掉 */}
-      <path d="M40 156V72M84 156V72M156 156V72" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M118 156v-46" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M112 110h12" stroke="currentColor" strokeWidth="1.2" opacity=".7" />
-      {/* 屋顶：左半留存，右半塌了 */}
-      <path d="M28 72l30-24h44" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M28 72h56" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M96 48l30 20" stroke="currentColor" strokeWidth="1.2" opacity=".45" strokeDasharray="4 5" />
-      {/* 残幡 */}
-      <path d="M64 72v26l10-6 10 6V72" stroke="currentColor" strokeWidth="1" opacity=".4" />
-      <path d="M170 72v34" stroke="currentColor" strokeWidth="1" opacity=".3" strokeDasharray="6 4" />
-      {/* 门洞里的黑 */}
-      <rect x="52" y="112" width="48" height="44" fill="#000" opacity=".45" />
-    </svg>
-  )
-}
+// function TempleArt() {
+//   return (
+//     <svg className="fall-temple" viewBox="0 0 200 200" fill="none">
+//       {/* 台基 */}
+//       <path d="M16 168h168" stroke="currentColor" strokeWidth="1.6" />
+//       <path d="M26 156h148" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
+//       {/* 四根立柱，第二根断掉 */}
+//       <path d="M40 156V72M84 156V72M156 156V72" stroke="currentColor" strokeWidth="1.6" />
+//       <path d="M118 156v-46" stroke="currentColor" strokeWidth="1.6" />
+//       <path d="M112 110h12" stroke="currentColor" strokeWidth="1.2" opacity=".7" />
+//       {/* 屋顶：左半留存，右半塌了 */}
+//       <path d="M28 72l30-24h44" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+//       <path d="M28 72h56" stroke="currentColor" strokeWidth="1.4" />
+//       <path d="M96 48l30 20" stroke="currentColor" strokeWidth="1.2" opacity=".45" strokeDasharray="4 5" />
+//       {/* 残幡 */}
+//       <path d="M64 72v26l10-6 10 6V72" stroke="currentColor" strokeWidth="1" opacity=".4" />
+//       <path d="M170 72v34" stroke="currentColor" strokeWidth="1" opacity=".3" strokeDasharray="6 4" />
+//       {/* 门洞里的黑 */}
+//       <rect x="52" y="112" width="48" height="44" fill="#000" opacity=".45" />
+//     </svg>
+//   )
+// }
 
 /** 断开的符节：合纵的信物，一分为二 */
-function TallyArt() {
-  return (
-    <svg className="fall-tally" viewBox="0 0 200 180" fill="none">
-      {/* 左半 */}
-      <path d="M30 40h56v100H30z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M30 66h56M30 92h56M30 118h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
-      <path d="M62 40v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
-      {/* 右半（错开一点，表示断裂） */}
-      <path d="M114 52h56v100h-56z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M114 78h56M114 104h56M114 130h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
-      <path d="M138 52v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
-      {/* 断口 */}
-      <path d="M90 44l6 18-8 14 7 20-6 22" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
-      <path d="M110 60l-6 16 8 16-7 18" stroke="currentColor" strokeWidth="1" opacity=".35" />
-    </svg>
-  )
-}
+// function TallyArt() {
+//   return (
+//     <svg className="fall-tally" viewBox="0 0 200 180" fill="none">
+//       {/* 左半 */}
+//       <path d="M30 40h56v100H30z" stroke="currentColor" strokeWidth="1.5" />
+//       <path d="M30 66h56M30 92h56M30 118h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
+//       <path d="M62 40v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
+//       {/* 右半（错开一点，表示断裂） */}
+//       <path d="M114 52h56v100h-56z" stroke="currentColor" strokeWidth="1.5" />
+//       <path d="M114 78h56M114 104h56M114 130h56" stroke="currentColor" strokeWidth="1" opacity=".45" />
+//       <path d="M138 52v100" stroke="currentColor" strokeWidth="1" opacity=".35" strokeDasharray="5 5" />
+//       {/* 断口 */}
+//       <path d="M90 44l6 18-8 14 7 20-6 22" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+//       <path d="M110 60l-6 16 8 16-7 18" stroke="currentColor" strokeWidth="1" opacity=".35" />
+//     </svg>
+//   )
+// }
