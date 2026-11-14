@@ -3,16 +3,18 @@
  * ===========================================================================
  * 为什么需要这一页：
  *   赧王死于前 256，秦灭六国始于前 230，中间空了二十六年。
- *   直接跳过去，等于把"天命转移"这件事整个略过了——而它恰恰是周秦之间的枢纽。
+ *   直接跳过去，等于把"天命转移"整个略过了——而它恰恰是周秦之间的枢纽。
  *
- * 交互：
- *   · 进入后三幕依次浮现（纯 CSS 错峰，不用逐帧 JS）
- *   · 动画走完、或点击屏幕任意处，底部出现【王朝覆灭】
- *   · 页面顶部常驻「↑ 上滚返回时间轴」，在顶部上滚即返回
- *   · 点按钮：画卷向下展开 → 进入沙盘
+ * 三个要点：
+ *   1. **自滚动**：外层 body 是 overflow:hidden，所以这一页自己当滚动容器，
+ *      否则内容会被直接截断（这就是之前"只能看一半"的原因）。
+ *   2. **自动下沉**：进来后如果用户不动滚轮，页面按每秒约 12px 缓缓下移，
+ *      让三幕随文字浮现自然展开；一碰滚轮就交还控制权，且不再自动。
+ *   3. **上滚返回**：滚到顶部继续上滚 → 回时间轴末页。
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import fallZhou from '../../data/fall.zhou.json'
 import './fall.css'
 
 interface FallAct {
@@ -34,24 +36,26 @@ interface FallData {
   enterHint: string
 }
 
-import fallZhou from '../../data/fall.zhou.json'
-
 const FALL: Record<string, FallData> = {
   zhou: fallZhou as FallData,
 }
 
 /** 三幕全部浮现所需时间（与 CSS 的 animation-delay 对齐） */
 const REVEAL_MS = 5200
+/** 自动下沉速度：像素/秒。慢到像画卷自己往下走 */
+const AUTO_SPEED = 12
 
 export function FallStage() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
   const navigate = useNavigate()
-
   const data = dynastyId ? FALL[dynastyId] : undefined
+
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const autoRef = useRef(true)
+  const lastWheel = useRef(0)
 
   const [ready, setReady] = useState(false)
   const [leaving, setLeaving] = useState(false)
-  const lastTime = useRef(0)
 
   /* 动画走完 → 出现入口 */
   useEffect(() => {
@@ -60,35 +64,55 @@ export function FallStage() {
     return () => window.clearTimeout(timer)
   }, [data])
 
-  /* 点击任意处 = 跳过动画，直接露出入口 */
-  const skip = useCallback(() => setReady(true), [])
+  /* 自动下沉：用户一碰滚轮就停手，之后不再接管 */
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
 
-  /* 顶部上滚 → 返回时间轴最后一页 */
+    let raf = 0
+    let last = 0
+    const tick = (t: number) => {
+      if (!autoRef.current) return
+      if (last) {
+        const dt = t - last
+        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2
+        if (!atBottom) el.scrollTop += (dt / 1000) * AUTO_SPEED
+      }
+      last = t
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+
+    const stop = () => {
+      autoRef.current = false
+    }
+    window.addEventListener('wheel', stop, { passive: true })
+    window.addEventListener('touchstart', stop, { passive: true })
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('wheel', stop)
+      window.removeEventListener('touchstart', stop)
+    }
+  }, [])
+
+  /* 顶部上滚 → 返回时间轴末页 */
   useEffect(() => {
     const onWheel = (event: WheelEvent) => {
-      if (event.deltaY >= 0) {
-        lastTime.current = 0
-        return
-      }
-      const atTop = window.scrollY <= 2
-      if (!atTop) return
+      if (event.deltaY >= 0) return
+      const el = scrollerRef.current
+      if (!el || el.scrollTop > 2) return
       const now = performance.now()
-      if (now - lastTime.current < 600) return
-      lastTime.current = now
+      if (now - lastWheel.current < 700) return
+      lastWheel.current = now
       navigate(`/dynasty/${dynastyId}`, { state: { page: 'last' } })
     }
     window.addEventListener('wheel', onWheel, { passive: true })
     return () => window.removeEventListener('wheel', onWheel)
   }, [dynastyId, navigate])
 
-  /* 进入沙盘：先播画卷展开，再导航 */
-  const enterEndgame = useCallback(() => {
-    if (!dynastyId || leaving) return
-    setLeaving(true)
-    window.setTimeout(() => navigate(`/dynasty/${dynastyId}/endgame`), 760)
-  }, [dynastyId, leaving, navigate])
-
-  /* ESC：优先返回时间轴 */
+  /* ESC 返回时间轴 */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
@@ -98,6 +122,15 @@ export function FallStage() {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [dynastyId, navigate])
+
+  /* 进入沙盘：先播画卷展开，再导航 */
+  const enterEndgame = useCallback(() => {
+    if (!dynastyId || leaving) return
+    setLeaving(true)
+    window.setTimeout(() => navigate(`/dynasty/${dynastyId}/endgame`), 760)
+  }, [dynastyId, leaving, navigate])
+
+  const skip = useCallback(() => setReady(true), [])
 
   if (!data) {
     return (
@@ -111,8 +144,42 @@ export function FallStage() {
   }
 
   return (
-    <div className="fall-page" data-ready={ready} data-leaving={leaving} onClick={skip}>
-      {/* 顶部常驻出口 */}
+    <div className="fall-page" data-ready={ready} data-leaving={leaving} onClick={skip} ref={scrollerRef}>
+      {/* 极简光影：倾倒的鼎 · 熄灭的宗庙灯火 */}
+      <div className="fall-atmos" aria-hidden="true">
+        {/* 一尊倾覆的鼎：圆腹、三足、双耳，只留轮廓 */}
+        <svg className="fall-ding" viewBox="0 0 200 180" fill="none">
+          {/* 腹 */}
+          <path
+            d="M42 66c0 36 26 54 58 54s58-18 58-54"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          {/* 口沿 */}
+          <ellipse cx="100" cy="66" rx="58" ry="11" stroke="currentColor" strokeWidth="1.4" />
+          {/* 双耳 */}
+          <path
+            d="M66 58c0-14 16-14 16 0M118 58c0-14 16-14 16 0"
+            stroke="currentColor"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+          />
+          {/* 腹部纹带 */}
+          <path d="M48 84h104" stroke="currentColor" strokeWidth="1.1" opacity=".55" />
+          {/* 三足 */}
+          <path
+            d="M56 112l-8 34M100 120v30M144 112l8 34"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+        <span className="fall-lamp fall-lamp--a" />
+        <span className="fall-lamp fall-lamp--b" />
+        <span className="fall-lamp fall-lamp--c" />
+      </div>
+
       <button
         type="button"
         className="fall-back"
@@ -151,6 +218,9 @@ export function FallStage() {
         ))}
       </section>
 
+      {/* 文末留白，让最后一幕能滚到视口中间 */}
+      <div className="fall-tail" aria-hidden="true" />
+
       <footer className="fall-foot">
         <button
           type="button"
@@ -165,7 +235,6 @@ export function FallStage() {
         </button>
       </footer>
 
-      {/* 画卷展开：向下铺满，遮住过渡，再进沙盘 */}
       {leaving ? <div className="fall-unfurl" aria-hidden="true" /> : null}
     </div>
   )

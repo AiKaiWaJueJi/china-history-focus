@@ -70,6 +70,34 @@ try {
   await page.waitForSelector('.fall-page', { timeout: 8000 })
   check('进入过渡页', /\/fall$/.test(page.url()), page.url())
 
+  // 这一页必须自己可滚：外层 body 是 overflow:hidden，不能靠窗口滚
+  const scrollable = await page.evaluate(() => {
+    const el = document.querySelector('.fall-page')
+    return {
+      scrollHeight: el.scrollHeight,
+      clientHeight: el.clientHeight,
+      overflowY: getComputedStyle(el).overflowY,
+      canScroll: el.scrollHeight > el.clientHeight + 40,
+    }
+  })
+  console.log(`[SCROLL] ${JSON.stringify(scrollable)}`)
+  check('过渡页自身可纵向滚动', scrollable.canScroll && scrollable.overflowY === 'auto', `${scrollable.scrollHeight}/${scrollable.clientHeight}`)
+
+  // 滚到底：最后一幕必须完整可见（之前"只能看一半"就是这个 bug）
+  await page.evaluate(() => {
+    const el = document.querySelector('.fall-page')
+    el.scrollTop = el.scrollHeight
+  })
+  await sleep(600)
+  const lastActVisible = await page.evaluate(() => {
+    const acts = document.querySelectorAll('.fall-act')
+    const last = acts[acts.length - 1].getBoundingClientRect()
+    const page = document.querySelector('.fall-page').getBoundingClientRect()
+    return { top: Math.round(last.top), bottom: Math.round(last.bottom), pageBottom: Math.round(page.bottom) }
+  })
+  console.log(`[LAST-ACT] ${JSON.stringify(lastActVisible)}`)
+  check('最后一幕能滚入视口', lastActVisible.bottom <= lastActVisible.pageBottom + 2)
+
   /* ---------- 3) 过渡页内容 ---------- */
   const fall = await page.evaluate(() => ({
     title: document.querySelector('.fall-title')?.textContent?.trim(),
@@ -123,6 +151,11 @@ try {
   /* ---------- 7) 上滚返回时间轴 ---------- */
   await page.goto(`${URL}/dynasty/zhou/fall`, { waitUntil: 'networkidle2' })
   await sleep(800)
+  // 自动下沉会把 scrollTop 推离 0，先归位再测上滚
+  await page.evaluate(() => {
+    document.querySelector('.fall-page').scrollTop = 0
+  })
+  await sleep(200)
   await page.mouse.move(720, 300)
   await page.mouse.wheel({ deltaY: -240 })
   await sleep(1200)
