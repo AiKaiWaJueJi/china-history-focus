@@ -103,7 +103,7 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 3vw;
-  padding: 96px 7vw 130px;
+  padding: 168px 7vw 118px;
   box-sizing: border-box;
 }
 
@@ -165,7 +165,7 @@
 .fall-heading {
   margin: 0 0 22px;
   font-family: 'KaiTi', '楷体', 'STKaiti', serif;
-  font-size: clamp(2rem, 3.4vw, 2.9rem);
+  font-size: clamp(1.7rem, 2.5vw, 2.1rem);
   font-weight: 400;
   letter-spacing: 0.14em;
   color: #c9a227;
@@ -232,27 +232,28 @@
 
 .fall-source-book {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-family: '方正小标简宋', var(--font-thin, serif);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.24em;
-  color: rgba(176, 141, 63, 0.66);
+  color: rgba(201, 162, 39, 0.8);
 }
 
 .fall-source-text {
   margin: 0;
   font-family: 'KaiTi', '楷体', 'STKaiti', serif;
-  font-size: 13.5px;
-  line-height: 1.95;
-  color: rgba(221, 216, 204, 0.55);
+  font-size: 15px;
+  line-height: 2;
+  letter-spacing: 0.01em;
+  color: rgba(236, 230, 216, 0.74);
 }
 
 .fall-note {
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   font-family: '仿宋GB2312', 'FangSong', serif;
-  font-size: 12px;
-  line-height: 1.9;
-  color: rgba(200, 194, 180, 0.42);
+  font-size: 13px;
+  line-height: 1.95;
+  color: rgba(214, 206, 190, 0.62);
   opacity: 0;
   transition: opacity 600ms ease 200ms;
 }
@@ -438,30 +439,39 @@
 }
 
 /* 顶部页名：极简，只是让人知道身在何处 */
+/*
+  三级字号：章（九鼎入秦）> 幕（秦取九鼎）> 正文。
+  之前章只有 20px、幕有 46px，本末倒置了。
+*/
 .fall-brand {
   position: absolute;
-  top: 30px;
+  top: 22px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 12;
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   pointer-events: none;
 }
 
 .fall-brand-sub {
   font-family: '仿宋GB2312', 'FangSong', serif;
-  font-size: 11px;
-  letter-spacing: 0.5em;
-  color: rgba(176, 141, 63, 0.5);
+  font-size: 12px;
+  letter-spacing: 0.62em;
+  text-indent: 0.62em;
+  color: rgba(176, 141, 63, 0.66);
 }
 
 .fall-brand-title {
-  font-family: 'KaiTi', '楷体', serif;
-  font-size: 20px;
-  letter-spacing: 0.22em;
-  color: rgba(201, 162, 39, 0.78);
+  font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+  font-size: clamp(2.3rem, 3.6vw, 3.1rem);
+  line-height: 1.1;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: #d9b96a;
+  text-shadow: 0 0 44px rgba(201, 162, 39, 0.26);
 }
 /* 第一幕改为实拍：照片要融进暗场，不做成一张"贴上去的图" */
 .fall-photo {
@@ -475,4 +485,79 @@
   */
   -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, #000 52%, transparent 100%);
   mask-image: radial-gradient(78% 78% at 50% 50%, #000 52%, transparent 100%);
+}
+/* ==========================================================================
+   v4：入场动效 + 图片由虚变实
+   ========================================================================== */
+
+/* 从时间轴切进来时先盖一层黑，再化开 */
+.fall-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 40%, rgba(12, 14, 17, 0.96), #050607 70%);
+  animation: curtain-lift 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes curtain-lift {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  55% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+    visibility: hidden;
+  }
+}
+
+/* 页面内容随幕布化开一起浮起 */
+.fall-act {
+  animation: act-arrive 800ms cubic-bezier(0.2, 0.9, 0.2, 1) 120ms both;
+}
+
+@keyframes act-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 图片：由虚变实（只在该幕第一次出现时演，回看不重播） */
+.fall-act[data-played='false'] .fall-photo {
+  animation: photo-develop 1500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes photo-develop {
+  0% {
+    opacity: 0;
+    filter: blur(22px) brightness(0.45) contrast(1);
+    transform: scale(1.07);
+  }
+  55% {
+    opacity: 0.75;
+    filter: blur(7px) brightness(0.7) contrast(1.02);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0) brightness(0.86) contrast(1.05) saturate(0.92);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fall-curtain,
+  .fall-act,
+  .fall-act[data-played='false'] .fall-photo {
+    animation: none;
+  }
 }

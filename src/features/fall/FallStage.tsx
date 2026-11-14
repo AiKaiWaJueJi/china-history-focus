@@ -189,14 +189,20 @@ export function FallStage() {
   const act = acts[page]
   const canEnter = page === acts.length - 1 && typingDone
 
-  /* 把本页文字按已显示字数切开 */
-  let cursor = shown
-  const visibleLines = act.lines.map((line) => {
-    if (cursor <= 0) return ''
-    const take = Math.min(line.length, cursor)
-    cursor -= line.length
-    return line.slice(0, take)
-  })
+  /*
+    把本页文字按已显示字数切开。
+    只保留"已经开头"的行——否则尚未出现的行会占着高度，
+    光标被顶到一行空白里，看起来像卡住了。
+  */
+  let offset = 0
+  const visibleLines = act.lines
+    .map((line) => {
+      const start = offset
+      offset += line.length
+      const take = Math.max(0, Math.min(line.length, shown - start))
+      return { text: line.slice(0, take), started: shown > start }
+    })
+    .filter((l) => l.started)
 
   return (
         <div
@@ -207,6 +213,9 @@ export function FallStage() {
         if (!typingDone) finishTyping()
       }}
     >
+      {/* 入场：从时间轴切进来时先盖一层黑，再化开，避免"啪"地出现 */}
+      <div className="fall-curtain" aria-hidden="true" />
+
       <button type="button" className="fall-back" onClick={(e) => { e.stopPropagation(); setConfirmBack(true) }}>
         ↑ 返回时间轴
       </button>
@@ -252,7 +261,7 @@ export function FallStage() {
             <div className="fall-lines">
               {visibleLines.map((line, k) => (
                 <p key={k} className="fall-line">
-                  {line}
+                  {line.text}
                   {k === visibleLines.length - 1 && !typingDone ? (
                     <span className="fall-caret" aria-hidden="true" />
                   ) : null}
