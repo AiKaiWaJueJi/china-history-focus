@@ -143,7 +143,7 @@ export function WarringStatesMap({
       className="map-stage"
       data-dimmed={dimmed}
       data-unified={unified}
-      data-undivided={index === 0 ? 'true' : 'false'}
+      data-undivided={index === 0 && mapSpec.empireName ? 'true' : 'false'}
       /*
         向下滚动 = 跳过行军动画，直接看战报。
         比双击好操作：双击容易误触，滚轮是"往下翻 = 继续推进"的自然隐喻。
@@ -298,7 +298,7 @@ export function WarringStatesMap({
         */}
         </g>
         {/* 第 0 幕：尚未分封，整块疆域只有一个名字 */}
-        {index === 0 ? (
+        {index === 0 && mapSpec.empireName ? (
           <text className="map-empire-name" x="500" y="322" textAnchor="middle" dominantBaseline="middle">
             {mapSpec.empireName ?? mapSpec.attacker.name}
           </text>
