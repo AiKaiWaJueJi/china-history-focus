@@ -74,13 +74,14 @@
   position: absolute;
   top: 86px;
   left: 34px;
-  z-index: 14;
+  /* 必须高于 .fall-page::after 的暗角（z 30），否则亮色会被压掉大半 */
+  z-index: 34;
   padding: 7px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(201, 162, 39, 0.5);
-  background: rgba(12, 13, 16, 0.8);
-  color: rgba(232, 207, 142, 0.9);
-  box-shadow: 0 0 22px -10px rgba(201, 162, 39, 0.55);
+  border: 1px solid rgba(224, 188, 96, 0.88);
+  background: rgba(14, 14, 12, 0.97);
+  color: #f6e6bd;
+  box-shadow: 0 0 22px -8px rgba(201, 162, 39, 0.7);
   font-family: '仿宋GB2312', 'FangSong', serif;
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -91,9 +92,11 @@
 }
 
 .fall-back:hover {
-  color: #f2dda6;
-  border-color: rgba(212, 175, 55, 0.9);
-  box-shadow: 0 0 26px -8px rgba(201, 162, 39, 0.75);
+  color: #fff4d8;
+  border-color: #f0cf7a;
+  box-shadow:
+    0 0 26px -4px rgba(232, 199, 120, 0.85),
+    0 0 52px -10px rgba(201, 162, 39, 0.7);
 }
 
 /* ---------- 单幕：两栏 ---------- */
@@ -268,9 +271,10 @@
 /* ---------- 入口：只在第三幕文字走完后出现 ---------- */
 .fall-foot {
   position: absolute;
-  right: 44px;
-  bottom: 34px;
-  z-index: 13;
+  right: 62px;
+  bottom: 46px;
+  /* 同上：压在暗角之上，否则永远暗一档 */
+  z-index: 34;
   display: flex;
   justify-content: flex-end;
   opacity: 0;
@@ -294,8 +298,8 @@
   gap: 4px;
   padding: 12px 30px;
   border-radius: 4px;
-  border: 1px solid rgba(212, 175, 55, 0.72);
-  background: rgba(20, 18, 12, 0.82);
+  border: 1px solid rgba(236, 200, 110, 0.92);
+  background: rgba(20, 18, 12, 0.96);
   backdrop-filter: blur(3px);
   box-shadow:
     0 0 34px -14px rgba(201, 162, 39, 0.8),
@@ -318,15 +322,19 @@
   font-size: 20px;
   letter-spacing: 0.3em;
   text-indent: 0.3em;
-  color: #f0d79b;
-  text-shadow: 0 0 18px rgba(201, 162, 39, 0.45);
+  color: #fff4d6;
+  /* 底下的光晕会透进来，深色描边保证字仍然压得住 */
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 18px rgba(255, 220, 150, 0.55);
 }
 
 .fall-enter-hint {
   font-family: '仿宋GB2312', 'FangSong', serif;
   font-size: 11.5px;
   letter-spacing: 0.16em;
-  color: rgba(224, 196, 130, 0.8);
+  color: rgba(248, 226, 175, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 /* ---------- 返回确认 ---------- */
@@ -606,5 +614,108 @@
   .fall-act,
   .fall-act[data-played='false'] .fall-photo-wrap {
     animation: none;
+  }
+}
+/* ==========================================================================
+   v5：光晕
+   ::before = 常驻呼吸光（只给「王朝覆灭」，它是行动召唤）
+   ::after  = 悬停光晕（两个按钮都有）
+   ========================================================================== */
+.fall-back,
+.fall-enter {
+  position: relative;
+  isolation: isolate;
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 260ms ease,
+    transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.fall-back::after,
+.fall-enter::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.8);
+  filter: blur(6px);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 236, 180, 0.92),
+    rgba(244, 210, 128, 0.5) 40%,
+    rgba(210, 170, 62, 0.2) 66%,
+    transparent 86%
+  );
+  transition:
+    opacity 280ms ease,
+    transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.fall-back:hover::after,
+.fall-enter:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fall-back:hover,
+.fall-enter:hover {
+  transform: translateY(-1px);
+  border-color: #fff2cc;
+  box-shadow:
+    0 0 0 1px rgba(255, 242, 204, 0.55),
+    0 0 30px -2px rgba(244, 210, 128, 0.9),
+    0 0 60px -6px rgba(201, 162, 39, 0.75),
+    inset 0 0 24px -12px rgba(255, 236, 180, 0.9);
+}
+
+.fall-back:hover .fall-back-label,
+.fall-enter:hover .fall-enter-label {
+  text-shadow: 0 0 18px rgba(255, 236, 180, 0.85);
+}
+
+/* 常驻呼吸光 */
+.fall-enter::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(14px);
+  background: radial-gradient(
+    closest-side,
+    rgba(232, 199, 120, 0.34),
+    rgba(201, 162, 39, 0.12) 58%,
+    transparent 80%
+  );
+  animation: enter-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes enter-breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+/* 悬停时呼吸光让位给光晕，避免两层叠太亮 */
+.fall-enter:hover::before {
+  opacity: 0.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fall-enter::before {
+    animation: none;
+    opacity: 0.5;
   }
 }
