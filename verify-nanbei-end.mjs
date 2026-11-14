@@ -39,6 +39,13 @@ try {
   check('标准大一统沙盘：4 个区域（周/齐/陈/突厥）', shell.regions.length === 4 && shell.regions.includes('tujue'), shell.regions.join(','))
   check('突厥不可点击（pointer-events:none）', shell.neutralPE === 'none', shell.neutralPE)
   check('底部无「北周/隋」重复容器，且陈只出现一次', shell.rails.join('|').includes('北齐') && shell.rails.filter((x) => x.includes('陈')).length === 1, shell.rails.join(' / '))
+  const defaultNote = await page.evaluate(() => ({
+    empireName: document.querySelectorAll('.map-empire-name').length,
+    usurp: document.querySelectorAll('.map-usurp-note').length,
+    qin: document.querySelector('.region-label--qin')?.textContent?.trim(),
+  }))
+  check('默认状态没有居中「隋」大字', defaultNote.empireName === 0, JSON.stringify(defaultNote))
+  check('默认状态没有易代提示浮标，攻方仍为北周', defaultNote.usurp === 0 && defaultNote.qin === '北周', JSON.stringify(defaultNote))
 
   await page.click('.rail-node:nth-child(2)')
   await sleep(1200)
@@ -50,6 +57,11 @@ try {
   }))
   check('点击北齐打开「周灭北齐」战报', report1.panel && report1.title === '周灭北齐', report1.title)
   check('战报内有第二页按钮', report1.pager && report1.next.some((t) => t?.includes('隋代周')), report1.next.join(' / '))
+  const page577 = await page.evaluate(() => ({
+    qin: document.querySelector('.region-label--qin')?.textContent?.trim(),
+    usurp: document.querySelectorAll('.map-usurp-note').length,
+  }))
+  check('577 页攻方仍是北周、无易代提示', page577.qin === '北周' && page577.usurp === 0, JSON.stringify(page577))
 
   await page.click('.battle-page-btn--primary')
   await sleep(500)
@@ -59,15 +71,30 @@ try {
   }))
   check('第二页为「隋代北周」', report2.title === '隋代北周', report2.title)
   check('第二页有返回按钮', report2.back.some((t) => t?.includes('返回上一战报')), report2.back.join(' / '))
+  const page581 = await page.evaluate(() => ({
+    qin: document.querySelector('.region-label--qin')?.textContent?.trim(),
+    note: document.querySelector('.map-usurp-note')?.textContent?.replace(/\s+/g, '') ?? null,
+    ring: document.querySelector('.map-stage')?.getAttribute('data-usurp'),
+  }))
+  check('581 页攻方显示为隋', page581.qin === '隋', page581.qin)
+  check(
+    '581 页在隋疆域内浮出「杨坚称帝·改国号隋」',
+    page581.note?.includes('杨坚称帝') && page581.ring === 'true',
+    JSON.stringify(page581),
+  )
+  await page.screenshot({ path: 'shots/sui/verify-581.png' })
 
   await page.click('.battle-page-btn:not(.battle-page-btn--primary)')
   await sleep(400)
   check('返回按钮可回到第一页', (await page.$eval('.battle-title', (n) => n.textContent?.trim())) === '周灭北齐')
   await page.click('.battle-close')
-  await sleep(400)
+  await sleep(700)
 
-  const mapLabel = await page.evaluate(() => [...document.querySelectorAll('.region-label')].map((n) => n.textContent?.trim()))
-  check('北周容器在 577 后显示为隋', mapLabel.includes('隋'), mapLabel.join('/'))
+  const closed = await page.evaluate(() => ({
+    usurp: document.querySelectorAll('.map-usurp-note').length,
+    qin: document.querySelector('.region-label--qin')?.textContent?.trim(),
+  }))
+  check('关闭战报后易代提示消失、攻方回到北周', closed.usurp === 0 && closed.qin === '北周', JSON.stringify(closed))
   check('无控制台错误', errors.length === 0, errors.join(' | '))
 
   await browser.close()

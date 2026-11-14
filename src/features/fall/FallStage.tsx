@@ -25,6 +25,7 @@ import fallHanXin from '../../data/fall.han.xin.json'
 import fallHanZhongxing from '../../data/fall.han.zhongxing.json'
 import fallJin from '../../data/fall.jin.json'
 import fallJinYongjia from '../../data/fall.jin.yongjia.json'
+import fallNanBei from '../../data/fall.southern_northern.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
@@ -49,6 +50,19 @@ import jinNandu from '../../assets/jin-nandu.jpg'
 import jinHuanxuan from '../../assets/jin-huanxuan.jpg'
 import jinBeifa from '../../assets/jin-beifa.jpg'
 import jinShanrang from '../../assets/jin-shanrang.jpg'
+// 南北朝 8 章过渡页配图（豆包生成 · 器物 · 16:9）
+import nb439_1 from '../../assets/nb439_1.jpg'
+import nb439_2 from '../../assets/nb439_2.jpg'
+import nb439_3 from '../../assets/nb439_3.jpg'
+import nb479_1 from '../../assets/nb479_1.jpg'
+import nb479_2 from '../../assets/nb479_2.jpg'
+import nb479_3 from '../../assets/nb479_3.jpg'
+import nb502_1 from '../../assets/nb502_1.jpg'
+import nb502_2 from '../../assets/nb502_2.jpg'
+import nb502_3 from '../../assets/nb502_3.jpg'
+import nb534_1 from '../../assets/nb534_1.jpg'
+import nb534_2 from '../../assets/nb534_2.jpg'
+import nb534_3 from '../../assets/nb534_3.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -77,6 +91,18 @@ const ART: Record<string, string> = {
   jin_huanxuan: jinHuanxuan,
   jin_beifa: jinBeifa,
   jin_shanrang: jinShanrang,
+  nb439_1,
+  nb439_2,
+  nb439_3,
+  nb479_1,
+  nb479_2,
+  nb479_3,
+  nb502_1,
+  nb502_2,
+  nb502_3,
+  nb534_1,
+  nb534_2,
+  nb534_3,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -104,6 +130,30 @@ const ART_ALT: Record<string, string> = {
   jin_huanxuan: '建康宫门·兵甲玉玺',
   jin_beifa: '义熙北伐·洛阳故都',
   jin_shanrang: '晋宋禅让·受禅坛',
+  nb439_1: '北魏具装马铠与铁戟',
+  nb439_2: '十六国印玺、降表与断箭',
+  nb439_3: '北朝马鞍与南朝楼船',
+  nb479_1: '刘宋末年的残破宫灯与礼器',
+  nb479_2: '萧齐受禅·玉玺与玺绶',
+  nb479_3: '宋室诸王印绶与断圭',
+  nb502_1: '建康城下的断箭与齐旗',
+  nb502_2: '萧梁受禅·玉册与金玺',
+  nb502_3: '天监年间的铜钱与量器',
+  nb534_1: '洛阳永宁寺塔基残砖与铜铃',
+  nb534_2: '裂为两半的铜虎符',
+  nb534_3: '东西魏对峙的铠甲与箭镞',
+  nb550_1: '邺城铜雀瓦当与兵符',
+  nb550_2: '北齐受禅·玉璧与冕旒',
+  nb550_3: '响堂山石窟佛像与香炉',
+  nb557_1: '台城陷落·残破宫灯与断戟',
+  nb557_2: '江陵焚书·焦卷与灰烬',
+  nb557_3: '陈朝青瓷与北周铜印',
+  nb577_1: '北齐宫苑·鎏金香炉与残屏',
+  nb577_2: '北周府兵·明光铠与马槊',
+  nb577_3: '北方一统·铜权与量器',
+  nb589_1: '隋受周禅·玉玺与诏书',
+  nb589_2: '隋军五牙战舰与船桨',
+  nb589_3: '开皇铜钱与统一度量衡',
 }
 
 interface FallAct {
@@ -163,6 +213,11 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
     fall: fallJin as FallData,
     yongjia: fallJinYongjia as FallData,
   },
+  /*
+    南北朝：8 个易代节点各一章（key = 节点 id）。
+    从时间轴点节点、或翻到段末继续下滚都会进这里；演完落回下一段的时间轴页。
+  */
+  southern_northern: fallNanBei as unknown as Record<string, FallData>,
 }
 
 const DEFAULT_CHAPTER = 'fall'
@@ -389,23 +444,25 @@ export function FallStage() {
       <AnimatePresence mode="wait" custom={dir} initial={false}>
         <motion.section
           key={act.id}
-          className={`fall-act fall-act--${page}`}
+          className={`fall-act fall-act--${page}${ART[act.art ?? ''] ? '' : ' fall-act--no-art'}`}
           custom={dir}
           initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? 60 : -60 }}
           animate={{ opacity: 1, x: 0 }}
           exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? -60 : 60 }}
           transition={{ duration: prefersReducedMotion ? 0.12 : 0.5, ease: [0.2, 0.9, 0.2, 1] }}
         >
-          {/* 每幕的专属影像，位置左右交替 */}
-          <div className="fall-art" aria-hidden="true">
-            <div className="fall-photo-wrap">
-              <img
-                className="fall-photo"
-                src={ART[act.art ?? 'ding'] ?? ART.ding}
-                alt={ART_ALT[act.art ?? 'ding'] ?? '过渡影像'}
-              />
+          {/* 每幕的专属影像，位置左右交替；没有配图（或图还没生成）时整幕改居中排版 */}
+          {ART[act.art ?? ''] ? (
+            <div className="fall-art" aria-hidden="true">
+              <div className="fall-photo-wrap">
+                <img
+                  className="fall-photo"
+                  src={ART[act.art ?? '']}
+                  alt={ART_ALT[act.art ?? ''] ?? '过渡影像'}
+                />
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="fall-copy">
             <p className="fall-year">{act.year}</p>
@@ -444,7 +501,7 @@ export function FallStage() {
         <div className="fall-confirm-mask" onClick={() => setConfirmBack(false)}>
           <div className="fall-confirm" onClick={(e) => e.stopPropagation()} role="dialog">
             <p className="fall-confirm-title">返回帝王时间轴？</p>
-            <p className="fall-confirm-text">周室倾覆尚未看完，返回后可随时再来。</p>
+            <p className="fall-confirm-text">{data.title}尚未看完，返回后可随时再来。</p>
             <div className="fall-confirm-actions">
               <button type="button" className="fall-confirm-primary" onClick={backToTimeline}>
                 返回时间轴

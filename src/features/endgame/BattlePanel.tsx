@@ -51,13 +51,21 @@ interface BattlePanelProps {
   closing?: boolean
   onFigureClick: (figureId: string) => void
   onClose: () => void
+  /** 当前战报页变化（父级据此把地图年份切到该页，例如 581 页要显示「隋」） */
+  onActiveChange?: (yearValue: number) => void
 }
 
-export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaignHover }: BattlePanelProps) {
+export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaignHover, onActiveChange }: BattlePanelProps) {
   const pages = event.battlePages?.length ? [event, ...event.battlePages] : [event]
   const [page, setPage] = useState(0)
   useEffect(() => setPage(0), [event.id])
   const active = pages[Math.min(page, pages.length - 1)]
+
+  useEffect(() => {
+    onActiveChange?.(pages[Math.min(page, pages.length - 1)].yearValue)
+    // pages 每次渲染都会重建，只用 event.id + page 作为触发条件
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event.id, page, onActiveChange])
 
   return (
     <aside

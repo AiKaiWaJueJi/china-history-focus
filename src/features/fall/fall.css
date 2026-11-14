@@ -717,3 +717,9 @@
     opacity: 0.5;
   }
 }
+/* 没有配图的一幕：文字改用单栏居中，不留空影像位 */
+.fall-act--no-art .fall-copy {
+  grid-column: 1 / -1;
+  justify-self: center;
+  text-align: left;
+}

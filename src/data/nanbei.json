@@ -121,7 +121,30 @@
       "name": "刘裕",
       "start": 420,
       "end": 422,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "420 — 422",
+      "portrait": "/portraits/nanbei-song_wu.svg",
+      "events": [
+        {
+          "id": "ev_song_wu_1",
+          "name": "灭南燕",
+          "dimension": "military",
+          "year": 409
+        },
+        {
+          "id": "ev_song_wu_2",
+          "name": "灭后秦",
+          "dimension": "military",
+          "year": 417
+        },
+        {
+          "id": "ev_song_wu_3",
+          "name": "代晋建宋",
+          "dimension": "political",
+          "year": 420
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "song_shao",
@@ -130,7 +153,24 @@
       "name": "刘义符",
       "start": 422,
       "end": 424,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "422 — 424",
+      "portrait": "/portraits/nanbei-song_shao.svg",
+      "events": [
+        {
+          "id": "ev_song_shao_1",
+          "name": "居丧无礼",
+          "dimension": "political",
+          "year": 422
+        },
+        {
+          "id": "ev_song_shao_2",
+          "name": "被废遇弑",
+          "dimension": "political",
+          "year": 424
+        }
+      ],
+      "posthumousRule": "无谥，史称少帝"
     },
     {
       "id": "song_wen",
@@ -139,7 +179,30 @@
       "name": "刘义隆",
       "start": 424,
       "end": 453,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "424 — 453",
+      "portrait": "/portraits/nanbei-song_wen.svg",
+      "events": [
+        {
+          "id": "ev_song_wen_1",
+          "name": "元嘉之治",
+          "dimension": "political",
+          "year": 425
+        },
+        {
+          "id": "ev_song_wen_2",
+          "name": "元嘉北伐",
+          "dimension": "military",
+          "year": 430
+        },
+        {
+          "id": "ev_song_wen_3",
+          "name": "立国子学",
+          "dimension": "culture",
+          "year": 438
+        }
+      ],
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "song_shao2",
@@ -148,7 +211,30 @@
       "name": "刘劭",
       "start": 453,
       "end": 453,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "453 — 453",
+      "portrait": "/portraits/nanbei-song_shao2.svg",
+      "events": [
+        {
+          "id": "ev_song_shao2_1",
+          "name": "巫蛊事发",
+          "dimension": "political",
+          "year": 452
+        },
+        {
+          "id": "ev_song_shao2_2",
+          "name": "弑父自立",
+          "dimension": "political",
+          "year": 453
+        },
+        {
+          "id": "ev_song_shao2_3",
+          "name": "一月而诛",
+          "dimension": "military",
+          "year": 453
+        }
+      ],
+      "posthumousRule": "无谥，史称元凶劭"
     },
     {
       "id": "song_xiaowu",
@@ -157,7 +243,30 @@
       "name": "刘骏",
       "start": 453,
       "end": 464,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "453 — 464",
+      "portrait": "/portraits/nanbei-song_xiaowu.svg",
+      "events": [
+        {
+          "id": "ev_song_xiaowu_1",
+          "name": "起兵讨劭",
+          "dimension": "military",
+          "year": 453
+        },
+        {
+          "id": "ev_song_xiaowu_2",
+          "name": "剪抑宗室",
+          "dimension": "political",
+          "year": 455
+        },
+        {
+          "id": "ev_song_xiaowu_3",
+          "name": "大明改制",
+          "dimension": "political",
+          "year": 458
+        }
+      ],
+      "posthumousRule": "五宗安之曰孝，克定祸乱曰武"
     },
     {
       "id": "song_qianfei",
@@ -166,7 +275,24 @@
       "name": "刘子业",
       "start": 464,
       "end": 465,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "464 — 465",
+      "portrait": "/portraits/nanbei-song_qianfei.svg",
+      "events": [
+        {
+          "id": "ev_song_qianfei_1",
+          "name": "狂悖失德",
+          "dimension": "political",
+          "year": 465
+        },
+        {
+          "id": "ev_song_qianfei_2",
+          "name": "被弑于华林园",
+          "dimension": "political",
+          "year": 465
+        }
+      ],
+      "posthumousRule": "去礼远众曰废"
     },
     {
       "id": "song_ming",
@@ -175,7 +301,24 @@
       "name": "刘彧",
       "start": 465,
       "end": 472,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "465 — 472",
+      "portrait": "/portraits/nanbei-song_ming.svg",
+      "events": [
+        {
+          "id": "ev_song_ming_1",
+          "name": "平定义嘉之乱",
+          "dimension": "military",
+          "year": 466
+        },
+        {
+          "id": "ev_song_ming_2",
+          "name": "泰始方镇之制",
+          "dimension": "political",
+          "year": 467
+        }
+      ],
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "song_houfei",
@@ -184,7 +327,24 @@
       "name": "刘昱",
       "start": 472,
       "end": 477,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "472 — 477",
+      "portrait": "/portraits/nanbei-song_houfei.svg",
+      "events": [
+        {
+          "id": "ev_song_houfei_1",
+          "name": "荒暴日甚",
+          "dimension": "political",
+          "year": 474
+        },
+        {
+          "id": "ev_song_houfei_2",
+          "name": "被弑",
+          "dimension": "political",
+          "year": 477
+        }
+      ],
+      "posthumousRule": "去礼远众曰废"
     },
     {
       "id": "song_shun",
@@ -193,7 +353,24 @@
       "name": "刘准",
       "start": 477,
       "end": 479,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "477 — 479",
+      "portrait": "/portraits/nanbei-song_shun.svg",
+      "events": [
+        {
+          "id": "ev_song_shun_1",
+          "name": "萧道成辅政",
+          "dimension": "political",
+          "year": 477
+        },
+        {
+          "id": "ev_song_shun_2",
+          "name": "禅位于齐",
+          "dimension": "political",
+          "year": 479
+        }
+      ],
+      "posthumousRule": "慈和遍服曰顺"
     },
     {
       "id": "qi_gao",
@@ -202,7 +379,24 @@
       "name": "萧道成",
       "start": 479,
       "end": 482,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "479 — 482",
+      "portrait": "/portraits/nanbei-qi_gao.svg",
+      "events": [
+        {
+          "id": "ev_qi_gao_1",
+          "name": "代宋建齐",
+          "dimension": "political",
+          "year": 479
+        },
+        {
+          "id": "ev_qi_gao_2",
+          "name": "节俭革弊",
+          "dimension": "political",
+          "year": 480
+        }
+      ],
+      "posthumousRule": "功德盛大曰高"
     },
     {
       "id": "qi_wu",
@@ -211,7 +405,24 @@
       "name": "萧赜",
       "start": 482,
       "end": 493,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "482 — 493",
+      "portrait": "/portraits/nanbei-qi_wu.svg",
+      "events": [
+        {
+          "id": "ev_qi_wu_1",
+          "name": "永明之治",
+          "dimension": "political",
+          "year": 483
+        },
+        {
+          "id": "ev_qi_wu_2",
+          "name": "永明体诗",
+          "dimension": "culture",
+          "year": 487
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "qi_yulin",
@@ -220,7 +431,24 @@
       "name": "萧昭业",
       "start": 493,
       "end": 494,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "493 — 494",
+      "portrait": "/portraits/nanbei-qi_yulin.svg",
+      "events": [
+        {
+          "id": "ev_qi_yulin_1",
+          "name": "奢纵嬉游",
+          "dimension": "political",
+          "year": 493
+        },
+        {
+          "id": "ev_qi_yulin_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 494
+        }
+      ],
+      "posthumousRule": "无谥，史称郁林王"
     },
     {
       "id": "qi_hailing",
@@ -229,7 +457,18 @@
       "name": "萧昭文",
       "start": 494,
       "end": 494,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "494 — 494",
+      "portrait": "/portraits/nanbei-qi_hailing.svg",
+      "events": [
+        {
+          "id": "ev_qi_hailing_1",
+          "name": "立而旋废",
+          "dimension": "political",
+          "year": 494
+        }
+      ],
+      "posthumousRule": "无谥，史称海陵王"
     },
     {
       "id": "qi_ming",
@@ -238,7 +477,24 @@
       "name": "萧鸾",
       "start": 494,
       "end": 498,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "494 — 498",
+      "portrait": "/portraits/nanbei-qi_ming.svg",
+      "events": [
+        {
+          "id": "ev_qi_ming_1",
+          "name": "屠宗自立",
+          "dimension": "political",
+          "year": 494
+        },
+        {
+          "id": "ev_qi_ming_2",
+          "name": "北魏南伐",
+          "dimension": "military",
+          "year": 495
+        }
+      ],
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "qi_donghun",
@@ -247,7 +503,24 @@
       "name": "萧宝卷",
       "start": 498,
       "end": 501,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "498 — 501",
+      "portrait": "/portraits/nanbei-qi_donghun.svg",
+      "events": [
+        {
+          "id": "ev_qi_donghun_1",
+          "name": "诛戮大臣",
+          "dimension": "political",
+          "year": 499
+        },
+        {
+          "id": "ev_qi_donghun_2",
+          "name": "建康被围",
+          "dimension": "military",
+          "year": 501
+        }
+      ],
+      "posthumousRule": "无谥，史称东昏侯"
     },
     {
       "id": "qi_he",
@@ -256,7 +529,24 @@
       "name": "萧宝融",
       "start": 501,
       "end": 502,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "501 — 502",
+      "portrait": "/portraits/nanbei-qi_he.svg",
+      "events": [
+        {
+          "id": "ev_qi_he_1",
+          "name": "江陵称帝",
+          "dimension": "political",
+          "year": 501
+        },
+        {
+          "id": "ev_qi_he_2",
+          "name": "禅位于梁",
+          "dimension": "political",
+          "year": 502
+        }
+      ],
+      "posthumousRule": "不刚不柔曰和"
     },
     {
       "id": "liang_wu",
@@ -265,7 +555,36 @@
       "name": "萧衍",
       "start": 502,
       "end": 549,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "502 — 549",
+      "portrait": "/portraits/nanbei-liang_wu.svg",
+      "events": [
+        {
+          "id": "ev_liang_wu_1",
+          "name": "代齐建梁",
+          "dimension": "political",
+          "year": 502
+        },
+        {
+          "id": "ev_liang_wu_2",
+          "name": "天监之治",
+          "dimension": "political",
+          "year": 505
+        },
+        {
+          "id": "ev_liang_wu_3",
+          "name": "舍身同泰寺",
+          "dimension": "culture",
+          "year": 527
+        },
+        {
+          "id": "ev_liang_wu_4",
+          "name": "侯景之乱",
+          "dimension": "military",
+          "year": 548
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "liang_jianwen",
@@ -274,7 +593,30 @@
       "name": "萧纲",
       "start": 549,
       "end": 551,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "549 — 551",
+      "portrait": "/portraits/nanbei-liang_jianwen.svg",
+      "events": [
+        {
+          "id": "ev_liang_jianwen_1",
+          "name": "侯景挟制",
+          "dimension": "political",
+          "year": 549
+        },
+        {
+          "id": "ev_liang_jianwen_2",
+          "name": "宫体诗风",
+          "dimension": "culture",
+          "year": 540
+        },
+        {
+          "id": "ev_liang_jianwen_3",
+          "name": "被废遇害",
+          "dimension": "political",
+          "year": 551
+        }
+      ],
+      "posthumousRule": "壹德不解曰简，经纬天地曰文"
     },
     {
       "id": "liang_dong",
@@ -283,7 +625,24 @@
       "name": "萧栋",
       "start": 551,
       "end": 552,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "551 — 552",
+      "portrait": "/portraits/nanbei-liang_dong.svg",
+      "events": [
+        {
+          "id": "ev_liang_dong_1",
+          "name": "侯景所立",
+          "dimension": "political",
+          "year": 551
+        },
+        {
+          "id": "ev_liang_dong_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 552
+        }
+      ],
+      "posthumousRule": "无谥，史称豫章王"
     },
     {
       "id": "liang_yuan",
@@ -292,7 +651,30 @@
       "name": "萧绎",
       "start": 552,
       "end": 555,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "552 — 555",
+      "portrait": "/portraits/nanbei-liang_yuan.svg",
+      "events": [
+        {
+          "id": "ev_liang_yuan_1",
+          "name": "平侯景",
+          "dimension": "military",
+          "year": 552
+        },
+        {
+          "id": "ev_liang_yuan_2",
+          "name": "江陵陷落",
+          "dimension": "military",
+          "year": 554
+        },
+        {
+          "id": "ev_liang_yuan_3",
+          "name": "江陵焚书",
+          "dimension": "culture",
+          "year": 554
+        }
+      ],
+      "posthumousRule": "能思辩众曰元"
     },
     {
       "id": "liang_yuanming",
@@ -301,7 +683,24 @@
       "name": "萧渊明",
       "start": 555,
       "end": 555,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "555 — 555",
+      "portrait": "/portraits/nanbei-liang_yuanming.svg",
+      "events": [
+        {
+          "id": "ev_liang_yuanming_1",
+          "name": "北齐护送南归",
+          "dimension": "political",
+          "year": 555
+        },
+        {
+          "id": "ev_liang_yuanming_2",
+          "name": "旋废",
+          "dimension": "political",
+          "year": 555
+        }
+      ],
+      "posthumousRule": "无谥，史称贞阳侯"
     },
     {
       "id": "liang_jing",
@@ -310,7 +709,24 @@
       "name": "萧方智",
       "start": 555,
       "end": 557,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "555 — 557",
+      "portrait": "/portraits/nanbei-liang_jing.svg",
+      "events": [
+        {
+          "id": "ev_liang_jing_1",
+          "name": "陈霸先辅政",
+          "dimension": "political",
+          "year": 555
+        },
+        {
+          "id": "ev_liang_jing_2",
+          "name": "禅位于陈",
+          "dimension": "political",
+          "year": 557
+        }
+      ],
+      "posthumousRule": "夙夜警戒曰敬"
     },
     {
       "id": "chen_wu",
@@ -319,7 +735,30 @@
       "name": "陈霸先",
       "start": 557,
       "end": 559,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "557 — 559",
+      "portrait": "/portraits/nanbei-chen_wu.svg",
+      "events": [
+        {
+          "id": "ev_chen_wu_1",
+          "name": "讨平侯景",
+          "dimension": "military",
+          "year": 552
+        },
+        {
+          "id": "ev_chen_wu_2",
+          "name": "击退北齐",
+          "dimension": "military",
+          "year": 556
+        },
+        {
+          "id": "ev_chen_wu_3",
+          "name": "代梁建陈",
+          "dimension": "political",
+          "year": 557
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "chen_wen",
@@ -328,7 +767,24 @@
       "name": "陈蒨",
       "start": 559,
       "end": 566,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "559 — 566",
+      "portrait": "/portraits/nanbei-chen_wen.svg",
+      "events": [
+        {
+          "id": "ev_chen_wen_1",
+          "name": "天嘉之治",
+          "dimension": "political",
+          "year": 560
+        },
+        {
+          "id": "ev_chen_wen_2",
+          "name": "平定王琳",
+          "dimension": "military",
+          "year": 560
+        }
+      ],
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "chen_fei",
@@ -337,7 +793,24 @@
       "name": "陈伯宗",
       "start": 566,
       "end": 568,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "566 — 568",
+      "portrait": "/portraits/nanbei-chen_fei.svg",
+      "events": [
+        {
+          "id": "ev_chen_fei_1",
+          "name": "年幼即位",
+          "dimension": "political",
+          "year": 566
+        },
+        {
+          "id": "ev_chen_fei_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 568
+        }
+      ],
+      "posthumousRule": "去礼远众曰废"
     },
     {
       "id": "chen_xuan",
@@ -346,7 +819,24 @@
       "name": "陈顼",
       "start": 568,
       "end": 582,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "568 — 582",
+      "portrait": "/portraits/nanbei-chen_xuan.svg",
+      "events": [
+        {
+          "id": "ev_chen_xuan_1",
+          "name": "太建北伐",
+          "dimension": "military",
+          "year": 573
+        },
+        {
+          "id": "ev_chen_xuan_2",
+          "name": "吕梁之败",
+          "dimension": "military",
+          "year": 578
+        }
+      ],
+      "posthumousRule": "圣善周闻曰宣"
     },
     {
       "id": "chen_houzhu",
@@ -355,7 +845,30 @@
       "name": "陈叔宝",
       "start": 582,
       "end": 589,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "582 — 589",
+      "portrait": "/portraits/nanbei-chen_houzhu.svg",
+      "events": [
+        {
+          "id": "ev_chen_houzhu_1",
+          "name": "玉树后庭花",
+          "dimension": "culture",
+          "year": 584
+        },
+        {
+          "id": "ev_chen_houzhu_2",
+          "name": "隋军渡江",
+          "dimension": "military",
+          "year": 588
+        },
+        {
+          "id": "ev_chen_houzhu_3",
+          "name": "建康陷落",
+          "dimension": "military",
+          "year": 589
+        }
+      ],
+      "posthumousRule": "无谥，史称后主"
     },
     {
       "id": "wei_mingyuan",
@@ -364,7 +877,24 @@
       "name": "拓跋嗣",
       "start": 420,
       "end": 423,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "420 — 423",
+      "portrait": "/portraits/nanbei-wei_mingyuan.svg",
+      "events": [
+        {
+          "id": "ev_wei_mingyuan_1",
+          "name": "承拓跋珪基业",
+          "dimension": "political",
+          "year": 420
+        },
+        {
+          "id": "ev_wei_mingyuan_2",
+          "name": "南巡道卒",
+          "dimension": "political",
+          "year": 423
+        }
+      ],
+      "posthumousRule": "照临四方曰明，能思辩众曰元"
     },
     {
       "id": "wei_taiwu",
@@ -373,7 +903,36 @@
       "name": "拓跋焘",
       "start": 423,
       "end": 452,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "423 — 452",
+      "portrait": "/portraits/nanbei-wei_taiwu.svg",
+      "events": [
+        {
+          "id": "ev_wei_taiwu_1",
+          "name": "灭赫连夏",
+          "dimension": "military",
+          "year": 427
+        },
+        {
+          "id": "ev_wei_taiwu_2",
+          "name": "灭北燕",
+          "dimension": "military",
+          "year": 436
+        },
+        {
+          "id": "ev_wei_taiwu_3",
+          "name": "灭北凉统一北方",
+          "dimension": "military",
+          "year": 439
+        },
+        {
+          "id": "ev_wei_taiwu_4",
+          "name": "太武灭佛",
+          "dimension": "culture",
+          "year": 446
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "wei_nanan",
@@ -382,7 +941,24 @@
       "name": "拓跋余",
       "start": 452,
       "end": 452,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "452 — 452",
+      "portrait": "/portraits/nanbei-wei_nanan.svg",
+      "events": [
+        {
+          "id": "ev_wei_nanan_1",
+          "name": "阉宦拥立",
+          "dimension": "political",
+          "year": 452
+        },
+        {
+          "id": "ev_wei_nanan_2",
+          "name": "旋被弑",
+          "dimension": "political",
+          "year": 452
+        }
+      ],
+      "posthumousRule": "无谥，史称南安王"
     },
     {
       "id": "wei_wencheng",
@@ -391,7 +967,24 @@
       "name": "拓跋濬",
       "start": 452,
       "end": 465,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "452 — 465",
+      "portrait": "/portraits/nanbei-wei_wencheng.svg",
+      "events": [
+        {
+          "id": "ev_wei_wencheng_1",
+          "name": "复兴佛法",
+          "dimension": "culture",
+          "year": 452
+        },
+        {
+          "id": "ev_wei_wencheng_2",
+          "name": "开凿云冈石窟",
+          "dimension": "culture",
+          "year": 460
+        }
+      ],
+      "posthumousRule": "安民立政曰成"
     },
     {
       "id": "wei_xianwen",
@@ -400,7 +993,24 @@
       "name": "拓跋弘",
       "start": 465,
       "end": 471,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "465 — 471",
+      "portrait": "/portraits/nanbei-wei_xianwen.svg",
+      "events": [
+        {
+          "id": "ev_wei_xianwen_1",
+          "name": "幼年即位",
+          "dimension": "political",
+          "year": 465
+        },
+        {
+          "id": "ev_wei_xianwen_2",
+          "name": "禅位太子",
+          "dimension": "political",
+          "year": 471
+        }
+      ],
+      "posthumousRule": "无谥，史称献文帝"
     },
     {
       "id": "wei_xiaowen",
@@ -409,7 +1019,30 @@
       "name": "元宏",
       "start": 471,
       "end": 499,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "471 — 499",
+      "portrait": "/portraits/nanbei-wei_xiaowen.svg",
+      "events": [
+        {
+          "id": "ev_wei_xiaowen_1",
+          "name": "迁都洛阳",
+          "dimension": "political",
+          "year": 494
+        },
+        {
+          "id": "ev_wei_xiaowen_2",
+          "name": "汉化改制",
+          "dimension": "political",
+          "year": 495
+        },
+        {
+          "id": "ev_wei_xiaowen_3",
+          "name": "亲征南伐",
+          "dimension": "military",
+          "year": 497
+        }
+      ],
+      "posthumousRule": "五宗安之曰孝，经纬天地曰文"
     },
     {
       "id": "wei_xuanwu",
@@ -418,7 +1051,24 @@
       "name": "元恪",
       "start": 499,
       "end": 515,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "499 — 515",
+      "portrait": "/portraits/nanbei-wei_xuanwu.svg",
+      "events": [
+        {
+          "id": "ev_wei_xuanwu_1",
+          "name": "景明之治",
+          "dimension": "political",
+          "year": 500
+        },
+        {
+          "id": "ev_wei_xuanwu_2",
+          "name": "洛阳伽蓝之盛",
+          "dimension": "culture",
+          "year": 509
+        }
+      ],
+      "posthumousRule": "圣善周闻曰宣"
     },
     {
       "id": "wei_xiaoming",
@@ -427,7 +1077,30 @@
       "name": "元诩",
       "start": 515,
       "end": 528,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "515 — 528",
+      "portrait": "/portraits/nanbei-wei_xiaoming.svg",
+      "events": [
+        {
+          "id": "ev_wei_xiaoming_1",
+          "name": "胡太后临朝",
+          "dimension": "political",
+          "year": 515
+        },
+        {
+          "id": "ev_wei_xiaoming_2",
+          "name": "六镇之乱",
+          "dimension": "military",
+          "year": 523
+        },
+        {
+          "id": "ev_wei_xiaoming_3",
+          "name": "密召尔朱荣",
+          "dimension": "political",
+          "year": 528
+        }
+      ],
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "wei_xiaozhuang",
@@ -436,7 +1109,30 @@
       "name": "元子攸",
       "start": 528,
       "end": 530,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "528 — 530",
+      "portrait": "/portraits/nanbei-wei_xiaozhuang.svg",
+      "events": [
+        {
+          "id": "ev_wei_xiaozhuang_1",
+          "name": "河阴之变",
+          "dimension": "political",
+          "year": 528
+        },
+        {
+          "id": "ev_wei_xiaozhuang_2",
+          "name": "诛尔朱荣",
+          "dimension": "political",
+          "year": 530
+        },
+        {
+          "id": "ev_wei_xiaozhuang_3",
+          "name": "被缢于晋阳",
+          "dimension": "political",
+          "year": 530
+        }
+      ],
+      "posthumousRule": "胜敌志强曰庄"
     },
     {
       "id": "wei_changguang",
@@ -445,7 +1141,24 @@
       "name": "元晔",
       "start": 530,
       "end": 531,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "530 — 531",
+      "portrait": "/portraits/nanbei-wei_changguang.svg",
+      "events": [
+        {
+          "id": "ev_wei_changguang_1",
+          "name": "尔朱氏所立",
+          "dimension": "political",
+          "year": 530
+        },
+        {
+          "id": "ev_wei_changguang_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 531
+        }
+      ],
+      "posthumousRule": "无谥，史称长广王"
     },
     {
       "id": "wei_jiemin",
@@ -454,7 +1167,24 @@
       "name": "元恭",
       "start": 531,
       "end": 532,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "531 — 532",
+      "portrait": "/portraits/nanbei-wei_jiemin.svg",
+      "events": [
+        {
+          "id": "ev_wei_jiemin_1",
+          "name": "尔朱世隆拥立",
+          "dimension": "political",
+          "year": 531
+        },
+        {
+          "id": "ev_wei_jiemin_2",
+          "name": "被废遇害",
+          "dimension": "political",
+          "year": 532
+        }
+      ],
+      "posthumousRule": "好廉自克曰节，在国遭忧曰愍"
     },
     {
       "id": "wei_xiaowu",
@@ -463,7 +1193,24 @@
       "name": "元修",
       "start": 532,
       "end": 534,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "532 — 534",
+      "portrait": "/portraits/nanbei-wei_xiaowu.svg",
+      "events": [
+        {
+          "id": "ev_wei_xiaowu_1",
+          "name": "高欢拥立",
+          "dimension": "political",
+          "year": 532
+        },
+        {
+          "id": "ev_wei_xiaowu_2",
+          "name": "西奔关中",
+          "dimension": "political",
+          "year": 534
+        }
+      ],
+      "posthumousRule": "五宗安之曰孝，克定祸乱曰武"
     },
     {
       "id": "dongwei_jing",
@@ -472,7 +1219,24 @@
       "name": "元善见",
       "start": 534,
       "end": 550,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "534 — 550",
+      "portrait": "/portraits/nanbei-dongwei_jing.svg",
+      "events": [
+        {
+          "id": "ev_dongwei_jing_1",
+          "name": "高欢挟迁邺",
+          "dimension": "political",
+          "year": 534
+        },
+        {
+          "id": "ev_dongwei_jing_2",
+          "name": "禅位北齐",
+          "dimension": "political",
+          "year": 550
+        }
+      ],
+      "posthumousRule": "柔德考众曰静"
     },
     {
       "id": "beiqi_wenxuan",
@@ -481,7 +1245,30 @@
       "name": "高洋",
       "start": 550,
       "end": 559,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "550 — 559",
+      "portrait": "/portraits/nanbei-beiqi_wenxuan.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_wenxuan_1",
+          "name": "代东魏建齐",
+          "dimension": "political",
+          "year": 550
+        },
+        {
+          "id": "ev_beiqi_wenxuan_2",
+          "name": "破柔然山胡",
+          "dimension": "military",
+          "year": 553
+        },
+        {
+          "id": "ev_beiqi_wenxuan_3",
+          "name": "后期酗暴",
+          "dimension": "political",
+          "year": 556
+        }
+      ],
+      "posthumousRule": "经纬天地曰文，圣善周闻曰宣"
     },
     {
       "id": "beiqi_fei",
@@ -490,7 +1277,24 @@
       "name": "高殷",
       "start": 559,
       "end": 560,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "559 — 560",
+      "portrait": "/portraits/nanbei-beiqi_fei.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_fei_1",
+          "name": "幼年即位",
+          "dimension": "political",
+          "year": 559
+        },
+        {
+          "id": "ev_beiqi_fei_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 560
+        }
+      ],
+      "posthumousRule": "去礼远众曰废"
     },
     {
       "id": "beiqi_xiaozhao",
@@ -499,7 +1303,24 @@
       "name": "高演",
       "start": 560,
       "end": 561,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "560 — 561",
+      "portrait": "/portraits/nanbei-beiqi_xiaozhao.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_xiaozhao_1",
+          "name": "夺位自立",
+          "dimension": "political",
+          "year": 560
+        },
+        {
+          "id": "ev_beiqi_xiaozhao_2",
+          "name": "坠马而卒",
+          "dimension": "political",
+          "year": 561
+        }
+      ],
+      "posthumousRule": "五宗安之曰孝，容仪恭美曰昭"
     },
     {
       "id": "beiqi_wucheng",
@@ -508,7 +1329,24 @@
       "name": "高湛",
       "start": 561,
       "end": 565,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "561 — 565",
+      "portrait": "/portraits/nanbei-beiqi_wucheng.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_wucheng_1",
+          "name": "杀侄自立",
+          "dimension": "political",
+          "year": 561
+        },
+        {
+          "id": "ev_beiqi_wucheng_2",
+          "name": "禅位后主",
+          "dimension": "political",
+          "year": 565
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武，安民立政曰成"
     },
     {
       "id": "beiqi_houzhu",
@@ -517,7 +1355,30 @@
       "name": "高纬",
       "start": 565,
       "end": 577,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "565 — 577",
+      "portrait": "/portraits/nanbei-beiqi_houzhu.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_houzhu_1",
+          "name": "诛斛律光",
+          "dimension": "political",
+          "year": 572
+        },
+        {
+          "id": "ev_beiqi_houzhu_2",
+          "name": "晋阳失守",
+          "dimension": "military",
+          "year": 577
+        },
+        {
+          "id": "ev_beiqi_houzhu_3",
+          "name": "被俘于青州",
+          "dimension": "military",
+          "year": 577
+        }
+      ],
+      "posthumousRule": "无谥，史称后主"
     },
     {
       "id": "beiqi_youzhu",
@@ -526,7 +1387,24 @@
       "name": "高恒",
       "start": 577,
       "end": 577,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "577 — 577",
+      "portrait": "/portraits/nanbei-beiqi_youzhu.svg",
+      "events": [
+        {
+          "id": "ev_beiqi_youzhu_1",
+          "name": "仓促即位",
+          "dimension": "political",
+          "year": 577
+        },
+        {
+          "id": "ev_beiqi_youzhu_2",
+          "name": "出逃被俘",
+          "dimension": "military",
+          "year": 577
+        }
+      ],
+      "posthumousRule": "无谥，史称幼主"
     },
     {
       "id": "xiwei_wen",
@@ -535,7 +1413,30 @@
       "name": "元宝炬",
       "start": 535,
       "end": 551,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "535 — 551",
+      "portrait": "/portraits/nanbei-xiwei_wen.svg",
+      "events": [
+        {
+          "id": "ev_xiwei_wen_1",
+          "name": "宇文泰立帝关中",
+          "dimension": "political",
+          "year": 535
+        },
+        {
+          "id": "ev_xiwei_wen_2",
+          "name": "沙苑之战",
+          "dimension": "military",
+          "year": 537
+        },
+        {
+          "id": "ev_xiwei_wen_3",
+          "name": "府兵制初立",
+          "dimension": "military",
+          "year": 550
+        }
+      ],
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "xiwei_fei",
@@ -544,7 +1445,24 @@
       "name": "元钦",
       "start": 551,
       "end": 554,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "551 — 554",
+      "portrait": "/portraits/nanbei-xiwei_fei.svg",
+      "events": [
+        {
+          "id": "ev_xiwei_fei_1",
+          "name": "谋诛宇文泰",
+          "dimension": "political",
+          "year": 554
+        },
+        {
+          "id": "ev_xiwei_fei_2",
+          "name": "被废",
+          "dimension": "political",
+          "year": 554
+        }
+      ],
+      "posthumousRule": "去礼远众曰废"
     },
     {
       "id": "xiwei_gong",
@@ -553,7 +1471,24 @@
       "name": "拓跋廓",
       "start": 554,
       "end": 557,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "554 — 557",
+      "portrait": "/portraits/nanbei-xiwei_gong.svg",
+      "events": [
+        {
+          "id": "ev_xiwei_gong_1",
+          "name": "宇文泰立帝",
+          "dimension": "political",
+          "year": 554
+        },
+        {
+          "id": "ev_xiwei_gong_2",
+          "name": "禅位北周",
+          "dimension": "political",
+          "year": 557
+        }
+      ],
+      "posthumousRule": "执事坚固曰恭"
     },
     {
       "id": "beizhou_xiaomin",
@@ -562,7 +1497,24 @@
       "name": "宇文觉",
       "start": 557,
       "end": 557,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "557 — 557",
+      "portrait": "/portraits/nanbei-beizhou_xiaomin.svg",
+      "events": [
+        {
+          "id": "ev_beizhou_xiaomin_1",
+          "name": "受禅建周",
+          "dimension": "political",
+          "year": 557
+        },
+        {
+          "id": "ev_beizhou_xiaomin_2",
+          "name": "被废遇害",
+          "dimension": "political",
+          "year": 557
+        }
+      ],
+      "posthumousRule": "五宗安之曰孝，在国遭忧曰愍"
     },
     {
       "id": "beizhou_ming",
@@ -571,7 +1523,24 @@
       "name": "宇文毓",
       "start": 557,
       "end": 560,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "557 — 560",
+      "portrait": "/portraits/nanbei-beizhou_ming.svg",
+      "events": [
+        {
+          "id": "ev_beizhou_ming_1",
+          "name": "明帝之治",
+          "dimension": "political",
+          "year": 558
+        },
+        {
+          "id": "ev_beizhou_ming_2",
+          "name": "被鸩",
+          "dimension": "political",
+          "year": 560
+        }
+      ],
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "beizhou_wu",
@@ -580,7 +1549,30 @@
       "name": "宇文邕",
       "start": 560,
       "end": 578,
-      "evaluation": "good"
+      "evaluation": "good",
+      "reign": "560 — 578",
+      "portrait": "/portraits/nanbei-beizhou_wu.svg",
+      "events": [
+        {
+          "id": "ev_beizhou_wu_1",
+          "name": "诛宇文护",
+          "dimension": "political",
+          "year": 572
+        },
+        {
+          "id": "ev_beizhou_wu_2",
+          "name": "建德毁佛",
+          "dimension": "culture",
+          "year": 574
+        },
+        {
+          "id": "ev_beizhou_wu_3",
+          "name": "灭北齐",
+          "dimension": "military",
+          "year": 577
+        }
+      ],
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "beizhou_xuan",
@@ -589,7 +1581,24 @@
       "name": "宇文赟",
       "start": 578,
       "end": 579,
-      "evaluation": "bad"
+      "evaluation": "bad",
+      "reign": "578 — 579",
+      "portrait": "/portraits/nanbei-beizhou_xuan.svg",
+      "events": [
+        {
+          "id": "ev_beizhou_xuan_1",
+          "name": "荒淫暴虐",
+          "dimension": "political",
+          "year": 578
+        },
+        {
+          "id": "ev_beizhou_xuan_2",
+          "name": "禅位幼主",
+          "dimension": "political",
+          "year": 579
+        }
+      ],
+      "posthumousRule": "圣善周闻曰宣"
     },
     {
       "id": "beizhou_jing",
@@ -598,7 +1607,24 @@
       "name": "宇文阐",
       "start": 579,
       "end": 581,
-      "evaluation": "neutral"
+      "evaluation": "neutral",
+      "reign": "579 — 581",
+      "portrait": "/portraits/nanbei-beizhou_jing.svg",
+      "events": [
+        {
+          "id": "ev_beizhou_jing_1",
+          "name": "幼主即位",
+          "dimension": "political",
+          "year": 579
+        },
+        {
+          "id": "ev_beizhou_jing_2",
+          "name": "禅位于隋",
+          "dimension": "political",
+          "year": 581
+        }
+      ],
+      "posthumousRule": "柔德安众曰静"
     }
   ],
   "nodes": [

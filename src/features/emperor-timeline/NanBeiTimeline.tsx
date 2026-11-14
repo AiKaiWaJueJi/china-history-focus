@@ -5,21 +5,21 @@
  * 这里按行并行：
  *   十六国余部 / 北魏 / 东魏·北齐 / 西魏·北周 / 南朝（宋齐梁陈）
  *
- * 分页模型（2026-11 重构，见 docs/HANDOFF.md）：
+ * 分页模型（见 docs/HANDOFF.md §3.9）：
  *   1. 420—589 按易代节点切成 8 段，一段一页；滚轮不是横向自由滚动，而是强制翻页；
  *   2. 每页只挂载「本段还活着」的行（420—439 三行、502—534 两行……），
- *      行距由 `grid-template-rows: repeat(activeRows, 1fr)` 自动拉开，
- *      卸载掉的行不会留下空槽；
- *   3. 比例尺**按页自适应**：本段窗口铺满一屏、上下封顶。7 年的 550—557
- *      不会被压成两个字的宽度，40 年的 439—479 也不会把一张卡拉成整屏；
- *   4. 跨页的帝王卡 / 政权块按本页窗口裁切，断口用 data-cut 标记（虚线收边）。
- *
- * 每页右端固定收在本页的易代节点上（439/479/…/589），菱形点开是全屏过渡页。
+ *      行距由 `grid-template-rows: repeat(activeRows, 1fr)` 自动拉开；
+ *   3. 比例尺按页自适应：本段窗口铺满一屏、上下封顶；
+ *   4. 帝王一律用标准 EmperorCard（画像 / 事件枝 / 谥法边框），卡片是**等大竖卡**，
+ *      落在即位之年上；在位横跨两页的（如太武帝）两页各出现一次完整模块；
+ *   5. 朝代更替由行名 + 卡上的完整庙号表达，不再画政权大色块（旧版 .nbc-polity 已删）。
  */
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import raw from '../../data/nanbei.json'
+import type { EmperorEvent, EmperorRecord } from '../../core/emperorTypes'
+import { EmperorCard } from './EmperorCard'
 import { useWheelPaging } from './useWheelPaging'
 import './nanbei.css'
 
@@ -47,6 +47,10 @@ interface Emperor {
   start: number
   end: number
   evaluation?: 'good' | 'neutral' | 'bad'
+  reign?: string
+  portrait?: string
+  events?: EmperorEvent[]
+  posthumousRule?: string
 }
 
 interface NodeAct {
@@ -96,16 +100,14 @@ const LABEL = 96
 const GUTTER = 64
 const MIN_SCALE = 12
 const MAX_SCALE = 96
+/** 帝王卡宽高比（画像 420×520 的约定比例，竖卡） */
+const CARD_RATIO = 0.72
 
-type PagePolity = Polity & { left: number; right: number }
-type PageEmperor = Emperor & { left: number; right: number; cutStart: boolean; cutEnd: boolean }
+type PageEmperor = Emperor & { left: number }
 
 interface PageRow {
   row: Row
-  polities: PagePolity[]
   emperors: PageEmperor[]
-  /** 本段之前这块地归谁（如 535 年前的西魏行属北魏） */
-  hint: string | null
 }
 
 interface PageSpec {
@@ -118,28 +120,19 @@ interface PageSpec {
 function buildPage(from: number, to: number): PageSpec {
   const rows = DATA.rows
     .map((row) => {
-      const polities = DATA.polities
-        .filter((p) => p.row === row.id && p.start < to && p.end > from)
-        .map((p) => ({ ...p, left: Math.max(p.start, from), right: Math.min(p.end, to) }))
       const emperors = DATA.emperors
         .filter((e) => {
           const polity = polityById.get(e.polity)
           return Boolean(polity && polity.row === row.id && e.start < to && e.end > from)
         })
-        .map((e) => ({
-          ...e,
-          left: Math.max(e.start, from),
-          right: Math.min(e.end, to),
-          cutStart: e.start < from,
-          cutEnd: e.end > to,
-        }))
-        .sort((a, b) => a.left - b.left)
-      // 本行第一个政权若比本页起点晚 3 年以上，才值得提示「之前这块归北魏」
-      const hint =
-        polities.length > 0 && polities[0].start - from >= 3 ? `${polities[0].start} 年前属北魏` : null
-      return { row, polities, emperors, hint }
+        .map((e) => ({ ...e, left: Math.max(e.start, from) }))
+        .sort((a, b) => a.left - b.left || a.end - b.end)
+      // 行存活看政权，不只看帝王：十六国余部没有帝系，但仍是一行
+      const alive = DATA.polities.some((p) => p.row === row.id && p.start < to && p.end > from)
+      return { row, emperors, alive }
     })
-    .filter((item) => item.polities.length > 0)
+    .filter((item) => item.alive)
+    .map(({ row, emperors }) => ({ row, emperors }))
 
   return { from, to, rows, node: DATA.nodes.find((n) => n.year === to) ?? null }
 }
@@ -153,44 +146,58 @@ function pageTicks(from: number, to: number) {
   return out
 }
 
-/** 卡片窄，去掉朝代前缀，只留庙号/谥号；完整称号在 title 与详情里 */
-function displayTitle(title: string) {
-  return title.replace(/^(宋|南齐|齐|梁|陈|北魏|东魏|西魏|北齐|北周)/, '')
+/** 帝王卡：数据 → 标准 EmperorCard 记录 */
+function toRecord(emperor: Emperor): EmperorRecord {
+  return {
+    id: emperor.id,
+    posthumousTitle: emperor.title,
+    personalName: emperor.name,
+    reign: emperor.reign ?? `${emperor.start} — ${emperor.end}`,
+    startYear: emperor.start,
+    endYear: emperor.end,
+    segmentId: emperor.polity,
+    portrait: emperor.portrait ?? '',
+    events: emperor.events ?? [],
+    evaluation: emperor.evaluation ?? 'neutral',
+    posthumousRule: emperor.posthumousRule ?? '',
+  }
 }
 
-interface PlacedEmperor extends PageEmperor {
-  px: number
-  width: number
-  short: boolean
-  cut: 'start' | 'end' | 'both' | null
-}
+/** 卡与卡之间的最小间隙 */
+const CARD_GAP = 6
+/** 卡高上限：再高就压到行线，画像也够用了 */
+const CARD_MAX_H = 180
 
 /**
- * 帝王卡在本页泳道上的落点。
- * 短祚圆点要躲开前一个圆点：555 年贞阳侯与敬帝同时、都是圆点，
- * 不推开就只剩一个（点开还能选，但看不出有两个人）。
+ * 一行的落点：卡片等宽，按即位年放；挤在一起时先依次右推，
+ * 若整行越出泳道就整体左移（不压缩间距），最终一定落在泳道内。
+ * 元年即崩的（元凶劭、海陵王……）不再画圆点，也是一个完整模块。
  */
-function placeEmperors(emperors: PageEmperor[], from: number, scale: number, laneW: number): PlacedEmperor[] {
-  let dotEdge = -Infinity
-  return emperors.map((emperor) => {
-    const short = emperor.end - emperor.start <= 2
-    const base = (emperor.left - from) * scale
-    let px = short ? Math.max(base, dotEdge) : base
-    if (short) dotEdge = px + 22
-    px = Math.max(0, Math.min(px, laneW - (short ? 20 : 0)))
-    const spanPx = (emperor.right - emperor.left) * scale
-    const width = Math.max(20, Math.min(short ? 20 : Math.max(spanPx, 54), laneW - px))
-    const cut = short
-      ? null
-      : emperor.cutStart && emperor.cutEnd
-        ? 'both'
-        : emperor.cutStart
-          ? 'start'
-          : emperor.cutEnd
-            ? 'end'
-            : null
-    return { ...emperor, px, width, short, cut }
-  })
+function placeCards(emperors: PageEmperor[], from: number, scale: number, width: number, laneW: number) {
+  if (emperors.length === 0) return []
+  const lefts = emperors.map((emperor) =>
+    Math.max(0, Math.min((emperor.left - from) * scale, laneW - width)),
+  )
+  for (let i = 1; i < lefts.length; i++) {
+    lefts[i] = Math.max(lefts[i], lefts[i - 1] + width + CARD_GAP)
+  }
+  /*
+    连号即位（528 孝庄 / 530 长广 / 531 节闵 / 532 孝武）时前推会级联出界：
+    从尾部回推把级联压回来，再前推兜一次底。总宽由 fitW 保证放得下。
+  */
+  if (lefts[lefts.length - 1] + width > laneW) {
+    let limit = laneW - width
+    for (let i = lefts.length - 1; i >= 0; i--) {
+      lefts[i] = Math.min(lefts[i], limit)
+      limit = lefts[i] - width - CARD_GAP
+    }
+    let cursor = 0
+    for (let i = 0; i < lefts.length; i++) {
+      lefts[i] = Math.max(lefts[i], cursor)
+      cursor = lefts[i] + width + CARD_GAP
+    }
+  }
+  return emperors.map((emperor, i) => ({ emperor, left: lefts[i] }))
 }
 
 /* ---------------- 单页版面 ---------------- */
@@ -198,22 +205,29 @@ function placeEmperors(emperors: PageEmperor[], from: number, scale: number, lan
 interface PageBodyProps {
   page: PageSpec
   width: number
+  height: number
   onOpenNode: (id: string) => void
-  onSelect: (emperor: Emperor) => void
 }
 
-function PageBody({ page, width, onOpenNode, onSelect }: PageBodyProps) {
+function PageBody({ page, width, height, onOpenNode }: PageBodyProps) {
   const span = page.to - page.from
-  // 短窗口（550—557 只有 7 年）必须放大，否则卡片会被压成两个字的宽度
   const scale =
-    width > 0
-      ? Math.max(MIN_SCALE, Math.min(MAX_SCALE, (width - LABEL - GUTTER - 6) / span))
-      : 32
+    width > 0 ? Math.max(MIN_SCALE, Math.min(MAX_SCALE, (width - LABEL - GUTTER - 6) / span)) : 32
   const laneW = span * scale
   const nodeX = LABEL + laneW + GUTTER / 2
+
+  /* 卡片尺寸：竖卡（画像比例），上限 180 高；再按本页最挤的一行收窄，保证排得下 */
+  const rowCount = Math.max(1, page.rows.length)
+  const rowH = Math.max(120, (height - 54) / rowCount)
+  const baseW = Math.round(Math.min(rowH - 24, CARD_MAX_H) * CARD_RATIO)
+  const densest = Math.max(1, ...page.rows.map((row) => row.emperors.length))
+  const fitW = Math.floor((laneW - CARD_GAP * (densest - 1)) / densest)
+  const cardW = Math.max(64, Math.min(baseW, fitW))
+  const cardH = Math.min(rowH - 24, Math.round(cardW / CARD_RATIO))
+
   const rows = page.rows.map((row) => ({
     ...row,
-    placed: placeEmperors(row.emperors, page.from, scale, laneW),
+    placed: placeCards(row.emperors, page.from, scale, cardW, laneW),
   }))
 
   return (
@@ -250,7 +264,7 @@ function PageBody({ page, width, onOpenNode, onSelect }: PageBodyProps) {
         data-rows={page.rows.length}
         style={{ gridTemplateRows: `repeat(${page.rows.length}, minmax(0, 1fr))` }}
       >
-        {rows.map(({ row, polities, placed, hint }) => (
+        {rows.map(({ row, placed }) => (
           <div
             key={row.id}
             className={`nbc-row nbc-row-${row.id}`}
@@ -262,48 +276,20 @@ function PageBody({ page, width, onOpenNode, onSelect }: PageBodyProps) {
               <em>{row.note}</em>
             </div>
             <div className="nbc-lane">
-              <div className="nbc-band">
-                {hint ? <span className="nbc-empty">{hint}</span> : null}
-                {polities.map((polity) => (
+              {placed.length === 0 ? (
+                <span className="nbc-empty">十六国余部诸政权未入帝系，仅标行属</span>
+              ) : (
+                placed.map(({ emperor, left }) => (
                   <div
-                    key={polity.id}
-                    className="nbc-polity"
-                    data-polity={polity.id}
-                    style={{
-                      left: (polity.left - page.from) * scale,
-                      width: (polity.right - polity.left) * scale,
-                    }}
-                  >
-                    <span>
-                      {polity.name}
-                      <em>{polity.full}</em>
-                      {polity.members ? <small>{polity.members}</small> : null}
-                    </span>
-                  </div>
-                ))}
-                {placed.map((emperor) => (
-                  <button
                     key={emperor.id}
-                    type="button"
-                    className={`nbc-emp${emperor.short ? ' is-short' : ''}${
-                      emperor.width >= 150 ? ' is-wide' : ''
-                    }${!emperor.short && emperor.width < 78 ? ' is-tight' : ''}`}
+                    className="nbc-slot"
                     data-emp={emperor.id}
-                    data-evaluation={emperor.evaluation ?? 'neutral'}
-                    data-cut={emperor.cut ?? undefined}
-                    style={{ left: emperor.px, width: emperor.width }}
-                    onClick={() => onSelect(emperor)}
-                    title={`${emperor.title} ${emperor.name}（${emperor.start}—${emperor.end}）`}
+                    style={{ left, width: cardW, height: cardH }}
                   >
-                    <b>{emperor.short ? displayTitle(emperor.title).slice(0, 1) : displayTitle(emperor.title)}</b>
-                    <em>
-                      {emperor.cut === 'start' || emperor.cut === 'both' ? '← ' : ''}
-                      {emperor.start}—{emperor.end}
-                      {emperor.cut === 'end' || emperor.cut === 'both' ? ' →' : ''}
-                    </em>
-                  </button>
-                ))}
-              </div>
+                    <EmperorCard emperor={toRecord(emperor)} index={0} compact={cardW < 150} />
+                  </div>
+                ))
+              )}
             </div>
           </div>
         ))}
@@ -324,20 +310,22 @@ const pageVariants = {
 
 export function NanBeiTimeline() {
   const navigate = useNavigate()
+  const location = useLocation()
   const stageRef = useRef<HTMLDivElement>(null)
-  const [stageWidth, setStageWidth] = useState(0)
-  const [pageIndex, setPageIndex] = useState(0)
+  const [stage, setStage] = useState({ width: 0, height: 0 })
+  /* 从过渡页回来时落在它指定的那一页（0 基） */
+  const [pageIndex, setPageIndex] = useState(() => {
+    const target = (location.state as { page?: number } | null)?.page
+    return typeof target === 'number' ? Math.max(0, Math.min(PAGES.length - 1, target)) : 0
+  })
   const [direction, setDirection] = useState(1)
-  const [selected, setSelected] = useState<Emperor | null>(null)
-  const [nodeId, setNodeId] = useState<string | null>(null)
-  const [actIndex, setActIndex] = useState(0)
   const prefersReducedMotion = useReducedMotion()
 
-  /* 版面宽度可测：全页统一比例尺，取最长窗口铺满 */
+  /* 版面可测：比例尺按宽、卡片尺寸按高 */
   useLayoutEffect(() => {
     const el = stageRef.current
     if (!el) return
-    const update = () => setStageWidth(el.clientWidth)
+    const update = () => setStage({ width: el.clientWidth, height: el.clientHeight })
     update()
     const observer = new ResizeObserver(update)
     observer.observe(el)
@@ -353,44 +341,37 @@ export function NanBeiTimeline() {
     setPageIndex((current) => {
       if (target === current) return current
       setDirection(target > current ? 1 : -1)
-      setSelected(null)
       return target
     })
   }
 
+  /*
+    翻过某一页 = 进入该页收束节点的过渡章节（这就是"强制分页"的用意）。
+    过渡页演完后会带着 state.page 回到下一页；footer 的「下一页」按钮可以直接跳。
+  */
+  const goNode = (id: string) => navigate(`/dynasty/southern_northern/fall/${id}`)
+
   const { canPrev, canNext } = useWheelPaging({
     pageCount: PAGES.length,
     pageIndex,
-    // 弹层/详情打开时，滚轮不翻页
-    onChange: (next) => {
-      if (nodeId || selected) return
-      goPage(next)
-    },
-    // 末页继续下滚 → 收尾沙盘
-    onBeyondEnd: () => {
-      if (nodeId || selected) return
-      navigate('/dynasty/southern_northern/endgame')
+    onChange: goPage,
+    onLeavePage: (from) => {
+      const gate = PAGE_SPECS[from]?.node
+      if (!gate) return false
+      goNode(gate.id)
+      return true
     },
   })
 
-  const node = DATA.nodes.find((n) => n.id === nodeId) ?? null
-
   useLayoutEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-      if (nodeId) setNodeId(null)
-      else if (selected) setSelected(null)
-      else navigate('/')
+      if (event.key === 'Escape') navigate('/')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [nodeId, selected, navigate])
+  }, [navigate])
 
-  const openNode = (id: string) => {
-    setSelected(null)
-    setNodeId(id)
-    setActIndex(0)
-  }
+  const openNode = (id: string) => goNode(id)
 
   return (
     <div className="nanbei">
@@ -427,7 +408,7 @@ export function NanBeiTimeline() {
           <i className="nbc-diamond" />
           易代节点 · 点击查看过渡页
         </span>
-        <span className="nbc-legend-note">短祚（1—2 年）以圆点表示，点开可看详情</span>
+        <span className="nbc-legend-note">悬停帝王卡看要事</span>
         <span className="nbc-legend-eval">
           <i className="nbc-eval-good" />
           美谥
@@ -457,7 +438,7 @@ export function NanBeiTimeline() {
                 : { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 }
             }
           >
-            <PageBody page={page} width={stageWidth} onOpenNode={openNode} onSelect={setSelected} />
+            <PageBody page={page} width={stage.width} height={stage.height} onOpenNode={openNode} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -490,73 +471,6 @@ export function NanBeiTimeline() {
         </div>
       </footer>
 
-      {selected ? (
-        <aside className="nbc-detail" data-emp-detail={selected.id}>
-          <button type="button" className="nbc-detail-close" onClick={() => setSelected(null)}>
-            ×
-          </button>
-          <span>{polityById.get(selected.polity)?.name}</span>
-          <h2>{selected.title}</h2>
-          <p>{selected.name}</p>
-          <em>
-            {selected.start} — {selected.end} 年在位
-          </em>
-          <small>点击其他帝王可切换；ESC 关闭</small>
-        </aside>
-      ) : null}
-
-      {node ? (
-        <div className="nbc-overlay" role="dialog" aria-modal="true" onClick={() => setNodeId(null)}>
-          <div className="nbc-overlay-card" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="nbc-overlay-close" onClick={() => setNodeId(null)}>
-              ×
-            </button>
-            <div className="nbc-overlay-head">
-              <span>{node.year} 年</span>
-              <h2>{node.title}</h2>
-              <p>{node.subtitle}</p>
-            </div>
-            <div className="nbc-overlay-act">
-              <div className="nbc-overlay-step">
-                第 {actIndex + 1} / {node.acts.length} 幕
-              </div>
-              <h3>{node.acts[actIndex].heading}</h3>
-              {node.acts[actIndex].lines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-              <blockquote>
-                <cite>{node.acts[actIndex].source.book}</cite>
-                {node.acts[actIndex].source.text}
-              </blockquote>
-            </div>
-            <div className="nbc-overlay-actions">
-              <button type="button" onClick={() => setActIndex((i) => Math.max(0, i - 1))} disabled={actIndex === 0}>
-                ← 上一幕
-              </button>
-              <div className="nbc-overlay-dots">
-                {node.acts.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className={i === actIndex ? 'is-active' : ''}
-                    onClick={() => setActIndex(i)}
-                    aria-label={`第 ${i + 1} 幕`}
-                  />
-                ))}
-              </div>
-              {actIndex < node.acts.length - 1 ? (
-                <button type="button" className="nbc-primary" onClick={() => setActIndex((i) => i + 1)}>
-                  下一幕 →
-                </button>
-              ) : (
-                <button type="button" className="nbc-primary" onClick={() => setNodeId(null)}>
-                  回到时间轴
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }

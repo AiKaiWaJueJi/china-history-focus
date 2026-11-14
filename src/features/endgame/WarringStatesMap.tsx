@@ -39,6 +39,8 @@ interface WarringStatesMapProps {
   index: number
   dimmed: boolean
   unified: boolean
+  /** 581「隋代周」战报页：在隋的疆域上聚焦标出易代，关闭战报即消失 */
+  usurp?: boolean
   onConquer: (event: EndgameEvent) => void
   onExitFocus: () => void
   /** 点攻方（周=秦 / 楚汉=汉）= 回到战前 */
@@ -93,6 +95,7 @@ export function WarringStatesMap({
   index,
   dimmed,
   unified,
+  usurp = false,
   onConquer,
   onExitFocus,
   onReset,
@@ -202,6 +205,8 @@ export function WarringStatesMap({
       className="map-stage"
       data-dimmed={dimmed}
       data-unified={unified}
+      // 581「隋代周」：让并集轮廓发光，标出隋的整片疆域
+      data-usurp={usurp || undefined}
 
       /*
         向下滚动 = 跳过行军动画，直接看战报。
@@ -473,6 +478,23 @@ export function WarringStatesMap({
         </div>
       ) : null}
 
+
+      {/*
+        581 的易代提示落在隋疆域的重心（战报打开时才出现，关掉就消失）。
+        之前是个顶部居中的浮标，现在贴到版图里，读战报时一眼对上位置。
+      */}
+      {usurp ? (
+        <div
+          className="map-usurp-note"
+          style={{
+            left: `${((mapSpec.attacker.label[0] + labelShift.dx) / 1000) * 100}%`,
+            top: `${((mapSpec.attacker.label[1] + labelShift.dy) / 640) * 100}%`,
+          }}
+        >
+          <span>581</span>
+          杨坚称帝 · 改国号隋
+        </div>
+      ) : null}
 
       {overlay}
 

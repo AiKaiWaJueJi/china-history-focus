@@ -1,0 +1,52 @@
+﻿{
+  "note": "南北朝收尾疆域（北周/隋、北齐、陈、突厥）。外轮廓与内部顶点直接沿用战国/楚汉/三国那套手工剖分：四块共享全部边界点，面积之和 == 同一片大陆（check-sui-geo.mjs 校验）。周齐边界取潼关—洛阳以西，故洛阳、平阳、晋阳在齐，长安、潼关、江陵在周。",
+  "attacker": {
+    "id": "beizhou",
+    "name": "北周",
+    "points": "66.29,240 300,244 470,240 520,330 560,420 520,480 440,500 320,520 250,560 150,470 72,340",
+    "label": [206, 300],
+    "capital": { "name": "长安", "x": 290, "y": 360 }
+  },
+  "regions": [
+    {
+      "id": "qi",
+      "name": "北齐",
+      "points": "470,240 700,232 900,240 980,230 985,380 939.17,455 760,500 520,480 560,420 520,330",
+      "label": [790, 262],
+      "capital": { "name": "邺", "x": 662, "y": 300 }
+    },
+    {
+      "id": "chen",
+      "name": "陈",
+      "points": "320,520 250,560 380,610 540,622 700,600 840,545 930,470 939.17,455 760,500 520,480 440,500",
+      "label": [648, 556],
+      "capital": { "name": "建康", "x": 870, "y": 487 }
+    },
+    {
+      "id": "tujue",
+      "name": "突厥",
+      "neutral": true,
+      "points": "60,130 250,80 430,60 620,62 800,70 950,90 980,230 900,240 700,232 470,240 300,244 66.29,240",
+      "label": [470, 150]
+    }
+  ],
+  "rivers": [
+    "M 250,300 C 340,266 430,262 520,290 C 620,320 730,332 880,336",
+    "M 320,505 C 430,516 540,512 640,505 C 740,498 830,486 918,460"
+  ],
+  "points": [
+    { "id": "sui_changan", "name": "长安", "kind": "city", "regionId": "beizhou", "x": 290, "y": 360, "description": "北周（隋）都城，府兵之本" },
+    { "id": "sui_jiangling", "name": "江陵", "kind": "city", "regionId": "beizhou", "x": 470, "y": 468, "description": "西梁附庸，隋军上游基地" },
+    { "id": "sui_yongan", "name": "永安", "kind": "city", "regionId": "beizhou", "x": 392, "y": 470, "description": "巴东门户，杨素水军出三峡处" },
+    { "id": "sui_tongguan", "name": "潼关", "kind": "pass", "regionId": "beizhou", "x": 512, "y": 388, "description": "关中东大门，周军东出必经" },
+    { "id": "sui_pingyang", "name": "平阳", "kind": "battle", "regionId": "qi", "x": 536, "y": 340, "description": "晋州治所，576 年周齐决战地" },
+    { "id": "sui_jinyang", "name": "晋阳", "kind": "city", "regionId": "qi", "x": 556, "y": 286, "description": "北齐军事重镇，高欢霸府" },
+    { "id": "sui_luoyang", "name": "洛阳", "kind": "city", "regionId": "qi", "x": 562, "y": 400, "description": "河南重镇，575 年周军攻之不克" },
+    { "id": "sui_ye", "name": "邺", "kind": "city", "regionId": "qi", "x": 662, "y": 300, "description": "北齐国都，577 年城破" },
+    { "id": "sui_jiankang", "name": "建康", "kind": "city", "regionId": "chen", "x": 870, "y": 487, "description": "陈都，589 年陷落" },
+    { "id": "sui_caishi", "name": "采石", "kind": "pass", "regionId": "chen", "x": 843, "y": 492, "description": "长江津渡，韩擒虎由此渡江" },
+    { "id": "sui_jingkou", "name": "京口", "kind": "pass", "regionId": "chen", "x": 906, "y": 470, "description": "贺若弼渡江处，建康东面门户" },
+    { "id": "sui_guangling", "name": "广陵", "kind": "city", "regionId": "qi", "x": 916, "y": 440, "description": "江北重镇，贺若弼由此出师" }
+  ]
+}
+

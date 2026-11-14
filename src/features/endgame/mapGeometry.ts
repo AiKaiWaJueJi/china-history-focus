@@ -12,6 +12,7 @@
  * 相对方位仍依史：秦据西陲、赵在河北、燕居东北、齐处东滨、
  * 魏韩纵横中原、楚有南方。
  */
+import suiGeo from '../../data/sui.geo.json'
 
 export interface MapRegion {
   id: string
@@ -219,49 +220,27 @@ export const MAPS: Record<string, MapSpec> = {
   zhanguo: ZHANGUO_MAP,
 }
 
-/* ---------- 南北朝收尾：北周/隋 → 北齐 → 陈；突厥为不可吞并的边患 ---------- */
+/* -------------------------------------------------------------------------- */
+/* 南北朝收尾：北周/隋 → 北齐 → 陈；突厥为不可吞并的边患                        */
+/* -------------------------------------------------------------------------- */
+/*
+  几何真源在 src/data/sui.geo.json（与 chuhan.geo.json / sanguo.geo.json 同规矩）：
+  外轮廓直接沿用战国 / 楚汉 / 三国那套手工剖分的「大陆」——
+    N1(60,130) N2(250,80) N3(430,60) N4(620,62) N5(800,70) N6(950,90)
+    N7(980,230) N8(985,380) N9(930,470) N10(840,545) N11(700,600)
+    N12(540,622) N13(380,610) N14(250,560) N15(150,470) N16(72,340)
+  四块共享全部内部顶点，面积之和 == 同一片大陆（check-sui-geo.mjs 校验）：
+    突厥 北带 / 北周 西半含巴蜀 / 北齐 东半 / 陈 江南及岭南。
+*/
 export const SUI_MAP: MapSpec = {
-  attacker: {
-    id: 'beizhou',
-    name: '北周',
-    points: '90,150 300,170 480,155 480,470 360,490 200,480 90,430',
-    label: [240, 340],
-    capital: { name: '长安', x: 320, y: 340 },
-  },
-  regions: [
-    {
-      id: 'qi',
-      name: '北齐',
-      points: '480,155 760,175 900,160 960,220 940,320 800,345 760,330 480,310',
-      label: [760, 250],
-      capital: { name: '邺', x: 760, y: 255 },
-    },
-    {
-      id: 'chen',
-      name: '陈',
-      points: '480,310 760,330 800,345 940,320 980,410 900,490 700,480 480,470',
-      label: [760, 410],
-      capital: { name: '建康', x: 820, y: 415 },
-    },
-    {
-      id: 'tujue',
-      name: '突厥',
-      neutral: true,
-      points: '90,70 930,45 960,120 900,160 760,175 480,155 300,170 90,150',
-      label: [470, 105],
-    },
-  ],
-  rivers: ['M 470,455 C 560,500 660,500 760,470'],
+  attacker: suiGeo.attacker as MapRegion,
+  regions: suiGeo.regions as MapRegion[],
+  rivers: suiGeo.rivers,
   ariaLabel: '南北朝收尾版图（北周/北齐/陈/突厥）',
-  viewBox: '50 35 950 470',
   resetHint: '三国复其疆',
-  empireName: '隋',
-  successor: { year: 577, name: '隋' },
-  points: [
-    { id: 'sui_luoyang', name: '洛阳', kind: 'city', regionId: 'qi', x: 560, y: 285, description: '577 年周军东出' },
-    { id: 'sui_jinyang', name: '晋阳', kind: 'city', regionId: 'qi', x: 640, y: 200, description: '北齐军事重镇' },
-    { id: 'sui_yangtze', name: '长江', kind: 'pass', regionId: 'chen', x: 760, y: 370, description: '589 年隋军渡江' },
-  ],
+  // 581 杨坚受禅建隋：攻方只换国号，疆域不变（577 时仍是北周）
+  successor: { year: 581, name: '隋' },
+  points: suiGeo.points as StrategicPoint[],
 }
 
 MAPS.sui = SUI_MAP

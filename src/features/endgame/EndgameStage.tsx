@@ -122,7 +122,14 @@ export function EndgameStage() {
   const [closing, setClosing] = useState(false)
   /* 跳步确认：点后面的国家时，先问一句"要不要补齐中间几场" */
   const [pendingConquer, setPendingConquer] = useState<(typeof events)[number] | null>(null)
+  /* 战报当前页的年份：581 那一页要在地图上把「隋」圈出来 */
+  const [reportYear, setReportYear] = useState<number | null>(null)
+  const onReportPage = useCallback((yearValue: number) => setReportYear(yearValue), [])
   const closeTimer = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!focusedEvent) setReportYear(null)
+  }, [focusedEvent])
 
   const closePanel = useCallback(() => {
     if (!useEndgameStore.getState().focusedNation) return
@@ -311,18 +318,21 @@ export function EndgameStage() {
 
   /*
     当前推演年份：第 0 幕用 preYearValue，之后用"上一幕"的年份。
-    地图据此判断哪些势力已经登场（MapRegion.aliveFrom / aliveTo）。
+    · 战报打开时以**战报页的年份**为准：翻到 581「隋代周」那一页，攻方国号就该是「隋」；
+    · 地图据此判断哪些势力已经登场（MapRegion.aliveFrom / aliveTo）。
   */
-  const currentYear = index === 0 ? endgame.preYearValue : events[index - 1]?.yearValue
+  const currentYear =
+    focusedEvent && reportYear !== null
+      ? reportYear
+      : index === 0
+        ? endgame.preYearValue
+        : events[index - 1]?.yearValue
+
+  /* 581 那一页：地图上把隋的疆域圈出来，关掉战报即消失 */
+  const usurp = Boolean(focusedEvent) && reportYear === 581
 
   return (
     <div className="endgame-page" data-index={index}>
-      {endgame.dynastyId === 'southern_northern' && index === 1 && !focusedEvent ? (
-        <div className="sui-usurp-focus" key="sui-usurp">
-          <span>581</span>
-          杨坚称帝 · 改国号隋
-        </div>
-      ) : null}
       <div className="endgame-vignette" aria-hidden="true" />
 
       <header className="endgame-head">
@@ -361,6 +371,7 @@ export function EndgameStage() {
             onFigureClick={openProfile}
             onClose={closePanel}
             onCampaignHover={(phase) => useCampaignStore.getState().setHoveredCampaign(phase)}
+            onActiveChange={onReportPage}
           />
         ) : null}
 
@@ -377,6 +388,7 @@ export function EndgameStage() {
           annexingNation={annexingNation}
           dimmed={Boolean(focusedEvent)}
           unified={showFinale}
+          usurp={usurp}
           onConquer={handleConquer}
           onExitFocus={closePanel}
           onReset={handleReset}
