@@ -498,22 +498,19 @@
   display: block;
   width: 100%;
   height: auto;
-  filter: brightness(0.86) contrast(1.05) saturate(0.92);
-  /* 羽化：中段就开始透明，边缘完全化进背景 */
-  -webkit-mask-image: radial-gradient(
-    closest-side,
-    #000 46%,
-    rgba(0, 0, 0, 0.82) 68%,
-    rgba(0, 0, 0, 0.35) 86%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    closest-side,
-    #000 46%,
-    rgba(0, 0, 0, 0.82) 68%,
-    rgba(0, 0, 0, 0.35) 86%,
-    transparent 100%
-  );
+  filter: brightness(0.95) contrast(1.04) saturate(0.95);
+  /*
+    只淡最外圈：中段完全不透明，保证主体清晰；
+    边缘与四角渐隐，消除"贴了一张矩形图"的硬边。
+  */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  mask-composite: intersect;
 }
 
 /*
@@ -526,12 +523,13 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: radial-gradient(
-    closest-side,
-    transparent 50%,
-    rgba(8, 9, 11, 0.34) 74%,
-    rgba(8, 9, 11, 0.86) 92%,
-    #0a0b0d 100%
+  /* 四边各压一道浅色，配合 mask 的线性羽化，把硬边彻底化开 */
+  background: linear-gradient(
+    to right,
+    rgba(8, 9, 11, 0.55) 0%,
+    rgba(8, 9, 11, 0) 9%,
+    rgba(8, 9, 11, 0) 91%,
+    rgba(8, 9, 11, 0.55) 100%
   );
 }
 
@@ -543,12 +541,12 @@
 .fall-photo-wrap::before {
   content: '';
   position: absolute;
-  inset: -24%;
+  inset: -16%;
   z-index: 0;
-  filter: blur(28px);
+  filter: blur(24px);
   background:
-    radial-gradient(closest-side, rgba(5, 6, 8, 0.98) 52%, rgba(6, 7, 9, 0.55) 74%, transparent 100%),
-    radial-gradient(ellipse at 50% 55%, rgba(201, 162, 39, 0.07), transparent 70%);
+    radial-gradient(closest-side, rgba(5, 6, 8, 0.72) 46%, rgba(6, 7, 9, 0.3) 76%, transparent 100%),
+    radial-gradient(ellipse at 50% 55%, rgba(201, 162, 39, 0.06), transparent 70%);
 }
 /* ==========================================================================
    v4：入场动效 + 图片由虚变实
