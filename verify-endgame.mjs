@@ -204,6 +204,10 @@ try {
       visibleRoutes: [...document.querySelectorAll('.campaign-route')].filter(
         (r) => Number(getComputedStyle(r).opacity) > 0.05,
       ).length,
+      faintRoutes: [...document.querySelectorAll('.campaign-route')].filter((r) => {
+        const o = Number(getComputedStyle(r).opacity)
+        return o > 0.2 && o < 0.65
+      }).length,
     }
   })
   console.log(`[GEO] ${JSON.stringify(geo)}`)
@@ -212,7 +216,16 @@ try {
   check('路线为多段折线', geo.segments >= 2, `${geo.segments} 段`)
   check('赵之战有援军路线', geo.allies >= 1, `${geo.allies} 条`)
   check('战报列出援军动向', geo.allyRows >= 1, `${geo.allyRows} 行`)
-  check('战报展开后路线默认全隐', geo.settled === 'true' && geo.visibleRoutes === 0, `可见=${geo.visibleRoutes}`)
+  /*
+    第三轮改口径：镜头推近之后，已播段以 40% 透明度留在图上（否则战报一开，
+    地图只剩一张暗淡的地形图，读者对不上整场战役的走向）。
+    这条断言因此从「全隐」改为「全在，且是淡的」。
+  */
+  check(
+    '战报展开后路线保留为淡线（4 段全在）',
+    geo.settled === 'true' && geo.visibleRoutes === 4 && geo.faintRoutes === 4,
+    `可见=${geo.visibleRoutes} 淡=${geo.faintRoutes}`,
+  )
   // 收尾：关战报、回到战前
   await page.evaluate(() =>
     document.querySelector('.map-bg')?.dispatchEvent(new MouseEvent('click', { bubbles: true })),

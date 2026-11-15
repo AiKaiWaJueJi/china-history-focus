@@ -1082,7 +1082,7 @@
 
 .capital-label {
   font-family: var(--font-thin), 'STKaiti', serif;
-  font-size: calc(16px / var(--map-zoom, 1));
+  font-size: calc(17.5px / var(--map-zoom, 1));
   letter-spacing: 0.12em;
   text-anchor: middle;
   fill: rgba(255, 255, 255, 0.52);
@@ -1299,10 +1299,19 @@
 }
 
 /* ---------- 一统：拉镜 + 秦字转红放大 + 始皇虚影 ---------- */
+/*
+  ⚠ 只有「一统拉镜」那一下需要 will-change（提前把整块 svg 提成合成层，1.22 倍推近才顺）。
+  但战报镜头是 3.6 倍——带着这个提示，浏览器会拿**放大前的位图**去放大，文字就成了马赛克。
+  所以战报打开期间显式关掉它，让浏览器按新比例重新栅格化（文字锐利的唯一来源）。
+*/
 .map-svg {
   transform-origin: 32% 50%;
   transition: transform 1600ms cubic-bezier(0.33, 0, 0.2, 1), opacity 1600ms ease;
   will-change: transform;
+}
+
+.map-svg[data-campaign-play] {
+  will-change: auto;
 }
 
 /*
@@ -3237,7 +3246,7 @@
 
 .strategic-point text {
   font-family: var(--font-thin);
-  font-size: calc(12px / var(--map-zoom, 1));
+  font-size: calc(13.5px / var(--map-zoom, 1));
   letter-spacing: 0.06em;
   fill: rgba(240, 225, 190, 0.6);
   paint-order: stroke;
@@ -3449,39 +3458,76 @@
 
 /* 镜头推近时文字不跟着放大：字号除以 --map-zoom，位置仍贴着地理点 */
 .campaign-general {
-  font-size: calc(13px / var(--map-zoom, 1));
+  font-size: calc(16px / var(--map-zoom, 1));
 }
 
 .campaign-result {
-  font-size: calc(11px / var(--map-zoom, 1));
+  font-size: calc(13px / var(--map-zoom, 1));
 }
 
 .campaign-place {
-  font-size: calc(12.5px / var(--map-zoom, 1));
+  font-size: calc(14.5px / var(--map-zoom, 1));
 }
 
 /*
   聚焦态里静态地名整块让位：镜头推到 2—3.6 倍后，国名/国都/关隘的 SVG 文字
   会连字号一起放大、糊成一片；这一屏的主角是行军线与起止地名，其余先撤。
 */
+/*
+  聚焦期间关掉最贵的几层滤镜：
+  · .region 的 drop-shadow —— 十几个大路径各挂一层阴影，镜头一动整片重算；
+  · .empire-layer 的阴影 —— 同上，且它盖在整块版图上；
+  · .map-photo--emperor 的 blur(7px) —— 一张整幅模糊位图跟着缩放，最吃填充率。
+  视觉上只损失一点柔边，换回来的是镜头推近不再掉帧。
+*/
+.map-svg[data-campaign-play] .region,
+.map-svg[data-campaign-play] .empire-layer {
+  filter: none;
+}
+
+.map-stage:has(.map-svg[data-campaign-play]) .map-photo--emperor {
+  display: none;
+}
+
+/*
+  战报打开期间，已播完的行军段以 40% 透明度**留在图上**：
+  镜头推近之后如果什么都看不见，就只剩一张暗淡的地形图；留着淡线，
+  读者能把整场战役的走向和正在读的那一段对上。
+*/
+.map-svg[data-campaign-play] .campaign-route.is-played {
+  opacity: 0.4;
+}
+
 .map-svg[data-campaign-play] .region-label {
-  opacity: 0.3;
+  opacity: 0.42;
   transition: opacity 220ms ease;
 }
 
 .map-svg[data-campaign-play] .capital,
 .map-svg[data-campaign-play] .strategic-point {
-  opacity: 0.22;
+  opacity: 0.38;
   pointer-events: none;
   transition: opacity 220ms ease;
 }
 
 
 /* 说明文字压在深底上：给文字加一圈不透明描边，任何底色都不糊 */
+/*
+  描边是「压深底」用的，但 3.4px 会把笔画糊成块；字号放大后 2.4px 足够分开，
+  再打开 geometricPrecision，缩放后字形不会因取整而发毛。
+*/
+.map-svg .campaign-caption text,
+.map-svg .campaign-place,
+.map-svg .capital-label,
+.map-svg .strategic-point text,
+.map-svg .region-label {
+  text-rendering: geometricPrecision;
+}
+
 .map-svg .campaign-caption text {
   paint-order: stroke;
-  stroke: rgba(4, 6, 8, 0.92);
-  stroke-width: 3.4px;
+  stroke: rgba(4, 6, 8, 0.9);
+  stroke-width: 2.4px;
   stroke-linejoin: round;
 }
 
@@ -3490,10 +3536,14 @@
   opacity: 1;
 }
 
-/* 战报镜头：transform 过渡交给合成器；关掉战报时回到 none 会平滑退回全景 */
+/*
+  镜头层只对 transform 做过渡。
+  ⚠ 不要加 will-change: transform —— 那会让浏览器把整块地图预先栅格化成一张位图，
+  镜头推到 3.6 倍时就成了「位图放大」，文字糊、边缘虚；去掉之后动画结束会按新比例
+  重新栅格化，文字立刻恢复锐利。代价只是过渡这 0.5 秒里重新绘制，肉眼无感。
+*/
 .map-zoom {
-  transition: transform 820ms cubic-bezier(0.22, 0.85, 0.2, 1);
-  will-change: transform;
+  transition: transform 520ms cubic-bezier(0.2, 0.9, 0.15, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

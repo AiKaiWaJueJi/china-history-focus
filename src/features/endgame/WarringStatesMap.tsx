@@ -314,6 +314,7 @@ export function WarringStatesMap({
         <rect className="map-bg" x="0" y="0" width="1000" height="640" onClick={onExitFocus} />
 
         {/* 战报镜头层：河流、版图、国名、要地、行军线一起缩放 */}
+        {/* 镜头层：只动 transform，不挂 will-change（见 endgame.css 的说明） */}
         <g
           className="map-zoom"
           style={{ transform: zoomInfo.transform, transformOrigin: '0 0' }}

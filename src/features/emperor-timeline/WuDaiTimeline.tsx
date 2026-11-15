@@ -37,6 +37,14 @@ interface Polity {
   full: string
   note: string
   leader?: string
+  /** 都城 */
+  capital?: string
+  /** 亡国：年份 · 亡于谁 · 人情节点 */
+  fall?: string
+  /** 亡国年：> 960 的在本表窗口之外，卡片上注明 */
+  fallYear?: number
+  /** 一句话：与中原的关系 */
+  relation?: string
 }
 interface Node {
   id: string
@@ -70,11 +78,73 @@ const SEG_TO_POLITY: Record<string, string> = {
 
 const EMPERORS = empFile.emperors as unknown as EmperorRecord[]
 
+interface ArchiveAnchor {
+  polity: Polity
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+/**
+ * 十国档案卡：悬停政权带时出现。
+ * 十国君主不入帝系（与「十六国余部」同一口径），所以不做帝王卡，
+ * 但「谁开国、谁灭的、跟中原什么关系」这三件事对读者最有用，单独给一张小卡。
+ * 用 fixed 定位：政权带只有 40 余像素高，卡片必须能越过行的裁剪。
+ */
+function PolityArchive({ anchor }: { anchor: ArchiveAnchor }) {
+  const { polity, x, y, w, h } = anchor
+  const WIDTH = 306
+  const left = Math.max(12, Math.min(x + w / 2 - WIDTH / 2, window.innerWidth - WIDTH - 12))
+  const below = y + h + 12
+  const flip = below + 190 > window.innerHeight
+  const top = flip ? Math.max(12, y - 190 - 12) : below
+  const beyond = (polity.fallYear ?? 0) > 960
+
+  return (
+    <div className="wdc-archive" style={{ left, top, width: WIDTH }}>
+      <div className="wdc-archive-head">
+        <span className="wdc-archive-name">{polity.name}</span>
+        <span className="wdc-archive-span">
+          {polity.start} — {Math.min(polity.end, 960)}
+          {polity.end > 960 ? '（本表止于 960）' : ''}
+        </span>
+      </div>
+      <dl className="wdc-archive-body">
+        {polity.capital ? (
+          <>
+            <dt>都城</dt>
+            <dd>{polity.capital}</dd>
+          </>
+        ) : null}
+        {polity.leader ? (
+          <>
+            <dt>开国</dt>
+            <dd>{polity.leader}</dd>
+          </>
+        ) : null}
+        {polity.fall ? (
+          <>
+            <dt>亡国</dt>
+            <dd>
+              {polity.fall}
+              {beyond ? <em className="wdc-archive-late">（960 之后）</em> : null}
+            </dd>
+          </>
+        ) : null}
+      </dl>
+      {polity.relation ? <p className="wdc-archive-relation">{polity.relation}</p> : null}
+    </div>
+  )
+}
+
 export function WuDaiTimeline() {
   const navigate = useNavigate()
   const location = useLocation()
 
   const [pageIndex, setPageIndex] = useState(0)
+  /* 十国政权带的悬停档案卡；切页时清掉，避免卡片留在旧位置 */
+  const [archive, setArchive] = useState<ArchiveAnchor | null>(null)
   const [laneW, setLaneW] = useState(1000)
   const laneRef = useRef<HTMLDivElement | null>(null)
   const pageAt = useRef(0)
@@ -249,7 +319,12 @@ export function WuDaiTimeline() {
                           width: clampWidth(p.start, p.end),
                           borderColor: row.accent,
                         }}
-                        title={`${p.name} ${p.start}—${p.end} · ${p.note}`}
+                        aria-label={`${p.name} ${p.start}—${p.end} · ${p.note}`}
+                        onMouseEnter={(e) => {
+                          const r = e.currentTarget.getBoundingClientRect()
+                          setArchive({ polity: p, x: r.x, y: r.y, w: r.width, h: r.height })
+                        }}
+                        onMouseLeave={() => setArchive(null)}
                       >
                         <span className="wdc-polity-name" style={{ color: row.accent }}>
                           {p.name}
@@ -281,6 +356,8 @@ export function WuDaiTimeline() {
         </div>
 
       </div>
+
+      {archive ? <PolityArchive anchor={archive} /> : null}
 
       <footer className="wdc-foot">
         <div className="wdc-dots">
