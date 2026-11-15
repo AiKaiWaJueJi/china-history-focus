@@ -125,30 +125,6 @@
       "description": ""
     },
     {
-      "id": "sp_su_luoyang",
-      "name": "洛阳",
-      "kind": "city",
-      "regionId": "qi",
-      "x": 608.3,
-      "y": 339.4,
-      "dx": 0,
-      "dy": -12,
-      "anchor": "middle",
-      "description": ""
-    },
-    {
-      "id": "sp_su_guangling",
-      "name": "广陵",
-      "kind": "city",
-      "regionId": "chen",
-      "x": 700.8,
-      "y": 376,
-      "dx": 9,
-      "dy": 4,
-      "anchor": "start",
-      "description": ""
-    },
-    {
       "id": "sp_su_caishi",
       "name": "采石",
       "kind": "pass",
@@ -168,7 +144,7 @@
       "x": 701.3,
       "y": 379.1,
       "dx": 9,
-      "dy": 17,
+      "dy": 4,
       "anchor": "start",
       "description": ""
     }
