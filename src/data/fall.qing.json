@@ -56,8 +56,12 @@
       "note": "退位诏书里那句「仍合满、汉、蒙、回、藏五族完全领土为一大中华民国」，是「五族共和」的法理起点之一，不只是一纸让位文书。"
     }
   ],
-  "enterLabel": "回到朝代主页",
-  "enterHint": "从周到清，回到一览",
-  "next": { "kind": "home" },
-  "back": { "page": "last" }
+  "enterLabel": "辛亥革命",
+  "enterHint": "自武昌至退位 · 1911—1912",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

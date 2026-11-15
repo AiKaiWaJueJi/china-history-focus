@@ -35,6 +35,13 @@ import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
 import endgameHanRaw from './endgame.han.json'
 import endgameNanbeiRaw from './endgame.nanbei.json'
+import endgameSuiRaw from './endgame.sui.json'
+import endgameFiveDynastiesRaw from './endgame.five_dynasties.json'
+import endgameSongRaw from './endgame.song.json'
+import endgameTangRaw from './endgame.tang.json'
+import endgameYuanRaw from './endgame.yuan.json'
+import endgameMingRaw from './endgame.ming.json'
+import endgameQingRaw from './endgame.qing.json'
 import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
 import fallHanRaw from './fall.han.json'
@@ -94,6 +101,20 @@ const ENDGAME: Record<string, DynastyEndgame> = {
   han: endgameHanRaw as DynastyEndgame,
   // 南北朝：周灭齐 → 隋代周 → 渡江 → 灭陈（大一统模板）
   southern_northern: endgameNanbeiRaw as DynastyEndgame,
+  // 隋：唐统一战争（隋末群雄）
+  sui: endgameSuiRaw as DynastyEndgame,
+  // 五代：宋统一战争（荆南 → 北汉）
+  five_dynasties: endgameFiveDynastiesRaw as DynastyEndgame,
+  // 宋：元灭宋（襄阳 → 崖山）
+  song: endgameSongRaw as DynastyEndgame,
+  // 唐：梁晋争霸（唐亡 → 五代序幕）
+  tang: endgameTangRaw as DynastyEndgame,
+  // 元：明北伐（自应天至大都）
+  yuan: endgameYuanRaw as DynastyEndgame,
+  // 明：清兵入关（甲申之变）
+  ming: endgameMingRaw as DynastyEndgame,
+  // 清：辛亥革命（自武昌至退位）
+  qing: endgameQingRaw as DynastyEndgame,
 }
 
 export function getDynastyEmperors(dynastyId: string | undefined): DynastyEmperors | null {

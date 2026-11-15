@@ -96,7 +96,7 @@ try {
   await sleep(700)
   await page.click('.fall-enter')
   await sleep(2400)
-  check('五代出口 → 宋时间轴', /\/dynasty\/song$/.test(page.url()), page.url())
+  check('五代出口 → 宋统一沙盘', /\/dynasty\/five_dynasties\/endgame$/.test(page.url()), page.url())
 
   await browser.close()
 } catch (err) {

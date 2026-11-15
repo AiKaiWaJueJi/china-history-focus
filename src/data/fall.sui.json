@@ -56,8 +56,12 @@
       "note": "户数是最好的证据：隋大业五年约 890 万户，唐贞观初只剩约 200 万户，到天宝年间才恢复到 900 万户上下。"
     }
   ],
-  "enterLabel": "唐 · 618—907",
-  "enterHint": "进入唐朝帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "tang", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "唐定天下",
+  "enterHint": "隋末群雄 · 618—624",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

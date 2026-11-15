@@ -56,8 +56,12 @@
       "note": "元亡不等于蒙古势力退出：顺帝北走上都，史称北元；此后瓦剌、鞑靼、察哈尔与明长期周旋，直到 1635 年林丹汗之子归降后金。"
     }
   ],
-  "enterLabel": "明 · 1368—1644",
-  "enterHint": "进入明朝帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "ming", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "明北伐",
+  "enterHint": "自应天至大都 · 1368—1370",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

@@ -23,6 +23,7 @@ import { MAPS } from './mapGeometry'
 import { SUI_MAP } from './mapGeometry'
 import { CHUHAN_MAP } from './chuhanMap'
 import { SANGUO_MAP } from './sanguoMap'
+import { SANDBOX_MAPS } from './sandboxMaps'
 import { useEndgameStore } from './useEndgameStore'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
@@ -314,7 +315,9 @@ export function EndgameStage() {
         ? SANGUO_MAP
         : endgame.mapId === 'sui'
           ? SUI_MAP
-          : MAPS[endgame.mapId ?? 'zhanguo']
+          : SANDBOX_MAPS[endgame.mapId ?? '']
+            ? SANDBOX_MAPS[endgame.mapId ?? '']
+            : MAPS[endgame.mapId ?? 'zhanguo']
 
   /*
     当前推演年份：第 0 幕用 preYearValue，之后用"上一幕"的年份。
@@ -446,7 +449,9 @@ export function EndgameStage() {
                 <button
                   type="button"
                   className="qin-entry"
-                  onClick={() => navigate(`/dynasty/${endgame.next.dynastyId}`)}
+                  onClick={() =>
+                    navigate(endgame.next.dynastyId === 'home' ? '/' : `/dynasty/${endgame.next.dynastyId}`)
+                  }
                 >
                   <span className="qin-entry-year">{endgame.next.year}</span>
                   <span className="qin-entry-label">{endgame.next.label}</span>

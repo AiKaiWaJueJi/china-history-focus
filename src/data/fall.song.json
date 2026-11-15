@@ -56,8 +56,12 @@
       "note": "「崖山之后无中国」是后人的说法，不是史实：元、明、清都在宋的制度与文教上继续。但崖山确实是第一次由北方少数民族政权完成对全中国的统一，这一层意义不可省。"
     }
   ],
-  "enterLabel": "元 · 1271—1368",
-  "enterHint": "进入元朝帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "yuan", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "元灭宋",
+  "enterHint": "襄阳至崖山 · 1273—1279",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

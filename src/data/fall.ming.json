@@ -56,8 +56,12 @@
       "note": "「甲申」这一年有三股力量：大顺、南明、清。清能胜出，靠的不只是骑兵，还有「为明复仇」的政治口号与大批投降的明朝官僚。"
     }
   ],
-  "enterLabel": "清 · 1636—1912",
-  "enterHint": "进入清朝帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "qing", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "甲申之变",
+  "enterHint": "清兵入关 · 1644",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

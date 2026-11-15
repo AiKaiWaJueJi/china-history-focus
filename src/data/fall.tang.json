@@ -56,8 +56,12 @@
       "note": "白马驿之祸针对的不只是几十个官员，而是整个「门阀士族」的政治层——宋人修史时反复提起这一夜，因为它标志着中古士族的终结。"
     }
   ],
-  "enterLabel": "五代 · 907—960",
-  "enterHint": "进入五代帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "five_dynasties", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "梁晋争霸",
+  "enterHint": "五代序幕 · 907—923",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

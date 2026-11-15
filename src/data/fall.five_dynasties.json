@@ -56,8 +56,12 @@
       "note": "「黄袍加身」在五代不是新鲜戏码——郭威建周时也用同一套。但赵匡胤的不同在于：他之后用「杯酒释兵权」把这场戏永久停演了。"
     }
   ],
-  "enterLabel": "宋 · 960—1279",
-  "enterHint": "进入宋朝帝王时间轴",
-  "next": { "kind": "timeline", "dynastyId": "song", "page": 0 },
-  "back": { "page": "last" }
+  "enterLabel": "宋收列国",
+  "enterHint": "荆南至北汉 · 960—979",
+  "next": {
+    "kind": "endgame"
+  },
+  "back": {
+    "page": "last"
+  }
 }

@@ -178,7 +178,8 @@ export function WuDaiTimeline() {
         <h1 className="wdc-title">五代十国</h1>
         <span className="wdc-period">907 — 960</span>
         <span className="wdc-count">
-          五代 14 帝 · 十国 8 政权 · 第 {pageIndex + 1} / {PAGES.length} 页
+          五代 14 帝 · 十国 {POLITIES.filter((p) => p.row !== 'r_zhongyuan').length} 政权 · 第{' '}
+          {pageIndex + 1} / {PAGES.length} 页
         </span>
         <span className="wdc-hint">滚轮 / ← → 翻页 · ESC 返回</span>
       </header>

@@ -124,32 +124,15 @@ try {
     await page.click('.fall-enter')
     await sleep(2400)
     const url = page.url()
-    check(`${d.id} 过渡出口 → ${d.next}`, url.replace(/\?.*$/, '').endsWith(d.next), url)
-    if (d.next !== '/') {
-      const nextId = d.next.split('/').pop()
-      if (nextId === 'five_dynasties') {
-        // 五代十国走的是并行时间轴（WuDaiTimeline），不是单行分页
-        await page.waitForSelector('.wdc-stage', { timeout: 10000 })
-        const wdc = await page.evaluate(() => ({
-          count: document.querySelector('.wdc-count')?.textContent?.trim() ?? '',
-          rows: document.querySelectorAll('.wdc-row').length,
-        }))
-        check('唐 出口落在「五代十国」并行时间轴', wdc.count.includes('14') && wdc.rows >= 6, JSON.stringify(wdc))
-        continue
-      }
-      await page.waitForSelector('.pager', { timeout: 10000 })
-      await sleep(700)
-      const nextShell = await readShell(page)
-      check(
-        `${d.id} 出口落在「${nextId}」首页`,
-        nextShell.titles.join(',') === DYNASTIES.find((x) => x.id === nextId).first.join(','),
-        nextShell.titles.join(','),
-      )
-    } else {
-      await page.waitForSelector('.gallery .dyn-panel', { timeout: 10000 })
-      const panels = await page.evaluate(() => document.querySelectorAll('.gallery .dyn-panel').length)
-      check('清 → 回朝代主页（12 个朝代模块）', panels === 12, String(panels))
-    }
+    check(`${d.id} 过渡页出口 → 本朝沙盘`, url.endsWith(`/dynasty/${d.id}/endgame`), url)
+    await page.waitForSelector('.qin-entry, .endgame-stage, svg', { timeout: 12000 })
+    await sleep(800)
+    const eg = await page.evaluate(() => ({
+      shapes: document.querySelectorAll('polygon, path').length,
+      text: document.body.innerText.slice(0, 80).replace(/\s+/g, ' '),
+    }))
+    check(`${d.id} 沙盘已渲染`, eg.shapes > 3, String(eg.shapes))
+
   }
 
   await browser.close()
