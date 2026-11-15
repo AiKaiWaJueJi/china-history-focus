@@ -354,6 +354,7 @@ export function WarringStatesMap({
                   y={region.label[1]}
                   textAnchor="middle"
                   dominantBaseline="middle"
+                  style={region.labelSize ? { fontSize: `${region.labelSize}px` } : undefined}
                 >
                   {region.name}
                 </text>
@@ -384,7 +385,11 @@ export function WarringStatesMap({
               <g key={point.id} className={`strategic-point kind-${point.kind}`}>
                 <title>{point.description}</title>
                 <circle cx={point.x} cy={point.y} r={3.2} />
-                <text x={point.x + 7} y={point.y + 4}>
+                <text
+                  x={point.x + (point.dx ?? 7)}
+                  y={point.y + (point.dy ?? 4)}
+                  textAnchor={point.anchor ?? 'start'}
+                >
                   {point.name}
                 </text>
               </g>
@@ -406,7 +411,10 @@ export function WarringStatesMap({
             y={mapSpec.attacker.label[1]}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)` }}
+            style={{
+              transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)`,
+              ...(mapSpec.attacker.labelSize ? { fontSize: `${mapSpec.attacker.labelSize}px` } : {}),
+            }}
           >
             {attackerName}
           </text>

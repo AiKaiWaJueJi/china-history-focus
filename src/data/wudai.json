@@ -224,25 +224,29 @@
       "id": "n923",
       "year": 923,
       "name": "后唐灭梁",
-      "note": "李存勖入汴，梁亡"
+      "note": "李存勖入汴，梁亡",
+      "chapter": "houtang"
     },
     {
       "id": "n936",
       "year": 936,
       "name": "石晋代唐",
-      "note": "割燕云十六州"
+      "note": "割燕云十六州",
+      "chapter": "shijin"
     },
     {
       "id": "n947",
       "year": 947,
       "name": "契丹灭晋",
-      "note": "耶律德光入汴，后汉继立"
+      "note": "耶律德光入汴，后汉继立",
+      "chapter": "qidan"
     },
     {
       "id": "n951",
       "year": 951,
       "name": "郭威建周",
-      "note": "后汉四年而亡"
+      "note": "后汉四年而亡",
+      "chapter": "houzhou"
     },
     {
       "id": "n960",

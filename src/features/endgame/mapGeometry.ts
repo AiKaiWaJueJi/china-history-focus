@@ -21,6 +21,11 @@ export interface MapRegion {
   points: string
   /** 标签位置 */
   label: [number, number]
+  /**
+   * 国名字号（可选）。七盘新沙盘各政权大小悬殊（唐据关中巴蜀、定杨只有雁门以北），
+   * 字号由生成器按面积给出；缺省时沿用样式表里的固定字号（战国/楚汉/三国/南北朝）。
+   */
+  labelSize?: number
   /** 国都（示意坐标，落在该国轮廓内） */
   capital?: { name: string; x: number; y: number }
   /**
@@ -127,6 +132,10 @@ export interface StrategicPoint {
   y: number
   /** 战略价值，一句话 */
   description: string
+  /** 标签相对圆点的偏移与对齐（城市挨太近时避让用；缺省右下） */
+  dx?: number
+  dy?: number
+  anchor?: 'start' | 'middle' | 'end'
 }
 
 /**

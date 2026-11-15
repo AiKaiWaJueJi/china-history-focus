@@ -117,11 +117,28 @@ export function WuDaiTimeline() {
 
   const changePage = useCallback((next: number) => setPageIndex(next), [])
 
+  /*
+    段末页继续下滚 = 进改朝换代的过渡页，而不是直接翻到下一段。
+    五代十国的五页正好卡在四个易代节点上（923 后唐灭梁 / 936 石晋代唐 /
+    947 契丹灭晋 / 951 郭威建周），与周秦汉晋「段末下滚进过渡页」完全同构；
+    最后一页（951—960）的节点是收尾的「陈桥兵变」，交给 onBeyondEnd。
+  */
+  const onLeavePage = useCallback(
+    (from: number) => {
+      const node = NODES.find((n) => n.year === PAGES[from]?.to)
+      if (!node?.chapter || node.chapter === 'fall') return false
+      navigate(`/dynasty/five_dynasties/fall/${node.chapter}`)
+      return true
+    },
+    [navigate],
+  )
+
   useWheelPaging({
     pageCount: PAGES.length,
     pageIndex,
     onChange: changePage,
     onBeyondEnd: goFall,
+    onLeavePage,
   })
 
   /* 从过渡页回来：回到最后一页 */

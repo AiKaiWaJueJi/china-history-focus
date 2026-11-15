@@ -45,7 +45,9 @@ npx tsc -b --pretty false       # 只做类型检查
 
 ## 验收
 
-25 个脚本、573 条断言，全部跑一遍约 6 分钟（需要 dev server 在跑）：
+26 个脚本、约 660 条断言，全部跑一遍约 8 分钟（需要 dev server 在跑）：
+
+> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 22 套，逐套汇总）。
 
 ```bash
 # UI：21 套 545 条
@@ -69,7 +71,8 @@ node verify-nanbei.mjs       # 45   南北朝 8 页分页
 node verify-nanbei-end.mjs   # 15   南北朝收尾沙盘
 node verify-frame.mjs        # 60   七朝骨架（隋唐宋元明清）
 node verify-wudai.mjs        # 15   五代十国并行时间轴
-node verify-sandbox.mjs      # 49   七朝沙盘（几何 + UI）
+node verify-sandbox.mjs      # 91   七朝沙盘（底板/疆域/要地/路线 + UI）
+node verify-segment-intro.mjs # 84   段间过渡（周秦汉晋唐五代宋清：下滚进页 / 上滚返回 / 演完落点）
 
 # 几何：4 套 28 条（离线，不需要 dev server）
 node check-zhanguo-geo.mjs   # 5   战国七雄
@@ -78,8 +81,12 @@ node check-sanguo-geo.mjs    # 9   三国四块
 node check-sui-geo.mjs       # 7   南北朝四块
 ```
 
-**面积守恒**是最狠的一条：同一块大陆轮廓（面积 433135）的所有分块面积之和必须相等、两两不重叠。
-七朝沙盘的版图由 `scripts/make-sandbox-geo.mjs` 生成（种子点 ←→ 剖分），改方位只改脚本里的 SPECS。
+**面积守恒**是最狠的一条，而且现在有两套底板，别混用：
+
+- **战国 / 楚汉 / 三国 / 南北朝**（周秦汉晋那四盘）：同一块手工剖分的大陆轮廓，面积和 == **433135**；
+- **唐 / 五代 / 宋 / 元 / 明 / 清**（七盘）：真实省界底板，面积和 == **208772**，35 个地理单元平铺整块中国，
+  政权 = 单元并集。改疆域只改 `scripts/make-sandbox-geo.mjs` 的 `MAPS[id].cells`，生成链是
+  `build-china-base.mjs → make-sandbox-geo.mjs → fix-campaign-geo.mjs`（详见 HANDOFF §3.13）。
 
 截图：puppeteer-core + 本机 Edge，headless，输出到 `shots/vNN/`（已在 `.gitignore`）。
 
@@ -98,6 +105,13 @@ src/
   assets/                 过渡页配图（豆包生成，裁角标压 1600×900）
 public/portraits/         帝王画像（漢为历史画像 webp，其余为程序化占位 SVG）
 scripts/                  生成器（占位图 / 沙盘版图 / 谥法口径 / 图片裁切）
+  data/china-cells.json   沙盘底板：35 个地理单元（真实省界投影简化）
+  data/china-provinces-100000.json  底板真源（省界 GeoJSON）
+  lib/geo-lib.mjs         投影 / 城市表 / 多边形并集 / 标签排布
+  lib/cities-hist.mjs     史书行军地名坐标补表
+  make-sandbox-geo.mjs    七盘版图生成器（单元 → 政权）
+  fix-campaign-geo.mjs    行军路线坐标（地名 → 百分比）
+  run-all-verify.mjs      一键跑全量验收
 docs/                     HANDOFF.md（施工图）、CHANGELOG.md（更新日志）
 ```
 
@@ -115,7 +129,12 @@ docs/                     HANDOFF.md（施工图）、CHANGELOG.md（更新日�
 
 ## 已知取舍（不是 bug）
 
-- **沙盘版图是示意图**：七朝沙盘用 Voronoi 直线剖分，不是手绘海岸线；但面积守恒、不重叠、国都在境内、行军起止落在各自境内都成立。
+- **沙盘版图是「真实省界 + 史实归属」的示意图**：底板是中国真实省界（`scripts/data/china-cells.json`，35 个地理单元），
+  每个政权 = 若干单元的并集（唐 = 关中 + 河东 + 巴蜀…），所以轮廓是真中国轮廓、边界是真山河省界；
+  面积守恒（208772）、单元无缺块、两两不重叠、国都/要地/行军端点落在各自境内都由脚本校验。
+  旧版的「种子点 Voronoi」已废弃——那样切出来的边界是等距垂线，与史实疆域无关。
+- **七朝沙盘现在有行军路线**：每幕按「地名 → 经纬度 → 百分比坐标」生成，主将、起止、途经都照史料（《旧唐书》《通鉴》《宋史》《元史》《明史》《清史稿》），
+  共 34 幕 / 90 余段；坐标口径与战国/楚汉/三国/南北朝四盘一致（百分比），别改回绝对坐标，否则线会画到画布外。
 - **画像不是史料**：漢以外全是程序化占位 SVG（颜色 + 冠式 + 袍形），别当历史写真用。
 - **五代十国只有中原行挂帝王卡**：十国君主多为国主/王，不入帝系，用「政权带」表达，与南北朝「十六国余部」同一口径。
 - **过渡页无图时自动降级**：`FallStage.ART` 里查不到 `art` 键就改单栏居中排版，**不要拿无关图兜底**。

@@ -45,6 +45,24 @@ const SEGMENT_INTROS: Record<string, Record<string, { chapter: string; label: st
   jin: {
     seg_dongjin: { chapter: 'yongjia', label: '衣冠南渡' },
   },
+  /*
+    以下三朝的分段界正好是「改朝换代」处，按周秦汉晋同一套规矩裁剪并插过渡页：
+      唐  690 革唐为周（武周）→ 705 复国号唐（神龙）
+      宋  1127 靖康之变，北宋亡、南宋再造（与「平王东迁」同型：亡国 + 南迁）
+      清  1643 世祖入关、1644 定鼎燕京（后金 → 大清治中国）
+    隋、元、明 的分段只是年号/时势分期（开皇—大业、元初—守成—内乱—元末、洪武—建文永乐…），
+    不是国号更易，故不插过渡页——与「秦只有一段、没有段间过渡」同一口径。
+  */
+  tang: {
+    seg_wuzhou: { chapter: 'wuzhou', label: '武周革命' },
+    seg_shengtang: { chapter: 'shenlong', label: '神龙复唐' },
+  },
+  song: {
+    seg_nansong: { chapter: 'jingkang', label: '靖康之变' },
+  },
+  qing: {
+    seg_ruquan: { chapter: 'ruquan', label: '入关定鼎' },
+  },
 }
 
 interface IntroGate {

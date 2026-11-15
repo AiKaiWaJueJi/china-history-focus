@@ -21,6 +21,9 @@ type Geo = {
   attacker: MapRegion & { id: string; name: string; points: string; label: [number, number] }
   regions: MapRegion[]
   rivers?: string[]
+  points?: MapSpec['points']
+  /** 攻方易代（如 960 后周 → 宋），只换国号不换版图 */
+  successor?: MapSpec['successor']
 }
 
 function toSpec(geo: Geo, ariaLabel: string, resetHint?: string): MapSpec {
@@ -30,7 +33,9 @@ function toSpec(geo: Geo, ariaLabel: string, resetHint?: string): MapSpec {
     rivers: geo.rivers ?? [],
     ariaLabel,
     resetHint,
-    points: [],
+    // 要地/关隘由 geo 文件带出（与战国/楚汉/三国同一套 StrategicPoint 结构）
+    points: geo.points ?? [],
+    ...(geo.successor ? { successor: geo.successor } : {}),
   }
 }
 

@@ -29,6 +29,15 @@ import fallNanBei from '../../data/fall.southern_northern.json'
 // 隋唐之后的七朝收尾过渡（各一章三幕）
 import fallSui from '../../data/fall.sui.json'
 import fallTang from '../../data/fall.tang.json'
+// 唐 / 五代 / 宋 / 清 的「段间过渡页」（改朝换代处裁剪出的那一屏）
+import fallTangWuzhou from '../../data/fall.tang.wuzhou.json'
+import fallTangShenlong from '../../data/fall.tang.shenlong.json'
+import fallFdHoutang from '../../data/fall.five_dynasties.houtang.json'
+import fallFdShijin from '../../data/fall.five_dynasties.shijin.json'
+import fallFdQidan from '../../data/fall.five_dynasties.qidan.json'
+import fallFdHouzhou from '../../data/fall.five_dynasties.houzhou.json'
+import fallSongJingkang from '../../data/fall.song.jingkang.json'
+import fallQingRuquan from '../../data/fall.qing.ruquan.json'
 import fallFiveDynasties from '../../data/fall.five_dynasties.json'
 import fallSong from '../../data/fall.song.json'
 import fallYuan from '../../data/fall.yuan.json'
@@ -323,12 +332,36 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
   southern_northern: fallNanBei as unknown as Record<string, FallData>,
   /* 隋唐五代宋元明清：一朝一章，演完直接进下一朝时间轴 */
   sui: { fall: fallSui as FallData },
-  tang: { fall: fallTang as FallData },
-  five_dynasties: { fall: fallFiveDynasties as FallData },
-  song: { fall: fallSong as FallData },
+  /*
+    唐、五代、宋、清：除收尾章外，在「改朝换代」处各有一屏段间过渡——
+    与周·平王东迁、汉·王莽篡漢 / 光武中兴、晋·衣冠南渡同一套组件与交互动线。
+      唐  武周革命（690 革唐为周）/ 神龙复唐（705 复国号唐）
+      五代 后唐灭梁 923 / 石晋代唐 936 / 契丹灭晋 947 / 郭威建周 951
+      宋  靖康之变 1127（北宋亡、南宋再造）
+      清  入关定鼎 1644（后金 → 大清治中国）
+  */
+  tang: {
+    fall: fallTang as FallData,
+    wuzhou: fallTangWuzhou as FallData,
+    shenlong: fallTangShenlong as FallData,
+  },
+  five_dynasties: {
+    fall: fallFiveDynasties as FallData,
+    houtang: fallFdHoutang as FallData,
+    shijin: fallFdShijin as FallData,
+    qidan: fallFdQidan as FallData,
+    houzhou: fallFdHouzhou as FallData,
+  },
+  song: {
+    fall: fallSong as FallData,
+    jingkang: fallSongJingkang as FallData,
+  },
   yuan: { fall: fallYuan as FallData },
   ming: { fall: fallMing as FallData },
-  qing: { fall: fallQing as FallData },
+  qing: {
+    fall: fallQing as FallData,
+    ruquan: fallQingRuquan as FallData,
+  },
 }
 
 const DEFAULT_CHAPTER = 'fall'
