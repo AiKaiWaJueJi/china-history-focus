@@ -289,25 +289,96 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
-  padding-left: 12px;
+  gap: 5px;
+  padding-left: 13px;
   box-sizing: border-box;
-  background: linear-gradient(90deg, rgba(7, 9, 11, 0.98) 72%, rgba(7, 9, 11, 0));
-  border-left: 3px solid var(--row-accent, #888);
+  background: linear-gradient(90deg, rgba(7, 9, 11, 0.98) 76%, rgba(7, 9, 11, 0));
+  border-left: 4px solid var(--row-accent, #888);
 }
 
-.nbc-rowlabel b {
-  font-family: var(--font-thin);
-  font-size: 14px;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.78);
+/*
+  左侧「当前在朝」：大字 = 本页实际存在的政权，翻页/易代时随面板重挂载播一次入场动画。
+  这样从过渡页回来，一眼能看到国号换了（原来只写死行名，翻页永远不变）。
+*/
+.nbc-rowlabel-current {
+  font-family: var(--font-brush);
+  font-size: 21px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
   white-space: nowrap;
+  color: color-mix(in srgb, var(--row-accent) 40%, #f4ead4);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--row-accent) 45%, transparent);
+  animation: nbc-polity-in 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
-.nbc-rowlabel em {
+.nbc-rowlabel-current.is-long {
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nbc-rowlabel-lineage {
   font-style: normal;
-  font-size: 9.5px;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 8.5px;
+  line-height: 1.6;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* 本页刚改朝换代：国号转金 + 呼吸，附「易代」小签 */
+.nbc-rowlabel[data-fresh='true'] .nbc-rowlabel-current {
+  color: #ffeccb;
+  animation:
+    nbc-polity-in 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both,
+    nbc-polity-glow 2.4s ease-in-out 2;
+}
+
+.nbc-rowlabel-tag {
+  align-self: flex-start;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(232, 207, 142, 0.45);
+  background: rgba(60, 40, 14, 0.55);
+  color: #ffeccb;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+}
+
+@keyframes nbc-polity-in {
+  0% {
+    opacity: 0;
+    transform: translateY(9px);
+    letter-spacing: 0.28em;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    letter-spacing: 0.04em;
+  }
+}
+
+@keyframes nbc-polity-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 12px rgba(232, 207, 142, 0.25);
+  }
+  50% {
+    text-shadow: 0 0 26px rgba(232, 207, 142, 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nbc-rowlabel-current,
+  .nbc-rowlabel[data-fresh='true'] .nbc-rowlabel-current {
+    animation: none;
+  }
 }
 
 .nbc-lane {
@@ -762,4 +833,46 @@
 
 .nbc-branch-group + .nbc-branch-group {
   margin-top: 4px;
+}
+
+/* 翻页到位后的「刚才那段」提示：3.2s 内淡入→停留→淡出 */
+.nbc-reminder {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 5px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 207, 142, 0.35);
+  background: rgba(10, 12, 14, 0.9);
+  color: #ffeccb;
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 7;
+  animation: nbc-reminder 3.4s ease forwards;
+}
+
+.nbc-reminder span {
+  margin-right: 8px;
+  font-size: 10px;
+  color: rgba(232, 207, 142, 0.7);
+  letter-spacing: 0.08em;
+}
+
+@keyframes nbc-reminder {
+  0% { opacity: 0; transform: translate(-50%, -8px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  72% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nbc-reminder {
+    animation: none;
+    opacity: 1;
+  }
 }

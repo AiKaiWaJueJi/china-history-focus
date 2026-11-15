@@ -50,6 +50,13 @@ const snapshot = (page) =>
       nextDisabled: document.querySelectorAll('.nbc-step button')[1]?.disabled,
       prevDisabled: document.querySelectorAll('.nbc-step button')[0]?.disabled,
       detailPopup: document.querySelectorAll('.nbc-detail').length,
+      /* 左侧「当前在朝」大字 + 易代标记 + 顶部翻页提示 */
+      labels: [...document.querySelectorAll('.nbc-rowlabel')].map((label) => ({
+        current: label.querySelector('.nbc-rowlabel-current')?.textContent?.trim(),
+        fresh: label.getAttribute('data-fresh') === 'true',
+        tag: label.querySelector('.nbc-rowlabel-tag')?.textContent?.trim() ?? null,
+      })),
+      reminder: document.querySelector('.nbc-reminder')?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
       lastCardRight: (() => {
         const lane = document.querySelector('.nbc-lane')
         if (!lane || cards.length === 0) return null
@@ -95,6 +102,12 @@ try {
   )
   check('跨页帝王出现在第 1 页（太武帝）', p1.cards.includes('wei_taiwu'), p1.cards.join(','))
   check('第一页「上一页」禁用', p1.prevDisabled === true)
+  check(
+    '左侧大字 = 本页在朝政权（十六国余部 / 北魏 / 宋）',
+    p1.labels.map((l) => l.current).join(',') === '十六国余部,北魏,宋',
+    p1.labels.map((l) => l.current).join(','),
+  )
+  check('第 1 页没有「刚才那段」提示', p1.reminder === null, String(p1.reminder))
   check('泳道不超出舞台', p1.lastCardRight !== null && p1.lastCardRight <= p1.lane + 1, `${p1.lastCardRight} vs ${p1.lane}`)
 
   // 悬停帝王卡 → 两侧事件枝（左右展开，不再上下顶出屏幕）
@@ -254,6 +267,32 @@ try {
     sweep.every((s) => s.lastCardRight !== null && s.lastCardRight <= s.lane + 1 && s.stageScrollW <= s.stageClientW + 1),
     sweep.map((s) => `${s.lastCardRight}/${s.lane}`).join(' '),
   )
+  check(
+    '左侧大字随页变化（页3=北魏/齐、页5=东魏/西魏/梁、页7=北齐/北周/陈）',
+    sweep[2].labels.map((l) => l.current).join(',') === '北魏,齐' &&
+      sweep[4].labels.map((l) => l.current).join(',') === '东魏,西魏,梁' &&
+      sweep[6].labels.map((l) => l.current).join(',') === '北齐,北周,陈',
+    sweep.map((s) => s.labels.map((l) => l.current).join('|')).join(' / '),
+  )
+  check(
+    '刚刚易代的行标「易代」并高亮（页3 齐、页7 北周/陈），未易代的页不标',
+    sweep[2].labels.some((l) => l.current === '齐' && l.fresh && l.tag === '易代') &&
+      sweep[6].labels.some((l) => l.current === '北周' && l.fresh && l.tag === '易代') &&
+      sweep[1].labels.every((l) => !l.fresh),
+    sweep.map((s) => s.labels.map((l) => `${l.current}${l.fresh ? '!' : ''}`).join('|')).join(' / '),
+  )
+  check(
+    '翻页后顶部闪出「刚才那段」（页3 = 刘宋灭亡 · 萧齐代之）',
+    sweep[2].reminder?.includes('萧齐代之') && sweep[6].reminder?.includes('梁亡陈立'),
+    `${sweep[2].reminder} / ${sweep[6].reminder}`,
+  )
+  await sleep(3600)
+  const reminderOpacity = await page.evaluate(() => {
+    const el = document.querySelector('.nbc-reminder')
+    return el ? Number(getComputedStyle(el).opacity) : 0
+  })
+  check('顶部提示 3.4s 后自动淡出', reminderOpacity < 0.05, String(reminderOpacity))
+
   check('54 位帝王数据齐全（画像 + 事件）', await page.evaluate(() => true))
 
   const overflow = await page.evaluate(() => ({ doc: document.documentElement.scrollHeight, win: innerHeight }))

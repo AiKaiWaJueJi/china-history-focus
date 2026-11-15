@@ -108,6 +108,8 @@ type PageEmperor = Emperor & { left: number }
 interface PageRow {
   row: Row
   emperors: PageEmperor[]
+  /** 本页还活着的政权（左侧「当前在朝」大字用它，翻页即变） */
+  polities: Polity[]
 }
 
 interface PageSpec {
@@ -127,12 +129,13 @@ function buildPage(from: number, to: number): PageSpec {
         })
         .map((e) => ({ ...e, left: Math.max(e.start, from) }))
         .sort((a, b) => a.left - b.left || a.end - b.end)
+      const polities = DATA.polities
+        .filter((p) => p.row === row.id && p.start < to && p.end > from)
+        .sort((a, b) => a.start - b.start)
       // 行存活看政权，不只看帝王：十六国余部没有帝系，但仍是一行
-      const alive = DATA.polities.some((p) => p.row === row.id && p.start < to && p.end > from)
-      return { row, emperors, alive }
+      return { row, emperors, polities }
     })
-    .filter((item) => item.alive)
-    .map(({ row, emperors }) => ({ row, emperors }))
+    .filter((item) => item.polities.length > 0)
 
   return { from, to, rows, node: DATA.nodes.find((n) => n.year === to) ?? null }
 }
@@ -252,10 +255,12 @@ interface PageBodyProps {
   page: PageSpec
   width: number
   height: number
+  /** 上一页收束的那个节点：翻页后顶部闪一下，提醒「刚才那段讲了什么」 */
+  reminder: TimelineNode | null
   onOpenNode: (id: string) => void
 }
 
-function PageBody({ page, width, height, onOpenNode }: PageBodyProps) {
+function PageBody({ page, width, height, reminder, onOpenNode }: PageBodyProps) {
   const span = page.to - page.from
   const scale =
     width > 0 ? Math.max(MIN_SCALE, Math.min(MAX_SCALE, (width - LABEL - GUTTER - 6) / span)) : 32
@@ -305,23 +310,42 @@ function PageBody({ page, width, height, onOpenNode }: PageBodyProps) {
         ) : null}
       </div>
 
+      {/* 翻页到位后闪一下「刚看完的那段」，避免看完过渡页忘了自己翻到了哪一朝 */}
+      {reminder ? (
+        <p className="nbc-reminder" aria-live="polite">
+          <span>{reminder.year}</span>
+          {reminder.title}
+        </p>
+      ) : null}
+
       <div
         className="nbc-rows"
         data-rows={page.rows.length}
         style={{ gridTemplateRows: `repeat(${page.rows.length}, minmax(0, 1fr))` }}
       >
-        {rows.map(({ row, placed }) => (
-          <div
-            key={row.id}
-            className={`nbc-row nbc-row-${row.id}`}
-            data-row={row.id}
-            style={{ gridTemplateColumns: `${LABEL}px ${laneW}px ${GUTTER}px` }}
-          >
-            <div className="nbc-rowlabel">
-              <b>{row.name}</b>
-              <em>{row.note}</em>
-            </div>
-            <div className="nbc-lane">
+        {rows.map(({ row, placed, polities }) => {
+          /* 左侧「当前在朝」：随页变化，翻到哪页就报哪朝的国号 */
+          const currentText = polities.map((polity) => polity.name).join(' · ')
+          const currentLong = currentText.length > 3
+          const fresh = polities.some(
+            (polity) => polity.start >= page.from && polity.start <= page.from + 2 && polity.start > 420,
+          )
+          return (
+            <div
+              key={row.id}
+              className={`nbc-row nbc-row-${row.id}`}
+              data-row={row.id}
+              style={{ gridTemplateColumns: `${LABEL}px ${laneW}px ${GUTTER}px` }}
+            >
+              <div className="nbc-rowlabel" data-fresh={fresh ? 'true' : undefined}>
+                <b className={`nbc-rowlabel-current${currentLong ? ' is-long' : ''}`}>{currentText}</b>
+                {currentText !== row.name ? (
+                  <em className="nbc-rowlabel-lineage">{row.name}</em>
+                ) : null}
+                <em className="nbc-rowlabel-lineage">{row.note}</em>
+                {fresh ? <span className="nbc-rowlabel-tag">易代</span> : null}
+              </div>
+              <div className="nbc-lane">
               {placed.length === 0 ? (
                 <span className="nbc-empty">十六国余部诸政权未入帝系，仅标行属</span>
               ) : (
@@ -376,9 +400,10 @@ function PageBody({ page, width, height, onOpenNode }: PageBodyProps) {
                   )
                 })
               )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {page.node ? <div className="nbc-node-line" style={{ left: nodeX }} aria-hidden /> : null}
@@ -524,7 +549,13 @@ export function NanBeiTimeline() {
                 : { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 }
             }
           >
-            <PageBody page={page} width={stage.width} height={stage.height} onOpenNode={openNode} />
+            <PageBody
+              page={page}
+              width={stage.width}
+              height={stage.height}
+              reminder={pageIndex > 0 ? PAGE_SPECS[pageIndex - 1].node : null}
+              onOpenNode={openNode}
+            />
           </motion.div>
         </AnimatePresence>
       </div>
