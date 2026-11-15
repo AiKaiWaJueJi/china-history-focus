@@ -1,0 +1,28 @@
+{
+  "dynastyId": "song",
+  "segments": [
+    {
+      "id": "seg_beisong",
+      "name": "北宋",
+      "startYear": 960,
+      "endYear": 1127,
+      "accent": "#5f7f9a",
+      "desc": "开封为都 · 与辽夏并立",
+      "markers": [
+        { "id": "m_song_chanyuan", "name": "澶渊之盟", "year": 1004, "note": "宋辽百年和平" },
+        { "id": "m_song_bianfa", "name": "王安石变法", "year": 1069, "note": "新旧党争" }
+      ]
+    },
+    {
+      "id": "seg_nansong",
+      "name": "南宋",
+      "startYear": 1127,
+      "endYear": 1279,
+      "accent": "#6f8f8a",
+      "desc": "临安为都 · 与金蒙对峙",
+      "markers": [
+        { "id": "m_song_duanping", "name": "端平入洛", "year": 1234, "note": "联蒙灭金" }
+      ]
+    }
+  ]
+}

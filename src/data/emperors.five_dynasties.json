@@ -1,0 +1,234 @@
+{
+  "dynastyId": "five_dynasties",
+  "name": "五代",
+  "period": "907 — 960",
+  "emperors": [
+    {
+      "id": "fd_liang_taizu",
+      "posthumousTitle": "后梁太祖",
+      "personalName": "朱温",
+      "reign": "907 — 912",
+      "startYear": 907,
+      "endYear": 912,
+      "segmentId": "seg_houliang",
+      "portrait": "/portraits/fd-liang-taizu.svg",
+      "events": [
+        { "id": "ev_fdliangtaizu_cuantang", "name": "篡唐建梁", "dimension": "political", "year": 907 },
+        { "id": "ev_fdliangtaizu_kaifeng", "name": "定都开封", "dimension": "political", "year": 907 },
+        { "id": "ev_fdliangtaizu_baixiang", "name": "柏乡之败", "dimension": "military", "year": 910 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "刚强直理曰武（谥「神武元圣孝」，取「武」）"
+    },
+    {
+      "id": "fd_liang_yougui",
+      "posthumousTitle": "后梁郢王",
+      "personalName": "朱友珪",
+      "reign": "912 — 913",
+      "startYear": 912,
+      "endYear": 913,
+      "segmentId": "seg_houliang",
+      "portrait": "/portraits/fd-liang-yougui.svg",
+      "events": [
+        { "id": "ev_fdliangyougui_shifu", "name": "弑父自立", "dimension": "political", "year": 912 },
+        { "id": "ev_fdliangyougui_junwang", "name": "均王起兵", "dimension": "military", "year": 913 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "弑父自立，废为庶人，无谥"
+    },
+    {
+      "id": "fd_liang_modi",
+      "posthumousTitle": "后梁末帝",
+      "personalName": "朱友贞",
+      "reign": "913 — 923",
+      "startYear": 913,
+      "endYear": 923,
+      "segmentId": "seg_houliang",
+      "portrait": "/portraits/fd-liang-modi.svg",
+      "events": [
+        { "id": "ev_fdliangmodi_zhuyougui", "name": "诛朱友珪", "dimension": "political", "year": 913 },
+        { "id": "ev_fdliangmodi_miewang", "name": "后唐灭梁", "dimension": "military", "year": 923 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称末帝"
+    },
+    {
+      "id": "fd_tang_zhuangzong",
+      "posthumousTitle": "后唐庄宗",
+      "personalName": "李存勖",
+      "reign": "923 — 926",
+      "startYear": 923,
+      "endYear": 926,
+      "segmentId": "seg_houtang",
+      "portrait": "/portraits/fd-tang-zhuangzong.svg",
+      "events": [
+        { "id": "ev_fdtangzhuangzong_mieliang", "name": "灭后梁", "dimension": "military", "year": 923 },
+        { "id": "ev_fdtangzhuangzong_luoyang", "name": "定都洛阳", "dimension": "political", "year": 923 },
+        { "id": "ev_fdtangzhuangzong_xingjiao", "name": "兴教门之变", "dimension": "political", "year": 926 }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "在国逢难曰闵（谥「光圣神闵孝」）"
+    },
+    {
+      "id": "fd_tang_mingzong",
+      "posthumousTitle": "后唐明宗",
+      "personalName": "李嗣源",
+      "reign": "926 — 933",
+      "startYear": 926,
+      "endYear": 933,
+      "segmentId": "seg_houtang",
+      "portrait": "/portraits/fd-tang-mingzong.svg",
+      "events": [
+        { "id": "ev_fdtangmingzong_zhuhuan", "name": "诛杀宦官", "dimension": "political", "year": 926 },
+        { "id": "ev_fdtangmingzong_tiancheng", "name": "天成之治", "dimension": "political", "year": 927 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「圣德和武钦孝」，无单字可循"
+    },
+    {
+      "id": "fd_tang_min",
+      "posthumousTitle": "后唐闵帝",
+      "personalName": "李从厚",
+      "reign": "933 — 934",
+      "startYear": 933,
+      "endYear": 934,
+      "segmentId": "seg_houtang",
+      "portrait": "/portraits/fd-tang-min.svg",
+      "events": [
+        { "id": "ev_fdtangmin_jiwei", "name": "即位", "dimension": "political", "year": 933 },
+        { "id": "ev_fdtangmin_luwang", "name": "潞王兵变", "dimension": "military", "year": 934 }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "在国逢难曰闵"
+    },
+    {
+      "id": "fd_tang_modi",
+      "posthumousTitle": "后唐末帝",
+      "personalName": "李从珂",
+      "reign": "934 — 936",
+      "startYear": 934,
+      "endYear": 936,
+      "segmentId": "seg_houtang",
+      "portrait": "/portraits/fd-tang-modi.svg",
+      "events": [
+        { "id": "ev_fdtangmodi_qibing", "name": "起兵夺位", "dimension": "military", "year": 934 },
+        { "id": "ev_fdtangmodi_shijingtang", "name": "石敬瑭反", "dimension": "military", "year": 936 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称末帝"
+    },
+    {
+      "id": "fd_jin_gaozu",
+      "posthumousTitle": "后晋高祖",
+      "personalName": "石敬瑭",
+      "reign": "936 — 942",
+      "startYear": 936,
+      "endYear": 942,
+      "segmentId": "seg_houjin",
+      "portrait": "/portraits/fd-jin-gaozu.svg",
+      "events": [
+        { "id": "ev_fdjingaozu_yanxun", "name": "割燕云十六州", "dimension": "political", "year": 936 },
+        { "id": "ev_fdjingaozu_erhuangdi", "name": "称儿皇帝", "dimension": "political", "year": 937 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「圣文章武明德孝」，取「文」）"
+    },
+    {
+      "id": "fd_jin_chudi",
+      "posthumousTitle": "后晋出帝",
+      "personalName": "石重贵",
+      "reign": "942 — 947",
+      "startYear": 942,
+      "endYear": 947,
+      "segmentId": "seg_houjin",
+      "portrait": "/portraits/fd-jin-chudi.svg",
+      "events": [
+        { "id": "ev_fdjinchudi_chen", "name": "对契丹称孙不称臣", "dimension": "political", "year": 944 },
+        { "id": "ev_fdjinchudi_mie", "name": "契丹灭晋", "dimension": "military", "year": 947 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称出帝"
+    },
+    {
+      "id": "fd_han_gaozu",
+      "posthumousTitle": "后汉高祖",
+      "personalName": "刘知远",
+      "reign": "947 — 948",
+      "startYear": 947,
+      "endYear": 948,
+      "segmentId": "seg_houhan",
+      "portrait": "/portraits/fd-han-gaozu.svg",
+      "events": [
+        { "id": "ev_fdhangaozu_taiyuan", "name": "太原称帝", "dimension": "political", "year": 947 },
+        { "id": "ev_fdhangaozu_kaifeng", "name": "定都开封", "dimension": "political", "year": 947 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "昭德有劳曰昭（谥「睿文圣武昭肃孝」）"
+    },
+    {
+      "id": "fd_han_yindi",
+      "posthumousTitle": "后汉隐帝",
+      "personalName": "刘承祐",
+      "reign": "948 — 951",
+      "startYear": 948,
+      "endYear": 951,
+      "segmentId": "seg_houhan",
+      "portrait": "/portraits/fd-han-yindi.svg",
+      "events": [
+        { "id": "ev_fdhanyindi_zhuchen", "name": "诛杀权臣", "dimension": "political", "year": 950 },
+        { "id": "ev_fdhanyindi_guowei", "name": "郭威起兵", "dimension": "military", "year": 951 }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "隐拂不成曰隐"
+    },
+    {
+      "id": "fd_zhou_taizu",
+      "posthumousTitle": "后周太祖",
+      "personalName": "郭威",
+      "reign": "951 — 954",
+      "startYear": 951,
+      "endYear": 954,
+      "segmentId": "seg_houzhou",
+      "portrait": "/portraits/fd-zhou-taizu.svg",
+      "events": [
+        { "id": "ev_fdzhoutaizu_huangpao", "name": "黄袍加身建周", "dimension": "political", "year": 951 },
+        { "id": "ev_fdzhoutaizu_gechu", "name": "革除弊政", "dimension": "political", "year": 951 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武（谥「圣神恭肃文武孝」）"
+    },
+    {
+      "id": "fd_zhou_shizong",
+      "posthumousTitle": "后周世宗",
+      "personalName": "柴荣",
+      "reign": "954 — 959",
+      "startYear": 954,
+      "endYear": 959,
+      "segmentId": "seg_houzhou",
+      "portrait": "/portraits/fd-zhou-shizong.svg",
+      "events": [
+        { "id": "ev_fdzhoushizong_gaoping", "name": "高平之战", "dimension": "military", "year": 954 },
+        { "id": "ev_fdzhoushizong_jinjun", "name": "整顿禁军", "dimension": "military", "year": 954 },
+        { "id": "ev_fdzhoushizong_beifa", "name": "北伐契丹", "dimension": "military", "year": 959 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「睿武孝文」）"
+    },
+    {
+      "id": "fd_zhou_gong",
+      "posthumousTitle": "后周恭帝",
+      "personalName": "柴宗训",
+      "reign": "959 — 960",
+      "startYear": 959,
+      "endYear": 960,
+      "segmentId": "seg_houzhou",
+      "portrait": "/portraits/fd-zhou-gong.svg",
+      "events": [
+        { "id": "ev_fdzhougong_chenqiao", "name": "陈桥兵变", "dimension": "political", "year": 960 },
+        { "id": "ev_fdzhougong_shansong", "name": "禅位于宋", "dimension": "political", "year": 960 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "敬事供上曰恭"
+    }
+  ]
+}

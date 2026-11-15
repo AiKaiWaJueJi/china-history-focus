@@ -417,6 +417,17 @@ for (const emperor of jinFile.emperors) {
   writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, jinDynasty))
 }
 console.log(`jin portraits: ${jinFile.emperors.length}`)
+/* ---- 隋唐五代宋元明清：本轮只做骨架，画像一律程序化占位（明确不找图）----
+   和晋朝同一口径：先让时间轴可读，之后要换实图再按朝代单独补 webp，
+   不要在占位 SVG 之外另起一套命名。 */
+for (const id of ['sui', 'tang', 'five_dynasties', 'song', 'yuan', 'ming', 'qing']) {
+  const file = JSON.parse(readFileSync(join(PROJECT, `src/data/emperors.${id}.json`), 'utf8'))
+  const dynasty = data.dynasties.find((d) => d.id === id)
+  for (const emperor of file.emperors) {
+    writeFileSync(join(porDir, `${emperor.id.replace(/_/g, '-')}.svg`), portraitSvg({ id: emperor.id }, dynasty))
+  }
+  console.log(`${id} portraits: ${file.emperors.length}`)
+}
 /* 汉朝不用程序化占位图：27 帝已换成 public/portraits/han-*.webp（历史画像）。
    若将来新增汉朝帝纪，请按同样规格补图，不要再生成 han-*.svg，避免两套画像并存。 */
 console.log(`artifacts: ${data.dynasties.length} (${data.dynasties.map((d) => d.id).join(', ')})`)

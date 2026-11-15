@@ -1,0 +1,60 @@
+{
+  "dynastyId": "tang",
+  "segments": [
+    {
+      "id": "seg_chutang",
+      "name": "初唐",
+      "startYear": 618,
+      "endYear": 690,
+      "accent": "#b8862f",
+      "desc": "长安为都 · 贞观永徽",
+      "markers": [
+        { "id": "m_tang_lvshu", "name": "永徽律疏", "year": 651, "note": "律令定型" },
+        { "id": "m_tang_gaoli", "name": "灭高句丽", "year": 668, "note": "东陲底定" }
+      ]
+    },
+    {
+      "id": "seg_wuzhou",
+      "name": "武周",
+      "startYear": 690,
+      "endYear": 705,
+      "accent": "#9a5f8f",
+      "desc": "神都为都 · 女主称帝",
+      "markers": []
+    },
+    {
+      "id": "seg_shengtang",
+      "name": "盛唐",
+      "startYear": 705,
+      "endYear": 756,
+      "accent": "#c9a227",
+      "desc": "开元全盛 · 天宝转衰",
+      "markers": [
+        { "id": "m_tang_anshi", "name": "安史之乱", "year": 755, "note": "由盛转衰" }
+      ]
+    },
+    {
+      "id": "seg_zhongtang",
+      "name": "中唐",
+      "startYear": 756,
+      "endYear": 835,
+      "accent": "#8d6b3f",
+      "desc": "藩镇割据 · 元和中兴",
+      "markers": [
+        { "id": "m_tang_liangshui", "name": "两税法", "year": 780, "note": "税制改轨" },
+        { "id": "m_tang_yuanhe", "name": "元和中兴", "year": 806, "note": "削平藩镇" }
+      ]
+    },
+    {
+      "id": "seg_xiantang",
+      "name": "晚唐",
+      "startYear": 835,
+      "endYear": 907,
+      "accent": "#7a5a4a",
+      "desc": "宦官藩镇 · 黄巢朱温",
+      "markers": [
+        { "id": "m_tang_huangchao", "name": "黄巢之乱", "year": 875, "note": "流寇入长安" }
+      ]
+    }
+  ]
+}

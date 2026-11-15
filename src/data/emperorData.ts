@@ -12,10 +12,24 @@ import zhouRaw from './emperors.zhou.json'
 import qinRaw from './emperors.qin.json'
 import hanRaw from './emperors.han.json'
 import jinRaw from './emperors.jin.json'
+import suiRaw from './emperors.sui.json'
+import tangRaw from './emperors.tang.json'
+import fiveDynastiesRaw from './emperors.five_dynasties.json'
+import songRaw from './emperors.song.json'
+import yuanRaw from './emperors.yuan.json'
+import mingRaw from './emperors.ming.json'
+import qingRaw from './emperors.qing.json'
 import segmentsZhouRaw from './segments.zhou.json'
 import segmentsQinRaw from './segments.qin.json'
 import segmentsHanRaw from './segments.han.json'
 import segmentsJinRaw from './segments.jin.json'
+import segmentsSuiRaw from './segments.sui.json'
+import segmentsTangRaw from './segments.tang.json'
+import segmentsFiveDynastiesRaw from './segments.five_dynasties.json'
+import segmentsSongRaw from './segments.song.json'
+import segmentsYuanRaw from './segments.yuan.json'
+import segmentsMingRaw from './segments.ming.json'
+import segmentsQingRaw from './segments.qing.json'
 import lordsZhouRaw from './lords.zhou.json'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
@@ -25,6 +39,13 @@ import fallZhouRaw from './fall.zhou.json'
 import fallQinRaw from './fall.qin.json'
 import fallHanRaw from './fall.han.json'
 import fallJinRaw from './fall.jin.json'
+import fallSuiRaw from './fall.sui.json'
+import fallTangRaw from './fall.tang.json'
+import fallFiveDynastiesRaw from './fall.five_dynasties.json'
+import fallSongRaw from './fall.song.json'
+import fallYuanRaw from './fall.yuan.json'
+import fallMingRaw from './fall.ming.json'
+import fallQingRaw from './fall.qing.json'
 import type {
   DynastyEmperors,
   DynastyEndgame,
@@ -37,6 +58,13 @@ const EMPERORS: Record<string, DynastyEmperors> = {
   qin: qinRaw as DynastyEmperors,
   han: hanRaw as DynastyEmperors,
   jin: jinRaw as DynastyEmperors,
+  sui: suiRaw as DynastyEmperors,
+  tang: tangRaw as DynastyEmperors,
+  five_dynasties: fiveDynastiesRaw as DynastyEmperors,
+  song: songRaw as DynastyEmperors,
+  yuan: yuanRaw as DynastyEmperors,
+  ming: mingRaw as DynastyEmperors,
+  qing: qingRaw as DynastyEmperors,
 }
 
 const SEGMENTS: Record<string, DynastySegments> = {
@@ -44,6 +72,13 @@ const SEGMENTS: Record<string, DynastySegments> = {
   qin: segmentsQinRaw as DynastySegments,
   han: segmentsHanRaw as DynastySegments,
   jin: segmentsJinRaw as DynastySegments,
+  sui: segmentsSuiRaw as DynastySegments,
+  tang: segmentsTangRaw as DynastySegments,
+  five_dynasties: segmentsFiveDynastiesRaw as DynastySegments,
+  song: segmentsSongRaw as DynastySegments,
+  yuan: segmentsYuanRaw as DynastySegments,
+  ming: segmentsMingRaw as DynastySegments,
+  qing: segmentsQingRaw as DynastySegments,
 }
 
 const LORDS: Record<string, DynastyLords> = {
@@ -91,6 +126,13 @@ const FALL: Record<string, unknown> = {
   qin: fallQinRaw,
   han: fallHanRaw,
   jin: fallJinRaw,
+  sui: fallSuiRaw,
+  tang: fallTangRaw,
+  five_dynasties: fallFiveDynastiesRaw,
+  song: fallSongRaw,
+  yuan: fallYuanRaw,
+  ming: fallMingRaw,
+  qing: fallQingRaw,
 }
 
 /** 该朝代是否有收尾可走（沙盘或过渡页）——决定时间轴末页要不要出现"继续下滑" */

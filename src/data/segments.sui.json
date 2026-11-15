@@ -1,0 +1,28 @@
+{
+  "dynastyId": "sui",
+  "segments": [
+    {
+      "id": "seg_openhuang",
+      "name": "开皇",
+      "startYear": 581,
+      "endYear": 604,
+      "accent": "#7a8fa6",
+      "desc": "长安为都 · 开皇之治",
+      "markers": [
+        { "id": "m_sui_pingchen", "name": "平陈", "year": 589, "note": "南北复归一统" }
+      ]
+    },
+    {
+      "id": "seg_daye",
+      "name": "大业",
+      "startYear": 605,
+      "endYear": 618,
+      "accent": "#5f7f9a",
+      "desc": "东都为都 · 役繁民困",
+      "markers": [
+        { "id": "m_sui_gaoli", "name": "三征高句丽", "year": 612, "note": "民力竭" },
+        { "id": "m_sui_mo", "name": "隋末群雄", "year": 616, "note": "瓦岗、窦建德并起" }
+      ]
+    }
+  ]
+}

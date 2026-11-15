@@ -1,0 +1,56 @@
+{
+  "dynastyId": "five_dynasties",
+  "segments": [
+    {
+      "id": "seg_houliang",
+      "name": "后梁",
+      "startYear": 907,
+      "endYear": 923,
+      "accent": "#8a6a4a",
+      "desc": "开封为都 · 五代之首",
+      "markers": [
+        { "id": "m_fd_baixiang", "name": "柏乡之败", "year": 910, "note": "梁失河北" }
+      ]
+    },
+    {
+      "id": "seg_houtang",
+      "name": "后唐",
+      "startYear": 923,
+      "endYear": 936,
+      "accent": "#7a6a5a",
+      "desc": "洛阳为都 · 沙陀立国",
+      "markers": []
+    },
+    {
+      "id": "seg_houjin",
+      "name": "后晋",
+      "startYear": 936,
+      "endYear": 947,
+      "accent": "#6a5a6a",
+      "desc": "割燕云 · 称儿皇帝",
+      "markers": [
+        { "id": "m_fd_yanxun", "name": "割燕云", "year": 938, "note": "中原失北屏" }
+      ]
+    },
+    {
+      "id": "seg_houhan",
+      "name": "后汉",
+      "startYear": 947,
+      "endYear": 951,
+      "accent": "#6a5a4a",
+      "desc": "开封为都 · 四年而亡",
+      "markers": []
+    },
+    {
+      "id": "seg_houzhou",
+      "name": "后周",
+      "startYear": 951,
+      "endYear": 960,
+      "accent": "#8a5a4a",
+      "desc": "开封为都 · 世宗改革",
+      "markers": [
+        { "id": "m_fd_gaoping", "name": "高平之战", "year": 954, "note": "世宗立威" }
+      ]
+    }
+  ]
+}

@@ -26,6 +26,14 @@ import fallHanZhongxing from '../../data/fall.han.zhongxing.json'
 import fallJin from '../../data/fall.jin.json'
 import fallJinYongjia from '../../data/fall.jin.yongjia.json'
 import fallNanBei from '../../data/fall.southern_northern.json'
+// 隋唐之后的七朝收尾过渡（各一章三幕）
+import fallSui from '../../data/fall.sui.json'
+import fallTang from '../../data/fall.tang.json'
+import fallFiveDynasties from '../../data/fall.five_dynasties.json'
+import fallSong from '../../data/fall.song.json'
+import fallYuan from '../../data/fall.yuan.json'
+import fallMing from '../../data/fall.ming.json'
+import fallQing from '../../data/fall.qing.json'
 import dingPhoto from '../../assets/ding-photo.jpg'
 import templePhoto from '../../assets/temple-photo.jpg'
 import tallyPhoto from '../../assets/tally-photo.jpg'
@@ -75,6 +83,16 @@ import nb550_3 from '../../assets/nb550_3.jpg'
 import nb557_1 from '../../assets/nb557_1.jpg'
 import nb557_2 from '../../assets/nb557_2.jpg'
 import nb557_3 from '../../assets/nb557_3.jpg'
+// 隋 / 唐 / 五代 三章过渡页配图（豆包生成 · 只用器物 · 无人物 · 16:9）
+import sui_1 from '../../assets/sui_1.jpg'
+import sui_2 from '../../assets/sui_2.jpg'
+import sui_3 from '../../assets/sui_3.jpg'
+import tang_1 from '../../assets/tang_1.jpg'
+import tang_2 from '../../assets/tang_2.jpg'
+import tang_3 from '../../assets/tang_3.jpg'
+import fd_1 from '../../assets/fd_1.jpg'
+import fd_2 from '../../assets/fd_2.jpg'
+import fd_3 from '../../assets/fd_3.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -127,6 +145,15 @@ const ART: Record<string, string> = {
   nb557_1,
   nb557_2,
   nb557_3,
+  sui_1,
+  sui_2,
+  sui_3,
+  tang_1,
+  tang_2,
+  tang_3,
+  fd_1,
+  fd_2,
+  fd_3,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -178,6 +205,15 @@ const ART_ALT: Record<string, string> = {
   nb589_1: '隋受周禅·玉玺与诏书',
   nb589_2: '隋军五牙战舰与船桨',
   nb589_3: '开皇铜钱与统一度量衡',
+  sui_1: '隋亡·江都离宫的鎏金铜灯、倾倒铜盘与断弦琵琶',
+  sui_2: '长安受禅坛·玉玺、玉册与玺绶',
+  sui_3: '唐承隋制·青铜虎符、均田文书木匣与六部铜印',
+  tang_1: '藩镇割据·明光铠、节度使铜符与散落断箭',
+  tang_2: '黄巢之乱·残破开元通宝、焦黑断戟与烧残木匣',
+  tang_3: '白马驿之祸·玉玺、倾倒铜印与浸水竹简',
+  fd_1: '五代乱世·残破铜钱、断刀与折断枪头',
+  fd_2: '后周世宗·周元通宝、铜权与量器',
+  fd_3: '陈桥兵变·折叠黄袍、驿站马镫与铜印',
 }
 
 interface FallAct {
@@ -196,6 +232,12 @@ interface FallNext {
   kind: 'endgame' | 'timeline' | 'home'
   /** kind === 'timeline' 时回落的页码；'last' 表示最后一页 */
   page?: number | 'last'
+  /**
+   * kind === 'timeline' 时跳到哪个朝代（缺省＝当前朝代）。
+   * 时间轴按 dynastyId 泛化，所以跨朝续接只差这一个字段：
+   * 隋 → 唐、唐 → 五代、五代 → 宋、宋 → 元、元 → 明、明 → 清。
+   */
+  dynastyId?: string
 }
 
 interface FallData {
@@ -242,6 +284,14 @@ const CHAPTERS: Record<string, Record<string, FallData>> = {
     从时间轴点节点、或翻到段末继续下滚都会进这里；演完落回下一段的时间轴页。
   */
   southern_northern: fallNanBei as unknown as Record<string, FallData>,
+  /* 隋唐五代宋元明清：一朝一章，演完直接进下一朝时间轴 */
+  sui: { fall: fallSui as FallData },
+  tang: { fall: fallTang as FallData },
+  five_dynasties: { fall: fallFiveDynasties as FallData },
+  song: { fall: fallSong as FallData },
+  yuan: { fall: fallYuan as FallData },
+  ming: { fall: fallMing as FallData },
+  qing: { fall: fallQing as FallData },
 }
 
 const DEFAULT_CHAPTER = 'fall'
@@ -402,7 +452,8 @@ export function FallStage() {
       } else if (next.kind === 'home') {
         navigate('/')
       } else {
-        navigate(`/dynasty/${dynastyId}`, { state: { page: next.page ?? 'last' } })
+        const targetDynasty = next.dynastyId ?? dynastyId
+        navigate(`/dynasty/${targetDynasty}`, { state: { page: next.page ?? 'last' } })
       }
     }, 760)
   }, [dynastyId, data, leaving, navigate])

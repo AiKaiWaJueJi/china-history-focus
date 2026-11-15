@@ -1,0 +1,297 @@
+{
+  "dynastyId": "song",
+  "name": "宋",
+  "period": "960 — 1279",
+  "emperors": [
+    {
+      "id": "song_taizu",
+      "posthumousTitle": "宋太祖",
+      "personalName": "赵匡胤",
+      "reign": "960 — 976",
+      "startYear": 960,
+      "endYear": 976,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-taizu.svg",
+      "events": [
+        { "id": "ev_songtaizu_chenqiao", "name": "陈桥兵变", "dimension": "political", "year": 960 },
+        { "id": "ev_songtaizu_beijiu", "name": "杯酒释兵权", "dimension": "political", "year": 961 },
+        { "id": "ev_songtaizu_nantang", "name": "平南唐", "dimension": "military", "year": 975 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武（谥「英武圣文神德」）"
+    },
+    {
+      "id": "song_taizong",
+      "posthumousTitle": "宋太宗",
+      "personalName": "赵光义",
+      "reign": "976 — 997",
+      "startYear": 976,
+      "endYear": 997,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-taizong.svg",
+      "events": [
+        { "id": "ev_songtaizong_beihan", "name": "灭北汉", "dimension": "military", "year": 979 },
+        { "id": "ev_songtaizong_gaolianghe", "name": "高粱河之败", "dimension": "military", "year": 979 },
+        { "id": "ev_songtaizong_yongxi", "name": "雍熙北伐", "dimension": "military", "year": 986 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「神功圣德文武」）"
+    },
+    {
+      "id": "song_zhenzong",
+      "posthumousTitle": "宋真宗",
+      "personalName": "赵恒",
+      "reign": "997 — 1022",
+      "startYear": 997,
+      "endYear": 1022,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-zhenzong.svg",
+      "events": [
+        { "id": "ev_songzhenzong_chanyuan", "name": "澶渊之盟", "dimension": "political", "year": 1004 },
+        { "id": "ev_songzhenzong_tianshu", "name": "天书封禅", "dimension": "culture", "year": 1008 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "温克令仪曰章（谥「文明武定章圣元孝」）"
+    },
+    {
+      "id": "song_renzong",
+      "posthumousTitle": "宋仁宗",
+      "personalName": "赵祯",
+      "reign": "1022 — 1063",
+      "startYear": 1022,
+      "endYear": 1063,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-renzong.svg",
+      "events": [
+        { "id": "ev_songrenzong_qingli", "name": "庆历新政", "dimension": "political", "year": 1043 },
+        { "id": "ev_songrenzong_xiheyi", "name": "宋夏和议", "dimension": "military", "year": 1044 },
+        { "id": "ev_songrenzong_huozi", "name": "毕昇活字印刷", "dimension": "culture", "year": 1045 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "蓄义丰功曰仁"
+    },
+    {
+      "id": "song_yingzong",
+      "posthumousTitle": "宋英宗",
+      "personalName": "赵曙",
+      "reign": "1063 — 1067",
+      "startYear": 1063,
+      "endYear": 1067,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-yingzong.svg",
+      "events": [
+        { "id": "ev_songyingzong_puyi", "name": "濮议之争", "dimension": "political", "year": 1064 },
+        { "id": "ev_songyingzong_zizhitongjian", "name": "《资治通鉴》开局", "dimension": "culture", "year": 1066 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「体乾应历隆功盛德宪文肃武睿圣宣孝」"
+    },
+    {
+      "id": "song_shenzong",
+      "posthumousTitle": "宋神宗",
+      "personalName": "赵顼",
+      "reign": "1067 — 1085",
+      "startYear": 1067,
+      "endYear": 1085,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-shenzong.svg",
+      "events": [
+        { "id": "ev_songshenzong_wanganshi", "name": "王安石变法", "dimension": "political", "year": 1069 },
+        { "id": "ev_songshenzong_xihe", "name": "熙河开边", "dimension": "military", "year": 1073 },
+        { "id": "ev_songshenzong_yuanfeng", "name": "元丰改制", "dimension": "political", "year": 1082 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「英文烈武圣孝」）"
+    },
+    {
+      "id": "song_zhezong",
+      "posthumousTitle": "宋哲宗",
+      "personalName": "赵煦",
+      "reign": "1085 — 1100",
+      "startYear": 1085,
+      "endYear": 1100,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-zhezong.svg",
+      "events": [
+        { "id": "ev_songzhezong_yuanyou", "name": "元祐更化", "dimension": "political", "year": 1086 },
+        { "id": "ev_songzhezong_shaosheng", "name": "绍圣绍述", "dimension": "political", "year": 1094 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「宪元继道世德扬功钦文睿武齐圣昭孝」"
+    },
+    {
+      "id": "song_huizong",
+      "posthumousTitle": "宋徽宗",
+      "personalName": "赵佶",
+      "reign": "1100 — 1126",
+      "startYear": 1100,
+      "endYear": 1126,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-huizong.svg",
+      "events": [
+        { "id": "ev_songhuizong_huashigang", "name": "花石纲", "dimension": "political", "year": 1105 },
+        { "id": "ev_songhuizong_lianjin", "name": "联金灭辽", "dimension": "military", "year": 1120 },
+        { "id": "ev_songhuizong_jingkang", "name": "靖康之变", "dimension": "military", "year": 1127 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "蓄义丰功曰仁（谥「圣文仁德显孝」，按谥法取「仁」；其失国不在谥法之内）"
+    },
+    {
+      "id": "song_qinzong",
+      "posthumousTitle": "宋钦宗",
+      "personalName": "赵桓",
+      "reign": "1126 — 1127",
+      "startYear": 1126,
+      "endYear": 1127,
+      "segmentId": "seg_beisong",
+      "portrait": "/portraits/song-qinzong.svg",
+      "events": [
+        { "id": "ev_songqinzong_jingkang", "name": "靖康之变", "dimension": "military", "year": 1127 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "宋未上谥；金人上谥「恭文顺德仁孝」，故庙号沿称"
+    },
+    {
+      "id": "song_gaozong",
+      "posthumousTitle": "宋高宗",
+      "personalName": "赵构",
+      "reign": "1127 — 1162",
+      "startYear": 1127,
+      "endYear": 1162,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-gaozong.svg",
+      "events": [
+        { "id": "ev_songgaozong_nandu", "name": "建炎南渡", "dimension": "political", "year": 1127 },
+        { "id": "ev_songgaozong_shaoxing", "name": "绍兴和议", "dimension": "political", "year": 1141 },
+        { "id": "ev_songgaozong_yuefei", "name": "岳飞之死", "dimension": "military", "year": 1142 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「受命中兴全功至德圣神武文昭仁宪孝」"
+    },
+    {
+      "id": "song_xiaozong",
+      "posthumousTitle": "宋孝宗",
+      "personalName": "赵昚",
+      "reign": "1162 — 1189",
+      "startYear": 1162,
+      "endYear": 1189,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-xiaozong.svg",
+      "events": [
+        { "id": "ev_songxiaozong_longxing", "name": "隆兴北伐", "dimension": "military", "year": 1163 },
+        { "id": "ev_songxiaozong_qianchun", "name": "乾淳之治", "dimension": "political", "year": 1165 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "慈惠爱亲曰孝"
+    },
+    {
+      "id": "song_guangzong",
+      "posthumousTitle": "宋光宗",
+      "personalName": "赵惇",
+      "reign": "1189 — 1194",
+      "startYear": 1189,
+      "endYear": 1194,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-guangzong.svg",
+      "events": [
+        { "id": "ev_songguangzong_shaoxi", "name": "绍熙内禅", "dimension": "political", "year": 1194 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；绍熙内禅后退居太上皇"
+    },
+    {
+      "id": "song_ningzong",
+      "posthumousTitle": "宋宁宗",
+      "personalName": "赵扩",
+      "reign": "1194 — 1224",
+      "startYear": 1194,
+      "endYear": 1224,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-ningzong.svg",
+      "events": [
+        { "id": "ev_songningzong_qingyuan", "name": "庆元党禁", "dimension": "political", "year": 1195 },
+        { "id": "ev_songningzong_kaixi", "name": "开禧北伐", "dimension": "military", "year": 1206 },
+        { "id": "ev_songningzong_jiading", "name": "嘉定和议", "dimension": "political", "year": 1208 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「法天备道纯德茂功仁文哲武圣睿恭孝」"
+    },
+    {
+      "id": "song_lizong",
+      "posthumousTitle": "宋理宗",
+      "personalName": "赵昀",
+      "reign": "1224 — 1264",
+      "startYear": 1224,
+      "endYear": 1264,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-lizong.svg",
+      "events": [
+        { "id": "ev_songlizong_miejin", "name": "联蒙灭金", "dimension": "military", "year": 1234 },
+        { "id": "ev_songlizong_duanping", "name": "端平入洛", "dimension": "military", "year": 1234 },
+        { "id": "ev_songlizong_jiasidao", "name": "贾似道专权", "dimension": "political", "year": 1259 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「建道备德大功复兴烈文仁武圣明安孝」"
+    },
+    {
+      "id": "song_duzong",
+      "posthumousTitle": "宋度宗",
+      "personalName": "赵禥",
+      "reign": "1264 — 1274",
+      "startYear": 1264,
+      "endYear": 1274,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-duzong.svg",
+      "events": [
+        { "id": "ev_songduzong_xiangyang", "name": "襄阳失守", "dimension": "military", "year": 1273 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「端文明武景孝」"
+    },
+    {
+      "id": "song_gongdi",
+      "posthumousTitle": "宋恭帝",
+      "personalName": "赵㬎",
+      "reign": "1274 — 1276",
+      "startYear": 1274,
+      "endYear": 1276,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-gongdi.svg",
+      "events": [
+        { "id": "ev_songgongdi_chujiang", "name": "临安出降", "dimension": "political", "year": 1276 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称恭帝"
+    },
+    {
+      "id": "song_duanzong",
+      "posthumousTitle": "宋端宗",
+      "personalName": "赵昰",
+      "reign": "1276 — 1278",
+      "startYear": 1276,
+      "endYear": 1278,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-duanzong.svg",
+      "events": [
+        { "id": "ev_songduanzong_liuwang", "name": "流亡海上", "dimension": "military", "year": 1277 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称端宗"
+    },
+    {
+      "id": "song_bing",
+      "posthumousTitle": "宋末帝",
+      "personalName": "赵昺",
+      "reign": "1278 — 1279",
+      "startYear": 1278,
+      "endYear": 1279,
+      "segmentId": "seg_nansong",
+      "portrait": "/portraits/song-bing.svg",
+      "events": [
+        { "id": "ev_songbing_yashan", "name": "崖山海战", "dimension": "military", "year": 1279 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "无谥，史称帝昺、末帝"
+    }
+  ]
+}

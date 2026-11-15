@@ -1,0 +1,355 @@
+{
+  "dynastyId": "tang",
+  "name": "唐",
+  "period": "618 — 907",
+  "emperors": [
+    {
+      "id": "tang_gaozu",
+      "posthumousTitle": "唐高祖",
+      "personalName": "李渊",
+      "reign": "618 — 626",
+      "startYear": 618,
+      "endYear": 626,
+      "segmentId": "seg_chutang",
+      "portrait": "/portraits/tang-gaozu.svg",
+      "events": [
+        { "id": "ev_tanggaozu_qibing", "name": "晋阳起兵", "dimension": "military", "year": 617 },
+        { "id": "ev_tanggaozu_shan", "name": "受禅建唐", "dimension": "political", "year": 618 },
+        { "id": "ev_tanggaozu_juntian", "name": "定均田租庸调", "dimension": "political", "year": 619 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武（初谥太武皇帝）"
+    },
+    {
+      "id": "tang_taizong",
+      "posthumousTitle": "唐太宗",
+      "personalName": "李世民",
+      "reign": "626 — 649",
+      "startYear": 626,
+      "endYear": 649,
+      "segmentId": "seg_chutang",
+      "portrait": "/portraits/tang-taizong.svg",
+      "events": [
+        { "id": "ev_tangtaizong_xuanwu", "name": "玄武门之变", "dimension": "political", "year": 626 },
+        { "id": "ev_tangtaizong_zhenguan", "name": "贞观之治", "dimension": "political", "year": 627 },
+        { "id": "ev_tangtaizong_tujue", "name": "灭东突厥", "dimension": "military", "year": 630 },
+        { "id": "ev_tangtaizong_wencheng", "name": "文成公主入藏", "dimension": "culture", "year": 641 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文"
+    },
+    {
+      "id": "tang_gaozong",
+      "posthumousTitle": "唐高宗",
+      "personalName": "李治",
+      "reign": "649 — 683",
+      "startYear": 649,
+      "endYear": 683,
+      "segmentId": "seg_chutang",
+      "portrait": "/portraits/tang-gaozong.svg",
+      "events": [
+        { "id": "ev_tanggaozong_lvshu", "name": "永徽律疏", "dimension": "political", "year": 651 },
+        { "id": "ev_tanggaozong_feiwang", "name": "废王立武", "dimension": "political", "year": 655 },
+        { "id": "ev_tanggaozong_gaoli", "name": "灭高句丽", "dimension": "military", "year": 668 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥号无单字可循"
+    },
+    {
+      "id": "tang_zhongzong",
+      "posthumousTitle": "唐中宗",
+      "personalName": "李显",
+      "reign": "684；705 — 710",
+      "startYear": 684,
+      "endYear": 710,
+      "segmentId": "seg_chutang",
+      "portrait": "/portraits/tang-zhongzong.svg",
+      "events": [
+        { "id": "ev_tangzhongzong_wuhou", "name": "武则天临朝", "dimension": "political", "year": 684 },
+        { "id": "ev_tangzhongzong_shenlong", "name": "神龙政变复位", "dimension": "political", "year": 705 },
+        { "id": "ev_tangzhongzong_weihou", "name": "韦后乱政", "dimension": "political", "year": 710 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；两度在位（684、705—710）"
+    },
+    {
+      "id": "tang_ruizong",
+      "posthumousTitle": "唐睿宗",
+      "personalName": "李旦",
+      "reign": "684 — 690；710 — 712",
+      "startYear": 684,
+      "endYear": 712,
+      "segmentId": "seg_chutang",
+      "portrait": "/portraits/tang-ruizong.svg",
+      "events": [
+        { "id": "ev_tangruizong_rangwei", "name": "让位于母", "dimension": "political", "year": 690 },
+        { "id": "ev_tangruizong_xiantian", "name": "先天之变", "dimension": "political", "year": 712 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；两度在位（684—690、710—712）"
+    },
+    {
+      "id": "tang_wuzetian",
+      "posthumousTitle": "则天大圣皇帝",
+      "personalName": "武曌",
+      "reign": "690 — 705",
+      "startYear": 690,
+      "endYear": 705,
+      "segmentId": "seg_wuzhou",
+      "portrait": "/portraits/tang-wuzetian.svg",
+      "events": [
+        { "id": "ev_tangwuzetian_chengdi", "name": "称帝改周", "dimension": "political", "year": 690 },
+        { "id": "ev_tangwuzetian_dianshi", "name": "开殿试武举", "dimension": "culture", "year": 690 },
+        { "id": "ev_tangwuzetian_shenlong", "name": "神龙政变", "dimension": "political", "year": 705 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "非谥法所得，尊号「则天大圣」"
+    },
+    {
+      "id": "tang_xuanzong",
+      "posthumousTitle": "唐玄宗",
+      "personalName": "李隆基",
+      "reign": "712 — 756",
+      "startYear": 712,
+      "endYear": 756,
+      "segmentId": "seg_shengtang",
+      "portrait": "/portraits/tang-xuanzong.svg",
+      "events": [
+        { "id": "ev_tangxuanzong_kaiyuan", "name": "开元之治", "dimension": "political", "year": 713 },
+        { "id": "ev_tangxuanzong_mubing", "name": "府兵改募兵", "dimension": "military", "year": 737 },
+        { "id": "ev_tangxuanzong_anshi", "name": "安史之乱", "dimension": "military", "year": 755 },
+        { "id": "ev_tangxuanzong_mawei", "name": "马嵬之变", "dimension": "political", "year": 756 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明（谥「至道大圣大明孝」，取「明」）"
+    },
+    {
+      "id": "tang_suzong",
+      "posthumousTitle": "唐肃宗",
+      "personalName": "李亨",
+      "reign": "756 — 762",
+      "startYear": 756,
+      "endYear": 762,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-suzong.svg",
+      "events": [
+        { "id": "ev_tangsuzong_lingwu", "name": "灵武即位", "dimension": "political", "year": 756 },
+        { "id": "ev_tangsuzong_liangjing", "name": "借回纥兵复两京", "dimension": "military", "year": 757 },
+        { "id": "ev_tangsuzong_huanguan", "name": "宦官典禁军", "dimension": "political", "year": 758 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "圣善周闻曰宣"
+    },
+    {
+      "id": "tang_daizong",
+      "posthumousTitle": "唐代宗",
+      "personalName": "李豫",
+      "reign": "762 — 779",
+      "startYear": 762,
+      "endYear": 779,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-daizong.svg",
+      "events": [
+        { "id": "ev_tangdaizong_pinganshi", "name": "平定安史", "dimension": "military", "year": 763 },
+        { "id": "ev_tangdaizong_tubo", "name": "吐蕃入长安", "dimension": "military", "year": 763 },
+        { "id": "ev_tangdaizong_pugu", "name": "仆固怀恩之叛", "dimension": "military", "year": 764 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「睿文孝武」，取「文」）"
+    },
+    {
+      "id": "tang_dezong",
+      "posthumousTitle": "唐德宗",
+      "personalName": "李适",
+      "reign": "779 — 805",
+      "startYear": 779,
+      "endYear": 805,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-dezong.svg",
+      "events": [
+        { "id": "ev_tangdezong_liangshui", "name": "两税法", "dimension": "political", "year": 780 },
+        { "id": "ev_tangdezong_jingyuan", "name": "泾原兵变", "dimension": "military", "year": 783 },
+        { "id": "ev_tangdezong_fengtian", "name": "奉天之难", "dimension": "political", "year": 784 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「神武孝文」，取「文」）"
+    },
+    {
+      "id": "tang_shunzong",
+      "posthumousTitle": "唐顺宗",
+      "personalName": "李诵",
+      "reign": "805",
+      "startYear": 805,
+      "endYear": 805,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-shunzong.svg",
+      "events": [
+        { "id": "ev_tangshunzong_yongzhen", "name": "永贞革新", "dimension": "political", "year": 805 },
+        { "id": "ev_tangshunzong_neichan", "name": "内禅", "dimension": "political", "year": 805 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "好和不争曰安（谥「至德弘道大圣大安孝」）"
+    },
+    {
+      "id": "tang_xianzong",
+      "posthumousTitle": "唐宪宗",
+      "personalName": "李纯",
+      "reign": "805 — 820",
+      "startYear": 805,
+      "endYear": 820,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-xianzong.svg",
+      "events": [
+        { "id": "ev_tangxianzong_yuanhe", "name": "元和中兴", "dimension": "political", "year": 806 },
+        { "id": "ev_tangxianzong_huaxi", "name": "平淮西", "dimension": "military", "year": 817 },
+        { "id": "ev_tangxianzong_fogu", "name": "迎佛骨", "dimension": "culture", "year": 819 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "温克令仪曰章"
+    },
+    {
+      "id": "tang_muzong",
+      "posthumousTitle": "唐穆宗",
+      "personalName": "李恒",
+      "reign": "820 — 824",
+      "startYear": 820,
+      "endYear": 824,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-muzong.svg",
+      "events": [
+        { "id": "ev_tangmuzong_xiaobing", "name": "销兵", "dimension": "military", "year": 821 },
+        { "id": "ev_tangmuzong_heshuo", "name": "河朔复叛", "dimension": "military", "year": 821 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "柔质慈民曰惠（谥「睿圣文惠孝」）"
+    },
+    {
+      "id": "tang_jingzong",
+      "posthumousTitle": "唐敬宗",
+      "personalName": "李湛",
+      "reign": "824 — 826",
+      "startYear": 824,
+      "endYear": 826,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-jingzong.svg",
+      "events": [
+        { "id": "ev_tangjingzong_qiuye", "name": "击球夜猎", "dimension": "political", "year": 825 },
+        { "id": "ev_tangjingzong_ranfang", "name": "染坊匠人作乱", "dimension": "political", "year": 826 }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "在国逢难曰愍（谥「睿武昭愍孝」）"
+    },
+    {
+      "id": "tang_wenzong",
+      "posthumousTitle": "唐文宗",
+      "personalName": "李昂",
+      "reign": "826 — 840",
+      "startYear": 826,
+      "endYear": 840,
+      "segmentId": "seg_zhongtang",
+      "portrait": "/portraits/tang-wenzong.svg",
+      "events": [
+        { "id": "ev_tangwenzong_ganlu", "name": "甘露之变", "dimension": "political", "year": 835 },
+        { "id": "ev_tangwenzong_shijing", "name": "开成石经", "dimension": "culture", "year": 837 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "聪明睿哲曰献"
+    },
+    {
+      "id": "tang_wuzong",
+      "posthumousTitle": "唐武宗",
+      "personalName": "李炎",
+      "reign": "840 — 846",
+      "startYear": 840,
+      "endYear": 846,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-wuzong.svg",
+      "events": [
+        { "id": "ev_tangwuzong_zelu", "name": "平泽潞", "dimension": "military", "year": 844 },
+        { "id": "ev_tangwuzong_miefo", "name": "会昌灭佛", "dimension": "culture", "year": 845 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "刚德克就曰肃"
+    },
+    {
+      "id": "tang_xuanzong",
+      "posthumousTitle": "唐宣宗",
+      "personalName": "李忱",
+      "reign": "846 — 859",
+      "startYear": 846,
+      "endYear": 859,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-xuanzong.svg",
+      "events": [
+        { "id": "ev_tangxuanzong_dazhong", "name": "大中之治", "dimension": "political", "year": 847 },
+        { "id": "ev_tangxuanzong_zhangyichao", "name": "张议潮归唐", "dimension": "military", "year": 851 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "圣善周闻曰宣"
+    },
+    {
+      "id": "tang_yizong",
+      "posthumousTitle": "唐懿宗",
+      "personalName": "李漼",
+      "reign": "859 — 873",
+      "startYear": 859,
+      "endYear": 873,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-yizong.svg",
+      "events": [
+        { "id": "ev_tangyizong_pangxun", "name": "庞勋之乱", "dimension": "military", "year": 868 },
+        { "id": "ev_tangyizong_fogu", "name": "迎佛骨", "dimension": "culture", "year": 873 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "柔质慈民曰惠（谥「昭圣恭惠孝」）"
+    },
+    {
+      "id": "tang_xizong",
+      "posthumousTitle": "唐僖宗",
+      "personalName": "李儇",
+      "reign": "873 — 888",
+      "startYear": 873,
+      "endYear": 888,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-xizong.svg",
+      "events": [
+        { "id": "ev_tangxizong_huangchao", "name": "黄巢陷长安", "dimension": "military", "year": 880 },
+        { "id": "ev_tangxizong_benshu", "name": "奔蜀", "dimension": "military", "year": 881 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号沿称；谥「惠圣恭定」，无单字可循"
+    },
+    {
+      "id": "tang_zhaozong",
+      "posthumousTitle": "唐昭宗",
+      "personalName": "李晔",
+      "reign": "888 — 904",
+      "startYear": 888,
+      "endYear": 904,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-zhaozong.svg",
+      "events": [
+        { "id": "ev_tangzhaozong_zhuwen", "name": "朱温挟帝", "dimension": "political", "year": 901 },
+        { "id": "ev_tangzhaozong_luoyang", "name": "迁都洛阳", "dimension": "political", "year": 904 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文（谥「圣穆景文」）"
+    },
+    {
+      "id": "tang_aidi",
+      "posthumousTitle": "唐哀帝",
+      "personalName": "李柷",
+      "reign": "904 — 907",
+      "startYear": 904,
+      "endYear": 907,
+      "segmentId": "seg_xiantang",
+      "portrait": "/portraits/tang-aidi.svg",
+      "events": [
+        { "id": "ev_tangaidi_baima", "name": "白马驿之祸", "dimension": "political", "year": 905 },
+        { "id": "ev_tangaidi_chanliang", "name": "禅位于梁", "dimension": "political", "year": 907 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "初谥「哀」，后唐改谥昭宣光烈孝皇帝"
+    }
+  ]
+}

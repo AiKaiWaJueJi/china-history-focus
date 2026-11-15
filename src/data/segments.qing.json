@@ -1,0 +1,59 @@
+{
+  "dynastyId": "qing",
+  "segments": [
+    {
+      "id": "seg_houjin",
+      "name": "后金",
+      "startYear": 1616,
+      "endYear": 1643,
+      "accent": "#3f5f8f",
+      "desc": "赫图阿拉 · 八旗立国",
+      "markers": [
+        { "id": "m_qing_gaiguo", "name": "改国号大清", "year": 1636, "note": "皇太极称帝" }
+      ]
+    },
+    {
+      "id": "seg_ruquan",
+      "name": "入关",
+      "startYear": 1643,
+      "endYear": 1661,
+      "accent": "#4f6f9a",
+      "desc": "北京为都 · 定鼎中原",
+      "markers": []
+    },
+    {
+      "id": "seg_kangqian",
+      "name": "康雍乾",
+      "startYear": 1661,
+      "endYear": 1796,
+      "accent": "#b8862f",
+      "desc": "百余年的盛世与隐忧",
+      "markers": [
+        { "id": "m_qing_junji", "name": "军机处", "year": 1729, "note": "皇权极盛" },
+        { "id": "m_qing_siku", "name": "四库全书", "year": 1773, "note": "修书与禁书并行" }
+      ]
+    },
+    {
+      "id": "seg_jiadao",
+      "name": "嘉道咸",
+      "startYear": 1796,
+      "endYear": 1861,
+      "accent": "#6a6a6a",
+      "desc": "由盛转衰 · 外患叩关",
+      "markers": [
+        { "id": "m_qing_yapian", "name": "鸦片战争", "year": 1840, "note": "国门被叩" }
+      ]
+    },
+    {
+      "id": "seg_wanqing",
+      "name": "晚清",
+      "startYear": 1861,
+      "endYear": 1912,
+      "accent": "#8a5a4a",
+      "desc": "洋务 · 变法 · 革命",
+      "markers": [
+        { "id": "m_qing_jiawu", "name": "甲午", "year": 1894, "note": "洋务破产" }
+      ]
+    }
+  ]
+}

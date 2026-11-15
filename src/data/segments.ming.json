@@ -1,0 +1,67 @@
+{
+  "dynastyId": "ming",
+  "segments": [
+    {
+      "id": "seg_hongwu",
+      "name": "洪武",
+      "startYear": 1368,
+      "endYear": 1398,
+      "accent": "#a8433a",
+      "desc": "南京为都 · 重典治世",
+      "markers": []
+    },
+    {
+      "id": "seg_jingnan",
+      "name": "建文永乐",
+      "startYear": 1398,
+      "endYear": 1424,
+      "accent": "#c05a4a",
+      "desc": "靖难 · 迁都北京",
+      "markers": [
+        { "id": "m_ming_beijing", "name": "迁都北京", "year": 1421, "note": "天子守国门" }
+      ]
+    },
+    {
+      "id": "seg_renxuan",
+      "name": "仁宣",
+      "startYear": 1424,
+      "endYear": 1435,
+      "accent": "#b8862f",
+      "desc": "与民休息 · 内阁渐重",
+      "markers": []
+    },
+    {
+      "id": "seg_tumu",
+      "name": "土木与中叶",
+      "startYear": 1435,
+      "endYear": 1521,
+      "accent": "#8a6a4a",
+      "desc": "土木之变 · 宦官与阁臣",
+      "markers": [
+        { "id": "m_ming_hongzhi", "name": "弘治中兴", "year": 1488, "note": "中叶治世" },
+        { "id": "m_ming_liujin", "name": "刘瑾专权", "year": 1506, "note": "正德宦官" }
+      ]
+    },
+    {
+      "id": "seg_jiawan",
+      "name": "嘉万",
+      "startYear": 1521,
+      "endYear": 1620,
+      "accent": "#8a5a4a",
+      "desc": "大礼议 · 张居正 · 万历怠政",
+      "markers": [
+        { "id": "m_ming_zhangjuzheng", "name": "张居正改革", "year": 1572, "note": "一条鞭法" },
+        { "id": "m_ming_sandazheng", "name": "万历三大征", "year": 1592, "note": "宁夏·朝鲜·播州" }
+      ]
+    },
+    {
+      "id": "seg_wanming",
+      "name": "晚明",
+      "startYear": 1620,
+      "endYear": 1644,
+      "accent": "#6a4a44",
+      "desc": "阉党 · 东林 · 流寇",
+      "markers": []
+    }
+  ]
+}

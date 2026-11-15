@@ -1,0 +1,47 @@
+{
+  "dynastyId": "yuan",
+  "segments": [
+    {
+      "id": "seg_yuanchu",
+      "name": "元初",
+      "startYear": 1271,
+      "endYear": 1294,
+      "accent": "#7b6a8a",
+      "desc": "大都为都 · 混一南北",
+      "markers": [
+        { "id": "m_yuan_miesong", "name": "灭南宋", "year": 1279, "note": "首次北方政权统一全中国" }
+      ]
+    },
+    {
+      "id": "seg_shoucheng",
+      "name": "守成",
+      "startYear": 1294,
+      "endYear": 1323,
+      "accent": "#8a7a9a",
+      "desc": "成武仁英 · 汉法与旧俗相争",
+      "markers": [
+        { "id": "m_yuan_fuke", "name": "延祐复科", "year": 1315, "note": "重开科举" }
+      ]
+    },
+    {
+      "id": "seg_neiluan",
+      "name": "内乱",
+      "startYear": 1323,
+      "endYear": 1332,
+      "accent": "#6a5a7a",
+      "desc": "十年五帝 · 两都之战",
+      "markers": []
+    },
+    {
+      "id": "seg_yuanmo",
+      "name": "元末",
+      "startYear": 1333,
+      "endYear": 1368,
+      "accent": "#7a5a5a",
+      "desc": "至正新政 · 红巾群雄",
+      "markers": [
+        { "id": "m_yuan_hongjin", "name": "红巾军", "year": 1351, "note": "天下响应" }
+      ]
+    }
+  ]
+}

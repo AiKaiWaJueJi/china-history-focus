@@ -223,12 +223,12 @@ try {
   await page.mouse.click(box.x, box.y)
   await sleep(600)
   // 阶段二已把占位页替换为真实路由页（/dynasty/:id → 帝王时间轴）。
-  // 注意：这里点击的是被悬停的那块（第 8 块＝唐），而目前只有「周」有帝王数据，
-  // 所以唐应当渲染时间轴外壳 + 空态提示。
-  await page.waitForSelector('.timeline-page', { timeout: 10000 }).catch(() => null)
+  // 这里点击的是被悬停的那块（第 8 块＝唐）；隋唐五代宋元明清补齐后，
+  // 唐不再有空态，应直接渲染 21 帝 / 9 页的时间轴。
+  await page.waitForSelector('.pager', { timeout: 10000 }).catch(() => null)
   const timelineHere = Boolean(await page.$('.timeline-page'))
-  const emptyHint = await page
-    .$eval('.timeline-empty-text', (n) => n.textContent?.trim())
+  const count = await page
+    .$eval('.timeline-count', (n) => n.textContent?.trim())
     .catch(() => null)
   check(
     '点击朝代跳转到帝王时间轴页',
@@ -236,9 +236,9 @@ try {
     page.url(),
   )
   check(
-    '无帝王数据的朝代显示空态提示',
-    Boolean(emptyHint),
-    emptyHint ?? '未找到空态',
+    '唐已接入帝王数据（21 位 / 9 页）',
+    Boolean(count) && count.includes('21') && count.includes('/ 9'),
+    count ?? '未找到计数',
   )
   await page.screenshot({ path: `${OUT}\\03-view2-stub.png` })
 

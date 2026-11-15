@@ -1,0 +1,272 @@
+{
+  "dynastyId": "ming",
+  "name": "明",
+  "period": "1368 — 1644",
+  "emperors": [
+    {
+      "id": "ming_taizu",
+      "posthumousTitle": "明太祖",
+      "personalName": "朱元璋",
+      "reign": "1368 — 1398",
+      "startYear": 1368,
+      "endYear": 1398,
+      "segmentId": "seg_hongwu",
+      "portrait": "/portraits/ming-taizu.svg",
+      "events": [
+        { "id": "ev_mingtaizu_kaiguo", "name": "洪武开国", "dimension": "political", "year": 1368 },
+        { "id": "ev_mingtaizu_feichengxiang", "name": "废丞相", "dimension": "political", "year": 1380 },
+        { "id": "ev_mingtaizu_huweiyong", "name": "胡惟庸案", "dimension": "political", "year": 1380 },
+        { "id": "ev_mingtaizu_beifa", "name": "洪武北伐", "dimension": "military", "year": 1387 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武（谥「…仁文义武俊德成功高皇帝」）"
+    },
+    {
+      "id": "ming_jianwen",
+      "posthumousTitle": "明建文帝",
+      "personalName": "朱允炆",
+      "reign": "1398 — 1402",
+      "startYear": 1398,
+      "endYear": 1402,
+      "segmentId": "seg_jingnan",
+      "portrait": "/portraits/ming-jianwen.svg",
+      "events": [
+        { "id": "ev_mingjianwen_xuefan", "name": "削藩", "dimension": "political", "year": 1398 },
+        { "id": "ev_mingjianwen_jingnan", "name": "靖难之役", "dimension": "military", "year": 1399 },
+        { "id": "ev_mingjianwen_chengpo", "name": "南京城破", "dimension": "military", "year": 1402 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "明无谥；清乾隆追谥「恭闵惠皇帝」"
+    },
+    {
+      "id": "ming_chengzu",
+      "posthumousTitle": "明成祖",
+      "personalName": "朱棣",
+      "reign": "1402 — 1424",
+      "startYear": 1402,
+      "endYear": 1424,
+      "segmentId": "seg_jingnan",
+      "portrait": "/portraits/ming-chengzu.svg",
+      "events": [
+        { "id": "ev_mingchengzu_jingnan", "name": "靖难之役", "dimension": "military", "year": 1402 },
+        { "id": "ev_mingchengzu_xiaxiyang", "name": "郑和下西洋", "dimension": "culture", "year": 1405 },
+        { "id": "ev_mingchengzu_beijing", "name": "迁都北京", "dimension": "political", "year": 1421 },
+        { "id": "ev_mingchengzu_mobei", "name": "五征漠北", "dimension": "military", "year": 1410 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "安民立政曰成"
+    },
+    {
+      "id": "ming_renzong",
+      "posthumousTitle": "明仁宗",
+      "personalName": "朱高炽",
+      "reign": "1424 — 1425",
+      "startYear": 1424,
+      "endYear": 1425,
+      "segmentId": "seg_renxuan",
+      "portrait": "/portraits/ming-renzong.svg",
+      "events": [
+        { "id": "ev_mingrenzong_shejianwen", "name": "赦免建文旧臣", "dimension": "political", "year": 1424 },
+        { "id": "ev_mingrenzong_tingxiaxiyang", "name": "停罢下西洋", "dimension": "political", "year": 1424 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "蓄义丰功曰仁"
+    },
+    {
+      "id": "ming_xuanzong",
+      "posthumousTitle": "明宣宗",
+      "personalName": "朱瞻基",
+      "reign": "1425 — 1435",
+      "startYear": 1425,
+      "endYear": 1435,
+      "segmentId": "seg_renxuan",
+      "portrait": "/portraits/ming-xuanzong.svg",
+      "events": [
+        { "id": "ev_mingxuanzong_renxuan", "name": "仁宣之治", "dimension": "political", "year": 1426 },
+        { "id": "ev_mingxuanzong_qijiaozhi", "name": "弃交趾", "dimension": "military", "year": 1427 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "圣善周闻曰宣"
+    },
+    {
+      "id": "ming_yingzong",
+      "posthumousTitle": "明英宗",
+      "personalName": "朱祁镇",
+      "reign": "1435 — 1449；1457 — 1464",
+      "startYear": 1435,
+      "endYear": 1464,
+      "segmentId": "seg_tumu",
+      "portrait": "/portraits/ming-yingzong.svg",
+      "events": [
+        { "id": "ev_mingyingzong_tumu", "name": "土木之变", "dimension": "military", "year": 1449 },
+        { "id": "ev_mingyingzong_duomen", "name": "夺门之变", "dimension": "political", "year": 1457 },
+        { "id": "ev_mingyingzong_caoshi", "name": "曹石之乱", "dimension": "political", "year": 1460 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "庙号英宗；两度在位（1435—1449、1457—1464）"
+    },
+    {
+      "id": "ming_daizong",
+      "posthumousTitle": "明代宗",
+      "personalName": "朱祁钰",
+      "reign": "1449 — 1457",
+      "startYear": 1449,
+      "endYear": 1457,
+      "segmentId": "seg_tumu",
+      "portrait": "/portraits/ming-daizong.svg",
+      "events": [
+        { "id": "ev_mingdaizong_beijing", "name": "北京保卫战", "dimension": "military", "year": 1449 },
+        { "id": "ev_mingdaizong_yichu", "name": "易储", "dimension": "political", "year": 1452 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号代宗；谥「恭仁康定景皇帝」"
+    },
+    {
+      "id": "ming_xianzong",
+      "posthumousTitle": "明宪宗",
+      "personalName": "朱见深",
+      "reign": "1464 — 1487",
+      "startYear": 1464,
+      "endYear": 1487,
+      "segmentId": "seg_tumu",
+      "portrait": "/portraits/ming-xianzong.svg",
+      "events": [
+        { "id": "ev_mingxianzong_liting", "name": "成化犁庭", "dimension": "military", "year": 1467 },
+        { "id": "ev_mingxianzong_xichang", "name": "设西厂", "dimension": "political", "year": 1477 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "博闻多能曰宪"
+    },
+    {
+      "id": "ming_xiaozong",
+      "posthumousTitle": "明孝宗",
+      "personalName": "朱祐樘",
+      "reign": "1487 — 1505",
+      "startYear": 1487,
+      "endYear": 1505,
+      "segmentId": "seg_tumu",
+      "portrait": "/portraits/ming-xiaozong.svg",
+      "events": [
+        { "id": "ev_mingxiaozong_hongzhi", "name": "弘治中兴", "dimension": "political", "year": 1488 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "慈惠爱亲曰孝"
+    },
+    {
+      "id": "ming_wuzong",
+      "posthumousTitle": "明武宗",
+      "personalName": "朱厚照",
+      "reign": "1505 — 1521",
+      "startYear": 1505,
+      "endYear": 1521,
+      "segmentId": "seg_tumu",
+      "portrait": "/portraits/ming-wuzong.svg",
+      "events": [
+        { "id": "ev_mingwuzong_liujin", "name": "刘瑾专权", "dimension": "political", "year": 1506 },
+        { "id": "ev_mingwuzong_yingzhou", "name": "应州之捷", "dimension": "military", "year": 1517 },
+        { "id": "ev_mingwuzong_nanxun", "name": "南巡", "dimension": "political", "year": 1519 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "克定祸乱曰武"
+    },
+    {
+      "id": "ming_shizong",
+      "posthumousTitle": "明世宗",
+      "personalName": "朱厚熜",
+      "reign": "1521 — 1566",
+      "startYear": 1521,
+      "endYear": 1566,
+      "segmentId": "seg_jiawan",
+      "portrait": "/portraits/ming-shizong.svg",
+      "events": [
+        { "id": "ev_mingshizong_daliyi", "name": "大礼议", "dimension": "political", "year": 1521 },
+        { "id": "ev_mingshizong_yansong", "name": "严嵩专权", "dimension": "political", "year": 1542 },
+        { "id": "ev_mingshizong_gengxu", "name": "庚戌之变", "dimension": "military", "year": 1550 },
+        { "id": "ev_mingshizong_wohuan", "name": "倭患", "dimension": "military", "year": 1555 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号世宗；以藩王入继大统"
+    },
+    {
+      "id": "ming_muzong",
+      "posthumousTitle": "明穆宗",
+      "personalName": "朱载垕",
+      "reign": "1566 — 1572",
+      "startYear": 1566,
+      "endYear": 1572,
+      "segmentId": "seg_jiawan",
+      "portrait": "/portraits/ming-muzong.svg",
+      "events": [
+        { "id": "ev_mingmuzong_kaiguan", "name": "隆庆开关", "dimension": "political", "year": 1567 },
+        { "id": "ev_mingmuzong_anda", "name": "俺答封贡", "dimension": "military", "year": 1571 }
+      ],
+      "evaluation": "good",
+      "posthumousRule": "布德执义曰穆"
+    },
+    {
+      "id": "ming_shenzong",
+      "posthumousTitle": "明神宗",
+      "personalName": "朱翊钧",
+      "reign": "1572 — 1620",
+      "startYear": 1572,
+      "endYear": 1620,
+      "segmentId": "seg_jiawan",
+      "portrait": "/portraits/ming-shenzong.svg",
+      "events": [
+        { "id": "ev_mingshenzong_zhangjuzheng", "name": "张居正改革", "dimension": "political", "year": 1572 },
+        { "id": "ev_mingshenzong_guoben", "name": "国本之争", "dimension": "political", "year": 1586 },
+        { "id": "ev_mingshenzong_sandazheng", "name": "万历三大征", "dimension": "military", "year": 1592 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "民无能名曰神"
+    },
+    {
+      "id": "ming_guangzong",
+      "posthumousTitle": "明光宗",
+      "personalName": "朱常洛",
+      "reign": "1620",
+      "startYear": 1620,
+      "endYear": 1620,
+      "segmentId": "seg_wanming",
+      "portrait": "/portraits/ming-guangzong.svg",
+      "events": [
+        { "id": "ev_mingguangzong_hongwan", "name": "红丸案", "dimension": "political", "year": 1620 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "在位仅一月；谥「…贞皇帝」"
+    },
+    {
+      "id": "ming_xizong",
+      "posthumousTitle": "明熹宗",
+      "personalName": "朱由校",
+      "reign": "1620 — 1627",
+      "startYear": 1620,
+      "endYear": 1627,
+      "segmentId": "seg_wanming",
+      "portrait": "/portraits/ming-xizong.svg",
+      "events": [
+        { "id": "ev_mingxizong_weizhongxian", "name": "魏忠贤专权", "dimension": "political", "year": 1624 },
+        { "id": "ev_mingxizong_ningyuan", "name": "宁远大捷", "dimension": "military", "year": 1626 }
+      ],
+      "evaluation": "neutral",
+      "posthumousRule": "庙号熹宗；谥「…悊皇帝」"
+    },
+    {
+      "id": "ming_sizong",
+      "posthumousTitle": "明思宗",
+      "personalName": "朱由检",
+      "reign": "1627 — 1644",
+      "startYear": 1627,
+      "endYear": 1644,
+      "segmentId": "seg_wanming",
+      "portrait": "/portraits/ming-sizong.svg",
+      "events": [
+        { "id": "ev_mingsizong_chanchu", "name": "铲除阉党", "dimension": "political", "year": 1627 },
+        { "id": "ev_mingsizong_lizicheng", "name": "李自成入北京", "dimension": "military", "year": 1644 },
+        { "id": "ev_mingsizong_meishan", "name": "煤山自缢", "dimension": "political", "year": 1644 }
+      ],
+      "evaluation": "bad",
+      "posthumousRule": "在国逢难曰愍（谥「庄烈愍皇帝」，庙号思宗）"
+    }
+  ]
+}
