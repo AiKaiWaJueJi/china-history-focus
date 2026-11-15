@@ -47,7 +47,8 @@ try {
 
   const worst = { overflow: 0, minW: 9999, cursorOut: null }
 
-  for (let i = 0; i < 13; i++) {
+  // 主页是 12 个朝代模块（周秦汉晋南北朝隋唐五代宋元明清）
+  for (let i = 0; i < 12; i++) {
     // 先移出舞台，清掉上一个激活态
     await page.mouse.move(800, 10, { steps: 2 })
     await sleep(500)
@@ -84,20 +85,20 @@ try {
     if (!cursorInside && worst.cursorOut === null) worst.cursorOut = i + 1
   }
 
-  check('全部 13 个模块激活时都不越出容器', worst.overflow === 0, `最大溢出 ${worst.overflow}px`)
+  check('全部 12 个模块激活时都不越出容器', worst.overflow === 0, `最大溢出 ${worst.overflow}px`)
   check('最窄模块仍可辨识（≥ 60px）', worst.minW >= 60, `最窄 ${worst.minW}px`)
   check('激活后光标仍落在面板内（不会滑走）', worst.cursorOut === null, `首个失败索引 ${worst.cursorOut}`)
 
   // 专门复现用户报的场景：聚焦「明」，看「清」是否还在屏幕内
   await page.mouse.move(800, 10, { steps: 2 })
   await sleep(500)
-  const ming = await page.$eval('.dyn-panel:nth-child(12)', (n) => {
+  const ming = await page.$eval('.dyn-panel:nth-child(11)', (n) => {
     const r = n.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
   await page.mouse.move(ming.x, ming.y, { steps: 2 })
   await sleep(700)
-  const qing = await page.$eval('.dyn-panel:nth-child(13)', (n) => {
+  const qing = await page.$eval('.dyn-panel:nth-child(12)', (n) => {
     const r = n.getBoundingClientRect()
     return { left: Math.round(r.left), right: Math.round(r.right), w: Math.round(r.width) }
   })

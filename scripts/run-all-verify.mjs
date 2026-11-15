@@ -6,6 +6,8 @@ import { spawnSync } from 'node:child_process'
 
 const UI = [
   'verify-gallery.mjs',
+  // 主页 12 个模块的挤压边界（曾按 13 模块写，三国模块下线后已同步）
+  'verify-bounds.mjs',
   'verify-dwell.mjs',
   'verify-timeline.mjs',
   'verify-dual.mjs',

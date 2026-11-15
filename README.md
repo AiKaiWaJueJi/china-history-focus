@@ -47,12 +47,12 @@ node verify-codex-ui.mjs   # 22  档案抽屉交互
 
 ## 验收
 
-28 个脚本、约 720 条断言，全部跑一遍约 10 分钟（需要 dev server 在跑）：
+29 个脚本、约 725 条断言，全部跑一遍约 10 分钟（需要 dev server 在跑）：
 
-> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 24 套，逐套汇总；时间敏感的用例失败会自动重试一次并打印首次结果）。
+> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 25 套，逐套汇总；时间敏感的用例失败会自动重试一次并打印首次结果）。
 
 ```bash
-# UI：24 套 约 640 条
+# UI：25 套 约 645 条
 node verify-gallery.mjs      # 24   主页
 node verify-dwell.mjs        #  8   悬停驻留
 node verify-timeline.mjs     # 20   时间轴

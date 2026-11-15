@@ -36,7 +36,7 @@
 5. **帝王原文**：只收逐条查证过的 6 位（秦始皇 / 漢武帝 / 漢光武帝 / 唐太宗 / 宋太祖 / 明太祖），
    存在 `scripts/data/codex.emperor-quotes.json`；没查证的宁可不放。
 6. **验收**：新增 `verify-codex`（17）与 `verify-codex-ui`（22）；`verify-endgame` 的旧 Modal 断言改为抽屉（109）。
-   全量 `node scripts/run-all-verify.mjs`：**28/28 套**。
+   全量 `node scripts/run-all-verify.mjs`：**29/29 套**。
 
 ## 0.1b 续接摘要（2026-11-15 第三轮）
 
@@ -82,7 +82,7 @@
 
 **仓库状态**：`master`，工作区干净；最新提交以 `git log -1` 为准（本轮收尾提交信息含「交接」二字）。交接前复核跑 §5 的 25 个脚本即可。
 
-**最新全量验收**：25 套 UI **545/545**（`verify-frame` 60 + `verify-wudai` 15 + `verify-sandbox` 49 等），几何 **28/28**，合计 **573/573**；`tsc` / `build` 通过。
+**（第一轮收尾时的全量）**：25 套 UI **545/545**（`verify-frame` 60 + `verify-wudai` 15 + `verify-sandbox` 49 等），几何 **28/28**，合计 **573/573**；`tsc` / `build` 通过。
 
 > **本轮增量（2026-11-15 下午）**
 > 1. **谥法口径统一**：七朝 95 位帝王一律「本义曰字」，`evaluation` 由该字决定；无谥 / 伪谥 / 追谥存疑的 15 位只写缘由 → `neutral`。
@@ -593,13 +593,14 @@ src/data/endgame.*.json 的 campaigns[].points  百分比坐标
 
 ## 5. 验收
 
-### 5.1 二十四套 UI 脚本（约 720 条断言）
+### 5.1 二十五套 UI 脚本（约 725 条断言）
 
-> 一键跑：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 24 套，逐套汇总，任一套失败即非零退出）。
+> 一键跑：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 25 套，逐套汇总，任一套失败即非零退出）。
 > 时间敏感的两条（悬停驻留采样、动画时序）失败后会自动隔 3 秒重试一次并打印「首次 x/y」，不掩盖问题。
 
 ```bash
 node verify-gallery.mjs      # 24  主页
+node verify-bounds.mjs       #  4  主页 12 模块挤压边界（曾按 13 模块写，三国模块下线后同步）
 node verify-dwell.mjs        #  8  悬停驻留
 node verify-timeline.mjs     # 20  时间轴
 node verify-dual.mjs         # 33  天子+诸侯双层
@@ -790,6 +791,6 @@ node check-sui-geo.mjs       # 9  南北朝收尾：同上
 1. `git status` 干净，`git log -1` 是本轮交接提交（提交信息含「交接」），tag `v4.0-round4`；
 2. `npm install` → `npm run dev -- --port 5180`；
 3. `npx tsc -b` 零错误，`npm run build` 通过；
-4. 28 个验收脚本全绿（几何 4 + UI 24）；
+4. 29 个验收脚本全绿（几何 4 + UI 25）；
 5. 主页从「周」滚到「清」，每朝都能进时间轴 → 过渡页 → 沙盘 → 下一朝，最后回到主页；
 6. 抽屉三入口各点一次：帝王卡「档」、战报人名、战报标题「史料」；正文词条下钻两层后按面包屑跳回。
