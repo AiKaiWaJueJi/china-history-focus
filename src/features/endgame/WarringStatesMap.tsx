@@ -149,6 +149,59 @@ export function WarringStatesMap({
     [mapSpec, visibleRegions],
   )
 
+  /**
+   * 战报打开期间就是「聚焦态」：镜头推近、无关地名压暗、路线提亮。
+   * 理由：整幅中国图上，一场战役的行军线只有几十像素，混在国名/国都/关隘里根本看不清；
+   * 推近来以后地名也跟着变大，所以还要把它们压暗，否则又挤成一片。
+   */
+  const campaignPlaying = campaigns.length > 0
+
+  /**
+   * 战报镜头：本幕所有路线只占几十个像素（整幅中国 vs 一场战役），
+   * 打开战报就把镜头推近到路线的包围盒，让行军线、起止地名与说明回到可读尺寸；
+   * 关掉战报回到全景。用 CSS transform 过渡，交给合成器，不逐帧算 viewBox。
+   */
+  const zoomInfo = useMemo(() => {
+    if (campaigns.length === 0) return { transform: 'none', scale: 1 }
+    let x0 = Infinity
+    let y0 = Infinity
+    let x1 = -Infinity
+    let y1 = -Infinity
+    for (const campaign of campaigns) {
+      for (const point of campaign.points) {
+        const x = point.x * 10
+        const y = point.y * 6.4
+        x0 = Math.min(x0, x)
+        x1 = Math.max(x1, x)
+        y0 = Math.min(y0, y)
+        y1 = Math.max(y1, y)
+      }
+    }
+    if (!Number.isFinite(x0)) return { transform: 'none', scale: 1 }
+    const pad = 56
+    const w = Math.max(x1 - x0, 62) + pad * 2
+    const h = Math.max(y1 - y0, 52) + pad * 2
+    const scale = Math.min(1000 / w, 640 / h, 3.6)
+    if (scale <= 1.02) return { transform: 'none', scale: 1 }
+    const cx = (x0 + x1) / 2
+    const cy = (y0 + y1) / 2
+    return {
+      transform: `translate(${(500 - scale * cx).toFixed(1)}px, ${(320 - scale * cy).toFixed(1)}px) scale(${scale.toFixed(2)})`,
+      scale,
+    }
+  }, [campaigns])
+
+  /** 行军说明文字的避让目标：国都（文字在圆点下方 21px）与要地 */
+  const obstacles = useMemo(() => {
+    const out: { x: number; y: number }[] = []
+    for (const region of visibleRegions) {
+      if (region.capital) out.push({ x: region.capital.x, y: region.capital.y + 21 })
+    }
+    for (const point of visiblePoints) out.push({ x: point.x, y: point.y })
+    return out
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleRegions, visiblePoints])
+
   /** 进攻方字样的落点：随版图扩张移到合并后的重心 */
   const labelShift = useMemo(() => {
     const captured = visibleRegions.filter((region) => isCaptured(region.id))
@@ -221,6 +274,9 @@ export function WarringStatesMap({
 
       <svg
         className="map-svg"
+        /* 行军播放中：压暗无关的地名/关隘，只让路线、说明与终点亮着（见 endgame.css） */
+        data-campaign-play={campaignPlaying ? '' : undefined}
+        style={{ '--map-zoom': zoomInfo.scale } as React.CSSProperties}
         viewBox={mapSpec.viewBox ?? '0 0 1000 640'}
         preserveAspectRatio="xMidYMid meet"
         role="img"
@@ -257,6 +313,11 @@ export function WarringStatesMap({
 
         <rect className="map-bg" x="0" y="0" width="1000" height="640" onClick={onExitFocus} />
 
+        {/* 战报镜头层：河流、版图、国名、要地、行军线一起缩放 */}
+        <g
+          className="map-zoom"
+          style={{ transform: zoomInfo.transform, transformOrigin: '0 0' }}
+        >
         {mapSpec.rivers.map((d, i) => (
           <path key={i} className="map-river" d={d} />
         ))}
@@ -354,7 +415,11 @@ export function WarringStatesMap({
                   y={region.label[1]}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  style={region.labelSize ? { fontSize: `${region.labelSize}px` } : undefined}
+                  style={
+                    region.labelSize
+                      ? { fontSize: `calc(${region.labelSize}px / var(--map-zoom, 1))` }
+                      : undefined
+                  }
                 >
                   {region.name}
                 </text>
@@ -364,7 +429,11 @@ export function WarringStatesMap({
                 <g className="capital" pointerEvents="none">
                   <circle className="capital-halo" cx={region.capital.x} cy={region.capital.y} r={9} />
                   <circle className="capital-dot" cx={region.capital.x} cy={region.capital.y} r={3.4} />
-                  <text className="capital-label" x={region.capital.x} y={region.capital.y + 21}>
+                  <text
+                    className="capital-label"
+                    x={region.capital.x}
+                    y={region.capital.y + 21 / zoomInfo.scale}
+                  >
                     {region.capital.name}
                   </text>
                 </g>
@@ -386,8 +455,8 @@ export function WarringStatesMap({
                 <title>{point.description}</title>
                 <circle cx={point.x} cy={point.y} r={3.2} />
                 <text
-                  x={point.x + (point.dx ?? 7)}
-                  y={point.y + (point.dy ?? 4)}
+                  x={point.x + (point.dx ?? 7) / zoomInfo.scale}
+                  y={point.y + (point.dy ?? 4) / zoomInfo.scale}
                   textAnchor={point.anchor ?? 'start'}
                 >
                   {point.name}
@@ -413,7 +482,9 @@ export function WarringStatesMap({
             dominantBaseline="middle"
             style={{
               transform: `translate(${labelShift.dx}px, ${labelShift.dy}px)`,
-              ...(mapSpec.attacker.labelSize ? { fontSize: `${mapSpec.attacker.labelSize}px` } : {}),
+              ...(mapSpec.attacker.labelSize
+                ? { fontSize: `calc(${mapSpec.attacker.labelSize}px / var(--map-zoom, 1))` }
+                : {}),
             }}
           >
             {attackerName}
@@ -434,7 +505,11 @@ export function WarringStatesMap({
           index={campaignIndex}
           done={campaignDone}
           hovered={hoveredCampaign}
+          /* 说明文字的避让目标：各国国都与要地（换算成 viewBox 坐标） */
+          obstacles={obstacles}
+          zoomScale={zoomInfo.scale}
         />
+        </g>
       </svg>
 
 

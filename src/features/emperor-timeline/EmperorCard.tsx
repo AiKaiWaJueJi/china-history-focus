@@ -6,10 +6,14 @@
  *   .emp-media  背景图，hover 时 scale(1.05)，只动 transform（合成器友好）
  *   .emp-events 事件浮层，**在 .emp-clip 外面**，所以能伸出模块上下边界
  *
- * 两种浮层排布（layout）：
- *   split       上半区军事、下半区政治文教 —— 西周（单层）时使用，上下都空着
- *   stacked-top 全部事件收进上方一组 —— 东周"天子 + 诸侯"双层布局时使用，
- *               因为下方紧挨着诸侯层，天子浮层向下会压住诸侯
+ * 三种浮层排布（layout）：
+ *   split            上半区军事、下半区政治文教 —— 西周（单层）、晋、唐…默认用这个，
+ *                    卡片上下都有空档
+ *   stacked-top      全部事件收进上方一组 —— 东周"天子 + 诸侯"双层布局时使用，
+ *                    因为下方紧挨着诸侯层，天子浮层向下会压住诸侯
+ *   stacked-bottom   全部事件收进下方一组（军事在上、政治文教在下，同框两行）——
+ *                    五代十国那种「帝王卡排在九行图的最上面一行」的版面用：
+ *                    浮层朝上会被舞台裁掉，只能朝下开，下方是十国政权带，压住无妨
  *
  * 【关于文字模糊】
  * 早先悬浮时给整个 .emp-card 加了 transform: scale(1.012)，
@@ -20,7 +24,7 @@ import type { CSSProperties } from 'react'
 import type { EmperorRecord } from '../../core/emperorTypes'
 import { EventMindMap } from './EventMindMap'
 
-export type EmperorCardLayout = 'split' | 'stacked-top'
+export type EmperorCardLayout = 'split' | 'stacked-top' | 'stacked-bottom'
 
 interface EmperorCardProps {
   emperor: EmperorRecord
@@ -70,13 +74,21 @@ export function EmperorCard({
         <span className="emp-corner" aria-hidden="true" />
       </div>
 
-      {layout === 'stacked-top' ? (
-        <EventMindMap events={emperor.events} side="top" label="在位要事" />
-      ) : (
+      {layout === 'split' ? (
         <>
-          <EventMindMap events={military} side="top" label="军事成就" />
-          <EventMindMap events={civic} side="bottom" label="政治 · 文教" />
+          <EventMindMap side="top" groups={[{ events: military, label: '军事成就' }]} />
+          <EventMindMap side="bottom" groups={[{ events: civic, label: '政治 · 文教' }]} />
         </>
+      ) : layout === 'stacked-top' ? (
+        <EventMindMap side="top" groups={[{ events: emperor.events, label: '在位要事' }]} />
+      ) : (
+        <EventMindMap
+          side="bottom"
+          groups={[
+            { events: military, label: '军事成就' },
+            { events: civic, label: '政治 · 文教' },
+          ]}
+        />
       )}
     </article>
   )

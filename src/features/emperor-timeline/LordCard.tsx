@@ -45,7 +45,7 @@ export function LordCard({ lord }: LordCardProps) {
       </div>
 
       {/* 诸侯空间有限，事迹统一放在下方一组 */}
-      <EventMindMap events={lord.events} side="bottom" label="重要事迹" />
+      <EventMindMap side="bottom" groups={[{ events: lord.events, label: '重要事迹' }]} />
     </article>
   )
 }

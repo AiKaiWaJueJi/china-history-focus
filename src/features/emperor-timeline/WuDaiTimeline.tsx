@@ -50,6 +50,10 @@ interface PageWindow {
   to: number
 }
 
+/** 帝王方块卡的边长与卡间距（卡片是正方形，看画像用） */
+const CARD_SIZE = 132
+const CARD_GAP = 10
+
 const PAGES = raw.pages as PageWindow[]
 const ROWS = raw.rows as Row[]
 const POLITIES = raw.polities as Polity[]
@@ -163,16 +167,19 @@ export function WuDaiTimeline() {
   const clampWidth = (start: number, end: number) =>
     Math.max(18, Math.min(pos(end), laneW) - Math.max(pos(start), 0))
 
-  /** 帝王卡：按即位年定位，重叠时向右让位（不改时间位置，只挪卡片） */
+  /**
+   * 帝王卡：方块卡，按即位年定位，重叠时向右让位（不改时间位置，只挪卡片）。
+   * 方块而不是窄条，是为了后续能直接换成帝王画像（画像要方寸，长条放不下）。
+   */
   const cards = useMemo(() => {
     const inPage = emperors.filter((e) => e.startYear < page.to && e.endYear > page.from)
     const out: { emperor: EmperorRecord; left: number; top: number }[] = []
     let cursor = -999
     for (const e of inPage) {
       const natural = Math.max(0, (e.startYear - page.from) * scale)
-      const left = Math.min(Math.max(natural, cursor + 6), Math.max(laneW - 104, 0))
+      const left = Math.min(Math.max(natural, cursor + CARD_GAP), Math.max(laneW - CARD_SIZE, 0))
       out.push({ emperor: e as EmperorRecord & { polityId?: string }, left, top: 0 })
-      cursor = left + 98
+      cursor = left + CARD_SIZE
     }
     return out
   }, [emperors, page, scale, laneW])
@@ -212,7 +219,7 @@ export function WuDaiTimeline() {
       <div className="wdc-stage">
         <div
           className="wdc-rows"
-          style={{ gridTemplateRows: `2.6fr repeat(${otherRows}, 1fr)` }}
+          style={{ gridTemplateRows: `3.4fr repeat(${otherRows}, 1fr)` }}
         >
           {activeRows.map((row, rowIndex) => {
             const polities = POLITIES.filter(
@@ -261,9 +268,9 @@ export function WuDaiTimeline() {
                           key={emperor.id}
                           className="wdc-card"
                           style={{ left }}
-                          title={`${emperor.posthumousTitle} · ${emperor.posthumousRule ?? ''}`}
+                          aria-label={`${emperor.posthumousTitle} ${emperor.reign}`}
                         >
-                          <EmperorCard emperor={emperor} index={0} layout="stacked-top" compact />
+                          <EmperorCard emperor={emperor} index={0} layout="stacked-bottom" />
                         </div>
                       ))
                     : null}

@@ -16,6 +16,10 @@ import type { CampaignPhase, MapPoint } from '../../core/emperorTypes'
 
 interface CampaignRoutesProps {
   campaigns: CampaignPhase[]
+  /** 需要避让的地名坐标（viewBox 坐标系中的国都 / 关隘圆点） */
+  obstacles?: { x: number; y: number }[]
+  /** 战报镜头倍数：文字字号与偏移要按它反算，屏幕上才恒定大小 */
+  zoomScale?: number
   /** 地图 viewBox 高度；百分比 y 按它换算（默认 640） */
   height?: number
   /** 当前播放到第几段；-1 表示还没开始 */
@@ -40,7 +44,7 @@ function polyline(points: MapPoint[]) {
  * 之前用末段中点，短路线（如齐的"济西→临淄"）会让将领名、战果
  * 和终点地名挤成一团。
  */
-function captionAt(points: MapPoint[]) {
+function captionAt(points: MapPoint[], obstacles: { x: number; y: number }[] = []) {
   const vs = points.map(toView)
 
   // 取最长那段：路线越长，文字越不容易和端点挤在一起
@@ -70,8 +74,8 @@ function captionAt(points: MapPoint[]) {
     { x: mx - nx * 30, y: my - ny * 30 },
   ]
 
-  // 地名包括起点、中途关隘、目的地（vs 已是 viewBox 坐标）
-  const places = vs
+  // 地名包括起点、中途关隘、目的地（vs 已是 viewBox 坐标），再加上国都与要地
+  const places = [...vs, ...obstacles]
   const clearOf = (p: { x: number; y: number }) =>
     Math.min(...places.map((q) => Math.hypot(p.x - q.x, p.y - q.y)))
 
@@ -91,9 +95,24 @@ function tail(points: MapPoint[]) {
   }
 }
 
-export function CampaignRoutes({ campaigns, height = 640, index, done, hovered }: CampaignRoutesProps) {
+export function CampaignRoutes({
+  campaigns,
+  height = 640,
+  index,
+  done,
+  hovered,
+  obstacles = [],
+  zoomScale = 1,
+}: CampaignRoutesProps) {
   VIEW_HEIGHT = height
   if (campaigns.length === 0) return null
+
+  /*
+    地名去重：相邻两程常常共用端点（「魏州→杨刘」「杨刘→中都」），
+    逐程都写一遍会在同一点叠出两三个同样的地名。
+    聚焦镜头推近后尤其明显，所以整层只画第一次出现的地名。
+  */
+  const seenPlaces = new Set<string>()
 
   return (
     <g className="campaign-layer" data-settled={done}>
@@ -103,7 +122,7 @@ export function CampaignRoutes({ campaigns, height = 640, index, done, hovered }
         const isHovered = hovered === i
         const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
         const t = tail(campaign.points)
-        const cap = captionAt(campaign.points)
+        const cap = captionAt(campaign.points, obstacles)
 
         return (
           <g
@@ -115,52 +134,64 @@ export function CampaignRoutes({ campaigns, height = 640, index, done, hovered }
             {/* 箭头延迟浮现，避免一开始就钉在终点 */}
             <polygon
               className="campaign-arrow"
-              points="-13,-7 0,0 -13,7"
+              points={`${-13 / zoomScale},${-7 / zoomScale} 0,0 ${-13 / zoomScale},${7 / zoomScale}`}
               transform={`translate(${t.end.x} ${t.end.y}) rotate(${t.angle})`}
             />
 
-            <circle className="campaign-start" cx={toView(campaign.points[0]).x} cy={toView(campaign.points[0]).y} r={4.5} />
+            <circle
+              className="campaign-start"
+              cx={toView(campaign.points[0]).x}
+              cy={toView(campaign.points[0]).y}
+              r={4.5 / zoomScale}
+            />
 
             <g className="campaign-end" transform={`translate(${t.end.x} ${t.end.y})`}>
-              <circle className="campaign-flare" r={6} />
-              <circle className="campaign-flare-ring" r={9} />
+              <circle className="campaign-flare" r={6 / zoomScale} />
+              <circle className="campaign-flare-ring" r={9 / zoomScale} />
             </g>
 
             <g className="campaign-caption" transform={`translate(${cap.x} ${cap.y})`}>
-              <text className="campaign-general" textAnchor="middle" y={-6}>
+              <text className="campaign-general" textAnchor="middle" y={-6 / zoomScale}>
                 {campaign.general}
               </text>
-              <text className="campaign-result" textAnchor="middle" y={12}>
+              <text className="campaign-result" textAnchor="middle" y={12 / zoomScale}>
                 {campaign.result}
               </text>
             </g>
 
-            {/* 起点、重点关隘与目的地：行军时显示；战报里 hover 复现时也显示 */}
+            {/* 起点、重点关隘与目的地：行军时显示；战报里 hover 复现时也显示（同名只画一次） */}
             <g className="campaign-places">
-              <text
-                className="campaign-place campaign-place--origin"
-                x={toView(campaign.points[0]).x}
-                y={toView(campaign.points[0]).y + 20}
-                textAnchor="middle"
-              >
-                {campaign.from}
-              </text>
-              {(campaign.via ?? []).map((name, k) => {
-                const p = toView(campaign.points[k + 1] ?? campaign.points[0])
-                return (
-                  <text key={name} className="campaign-place" x={p.x} y={p.y - 12} textAnchor="middle">
-                    {name}
+              {[
+                {
+                  key: 'origin',
+                  name: campaign.from,
+                  x: toView(campaign.points[0]).x,
+                  y: toView(campaign.points[0]).y + 20 / zoomScale,
+                  cls: 'campaign-place campaign-place--origin',
+                },
+                ...(campaign.via ?? []).map((name, k) => {
+                  const p = toView(campaign.points[k + 1] ?? campaign.points[0])
+                  return { key: `via-${k}-${name}`, name, x: p.x, y: p.y - 12 / zoomScale, cls: 'campaign-place' }
+                }),
+                {
+                  key: 'dest',
+                  name: campaign.to,
+                  x: t.end.x,
+                  y: t.end.y + 24 / zoomScale,
+                  cls: 'campaign-place campaign-place--dest',
+                },
+              ]
+                .filter((place) => {
+                  if (!place.name) return false
+                  if (seenPlaces.has(place.name)) return false
+                  seenPlaces.add(place.name)
+                  return true
+                })
+                .map((place) => (
+                  <text key={place.key} className={place.cls} x={place.x} y={place.y} textAnchor="middle">
+                    {place.name}
                   </text>
-                )
-              })}
-              <text
-                className="campaign-place campaign-place--dest"
-                x={t.end.x}
-                y={t.end.y + 24}
-                textAnchor="middle"
-              >
-                {campaign.to}
-              </text>
+                ))}
             </g>
           </g>
         )
@@ -174,7 +205,7 @@ export function CampaignRoutes({ campaigns, height = 640, index, done, hovered }
           const isHovered = hovered === i
           const state = isCurrent ? 'is-current' : isPlayed ? 'is-played' : 'is-future'
           const t = tail(ally.points)
-          const cap = captionAt(ally.points)
+          const cap = captionAt(ally.points, obstacles)
 
           return (
             <g

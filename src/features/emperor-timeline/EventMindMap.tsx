@@ -15,45 +15,58 @@
  * 布局：同一侧的事件**横向排列**，用满卡片宽度；每个节点向卡片方向引出一条竖线，
  * 形成树状分叉，而不是单列堆叠的一条线。
  *
+ * groups：一个浮层可以装**多组**（每组一个小标题 + 一行事件）。
+ *   五代十国那种「帝王卡在九行图的最上面一行」的版面，浮层只能朝下开，
+ *   于是把「军事」「政治 · 文教」两组一起塞进同一个向下的浮层里。
+ *
  * 性能/交互：显隐仍由 CSS `:hover` 驱动，React 不参与；浮层 `pointer-events: none`，
  * 否则鼠标移上去卡片就失去悬浮态、浮层会自己消失。
  */
 import type { CSSProperties } from 'react'
 import type { EmperorEvent } from '../../core/emperorTypes'
 
-interface EventMindMapProps {
+export interface EventGroup {
   events: EmperorEvent[]
-  /** 浮层位于卡片上方还是下方 */
-  side: 'top' | 'bottom'
   /** 分组标题，如「军事成就」 */
   label: string
 }
 
+interface EventMindMapProps {
+  groups: EventGroup[]
+  /** 浮层位于卡片上方还是下方 */
+  side: 'top' | 'bottom'
+}
+
 const formatYear = (year: number) => (year < 0 ? `前${Math.abs(year)}` : `${year}`)
 
-export function EventMindMap({ events, side, label }: EventMindMapProps) {
-  if (events.length === 0) return null
+export function EventMindMap({ groups, side }: EventMindMapProps) {
+  const shown = groups.filter((group) => group.events.length > 0)
+  if (shown.length === 0) return null
 
   return (
     <div className={`emp-events emp-events--${side}`} aria-hidden="true">
-      <p className="emp-group-label">{label}</p>
-      <div className="emp-event-row">
-        {events.map((event, index) => (
-          <div
-            key={event.id}
-            className="emp-event"
-            data-dimension={event.dimension}
-            data-side={side}
-            style={{ '--i': index } as CSSProperties}
-          >
-            <span className="emp-event-dot" />
-            <span className="emp-event-body">
-              <span className="emp-event-name">{event.name}</span>
-              <span className="emp-event-year">{formatYear(event.year)}</span>
-            </span>
+      {shown.map((group) => (
+        <div className="emp-event-group" key={group.label}>
+          <p className="emp-group-label">{group.label}</p>
+          <div className="emp-event-row">
+            {group.events.map((event, index) => (
+              <div
+                key={event.id}
+                className="emp-event"
+                data-dimension={event.dimension}
+                data-side={side}
+                style={{ '--i': index } as CSSProperties}
+              >
+                <span className="emp-event-dot" />
+                <span className="emp-event-body">
+                  <span className="emp-event-name">{event.name}</span>
+                  <span className="emp-event-year">{formatYear(event.year)}</span>
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }

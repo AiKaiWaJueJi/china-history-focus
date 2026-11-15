@@ -115,6 +115,15 @@
   border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
 }
 
+/*
+  中原行永远是第一行，它的帝王卡浮层朝下展开时会盖住下面几行的政权带；
+  grid 默认「后出现的行画在上面」，所以要把整行抬一层，否则浮层被政权带压住。
+*/
+.wdc-row[data-kind='dynasty'] {
+  position: relative;
+  z-index: 5;
+}
+
 .wdc-row:last-child {
   border-bottom: none;
 }
@@ -190,27 +199,29 @@
   box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.5), 0 0 14px rgba(201, 162, 39, 0.16);
 }
 
-/* ---------------- 帝王卡（中原行） ---------------- */
+/* ---------------- 帝王卡（中原行）：方块，留给画像 ---------------- */
 
 .wdc-card {
   position: absolute;
-  top: 6px;
-  bottom: 6px;
-  width: 92px;
+  top: 50%;
+  width: 132px;
+  height: 132px;
+  transform: translateY(-50%);
   display: flex;
 }
 
 .wdc-card .emp-clip {
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
+/* 方形卡里的文字压到下半部，上半部整块留给画像 */
 .wdc-card .emp-content {
-  padding: 0 7px 9px;
+  padding: 0 8px 10px;
   gap: 1px;
 }
 
 .wdc-card .emp-title {
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.15;
 }
@@ -227,6 +238,39 @@
 
 .wdc-card .emp-rule {
   display: none;
+}
+
+.wdc-card .emp-corner {
+  display: none;
+}
+
+/*
+  浮层比卡片宽：方块卡只有 132px，一行放不下 3 条事件，
+  左右各放出去 70px（浮层 pointer-events:none，压住邻卡不影响操作）。
+  五代是九行图，浮层朝下展开会盖住下面的政权带，所以给它一整块不透明面板做底，
+  并把两组的小标题都放回事件行上方（默认下半区标题在下，那种排法在两组的场景里会读乱）。
+*/
+.wdc-card .emp-events {
+  left: -70px;
+  right: -70px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 7, 9, 0.93);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.95);
+}
+
+.wdc-card .emp-events--bottom .emp-group-label {
+  order: 0;
+}
+
+.wdc-card .emp-event-name {
+  font-size: 11px;
+}
+
+.wdc-card .emp-event-year {
+  font-size: 10px;
 }
 
 .wdc-polity-leader {
