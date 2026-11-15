@@ -33,6 +33,8 @@ const GEO = [
   'check-chuhan-geo.mjs',
   'check-sanguo-geo.mjs',
   'check-sui-geo.mjs',
+  // 百科库（无限下钻）的数据层验收
+  'verify-codex.mjs',
 ]
 
 const run = (file) => {
