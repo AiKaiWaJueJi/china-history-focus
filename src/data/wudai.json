@@ -1,0 +1,277 @@
+{
+  "dynastyId": "five_dynasties",
+  "name": "五代十国",
+  "period": "907 — 960",
+  "rows": [
+    {
+      "id": "r_zhongyuan",
+      "name": "中原五代",
+      "note": "梁 · 唐 · 晋 · 汉 · 周",
+      "accent": "#b0703a",
+      "kind": "dynasty"
+    },
+    {
+      "id": "r_wutang",
+      "name": "吴 · 南唐",
+      "note": "江淮",
+      "accent": "#6f8f8a",
+      "kind": "states"
+    },
+    {
+      "id": "r_wuyue",
+      "name": "吴越",
+      "note": "两浙",
+      "accent": "#7a8f6a",
+      "kind": "states"
+    },
+    {
+      "id": "r_min",
+      "name": "闽",
+      "note": "福建",
+      "accent": "#8a7a5a",
+      "kind": "states"
+    },
+    {
+      "id": "r_chu",
+      "name": "楚",
+      "note": "湖南",
+      "accent": "#9a7a5a",
+      "kind": "states"
+    },
+    {
+      "id": "r_shu",
+      "name": "前蜀 · 后蜀",
+      "note": "巴蜀",
+      "accent": "#6a7a8a",
+      "kind": "states"
+    },
+    {
+      "id": "r_nanhan",
+      "name": "南汉",
+      "note": "岭南",
+      "accent": "#8a5a5a",
+      "kind": "states"
+    },
+    {
+      "id": "r_jingnan",
+      "name": "荆南",
+      "note": "江陵",
+      "accent": "#6a6a7a",
+      "kind": "states"
+    },
+    {
+      "id": "r_beihan",
+      "name": "北汉",
+      "note": "河东",
+      "accent": "#7a6a5a",
+      "kind": "states"
+    }
+  ],
+  "polities": [
+    {
+      "id": "p_houliang",
+      "name": "后梁",
+      "row": "r_zhongyuan",
+      "start": 907,
+      "end": 923,
+      "full": "梁",
+      "note": "朱温篡唐所建，都开封",
+      "leader": "朱温"
+    },
+    {
+      "id": "p_houtang",
+      "name": "后唐",
+      "row": "r_zhongyuan",
+      "start": 923,
+      "end": 936,
+      "full": "唐",
+      "note": "沙陀李氏，灭梁而兴，都洛阳",
+      "leader": "李存勖"
+    },
+    {
+      "id": "p_houjin",
+      "name": "后晋",
+      "row": "r_zhongyuan",
+      "start": 936,
+      "end": 947,
+      "full": "晋",
+      "note": "石敬瑭借契丹兵立国，割燕云十六州",
+      "leader": "石敬瑭"
+    },
+    {
+      "id": "p_houhan",
+      "name": "后汉",
+      "row": "r_zhongyuan",
+      "start": 947,
+      "end": 951,
+      "full": "汉",
+      "note": "刘知远乘契丹北撤入汴，四年而亡",
+      "leader": "刘知远"
+    },
+    {
+      "id": "p_houzhou",
+      "name": "后周",
+      "row": "r_zhongyuan",
+      "start": 951,
+      "end": 960,
+      "full": "周",
+      "note": "郭威、柴荣两世经营，为宋所承",
+      "leader": "郭威"
+    },
+    {
+      "id": "p_wu",
+      "name": "吴",
+      "row": "r_wutang",
+      "start": 907,
+      "end": 937,
+      "full": "吴",
+      "note": "杨行密所建，都扬州",
+      "leader": "杨行密"
+    },
+    {
+      "id": "p_nantang",
+      "name": "南唐",
+      "row": "r_wutang",
+      "start": 937,
+      "end": 960,
+      "full": "唐",
+      "note": "李昪代吴，都金陵；975 年为宋所灭",
+      "leader": "李昪"
+    },
+    {
+      "id": "p_wuyue",
+      "name": "吴越",
+      "row": "r_wuyue",
+      "start": 907,
+      "end": 960,
+      "full": "吴越",
+      "note": "钱镠所建，都杭州；978 年纳土归宋",
+      "leader": "钱镠"
+    },
+    {
+      "id": "p_min",
+      "name": "闽",
+      "row": "r_min",
+      "start": 909,
+      "end": 945,
+      "full": "闽",
+      "note": "王审知所建，都福州；945 年为南唐所灭",
+      "leader": "王审知"
+    },
+    {
+      "id": "p_chu",
+      "name": "楚",
+      "row": "r_chu",
+      "start": 907,
+      "end": 951,
+      "full": "楚",
+      "note": "马殷所建，都潭州；951 年为南唐所灭",
+      "leader": "马殷"
+    },
+    {
+      "id": "p_qianshu",
+      "name": "前蜀",
+      "row": "r_shu",
+      "start": 907,
+      "end": 925,
+      "full": "蜀",
+      "note": "王建所建，都成都；925 年为后唐所灭",
+      "leader": "王建"
+    },
+    {
+      "id": "p_houshu",
+      "name": "后蜀",
+      "row": "r_shu",
+      "start": 934,
+      "end": 960,
+      "full": "蜀",
+      "note": "孟知祥所建，都成都；965 年为宋所灭",
+      "leader": "孟知祥"
+    },
+    {
+      "id": "p_nanhan",
+      "name": "南汉",
+      "row": "r_nanhan",
+      "start": 917,
+      "end": 960,
+      "full": "汉",
+      "note": "刘龑所建，都兴王府（广州）；971 年为宋所灭",
+      "leader": "刘龑"
+    },
+    {
+      "id": "p_jingnan",
+      "name": "荆南",
+      "row": "r_jingnan",
+      "start": 924,
+      "end": 960,
+      "full": "荆南",
+      "note": "高季兴所建，都江陵；963 年归宋",
+      "leader": "高季兴"
+    },
+    {
+      "id": "p_beihan",
+      "name": "北汉",
+      "row": "r_beihan",
+      "start": 951,
+      "end": 960,
+      "full": "汉",
+      "note": "刘崇所建，都太原，附契丹；979 年为宋所灭",
+      "leader": "刘崇"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n923",
+      "year": 923,
+      "name": "后唐灭梁",
+      "note": "李存勖入汴，梁亡"
+    },
+    {
+      "id": "n936",
+      "year": 936,
+      "name": "石晋代唐",
+      "note": "割燕云十六州"
+    },
+    {
+      "id": "n947",
+      "year": 947,
+      "name": "契丹灭晋",
+      "note": "耶律德光入汴，后汉继立"
+    },
+    {
+      "id": "n951",
+      "year": 951,
+      "name": "郭威建周",
+      "note": "后汉四年而亡"
+    },
+    {
+      "id": "n960",
+      "year": 960,
+      "name": "陈桥兵变",
+      "note": "宋受周禅",
+      "chapter": "fall"
+    }
+  ],
+  "pages": [
+    {
+      "from": 907,
+      "to": 923
+    },
+    {
+      "from": 923,
+      "to": 936
+    },
+    {
+      "from": 936,
+      "to": 947
+    },
+    {
+      "from": 947,
+      "to": 951
+    },
+    {
+      "from": 951,
+      "to": 960
+    }
+  ]
+}

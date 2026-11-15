@@ -13,13 +13,33 @@
       "segmentId": "seg_yuanchu",
       "portrait": "/portraits/yuan-shizu.svg",
       "events": [
-        { "id": "ev_yuanshizu_jianyuan", "name": "建号大元", "dimension": "political", "year": 1271 },
-        { "id": "ev_yuanshizu_xingsheng", "name": "行省制", "dimension": "political", "year": 1271 },
-        { "id": "ev_yuanshizu_miesong", "name": "灭南宋", "dimension": "military", "year": 1279 },
-        { "id": "ev_yuanshizu_zhengri", "name": "征日本", "dimension": "military", "year": 1274 }
+        {
+          "id": "ev_yuanshizu_jianyuan",
+          "name": "建号大元",
+          "dimension": "political",
+          "year": 1271
+        },
+        {
+          "id": "ev_yuanshizu_xingsheng",
+          "name": "行省制",
+          "dimension": "political",
+          "year": 1271
+        },
+        {
+          "id": "ev_yuanshizu_miesong",
+          "name": "灭南宋",
+          "dimension": "military",
+          "year": 1279
+        },
+        {
+          "id": "ev_yuanshizu_zhengri",
+          "name": "征日本",
+          "dimension": "military",
+          "year": 1274
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「圣德神功文武」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "yuan_chengzong",
@@ -31,11 +51,21 @@
       "segmentId": "seg_shoucheng",
       "portrait": "/portraits/yuan-chengzong.svg",
       "events": [
-        { "id": "ev_yuanchengzong_shoucheng", "name": "守成之政", "dimension": "political", "year": 1294 },
-        { "id": "ev_yuanchengzong_haidu", "name": "与海都议和", "dimension": "military", "year": 1301 }
+        {
+          "id": "ev_yuanchengzong_shoucheng",
+          "name": "守成之政",
+          "dimension": "political",
+          "year": 1294
+        },
+        {
+          "id": "ev_yuanchengzong_haidu",
+          "name": "与海都议和",
+          "dimension": "military",
+          "year": 1301
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「钦明广孝」"
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "yuan_wuzong",
@@ -47,11 +77,21 @@
       "segmentId": "seg_shoucheng",
       "portrait": "/portraits/yuan-wuzong.svg",
       "events": [
-        { "id": "ev_yuanwuzong_jiwei", "name": "即位于上都", "dimension": "political", "year": 1307 },
-        { "id": "ev_yuanwuzong_lanshang", "name": "滥赏宗亲", "dimension": "political", "year": 1309 }
+        {
+          "id": "ev_yuanwuzong_jiwei",
+          "name": "即位于上都",
+          "dimension": "political",
+          "year": 1307
+        },
+        {
+          "id": "ev_yuanwuzong_lanshang",
+          "name": "滥赏宗亲",
+          "dimension": "political",
+          "year": 1309
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "克定祸乱曰武（谥「仁惠宣孝」）"
+      "posthumousRule": "圣善周闻曰宣"
     },
     {
       "id": "yuan_renzong",
@@ -63,11 +103,21 @@
       "segmentId": "seg_shoucheng",
       "portrait": "/portraits/yuan-renzong.svg",
       "events": [
-        { "id": "ev_yuanrenzong_jingli", "name": "延祐经理", "dimension": "political", "year": 1314 },
-        { "id": "ev_yuanrenzong_fuke", "name": "延祐复科", "dimension": "culture", "year": 1315 }
+        {
+          "id": "ev_yuanrenzong_jingli",
+          "name": "延祐经理",
+          "dimension": "political",
+          "year": 1314
+        },
+        {
+          "id": "ev_yuanrenzong_fuke",
+          "name": "延祐复科",
+          "dimension": "culture",
+          "year": 1315
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "蓄义丰功曰仁"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "yuan_yingzong",
@@ -79,11 +129,21 @@
       "segmentId": "seg_shoucheng",
       "portrait": "/portraits/yuan-yingzong.svg",
       "events": [
-        { "id": "ev_yuanyingzong_zhizhi", "name": "至治新政", "dimension": "political", "year": 1321 },
-        { "id": "ev_yuanyingzong_nanpo", "name": "南坡之变", "dimension": "political", "year": 1323 }
+        {
+          "id": "ev_yuanyingzong_zhizhi",
+          "name": "至治新政",
+          "dimension": "political",
+          "year": 1321
+        },
+        {
+          "id": "ev_yuanyingzong_nanpo",
+          "name": "南坡之变",
+          "dimension": "political",
+          "year": 1323
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「睿圣文孝」"
+      "evaluation": "good",
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "yuan_taiding",
@@ -95,7 +155,12 @@
       "segmentId": "seg_neiluan",
       "portrait": "/portraits/yuan-taiding.svg",
       "events": [
-        { "id": "ev_yuantaiding_jiwei", "name": "即位于龙居河", "dimension": "political", "year": 1323 }
+        {
+          "id": "ev_yuantaiding_jiwei",
+          "name": "即位于龙居河",
+          "dimension": "political",
+          "year": 1323
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "无汉式谥号，史称泰定帝"
@@ -110,7 +175,12 @@
       "segmentId": "seg_neiluan",
       "portrait": "/portraits/yuan-tianshun.svg",
       "events": [
-        { "id": "ev_yuantianshun_liangdu", "name": "两都之战", "dimension": "military", "year": 1328 }
+        {
+          "id": "ev_yuantianshun_liangdu",
+          "name": "两都之战",
+          "dimension": "military",
+          "year": 1328
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "无汉式谥号，史称天顺帝"
@@ -125,11 +195,21 @@
       "segmentId": "seg_neiluan",
       "portrait": "/portraits/yuan-wenzong.svg",
       "events": [
-        { "id": "ev_yuanwenzong_tianli", "name": "天历之变", "dimension": "political", "year": 1329 },
-        { "id": "ev_yuanwenzong_kuizhangge", "name": "建奎章阁", "dimension": "culture", "year": 1329 }
+        {
+          "id": "ev_yuanwenzong_tianli",
+          "name": "天历之变",
+          "dimension": "political",
+          "year": 1329
+        },
+        {
+          "id": "ev_yuanwenzong_kuizhangge",
+          "name": "建奎章阁",
+          "dimension": "culture",
+          "year": 1329
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「圣明元孝」"
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "yuan_mingzong",
@@ -141,11 +221,21 @@
       "segmentId": "seg_neiluan",
       "portrait": "/portraits/yuan-mingzong.svg",
       "events": [
-        { "id": "ev_yuanmingzong_jiwei", "name": "即位于漠北", "dimension": "political", "year": 1329 },
-        { "id": "ev_yuanmingzong_baobeng", "name": "暴崩于旺忽察都", "dimension": "political", "year": 1329 }
+        {
+          "id": "ev_yuanmingzong_jiwei",
+          "name": "即位于漠北",
+          "dimension": "political",
+          "year": 1329
+        },
+        {
+          "id": "ev_yuanmingzong_baobeng",
+          "name": "暴崩于旺忽察都",
+          "dimension": "political",
+          "year": 1329
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；在位仅数月"
+      "evaluation": "good",
+      "posthumousRule": "聪明睿智曰献"
     },
     {
       "id": "yuan_ningzong",
@@ -157,10 +247,15 @@
       "segmentId": "seg_neiluan",
       "portrait": "/portraits/yuan-ningzong.svg",
       "events": [
-        { "id": "ev_yuanningzong_jiwei", "name": "即位", "dimension": "political", "year": 1332 }
+        {
+          "id": "ev_yuanningzong_jiwei",
+          "name": "即位",
+          "dimension": "political",
+          "year": 1332
+        }
       ],
       "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；年七岁而崩"
+      "posthumousRule": "幼少在位曰冲"
     },
     {
       "id": "yuan_huizong",
@@ -172,12 +267,27 @@
       "segmentId": "seg_yuanmo",
       "portrait": "/portraits/yuan-huizong.svg",
       "events": [
-        { "id": "ev_yuanhuizong_zhizheng", "name": "至正新政", "dimension": "political", "year": 1340 },
-        { "id": "ev_yuanhuizong_hongjin", "name": "红巾军起", "dimension": "military", "year": 1351 },
-        { "id": "ev_yuanhuizong_dadu", "name": "大都失守", "dimension": "military", "year": 1368 }
+        {
+          "id": "ev_yuanhuizong_zhizheng",
+          "name": "至正新政",
+          "dimension": "political",
+          "year": 1340
+        },
+        {
+          "id": "ev_yuanhuizong_hongjin",
+          "name": "红巾军起",
+          "dimension": "military",
+          "year": 1351
+        },
+        {
+          "id": "ev_yuanhuizong_dadu",
+          "name": "大都失守",
+          "dimension": "military",
+          "year": 1368
+        }
       ],
       "evaluation": "neutral",
-      "posthumousRule": "明太祖上谥「顺」，故又称元顺帝"
+      "posthumousRule": "明太祖上谥「顺」，故又称元顺帝（平谥，不取）"
     }
   ]
 }

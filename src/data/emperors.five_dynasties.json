@@ -13,12 +13,27 @@
       "segmentId": "seg_houliang",
       "portrait": "/portraits/fd-liang-taizu.svg",
       "events": [
-        { "id": "ev_fdliangtaizu_cuantang", "name": "篡唐建梁", "dimension": "political", "year": 907 },
-        { "id": "ev_fdliangtaizu_kaifeng", "name": "定都开封", "dimension": "political", "year": 907 },
-        { "id": "ev_fdliangtaizu_baixiang", "name": "柏乡之败", "dimension": "military", "year": 910 }
+        {
+          "id": "ev_fdliangtaizu_cuantang",
+          "name": "篡唐建梁",
+          "dimension": "political",
+          "year": 907
+        },
+        {
+          "id": "ev_fdliangtaizu_kaifeng",
+          "name": "定都开封",
+          "dimension": "political",
+          "year": 907
+        },
+        {
+          "id": "ev_fdliangtaizu_baixiang",
+          "name": "柏乡之败",
+          "dimension": "military",
+          "year": 910
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "刚强直理曰武（谥「神武元圣孝」，取「武」）"
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "fd_liang_yougui",
@@ -30,8 +45,18 @@
       "segmentId": "seg_houliang",
       "portrait": "/portraits/fd-liang-yougui.svg",
       "events": [
-        { "id": "ev_fdliangyougui_shifu", "name": "弑父自立", "dimension": "political", "year": 912 },
-        { "id": "ev_fdliangyougui_junwang", "name": "均王起兵", "dimension": "military", "year": 913 }
+        {
+          "id": "ev_fdliangyougui_shifu",
+          "name": "弑父自立",
+          "dimension": "political",
+          "year": 912
+        },
+        {
+          "id": "ev_fdliangyougui_junwang",
+          "name": "均王起兵",
+          "dimension": "military",
+          "year": 913
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "弑父自立，废为庶人，无谥"
@@ -46,8 +71,18 @@
       "segmentId": "seg_houliang",
       "portrait": "/portraits/fd-liang-modi.svg",
       "events": [
-        { "id": "ev_fdliangmodi_zhuyougui", "name": "诛朱友珪", "dimension": "political", "year": 913 },
-        { "id": "ev_fdliangmodi_miewang", "name": "后唐灭梁", "dimension": "military", "year": 923 }
+        {
+          "id": "ev_fdliangmodi_zhuyougui",
+          "name": "诛朱友珪",
+          "dimension": "political",
+          "year": 913
+        },
+        {
+          "id": "ev_fdliangmodi_miewang",
+          "name": "后唐灭梁",
+          "dimension": "military",
+          "year": 923
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "无谥，史称末帝"
@@ -62,12 +97,27 @@
       "segmentId": "seg_houtang",
       "portrait": "/portraits/fd-tang-zhuangzong.svg",
       "events": [
-        { "id": "ev_fdtangzhuangzong_mieliang", "name": "灭后梁", "dimension": "military", "year": 923 },
-        { "id": "ev_fdtangzhuangzong_luoyang", "name": "定都洛阳", "dimension": "political", "year": 923 },
-        { "id": "ev_fdtangzhuangzong_xingjiao", "name": "兴教门之变", "dimension": "political", "year": 926 }
+        {
+          "id": "ev_fdtangzhuangzong_mieliang",
+          "name": "灭后梁",
+          "dimension": "military",
+          "year": 923
+        },
+        {
+          "id": "ev_fdtangzhuangzong_luoyang",
+          "name": "定都洛阳",
+          "dimension": "political",
+          "year": 923
+        },
+        {
+          "id": "ev_fdtangzhuangzong_xingjiao",
+          "name": "兴教门之变",
+          "dimension": "political",
+          "year": 926
+        }
       ],
-      "evaluation": "bad",
-      "posthumousRule": "在国逢难曰闵（谥「光圣神闵孝」）"
+      "evaluation": "neutral",
+      "posthumousRule": "在国逢难曰闵"
     },
     {
       "id": "fd_tang_mingzong",
@@ -79,11 +129,21 @@
       "segmentId": "seg_houtang",
       "portrait": "/portraits/fd-tang-mingzong.svg",
       "events": [
-        { "id": "ev_fdtangmingzong_zhuhuan", "name": "诛杀宦官", "dimension": "political", "year": 926 },
-        { "id": "ev_fdtangmingzong_tiancheng", "name": "天成之治", "dimension": "political", "year": 927 }
+        {
+          "id": "ev_fdtangmingzong_zhuhuan",
+          "name": "诛杀宦官",
+          "dimension": "political",
+          "year": 926
+        },
+        {
+          "id": "ev_fdtangmingzong_tiancheng",
+          "name": "天成之治",
+          "dimension": "political",
+          "year": 927
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「圣德和武钦孝」，无单字可循"
+      "evaluation": "good",
+      "posthumousRule": "不刚不柔曰和"
     },
     {
       "id": "fd_tang_min",
@@ -95,10 +155,20 @@
       "segmentId": "seg_houtang",
       "portrait": "/portraits/fd-tang-min.svg",
       "events": [
-        { "id": "ev_fdtangmin_jiwei", "name": "即位", "dimension": "political", "year": 933 },
-        { "id": "ev_fdtangmin_luwang", "name": "潞王兵变", "dimension": "military", "year": 934 }
+        {
+          "id": "ev_fdtangmin_jiwei",
+          "name": "即位",
+          "dimension": "political",
+          "year": 933
+        },
+        {
+          "id": "ev_fdtangmin_luwang",
+          "name": "潞王兵变",
+          "dimension": "military",
+          "year": 934
+        }
       ],
-      "evaluation": "bad",
+      "evaluation": "neutral",
       "posthumousRule": "在国逢难曰闵"
     },
     {
@@ -111,8 +181,18 @@
       "segmentId": "seg_houtang",
       "portrait": "/portraits/fd-tang-modi.svg",
       "events": [
-        { "id": "ev_fdtangmodi_qibing", "name": "起兵夺位", "dimension": "military", "year": 934 },
-        { "id": "ev_fdtangmodi_shijingtang", "name": "石敬瑭反", "dimension": "military", "year": 936 }
+        {
+          "id": "ev_fdtangmodi_qibing",
+          "name": "起兵夺位",
+          "dimension": "military",
+          "year": 934
+        },
+        {
+          "id": "ev_fdtangmodi_shijingtang",
+          "name": "石敬瑭反",
+          "dimension": "military",
+          "year": 936
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "无谥，史称末帝"
@@ -127,11 +207,21 @@
       "segmentId": "seg_houjin",
       "portrait": "/portraits/fd-jin-gaozu.svg",
       "events": [
-        { "id": "ev_fdjingaozu_yanxun", "name": "割燕云十六州", "dimension": "political", "year": 936 },
-        { "id": "ev_fdjingaozu_erhuangdi", "name": "称儿皇帝", "dimension": "political", "year": 937 }
+        {
+          "id": "ev_fdjingaozu_yanxun",
+          "name": "割燕云十六州",
+          "dimension": "political",
+          "year": 936
+        },
+        {
+          "id": "ev_fdjingaozu_erhuangdi",
+          "name": "称儿皇帝",
+          "dimension": "political",
+          "year": 937
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「圣文章武明德孝」，取「文」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "fd_jin_chudi",
@@ -143,8 +233,18 @@
       "segmentId": "seg_houjin",
       "portrait": "/portraits/fd-jin-chudi.svg",
       "events": [
-        { "id": "ev_fdjinchudi_chen", "name": "对契丹称孙不称臣", "dimension": "political", "year": 944 },
-        { "id": "ev_fdjinchudi_mie", "name": "契丹灭晋", "dimension": "military", "year": 947 }
+        {
+          "id": "ev_fdjinchudi_chen",
+          "name": "对契丹称孙不称臣",
+          "dimension": "political",
+          "year": 944
+        },
+        {
+          "id": "ev_fdjinchudi_mie",
+          "name": "契丹灭晋",
+          "dimension": "military",
+          "year": 947
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "无谥，史称出帝"
@@ -159,11 +259,21 @@
       "segmentId": "seg_houhan",
       "portrait": "/portraits/fd-han-gaozu.svg",
       "events": [
-        { "id": "ev_fdhangaozu_taiyuan", "name": "太原称帝", "dimension": "political", "year": 947 },
-        { "id": "ev_fdhangaozu_kaifeng", "name": "定都开封", "dimension": "political", "year": 947 }
+        {
+          "id": "ev_fdhangaozu_taiyuan",
+          "name": "太原称帝",
+          "dimension": "political",
+          "year": 947
+        },
+        {
+          "id": "ev_fdhangaozu_kaifeng",
+          "name": "定都开封",
+          "dimension": "political",
+          "year": 947
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "昭德有劳曰昭（谥「睿文圣武昭肃孝」）"
+      "posthumousRule": "容仪恭美曰昭"
     },
     {
       "id": "fd_han_yindi",
@@ -175,8 +285,18 @@
       "segmentId": "seg_houhan",
       "portrait": "/portraits/fd-han-yindi.svg",
       "events": [
-        { "id": "ev_fdhanyindi_zhuchen", "name": "诛杀权臣", "dimension": "political", "year": 950 },
-        { "id": "ev_fdhanyindi_guowei", "name": "郭威起兵", "dimension": "military", "year": 951 }
+        {
+          "id": "ev_fdhanyindi_zhuchen",
+          "name": "诛杀权臣",
+          "dimension": "political",
+          "year": 950
+        },
+        {
+          "id": "ev_fdhanyindi_guowei",
+          "name": "郭威起兵",
+          "dimension": "military",
+          "year": 951
+        }
       ],
       "evaluation": "bad",
       "posthumousRule": "隐拂不成曰隐"
@@ -191,11 +311,21 @@
       "segmentId": "seg_houzhou",
       "portrait": "/portraits/fd-zhou-taizu.svg",
       "events": [
-        { "id": "ev_fdzhoutaizu_huangpao", "name": "黄袍加身建周", "dimension": "political", "year": 951 },
-        { "id": "ev_fdzhoutaizu_gechu", "name": "革除弊政", "dimension": "political", "year": 951 }
+        {
+          "id": "ev_fdzhoutaizu_huangpao",
+          "name": "黄袍加身建周",
+          "dimension": "political",
+          "year": 951
+        },
+        {
+          "id": "ev_fdzhoutaizu_gechu",
+          "name": "革除弊政",
+          "dimension": "political",
+          "year": 951
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "克定祸乱曰武（谥「圣神恭肃文武孝」）"
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "fd_zhou_shizong",
@@ -207,12 +337,27 @@
       "segmentId": "seg_houzhou",
       "portrait": "/portraits/fd-zhou-shizong.svg",
       "events": [
-        { "id": "ev_fdzhoushizong_gaoping", "name": "高平之战", "dimension": "military", "year": 954 },
-        { "id": "ev_fdzhoushizong_jinjun", "name": "整顿禁军", "dimension": "military", "year": 954 },
-        { "id": "ev_fdzhoushizong_beifa", "name": "北伐契丹", "dimension": "military", "year": 959 }
+        {
+          "id": "ev_fdzhoushizong_gaoping",
+          "name": "高平之战",
+          "dimension": "military",
+          "year": 954
+        },
+        {
+          "id": "ev_fdzhoushizong_jinjun",
+          "name": "整顿禁军",
+          "dimension": "military",
+          "year": 954
+        },
+        {
+          "id": "ev_fdzhoushizong_beifa",
+          "name": "北伐契丹",
+          "dimension": "military",
+          "year": 959
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「睿武孝文」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "fd_zhou_gong",
@@ -224,11 +369,21 @@
       "segmentId": "seg_houzhou",
       "portrait": "/portraits/fd-zhou-gong.svg",
       "events": [
-        { "id": "ev_fdzhougong_chenqiao", "name": "陈桥兵变", "dimension": "political", "year": 960 },
-        { "id": "ev_fdzhougong_shansong", "name": "禅位于宋", "dimension": "political", "year": 960 }
+        {
+          "id": "ev_fdzhougong_chenqiao",
+          "name": "陈桥兵变",
+          "dimension": "political",
+          "year": 960
+        },
+        {
+          "id": "ev_fdzhougong_shansong",
+          "name": "禅位于宋",
+          "dimension": "political",
+          "year": 960
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "敬事供上曰恭"
+      "evaluation": "good",
+      "posthumousRule": "尊贤贵义曰恭"
     }
   ]
 }

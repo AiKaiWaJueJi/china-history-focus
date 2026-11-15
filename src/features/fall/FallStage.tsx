@@ -93,6 +93,19 @@ import tang_3 from '../../assets/tang_3.jpg'
 import fd_1 from '../../assets/fd_1.jpg'
 import fd_2 from '../../assets/fd_2.jpg'
 import fd_3 from '../../assets/fd_3.jpg'
+// 宋 / 元 / 明 / 清 四章过渡页配图（同上：器物、无人物、16:9）
+import song_1 from '../../assets/song_1.jpg'
+import song_2 from '../../assets/song_2.jpg'
+import song_3 from '../../assets/song_3.jpg'
+import yuan_1 from '../../assets/yuan_1.jpg'
+import yuan_2 from '../../assets/yuan_2.jpg'
+import yuan_3 from '../../assets/yuan_3.jpg'
+import ming_1 from '../../assets/ming_1.jpg'
+import ming_2 from '../../assets/ming_2.jpg'
+import ming_3 from '../../assets/ming_3.jpg'
+import qing_1 from '../../assets/qing_1.jpg'
+import qing_2 from '../../assets/qing_2.jpg'
+import qing_3 from '../../assets/qing_3.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -154,6 +167,18 @@ const ART: Record<string, string> = {
   fd_1,
   fd_2,
   fd_3,
+  song_1,
+  song_2,
+  song_3,
+  yuan_1,
+  yuan_2,
+  yuan_3,
+  ming_1,
+  ming_2,
+  ming_3,
+  qing_1,
+  qing_2,
+  qing_3,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -214,6 +239,18 @@ const ART_ALT: Record<string, string> = {
   fd_1: '五代乱世·残破铜钱、断刀与折断枪头',
   fd_2: '后周世宗·周元通宝、铜权与量器',
   fd_3: '陈桥兵变·折叠黄袍、驿站马镫与铜印',
+  song_1: '强干弱枝·禁军铜符、官印与文书木匣',
+  song_2: '偏安江左·南宋青瓷、铜镜与海船铁锚',
+  song_3: '崖山蹈海·残破宋瓷、断桨与沉船铁锚',
+  yuan_1: '至正新政·至正通宝、交钞铜版与铜权',
+  yuan_2: '群雄逐鹿·断箭、箭镞与军旗铁杆',
+  yuan_3: '大都失守·玉玺、倾倒宫灯与城门铜钉',
+  ming_1: '张居正之后·奏折木匣、铜印与算盘',
+  ming_2: '流寇与辽东·三眼火铳、断刀与铁甲片',
+  ming_3: '甲申之变·断裂玉玺、倾倒宫灯与残诏',
+  qing_1: '自强求富·黄铜炮闩、望远镜与机器铭牌',
+  qing_2: '变法与庚子·奏折、铜印与烧焦书册',
+  qing_3: '清帝退位·诏书卷轴、铜印与纪念铜章',
 }
 
 interface FallAct {

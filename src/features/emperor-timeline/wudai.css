@@ -1,0 +1,320 @@
+/* ==========================================================================
+   WuDaiTimeline —— 五代十国并行时间轴
+   与南北朝同一套视觉语言（暗底、土色、竖卡），但行更多、帝王卡只在中原行。
+   ========================================================================== */
+
+.wdc-page {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 26px 10px;
+}
+
+.wdc-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.wdc-title {
+  margin: 0;
+  font-family: var(--font-thin, 'STKaiti', serif);
+  font-size: 26px;
+  letter-spacing: 0.2em;
+  color: #ecdfc2;
+}
+
+.wdc-period,
+.wdc-count,
+.wdc-hint {
+  font-size: 12px;
+  color: #8a8273;
+}
+
+.wdc-count {
+  margin-left: auto;
+  letter-spacing: 0.06em;
+}
+
+.wdc-hint {
+  color: #6a655a;
+}
+
+.wdc-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #d8cdb4;
+  font-size: 12.5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.wdc-btn:hover:not(:disabled) {
+  border-color: rgba(201, 162, 39, 0.55);
+  color: #f0e2bd;
+}
+
+.wdc-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.wdc-btn--fall {
+  border-color: rgba(201, 162, 39, 0.45);
+  color: #e8d39a;
+}
+
+/* ---------------- 年轴 ---------------- */
+
+.wdc-axis {
+  position: relative;
+  flex: 0 0 auto;
+  height: 24px;
+  margin-left: 148px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wdc-tick {
+  position: absolute;
+  bottom: 4px;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  color: #7c7566;
+  letter-spacing: 0.04em;
+}
+
+/* ---------------- 舞台 ---------------- */
+
+.wdc-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(7, 9, 11, 0.55);
+  padding: 6px 10px 10px;
+}
+
+.wdc-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+}
+
+.wdc-row {
+  display: grid;
+  grid-template-columns: 148px 1fr;
+  min-height: 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.wdc-row:last-child {
+  border-bottom: none;
+}
+
+.wdc-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding-left: 9px;
+  border-left: 2px solid;
+  min-width: 0;
+}
+
+.wdc-label-name {
+  font-family: var(--font-thin, 'STKaiti', serif);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.wdc-label-note {
+  font-size: 10.5px;
+  color: #7b7566;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wdc-lane {
+  position: relative;
+  min-width: 0;
+}
+
+/* ---------------- 政权带 ---------------- */
+
+.wdc-polity {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 28px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022);
+  overflow: hidden;
+  white-space: nowrap;
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.wdc-polity:hover {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.wdc-polity-name {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  flex: 0 0 auto;
+}
+
+.wdc-polity-span {
+  font-size: 10px;
+  color: #8b8474;
+  flex: 0 0 auto;
+}
+
+.wdc-polity[data-fresh] {
+  box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.5), 0 0 14px rgba(201, 162, 39, 0.16);
+}
+
+/* ---------------- 帝王卡（中原行） ---------------- */
+
+.wdc-card {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 92px;
+  display: flex;
+}
+
+.wdc-card .emp-clip {
+  border-radius: 10px;
+}
+
+.wdc-card .emp-content {
+  padding: 0 7px 9px;
+  gap: 1px;
+}
+
+.wdc-card .emp-title {
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.wdc-card .emp-name {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.wdc-card .emp-reign {
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+
+.wdc-card .emp-rule {
+  display: none;
+}
+
+.wdc-polity-leader {
+  font-size: 10px;
+  color: #77705f;
+  letter-spacing: 0.04em;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- 页尾节点（放在页脚，避免压住帝王卡） ---------------- */
+
+.wdc-node {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 3px 10px;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  border-radius: 999px;
+  background: rgba(12, 13, 15, 0.7);
+  color: #cfbd8e;
+  font-size: 11px;
+  cursor: default;
+}
+
+.wdc-node[data-clickable] {
+  cursor: pointer;
+  border-color: rgba(201, 162, 39, 0.6);
+  color: #e8d39a;
+}
+
+.wdc-node[data-clickable]:hover {
+  background: rgba(30, 27, 18, 0.9);
+}
+
+.wdc-node-note {
+  color: #7f7767;
+  font-size: 10px;
+}
+
+.wdc-node-year {
+  color: #f0dfae;
+  letter-spacing: 0.04em;
+}
+
+.wdc-node-name {
+  color: #a9a08a;
+}
+
+/* ---------------- 页脚 ---------------- */
+
+.wdc-foot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.wdc-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.wdc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  cursor: pointer;
+  padding: 0;
+}
+
+.wdc-dot.is-on {
+  background: #c9a227;
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
+}
+
+.wdc-step {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wdc-range {
+  font-size: 11px;
+  color: #7c7566;
+  letter-spacing: 0.08em;
+}

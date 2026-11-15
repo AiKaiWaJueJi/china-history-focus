@@ -13,10 +13,30 @@
       "segmentId": "seg_openhuang",
       "portrait": "/portraits/sui-wen.svg",
       "events": [
-        { "id": "ev_suiwen_shan", "name": "受禅建隋", "dimension": "political", "year": 581 },
-        { "id": "ev_suiwen_kaikaung", "name": "开皇之治", "dimension": "political", "year": 583 },
-        { "id": "ev_suiwen_pingchen", "name": "平陈统一", "dimension": "military", "year": 589 },
-        { "id": "ev_suiwen_sansheng", "name": "创三省六部", "dimension": "political", "year": 581 }
+        {
+          "id": "ev_suiwen_shan",
+          "name": "受禅建隋",
+          "dimension": "political",
+          "year": 581
+        },
+        {
+          "id": "ev_suiwen_kaikaung",
+          "name": "开皇之治",
+          "dimension": "political",
+          "year": 583
+        },
+        {
+          "id": "ev_suiwen_pingchen",
+          "name": "平陈统一",
+          "dimension": "military",
+          "year": 589
+        },
+        {
+          "id": "ev_suiwen_sansheng",
+          "name": "创三省六部",
+          "dimension": "political",
+          "year": 581
+        }
       ],
       "evaluation": "good",
       "posthumousRule": "经纬天地曰文"
@@ -31,10 +51,30 @@
       "segmentId": "seg_daye",
       "portrait": "/portraits/sui-yang.svg",
       "events": [
-        { "id": "ev_suiyang_dongdu", "name": "营建东都", "dimension": "political", "year": 605 },
-        { "id": "ev_suiyang_yunhe", "name": "开凿大运河", "dimension": "political", "year": 605 },
-        { "id": "ev_suiyang_gaoli", "name": "三征高句丽", "dimension": "military", "year": 612 },
-        { "id": "ev_suiyang_jiangdu", "name": "江都之变", "dimension": "political", "year": 618 }
+        {
+          "id": "ev_suiyang_dongdu",
+          "name": "营建东都",
+          "dimension": "political",
+          "year": 605
+        },
+        {
+          "id": "ev_suiyang_yunhe",
+          "name": "开凿大运河",
+          "dimension": "political",
+          "year": 605
+        },
+        {
+          "id": "ev_suiyang_gaoli",
+          "name": "三征高句丽",
+          "dimension": "military",
+          "year": 612
+        },
+        {
+          "id": "ev_suiyang_jiangdu",
+          "name": "江都之变",
+          "dimension": "political",
+          "year": 618
+        }
       ],
       "evaluation": "bad",
       "posthumousRule": "去礼远众曰炀"
@@ -49,11 +89,21 @@
       "segmentId": "seg_daye",
       "portrait": "/portraits/sui-gong.svg",
       "events": [
-        { "id": "ev_suigong_liyuan", "name": "李渊立帝于长安", "dimension": "political", "year": 617 },
-        { "id": "ev_suigong_shantang", "name": "禅位于唐", "dimension": "political", "year": 618 }
+        {
+          "id": "ev_suigong_liyuan",
+          "name": "李渊立帝于长安",
+          "dimension": "political",
+          "year": 617
+        },
+        {
+          "id": "ev_suigong_shantang",
+          "name": "禅位于唐",
+          "dimension": "political",
+          "year": 618
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "敬事供上曰恭（李渊所立，617—618 在位；皇泰主杨侗未入帝系）"
+      "evaluation": "good",
+      "posthumousRule": "尊贤贵义曰恭"
     }
   ]
 }

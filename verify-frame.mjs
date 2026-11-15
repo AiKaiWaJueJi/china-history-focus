@@ -18,7 +18,6 @@ const PAGE_SIZE = 3
 const DYNASTIES = [
   { id: 'sui', label: '隋亡', first: ['隋文帝'], next: '/dynasty/tang' },
   { id: 'tang', label: '朱温篡唐', first: ['唐高祖', '唐太宗', '唐高宗'], next: '/dynasty/five_dynasties' },
-  { id: 'five_dynasties', label: '五代终', first: ['后梁太祖', '后梁郢王', '后梁末帝'], next: '/dynasty/song' },
   { id: 'song', label: '宋亡', first: ['宋太祖', '宋太宗', '宋真宗'], next: '/dynasty/yuan' },
   { id: 'yuan', label: '红巾北伐', first: ['元世祖'], next: '/dynasty/ming' },
   { id: 'ming', label: '明亡', first: ['明太祖'], next: '/dynasty/qing' },
@@ -127,9 +126,19 @@ try {
     const url = page.url()
     check(`${d.id} 过渡出口 → ${d.next}`, url.replace(/\?.*$/, '').endsWith(d.next), url)
     if (d.next !== '/') {
+      const nextId = d.next.split('/').pop()
+      if (nextId === 'five_dynasties') {
+        // 五代十国走的是并行时间轴（WuDaiTimeline），不是单行分页
+        await page.waitForSelector('.wdc-stage', { timeout: 10000 })
+        const wdc = await page.evaluate(() => ({
+          count: document.querySelector('.wdc-count')?.textContent?.trim() ?? '',
+          rows: document.querySelectorAll('.wdc-row').length,
+        }))
+        check('唐 出口落在「五代十国」并行时间轴', wdc.count.includes('14') && wdc.rows >= 6, JSON.stringify(wdc))
+        continue
+      }
       await page.waitForSelector('.pager', { timeout: 10000 })
       await sleep(700)
-      const nextId = d.next.split('/').pop()
       const nextShell = await readShell(page)
       check(
         `${d.id} 出口落在「${nextId}」首页`,

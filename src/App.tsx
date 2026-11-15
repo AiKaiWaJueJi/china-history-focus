@@ -14,15 +14,18 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from '
 import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
+import { WuDaiTimeline } from './features/emperor-timeline/WuDaiTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
 import { RouterBridge } from './router/RouterBridge'
 
-/** 南北朝是四行并行时间轴，不复用单行帝王分页 */
+/** 南北朝、五代十国都是多行并行时间轴，不复用单行帝王分页 */
 function DynastyRoute() {
   const { dynastyId } = useParams<{ dynastyId: string }>()
-  return dynastyId === 'southern_northern' ? <NanBeiTimeline /> : <DynastyDetail />
+  if (dynastyId === 'southern_northern') return <NanBeiTimeline />
+  if (dynastyId === 'five_dynasties') return <WuDaiTimeline />
+  return <DynastyDetail />
 }
 
 /** 晋末用「十六国势力变迁图」，不是灭国战沙盘，单独分流 */

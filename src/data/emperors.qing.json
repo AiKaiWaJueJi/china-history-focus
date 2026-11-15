@@ -13,12 +13,27 @@
       "segmentId": "seg_houjin",
       "portrait": "/portraits/qing-taizu.svg",
       "events": [
-        { "id": "ev_qingtaizu_baqi", "name": "创八旗制度", "dimension": "political", "year": 1615 },
-        { "id": "ev_qingtaizu_jianhoujin", "name": "建后金", "dimension": "political", "year": 1616 },
-        { "id": "ev_qingtaizu_sarhu", "name": "萨尔浒之战", "dimension": "military", "year": 1619 }
+        {
+          "id": "ev_qingtaizu_baqi",
+          "name": "创八旗制度",
+          "dimension": "political",
+          "year": 1615
+        },
+        {
+          "id": "ev_qingtaizu_jianhoujin",
+          "name": "建后金",
+          "dimension": "political",
+          "year": 1616
+        },
+        {
+          "id": "ev_qingtaizu_sarhu",
+          "name": "萨尔浒之战",
+          "dimension": "military",
+          "year": 1619
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "克定祸乱曰武（谥「…睿武…高皇帝」）"
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "qing_taizong",
@@ -30,11 +45,21 @@
       "segmentId": "seg_houjin",
       "portrait": "/portraits/qing-taizong.svg",
       "events": [
-        { "id": "ev_qingtaizong_gaiguo", "name": "改国号大清", "dimension": "political", "year": 1636 },
-        { "id": "ev_qingtaizong_songjin", "name": "松锦之战", "dimension": "military", "year": 1641 }
+        {
+          "id": "ev_qingtaizong_gaiguo",
+          "name": "改国号大清",
+          "dimension": "political",
+          "year": 1636
+        },
+        {
+          "id": "ev_qingtaizong_songjin",
+          "name": "松锦之战",
+          "dimension": "military",
+          "year": 1641
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「…文皇帝」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "qing_shizu",
@@ -46,12 +71,27 @@
       "segmentId": "seg_ruquan",
       "portrait": "/portraits/qing-shizu.svg",
       "events": [
-        { "id": "ev_qingshizu_ruguang", "name": "清兵入关", "dimension": "military", "year": 1644 },
-        { "id": "ev_qingshizu_beijing", "name": "定鼎北京", "dimension": "political", "year": 1644 },
-        { "id": "ev_qingshizu_tifa", "name": "剃发令", "dimension": "political", "year": 1645 }
+        {
+          "id": "ev_qingshizu_ruguang",
+          "name": "清兵入关",
+          "dimension": "military",
+          "year": 1644
+        },
+        {
+          "id": "ev_qingshizu_beijing",
+          "name": "定鼎北京",
+          "dimension": "political",
+          "year": 1644
+        },
+        {
+          "id": "ev_qingshizu_tifa",
+          "name": "剃发令",
+          "dimension": "political",
+          "year": 1645
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "温克令仪曰章（谥「…章皇帝」）"
+      "posthumousRule": "温克令仪曰章"
     },
     {
       "id": "qing_shengzu",
@@ -63,13 +103,33 @@
       "segmentId": "seg_kangqian",
       "portrait": "/portraits/qing-shengzu.svg",
       "events": [
-        { "id": "ev_qingshengzu_sanfan", "name": "平三藩", "dimension": "military", "year": 1673 },
-        { "id": "ev_qingshengzu_taiwan", "name": "收台湾", "dimension": "military", "year": 1683 },
-        { "id": "ev_qingshengzu_nibuchu", "name": "尼布楚条约", "dimension": "political", "year": 1689 },
-        { "id": "ev_qingshengzu_zidian", "name": "康熙字典", "dimension": "culture", "year": 1716 }
+        {
+          "id": "ev_qingshengzu_sanfan",
+          "name": "平三藩",
+          "dimension": "military",
+          "year": 1673
+        },
+        {
+          "id": "ev_qingshengzu_taiwan",
+          "name": "收台湾",
+          "dimension": "military",
+          "year": 1683
+        },
+        {
+          "id": "ev_qingshengzu_nibuchu",
+          "name": "尼布楚条约",
+          "dimension": "political",
+          "year": 1689
+        },
+        {
+          "id": "ev_qingshengzu_zidian",
+          "name": "康熙字典",
+          "dimension": "culture",
+          "year": 1716
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "蓄义丰功曰仁（谥「…仁皇帝」）"
+      "posthumousRule": "蓄义丰功曰仁"
     },
     {
       "id": "qing_shizong",
@@ -81,12 +141,27 @@
       "segmentId": "seg_kangqian",
       "portrait": "/portraits/qing-shizong.svg",
       "events": [
-        { "id": "ev_qingshizong_tanding", "name": "摊丁入亩", "dimension": "political", "year": 1723 },
-        { "id": "ev_qingshizong_junji", "name": "设军机处", "dimension": "political", "year": 1729 },
-        { "id": "ev_qingshizong_tugui", "name": "改土归流", "dimension": "political", "year": 1726 }
+        {
+          "id": "ev_qingshizong_tanding",
+          "name": "摊丁入亩",
+          "dimension": "political",
+          "year": 1723
+        },
+        {
+          "id": "ev_qingshizong_junji",
+          "name": "设军机处",
+          "dimension": "political",
+          "year": 1729
+        },
+        {
+          "id": "ev_qingshizong_tugui",
+          "name": "改土归流",
+          "dimension": "political",
+          "year": 1726
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "博闻多能曰宪（谥「…宪皇帝」）"
+      "posthumousRule": "博闻多能曰宪"
     },
     {
       "id": "qing_gaozong",
@@ -98,12 +173,27 @@
       "segmentId": "seg_kangqian",
       "portrait": "/portraits/qing-gaozong.svg",
       "events": [
-        { "id": "ev_qinggaozong_shiquan", "name": "十全武功", "dimension": "military", "year": 1747 },
-        { "id": "ev_qinggaozong_siku", "name": "四库全书", "dimension": "culture", "year": 1773 },
-        { "id": "ev_qinggaozong_magarny", "name": "马戛尔尼使团", "dimension": "political", "year": 1793 }
+        {
+          "id": "ev_qinggaozong_shiquan",
+          "name": "十全武功",
+          "dimension": "military",
+          "year": 1747
+        },
+        {
+          "id": "ev_qinggaozong_siku",
+          "name": "四库全书",
+          "dimension": "culture",
+          "year": 1773
+        },
+        {
+          "id": "ev_qinggaozong_magarny",
+          "name": "马戛尔尼使团",
+          "dimension": "political",
+          "year": 1793
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「…纯皇帝」"
+      "evaluation": "good",
+      "posthumousRule": "照临四方曰明"
     },
     {
       "id": "qing_renzong",
@@ -115,11 +205,21 @@
       "segmentId": "seg_jiadao",
       "portrait": "/portraits/qing-renzong.svg",
       "events": [
-        { "id": "ev_qingrenzong_bailian", "name": "白莲教起义", "dimension": "military", "year": 1796 },
-        { "id": "ev_qingrenzong_heshen", "name": "诛和珅", "dimension": "political", "year": 1799 }
+        {
+          "id": "ev_qingrenzong_bailian",
+          "name": "白莲教起义",
+          "dimension": "military",
+          "year": 1796
+        },
+        {
+          "id": "ev_qingrenzong_heshen",
+          "name": "诛和珅",
+          "dimension": "political",
+          "year": 1799
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "蓄义丰功曰仁"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "qing_xuanzong",
@@ -131,11 +231,21 @@
       "segmentId": "seg_jiadao",
       "portrait": "/portraits/qing-xuanzong.svg",
       "events": [
-        { "id": "ev_qingxuanzong_yapian", "name": "鸦片战争", "dimension": "military", "year": 1840 },
-        { "id": "ev_qingxuanzong_nanjing", "name": "南京条约", "dimension": "political", "year": 1842 }
+        {
+          "id": "ev_qingxuanzong_yapian",
+          "name": "鸦片战争",
+          "dimension": "military",
+          "year": 1840
+        },
+        {
+          "id": "ev_qingxuanzong_nanjing",
+          "name": "南京条约",
+          "dimension": "political",
+          "year": 1842
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "圣善周闻曰宣"
+      "posthumousRule": "安民立政曰成"
     },
     {
       "id": "qing_wenzong",
@@ -147,12 +257,27 @@
       "segmentId": "seg_jiadao",
       "portrait": "/portraits/qing-wenzong.svg",
       "events": [
-        { "id": "ev_qingwenzong_taiping", "name": "太平天国", "dimension": "military", "year": 1851 },
-        { "id": "ev_qingwenzong_erya", "name": "第二次鸦片战争", "dimension": "military", "year": 1856 },
-        { "id": "ev_qingwenzong_yuanmingyuan", "name": "圆明园被焚", "dimension": "military", "year": 1860 }
+        {
+          "id": "ev_qingwenzong_taiping",
+          "name": "太平天国",
+          "dimension": "military",
+          "year": 1851
+        },
+        {
+          "id": "ev_qingwenzong_erya",
+          "name": "第二次鸦片战争",
+          "dimension": "military",
+          "year": 1856
+        },
+        {
+          "id": "ev_qingwenzong_yuanmingyuan",
+          "name": "圆明园被焚",
+          "dimension": "military",
+          "year": 1860
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文"
+      "posthumousRule": "行见中外曰显"
     },
     {
       "id": "qing_muzong",
@@ -164,11 +289,21 @@
       "segmentId": "seg_wanqing",
       "portrait": "/portraits/qing-muzong.svg",
       "events": [
-        { "id": "ev_qingmuzong_yangwu", "name": "洋务运动", "dimension": "political", "year": 1861 },
-        { "id": "ev_qingmuzong_tongzhi", "name": "同治中兴", "dimension": "political", "year": 1864 }
+        {
+          "id": "ev_qingmuzong_yangwu",
+          "name": "洋务运动",
+          "dimension": "political",
+          "year": 1861
+        },
+        {
+          "id": "ev_qingmuzong_tongzhi",
+          "name": "同治中兴",
+          "dimension": "political",
+          "year": 1864
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "布德执义曰穆"
+      "posthumousRule": "尊贤贵义曰恭"
     },
     {
       "id": "qing_dezong",
@@ -180,12 +315,27 @@
       "segmentId": "seg_wanqing",
       "portrait": "/portraits/qing-dezong.svg",
       "events": [
-        { "id": "ev_qingdezong_jiawu", "name": "甲午战争", "dimension": "military", "year": 1894 },
-        { "id": "ev_qingdezong_wuxu", "name": "戊戌变法", "dimension": "political", "year": 1898 },
-        { "id": "ev_qingdezong_gengzi", "name": "庚子之变", "dimension": "military", "year": 1900 }
+        {
+          "id": "ev_qingdezong_jiawu",
+          "name": "甲午战争",
+          "dimension": "military",
+          "year": 1894
+        },
+        {
+          "id": "ev_qingdezong_wuxu",
+          "name": "戊戌变法",
+          "dimension": "political",
+          "year": 1898
+        },
+        {
+          "id": "ev_qingdezong_gengzi",
+          "name": "庚子之变",
+          "dimension": "military",
+          "year": 1900
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号德宗；谥「…景皇帝」"
+      "evaluation": "good",
+      "posthumousRule": "由义而济曰景"
     },
     {
       "id": "qing_xuantong",
@@ -197,8 +347,18 @@
       "segmentId": "seg_wanqing",
       "portrait": "/portraits/qing-xuantong.svg",
       "events": [
-        { "id": "ev_qingxuantong_wuchang", "name": "武昌起义", "dimension": "military", "year": 1911 },
-        { "id": "ev_qingxuantong_tuiwei", "name": "清帝退位", "dimension": "political", "year": 1912 }
+        {
+          "id": "ev_qingxuantong_wuchang",
+          "name": "武昌起义",
+          "dimension": "military",
+          "year": 1911
+        },
+        {
+          "id": "ev_qingxuantong_tuiwei",
+          "name": "清帝退位",
+          "dimension": "political",
+          "year": 1912
+        }
       ],
       "evaluation": "neutral",
       "posthumousRule": "逊位，无谥；史称宣统帝"

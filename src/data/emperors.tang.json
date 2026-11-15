@@ -13,12 +13,27 @@
       "segmentId": "seg_chutang",
       "portrait": "/portraits/tang-gaozu.svg",
       "events": [
-        { "id": "ev_tanggaozu_qibing", "name": "晋阳起兵", "dimension": "military", "year": 617 },
-        { "id": "ev_tanggaozu_shan", "name": "受禅建唐", "dimension": "political", "year": 618 },
-        { "id": "ev_tanggaozu_juntian", "name": "定均田租庸调", "dimension": "political", "year": 619 }
+        {
+          "id": "ev_tanggaozu_qibing",
+          "name": "晋阳起兵",
+          "dimension": "military",
+          "year": 617
+        },
+        {
+          "id": "ev_tanggaozu_shan",
+          "name": "受禅建唐",
+          "dimension": "political",
+          "year": 618
+        },
+        {
+          "id": "ev_tanggaozu_juntian",
+          "name": "定均田租庸调",
+          "dimension": "political",
+          "year": 619
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "克定祸乱曰武（初谥太武皇帝）"
+      "posthumousRule": "克定祸乱曰武"
     },
     {
       "id": "tang_taizong",
@@ -30,10 +45,30 @@
       "segmentId": "seg_chutang",
       "portrait": "/portraits/tang-taizong.svg",
       "events": [
-        { "id": "ev_tangtaizong_xuanwu", "name": "玄武门之变", "dimension": "political", "year": 626 },
-        { "id": "ev_tangtaizong_zhenguan", "name": "贞观之治", "dimension": "political", "year": 627 },
-        { "id": "ev_tangtaizong_tujue", "name": "灭东突厥", "dimension": "military", "year": 630 },
-        { "id": "ev_tangtaizong_wencheng", "name": "文成公主入藏", "dimension": "culture", "year": 641 }
+        {
+          "id": "ev_tangtaizong_xuanwu",
+          "name": "玄武门之变",
+          "dimension": "political",
+          "year": 626
+        },
+        {
+          "id": "ev_tangtaizong_zhenguan",
+          "name": "贞观之治",
+          "dimension": "political",
+          "year": 627
+        },
+        {
+          "id": "ev_tangtaizong_tujue",
+          "name": "灭东突厥",
+          "dimension": "military",
+          "year": 630
+        },
+        {
+          "id": "ev_tangtaizong_wencheng",
+          "name": "文成公主入藏",
+          "dimension": "culture",
+          "year": 641
+        }
       ],
       "evaluation": "good",
       "posthumousRule": "经纬天地曰文"
@@ -48,12 +83,27 @@
       "segmentId": "seg_chutang",
       "portrait": "/portraits/tang-gaozong.svg",
       "events": [
-        { "id": "ev_tanggaozong_lvshu", "name": "永徽律疏", "dimension": "political", "year": 651 },
-        { "id": "ev_tanggaozong_feiwang", "name": "废王立武", "dimension": "political", "year": 655 },
-        { "id": "ev_tanggaozong_gaoli", "name": "灭高句丽", "dimension": "military", "year": 668 }
+        {
+          "id": "ev_tanggaozong_lvshu",
+          "name": "永徽律疏",
+          "dimension": "political",
+          "year": 651
+        },
+        {
+          "id": "ev_tanggaozong_feiwang",
+          "name": "废王立武",
+          "dimension": "political",
+          "year": 655
+        },
+        {
+          "id": "ev_tanggaozong_gaoli",
+          "name": "灭高句丽",
+          "dimension": "military",
+          "year": 668
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥号无单字可循"
+      "evaluation": "good",
+      "posthumousRule": "慈惠爱亲曰孝"
     },
     {
       "id": "tang_zhongzong",
@@ -65,12 +115,27 @@
       "segmentId": "seg_chutang",
       "portrait": "/portraits/tang-zhongzong.svg",
       "events": [
-        { "id": "ev_tangzhongzong_wuhou", "name": "武则天临朝", "dimension": "political", "year": 684 },
-        { "id": "ev_tangzhongzong_shenlong", "name": "神龙政变复位", "dimension": "political", "year": 705 },
-        { "id": "ev_tangzhongzong_weihou", "name": "韦后乱政", "dimension": "political", "year": 710 }
+        {
+          "id": "ev_tangzhongzong_wuhou",
+          "name": "武则天临朝",
+          "dimension": "political",
+          "year": 684
+        },
+        {
+          "id": "ev_tangzhongzong_shenlong",
+          "name": "神龙政变复位",
+          "dimension": "political",
+          "year": 705
+        },
+        {
+          "id": "ev_tangzhongzong_weihou",
+          "name": "韦后乱政",
+          "dimension": "political",
+          "year": 710
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；两度在位（684、705—710）"
+      "evaluation": "good",
+      "posthumousRule": "不刚不柔曰和"
     },
     {
       "id": "tang_ruizong",
@@ -82,11 +147,21 @@
       "segmentId": "seg_chutang",
       "portrait": "/portraits/tang-ruizong.svg",
       "events": [
-        { "id": "ev_tangruizong_rangwei", "name": "让位于母", "dimension": "political", "year": 690 },
-        { "id": "ev_tangruizong_xiantian", "name": "先天之变", "dimension": "political", "year": 712 }
+        {
+          "id": "ev_tangruizong_rangwei",
+          "name": "让位于母",
+          "dimension": "political",
+          "year": 690
+        },
+        {
+          "id": "ev_tangruizong_xiantian",
+          "name": "先天之变",
+          "dimension": "political",
+          "year": 712
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；两度在位（684—690、710—712）"
+      "evaluation": "good",
+      "posthumousRule": "慈惠爱亲曰孝"
     },
     {
       "id": "tang_wuzetian",
@@ -98,12 +173,27 @@
       "segmentId": "seg_wuzhou",
       "portrait": "/portraits/tang-wuzetian.svg",
       "events": [
-        { "id": "ev_tangwuzetian_chengdi", "name": "称帝改周", "dimension": "political", "year": 690 },
-        { "id": "ev_tangwuzetian_dianshi", "name": "开殿试武举", "dimension": "culture", "year": 690 },
-        { "id": "ev_tangwuzetian_shenlong", "name": "神龙政变", "dimension": "political", "year": 705 }
+        {
+          "id": "ev_tangwuzetian_chengdi",
+          "name": "称帝改周",
+          "dimension": "political",
+          "year": 690
+        },
+        {
+          "id": "ev_tangwuzetian_dianshi",
+          "name": "开殿试武举",
+          "dimension": "culture",
+          "year": 690
+        },
+        {
+          "id": "ev_tangwuzetian_shenlong",
+          "name": "神龙政变",
+          "dimension": "political",
+          "year": 705
+        }
       ],
       "evaluation": "neutral",
-      "posthumousRule": "非谥法所得，尊号「则天大圣」"
+      "posthumousRule": "尊号「则天大圣」，非谥法所得"
     },
     {
       "id": "tang_xuanzong",
@@ -115,13 +205,33 @@
       "segmentId": "seg_shengtang",
       "portrait": "/portraits/tang-xuanzong.svg",
       "events": [
-        { "id": "ev_tangxuanzong_kaiyuan", "name": "开元之治", "dimension": "political", "year": 713 },
-        { "id": "ev_tangxuanzong_mubing", "name": "府兵改募兵", "dimension": "military", "year": 737 },
-        { "id": "ev_tangxuanzong_anshi", "name": "安史之乱", "dimension": "military", "year": 755 },
-        { "id": "ev_tangxuanzong_mawei", "name": "马嵬之变", "dimension": "political", "year": 756 }
+        {
+          "id": "ev_tangxuanzong_kaiyuan",
+          "name": "开元之治",
+          "dimension": "political",
+          "year": 713
+        },
+        {
+          "id": "ev_tangxuanzong_mubing",
+          "name": "府兵改募兵",
+          "dimension": "military",
+          "year": 737
+        },
+        {
+          "id": "ev_tangxuanzong_anshi",
+          "name": "安史之乱",
+          "dimension": "military",
+          "year": 755
+        },
+        {
+          "id": "ev_tangxuanzong_mawei",
+          "name": "马嵬之变",
+          "dimension": "political",
+          "year": 756
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "照临四方曰明（谥「至道大圣大明孝」，取「明」）"
+      "posthumousRule": "蓄义丰功曰仁"
     },
     {
       "id": "tang_suzong",
@@ -133,9 +243,24 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-suzong.svg",
       "events": [
-        { "id": "ev_tangsuzong_lingwu", "name": "灵武即位", "dimension": "political", "year": 756 },
-        { "id": "ev_tangsuzong_liangjing", "name": "借回纥兵复两京", "dimension": "military", "year": 757 },
-        { "id": "ev_tangsuzong_huanguan", "name": "宦官典禁军", "dimension": "political", "year": 758 }
+        {
+          "id": "ev_tangsuzong_lingwu",
+          "name": "灵武即位",
+          "dimension": "political",
+          "year": 756
+        },
+        {
+          "id": "ev_tangsuzong_liangjing",
+          "name": "借回纥兵复两京",
+          "dimension": "military",
+          "year": 757
+        },
+        {
+          "id": "ev_tangsuzong_huanguan",
+          "name": "宦官典禁军",
+          "dimension": "political",
+          "year": 758
+        }
       ],
       "evaluation": "good",
       "posthumousRule": "圣善周闻曰宣"
@@ -150,12 +275,27 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-daizong.svg",
       "events": [
-        { "id": "ev_tangdaizong_pinganshi", "name": "平定安史", "dimension": "military", "year": 763 },
-        { "id": "ev_tangdaizong_tubo", "name": "吐蕃入长安", "dimension": "military", "year": 763 },
-        { "id": "ev_tangdaizong_pugu", "name": "仆固怀恩之叛", "dimension": "military", "year": 764 }
+        {
+          "id": "ev_tangdaizong_pinganshi",
+          "name": "平定安史",
+          "dimension": "military",
+          "year": 763
+        },
+        {
+          "id": "ev_tangdaizong_tubo",
+          "name": "吐蕃入长安",
+          "dimension": "military",
+          "year": 763
+        },
+        {
+          "id": "ev_tangdaizong_pugu",
+          "name": "仆固怀恩之叛",
+          "dimension": "military",
+          "year": 764
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「睿文孝武」，取「文」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "tang_dezong",
@@ -167,12 +307,27 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-dezong.svg",
       "events": [
-        { "id": "ev_tangdezong_liangshui", "name": "两税法", "dimension": "political", "year": 780 },
-        { "id": "ev_tangdezong_jingyuan", "name": "泾原兵变", "dimension": "military", "year": 783 },
-        { "id": "ev_tangdezong_fengtian", "name": "奉天之难", "dimension": "political", "year": 784 }
+        {
+          "id": "ev_tangdezong_liangshui",
+          "name": "两税法",
+          "dimension": "political",
+          "year": 780
+        },
+        {
+          "id": "ev_tangdezong_jingyuan",
+          "name": "泾原兵变",
+          "dimension": "military",
+          "year": 783
+        },
+        {
+          "id": "ev_tangdezong_fengtian",
+          "name": "奉天之难",
+          "dimension": "political",
+          "year": 784
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「神武孝文」，取「文」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "tang_shunzong",
@@ -184,11 +339,21 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-shunzong.svg",
       "events": [
-        { "id": "ev_tangshunzong_yongzhen", "name": "永贞革新", "dimension": "political", "year": 805 },
-        { "id": "ev_tangshunzong_neichan", "name": "内禅", "dimension": "political", "year": 805 }
+        {
+          "id": "ev_tangshunzong_yongzhen",
+          "name": "永贞革新",
+          "dimension": "political",
+          "year": 805
+        },
+        {
+          "id": "ev_tangshunzong_neichan",
+          "name": "内禅",
+          "dimension": "political",
+          "year": 805
+        }
       ],
       "evaluation": "neutral",
-      "posthumousRule": "好和不争曰安（谥「至德弘道大圣大安孝」）"
+      "posthumousRule": "好和不争曰安"
     },
     {
       "id": "tang_xianzong",
@@ -200,9 +365,24 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-xianzong.svg",
       "events": [
-        { "id": "ev_tangxianzong_yuanhe", "name": "元和中兴", "dimension": "political", "year": 806 },
-        { "id": "ev_tangxianzong_huaxi", "name": "平淮西", "dimension": "military", "year": 817 },
-        { "id": "ev_tangxianzong_fogu", "name": "迎佛骨", "dimension": "culture", "year": 819 }
+        {
+          "id": "ev_tangxianzong_yuanhe",
+          "name": "元和中兴",
+          "dimension": "political",
+          "year": 806
+        },
+        {
+          "id": "ev_tangxianzong_huaxi",
+          "name": "平淮西",
+          "dimension": "military",
+          "year": 817
+        },
+        {
+          "id": "ev_tangxianzong_fogu",
+          "name": "迎佛骨",
+          "dimension": "culture",
+          "year": 819
+        }
       ],
       "evaluation": "good",
       "posthumousRule": "温克令仪曰章"
@@ -217,11 +397,21 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-muzong.svg",
       "events": [
-        { "id": "ev_tangmuzong_xiaobing", "name": "销兵", "dimension": "military", "year": 821 },
-        { "id": "ev_tangmuzong_heshuo", "name": "河朔复叛", "dimension": "military", "year": 821 }
+        {
+          "id": "ev_tangmuzong_xiaobing",
+          "name": "销兵",
+          "dimension": "military",
+          "year": 821
+        },
+        {
+          "id": "ev_tangmuzong_heshuo",
+          "name": "河朔复叛",
+          "dimension": "military",
+          "year": 821
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "柔质慈民曰惠（谥「睿圣文惠孝」）"
+      "evaluation": "good",
+      "posthumousRule": "柔质慈民曰惠"
     },
     {
       "id": "tang_jingzong",
@@ -233,11 +423,21 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-jingzong.svg",
       "events": [
-        { "id": "ev_tangjingzong_qiuye", "name": "击球夜猎", "dimension": "political", "year": 825 },
-        { "id": "ev_tangjingzong_ranfang", "name": "染坊匠人作乱", "dimension": "political", "year": 826 }
+        {
+          "id": "ev_tangjingzong_qiuye",
+          "name": "击球夜猎",
+          "dimension": "political",
+          "year": 825
+        },
+        {
+          "id": "ev_tangjingzong_ranfang",
+          "name": "染坊匠人作乱",
+          "dimension": "political",
+          "year": 826
+        }
       ],
-      "evaluation": "bad",
-      "posthumousRule": "在国逢难曰愍（谥「睿武昭愍孝」）"
+      "evaluation": "neutral",
+      "posthumousRule": "在国逢难曰愍"
     },
     {
       "id": "tang_wenzong",
@@ -249,11 +449,21 @@
       "segmentId": "seg_zhongtang",
       "portrait": "/portraits/tang-wenzong.svg",
       "events": [
-        { "id": "ev_tangwenzong_ganlu", "name": "甘露之变", "dimension": "political", "year": 835 },
-        { "id": "ev_tangwenzong_shijing", "name": "开成石经", "dimension": "culture", "year": 837 }
+        {
+          "id": "ev_tangwenzong_ganlu",
+          "name": "甘露之变",
+          "dimension": "political",
+          "year": 835
+        },
+        {
+          "id": "ev_tangwenzong_shijing",
+          "name": "开成石经",
+          "dimension": "culture",
+          "year": 837
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "聪明睿哲曰献"
+      "posthumousRule": "聪明睿智曰献"
     },
     {
       "id": "tang_wuzong",
@@ -265,8 +475,18 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-wuzong.svg",
       "events": [
-        { "id": "ev_tangwuzong_zelu", "name": "平泽潞", "dimension": "military", "year": 844 },
-        { "id": "ev_tangwuzong_miefo", "name": "会昌灭佛", "dimension": "culture", "year": 845 }
+        {
+          "id": "ev_tangwuzong_zelu",
+          "name": "平泽潞",
+          "dimension": "military",
+          "year": 844
+        },
+        {
+          "id": "ev_tangwuzong_miefo",
+          "name": "会昌灭佛",
+          "dimension": "culture",
+          "year": 845
+        }
       ],
       "evaluation": "good",
       "posthumousRule": "刚德克就曰肃"
@@ -281,11 +501,21 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-xuanzong.svg",
       "events": [
-        { "id": "ev_tangxuanzong_dazhong", "name": "大中之治", "dimension": "political", "year": 847 },
-        { "id": "ev_tangxuanzong_zhangyichao", "name": "张议潮归唐", "dimension": "military", "year": 851 }
+        {
+          "id": "ev_tangxuanzong_dazhong",
+          "name": "大中之治",
+          "dimension": "political",
+          "year": 847
+        },
+        {
+          "id": "ev_tangxuanzong_zhangyichao",
+          "name": "张议潮归唐",
+          "dimension": "military",
+          "year": 851
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "圣善周闻曰宣"
+      "posthumousRule": "蓄义丰功曰仁"
     },
     {
       "id": "tang_yizong",
@@ -297,11 +527,21 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-yizong.svg",
       "events": [
-        { "id": "ev_tangyizong_pangxun", "name": "庞勋之乱", "dimension": "military", "year": 868 },
-        { "id": "ev_tangyizong_fogu", "name": "迎佛骨", "dimension": "culture", "year": 873 }
+        {
+          "id": "ev_tangyizong_pangxun",
+          "name": "庞勋之乱",
+          "dimension": "military",
+          "year": 868
+        },
+        {
+          "id": "ev_tangyizong_fogu",
+          "name": "迎佛骨",
+          "dimension": "culture",
+          "year": 873
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "柔质慈民曰惠（谥「昭圣恭惠孝」）"
+      "evaluation": "good",
+      "posthumousRule": "柔质慈民曰惠"
     },
     {
       "id": "tang_xizong",
@@ -313,11 +553,21 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-xizong.svg",
       "events": [
-        { "id": "ev_tangxizong_huangchao", "name": "黄巢陷长安", "dimension": "military", "year": 880 },
-        { "id": "ev_tangxizong_benshu", "name": "奔蜀", "dimension": "military", "year": 881 }
+        {
+          "id": "ev_tangxizong_huangchao",
+          "name": "黄巢陷长安",
+          "dimension": "military",
+          "year": 880
+        },
+        {
+          "id": "ev_tangxizong_benshu",
+          "name": "奔蜀",
+          "dimension": "military",
+          "year": 881
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "庙号沿称；谥「惠圣恭定」，无单字可循"
+      "evaluation": "good",
+      "posthumousRule": "纯行不爽曰定"
     },
     {
       "id": "tang_zhaozong",
@@ -329,11 +579,21 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-zhaozong.svg",
       "events": [
-        { "id": "ev_tangzhaozong_zhuwen", "name": "朱温挟帝", "dimension": "political", "year": 901 },
-        { "id": "ev_tangzhaozong_luoyang", "name": "迁都洛阳", "dimension": "political", "year": 904 }
+        {
+          "id": "ev_tangzhaozong_zhuwen",
+          "name": "朱温挟帝",
+          "dimension": "political",
+          "year": 901
+        },
+        {
+          "id": "ev_tangzhaozong_luoyang",
+          "name": "迁都洛阳",
+          "dimension": "political",
+          "year": 904
+        }
       ],
       "evaluation": "good",
-      "posthumousRule": "经纬天地曰文（谥「圣穆景文」）"
+      "posthumousRule": "经纬天地曰文"
     },
     {
       "id": "tang_aidi",
@@ -345,11 +605,21 @@
       "segmentId": "seg_xiantang",
       "portrait": "/portraits/tang-aidi.svg",
       "events": [
-        { "id": "ev_tangaidi_baima", "name": "白马驿之祸", "dimension": "political", "year": 905 },
-        { "id": "ev_tangaidi_chanliang", "name": "禅位于梁", "dimension": "political", "year": 907 }
+        {
+          "id": "ev_tangaidi_baima",
+          "name": "白马驿之祸",
+          "dimension": "political",
+          "year": 905
+        },
+        {
+          "id": "ev_tangaidi_chanliang",
+          "name": "禅位于梁",
+          "dimension": "political",
+          "year": 907
+        }
       ],
-      "evaluation": "neutral",
-      "posthumousRule": "初谥「哀」，后唐改谥昭宣光烈孝皇帝"
+      "evaluation": "good",
+      "posthumousRule": "容仪恭美曰昭"
     }
   ]
 }
