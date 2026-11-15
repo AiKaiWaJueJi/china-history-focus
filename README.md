@@ -36,7 +36,7 @@ npm install
 npm run dev -- --port 5180      # http://localhost:5180
 npm run build                   # 先跑 tsc -b，再 vite build
 npx tsc -b --pretty false       # 只做类型检查
-node verify-codex.mjs      # 13  百科库数据层
+node verify-codex.mjs      # 17  百科库数据层（id/关联/标记/原文/BFS 下钻）
 node verify-codex-ui.mjs   # 22  档案抽屉交互
 ```
 
@@ -47,12 +47,12 @@ node verify-codex-ui.mjs   # 22  档案抽屉交互
 
 ## 验收
 
-26 个脚本、约 660 条断言，全部跑一遍约 8 分钟（需要 dev server 在跑）：
+28 个脚本、约 720 条断言，全部跑一遍约 10 分钟（需要 dev server 在跑）：
 
-> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 22 套，逐套汇总）。
+> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 24 套，逐套汇总；时间敏感的用例失败会自动重试一次并打印首次结果）。
 
 ```bash
-# UI：21 套 545 条
+# UI：24 套 约 640 条
 node verify-gallery.mjs      # 24   主页
 node verify-dwell.mjs        #  8   悬停驻留
 node verify-timeline.mjs     # 20   时间轴
@@ -62,7 +62,7 @@ node verify-dongqian.mjs     # 20   平王东迁段间过渡
 node verify-qin.mjs          # 27   秦朝 + 楚漢入口
 node verify-chuhan.mjs       # 13   楚漢沙盘
 node verify-sandbox-note.mjs #  7   沙盘文案口径
-node verify-endgame.mjs      # 108  战国沙盘（最全）
+node verify-endgame.mjs      # 109  战国沙盘（最全）
 node verify-han.mjs          # 19   漢朝时间轴
 node verify-sanguo.mjs       # 16   三国沙盘
 node verify-map-points.mjs   #  6   三图要地/关隘方位
