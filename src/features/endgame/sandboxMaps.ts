@@ -8,6 +8,7 @@
  * 每份 geo 的 attacker 字段就是攻方，regions 是其余各块；本文件只做一层包装，
  * 让 EndgameStage 能像 zhanguo / chuhan / sanguo / sui 那样按 mapId 取 MapSpec。
  */
+import zhanguoGeo from '../../data/zhanguo.geo.json'
 import suiUnifyGeo from '../../data/sui-unify.geo.json'
 import tangWudaiGeo from '../../data/tang-wudai.geo.json'
 import fdSongGeo from '../../data/fd-song.geo.json'
@@ -40,6 +41,8 @@ function toSpec(geo: Geo, ariaLabel: string, resetHint?: string): MapSpec {
 }
 
 export const SANDBOX_MAPS: Record<string, MapSpec> = {
+  // 周：战国七雄（第三轮改成与七盘同一套「真实省界底板 + 史实归属」）
+  zhanguo: toSpec(zhanguoGeo as unknown as Geo, '战国七雄版图', '六国复其疆'),
   'sui-unify': toSpec(suiUnifyGeo as unknown as Geo, '隋末群雄与唐统一战争版图', '群雄复其疆'),
   'tang-wudai': toSpec(tangWudaiGeo as unknown as Geo, '唐末梁晋争霸版图', '诸镇复其疆'),
   'fd-song': toSpec(fdSongGeo as unknown as Geo, '五代末宋统一战争版图', '列国复其疆'),

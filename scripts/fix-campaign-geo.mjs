@@ -23,7 +23,25 @@ import { CITY, project } from './lib/geo-lib.mjs'
 import { SIDE_OVERRIDE } from './lib/side-override.mjs'
 
 const CHECK_ONLY = process.argv.includes('--check')
-const MAPS = ['sui', 'tang', 'five_dynasties', 'song', 'yuan', 'ming', 'qing']
+/*
+  朝代 id → endgame 文件名。多数朝代是 endgame.<朝>.json，
+  但秦的沙盘文件叫 endgame.chuhan.json、汉叫 endgame.han.json（历史原因）。
+  周（战国）/ 秦（楚汉）/ 汉（三国）第三轮换到底板上，路线一并重算。
+*/
+const MAPS = [
+  ['sui', 'sui'],
+  ['tang', 'tang'],
+  ['five_dynasties', 'five_dynasties'],
+  ['song', 'song'],
+  ['yuan', 'yuan'],
+  ['ming', 'ming'],
+  ['qing', 'qing'],
+  ['zhou', 'zhou'],
+  ['qin', 'chuhan'],
+  ['han', 'han'],
+  // 南北朝收尾沙盘（隋灭陈）：文件叫 endgame.nanbei.json
+  ['southern_northern', 'nanbei'],
+]
 
 const parse = (s) => s.trim().split(/\s+/).map((p) => p.split(',').map(Number))
 const inside = (pt, ring) => {
@@ -56,8 +74,8 @@ const nearRing = (pt, ring, tol) => {
 }
 
 let bad = 0
-for (const dynasty of MAPS) {
-  const file = `src/data/endgame.${dynasty}.json`
+for (const [dynasty, fileId] of MAPS) {
+  const file = `src/data/endgame.${fileId}.json`
   const endgame = JSON.parse(readFileSync(file, 'utf8'))
   const geo = JSON.parse(readFileSync(`src/data/${endgame.mapId}.geo.json`, 'utf8'))
   const attackerRing = parse(geo.attacker.points)

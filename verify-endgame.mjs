@@ -112,7 +112,8 @@ try {
   }))
   console.log(`\n[IDLE] ${JSON.stringify(idle)}`)
   check('index 初始为 0', idle.index === '0', idle.index)
-  check('地图 7 个区域', idle.regions === 7, `${idle.regions}`)
+  // 第三轮换底板后：秦 + 六国 + 3 个背景势力（匈奴·东胡 / 月氏·羌 / 百越·西南夷）
+  check('地图 10 个区域（六国 + 秦 + 3 背景）', idle.regions === 10, `${idle.regions}`)
   check('初始只有秦为墨色', idle.captured === 1, `${idle.captured}`)
   check('阶梯 7 个节点（战前 + 6 国）', idle.rails === 7, `${idle.rails}`)
   check('默认不显示战报栏（地图独占）', !idle.hasPanel)
@@ -206,7 +207,8 @@ try {
     }
   })
   console.log(`[GEO] ${JSON.stringify(geo)}`)
-  check('秦军路线自咸阳出发', geo.start.startsWith('M 250.0 401.9'), geo.start)
+  // 咸阳在新区投影里落在 (55.86%, 53.77%) → viewBox (558.6, 344.1)
+  check('秦军路线自咸阳出发', geo.start.startsWith('M 558.6'), geo.start)
   check('路线为多段折线', geo.segments >= 2, `${geo.segments} 段`)
   check('赵之战有援军路线', geo.allies >= 1, `${geo.allies} 条`)
   check('战报列出援军动向', geo.allyRows >= 1, `${geo.allyRows} 行`)
@@ -625,7 +627,7 @@ try {
   console.log(`[RESET] ${JSON.stringify(afterReset)}`)
   check('点「秦」回到战前（index 0）', afterReset.index === '0', afterReset.index)
   check('六国恢复独立（只剩秦为墨色）', afterReset.captured === 1, `${afterReset.captured}`)
-  check('六国国名重新显现', afterReset.labels === 6, `${afterReset.labels}/6`)
+  check('六国与背景势力国名重新显现', afterReset.labels >= 9, String(afterReset.labels))
   check('秦朝入口与战报一并消失', !afterReset.entry && !afterReset.panel)
 
   // 后续用例依赖 index 2 的状态，复位回去

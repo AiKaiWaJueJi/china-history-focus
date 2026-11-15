@@ -14,6 +14,7 @@
  * 输出：src/data/<id>.geo.json
  */
 import { readFileSync, writeFileSync } from 'node:fs'
+import { ANCIENT_MAPS } from './lib/ancient-maps.mjs'
 import {
   unionRings,
   ringArea,
@@ -27,6 +28,9 @@ import {
 
 const base = JSON.parse(readFileSync('scripts/data/china-cells.json', 'utf8'))
 const CELL = Object.fromEntries(base.cells.map((c) => [c.id, c]))
+/** 单元组：写省名 / 旧名时自动展开成子单元（见 build-china-base.mjs 的 GROUPS） */
+const GROUPS = base.groups ?? {}
+const expand = (ids) => ids.flatMap((id) => GROUPS[id] ?? [id])
 const ALL_CELLS = base.cells.map((c) => c.id)
 const BASE_TOTAL = base.total
 
@@ -66,12 +70,12 @@ const MAPS = {
       '隋亡之后群雄并立：唐据关中、河东、巴蜀，次第削平定杨、郑、夏、梁、吴（618—624）。' +
       '版图按今省界示意：唐含陕晋川渝与陇右，郑为河南，夏为河北山东，梁为荆湖岭南，吴为江淮江浙闽赣。' +
       '突厥、吐谷浑、高句丽、南中诸部为背景，不参与推演。',
-    attacker: { id: 'tang', name: '唐', cells: ['shaanxi_n', 'shaanxi_s', 'shanxi_s', 'sichuan', 'chongqing'], capital: '长安' },
+    attacker: { id: 'tang', name: '唐', cells: ['shaanxi_north', 'shaanxi_s', 'shanxi_south', 'sichuan', 'chongqing'], capital: '长安' },
     regions: [
       { id: 'xqin', name: '西秦', cells: ['gansu', 'ningxia'], capital: '兰州' },
       { id: 'dingyang', name: '定杨', cells: ['shanxi_n'], capital: '马邑' },
       { id: 'zheng', name: '郑', cells: ['henan'], capital: '洛阳' },
-      { id: 'xia', name: '夏', cells: ['hebei_s', 'shandong'], capital: '洺州' },
+      { id: 'xia', name: '夏', cells: ['hebei_south', 'shandong'], capital: '洺州' },
       { id: 'liang', name: '梁', cells: ['hubei', 'hunan', 'guangdong', 'guangxi'], capital: '江陵' },
       { id: 'song', name: '宋', cells: ['jiangsu_n', 'jiangsu_s', 'anhui_n', 'anhui_s', 'zhejiang', 'fujian', 'jiangxi', 'shanghai'], capital: '丹阳' },
       { id: 'youzhou', name: '罗艺', cells: ['hebei_n', 'beijing', 'tianjin'], backdrop: true },
@@ -96,11 +100,11 @@ const MAPS = {
     note:
       '唐亡之年（907），晋据河东与梁争中原；燕据幽州、岐据关中、前蜀据两川、吴据江淮，' +
       '另有吴越、楚、闽、南汉、荆南并立（907—923）。版图按今省界示意，淮南苏北归梁、江南归吴。',
-    attacker: { id: 'jin', name: '晋', cells: ['shanxi_n', 'shanxi_s'], capital: '太原' },
+    attacker: { id: 'jin', name: '晋', cells: ['shanxi_n', 'shanxi_south'], capital: '太原' },
     regions: [
-      { id: 'houliang', name: '后梁', cells: ['henan', 'shandong', 'anhui_n', 'jiangsu_n', 'hebei_s'], capital: '汴州' },
+      { id: 'houliang', name: '后梁', cells: ['henan', 'shandong', 'anhui_n', 'jiangsu_n', 'hebei_south'], capital: '汴州' },
       { id: 'yan', name: '燕', cells: ['hebei_n', 'beijing', 'tianjin'], capital: '幽州' },
-      { id: 'qi', name: '岐', cells: ['shaanxi_n', 'gansu', 'ningxia'], capital: '凤翔' },
+      { id: 'qi', name: '岐', cells: ['shaanxi_north', 'gansu', 'ningxia'], capital: '凤翔' },
       { id: 'qianshu', name: '前蜀', cells: ['sichuan', 'chongqing', 'shaanxi_s'], capital: '成都' },
       { id: 'wu', name: '吴', cells: ['jiangsu_s', 'anhui_s', 'jiangxi', 'shanghai'], capital: '广陵' },
       { id: 'wuyue', name: '吴越', cells: ['zhejiang'], capital: '杭州', backdrop: true },
@@ -131,13 +135,13 @@ const MAPS = {
       战前取 960 年（陈桥兵变之后，与上一段过渡页接得上）：此时后周已取淮南（955—958），
       故淮南（苏北、皖北）归宋；南唐只余江南。
     */
-    attacker: { id: 'song', name: '宋', cells: ['henan', 'shandong', 'shaanxi_n', 'hebei_s', 'jiangsu_n', 'anhui_n'], capital: '汴州' },
+    attacker: { id: 'song', name: '宋', cells: ['henan', 'shandong', 'shaanxi_north', 'hebei_south', 'jiangsu_n', 'anhui_n'], capital: '汴州' },
     regions: [
       { id: 'nantang', name: '江南', cells: ['jiangsu_s', 'anhui_s', 'jiangxi', 'fujian', 'shanghai'], capital: '金陵' },
       { id: 'houshu', name: '后蜀', cells: ['sichuan', 'chongqing', 'shaanxi_s'], capital: '成都' },
       { id: 'nanhan', name: '南汉', cells: ['guangdong', 'guangxi'], capital: '广州' },
       { id: 'jingnan', name: '荆南', cells: ['hubei', 'hunan'], capital: '江陵' },
-      { id: 'beihan', name: '北汉', cells: ['shanxi_s'], capital: '太原' },
+      { id: 'beihan', name: '北汉', cells: ['shanxi_south'], capital: '太原' },
       { id: 'wuyue', name: '吴越', cells: ['zhejiang'], capital: '杭州' },
       { id: 'qidan', name: '辽', cells: ['beijing', 'tianjin', 'hebei_n', 'shanxi_n', 'liaoning', 'jilin', 'heilongjiang', 'neimenggu'], backdrop: true },
       { id: 'dali', name: '大理', cells: ['yunnan', 'guizhou'], backdrop: true },
@@ -159,7 +163,7 @@ const MAPS = {
     note:
       '襄阳既破，元军顺汉水入江、顺江东下：临安出降、四川陷落、崖山蹈海（1273—1279）。' +
       '版图按今省界示意：元取淮河以北及云贵，宋存四川、荆湖、江浙、闽广四区（当年元已并大理，故不单列）。',
-    attacker: { id: 'yuan', name: '元', cells: ['hebei_n', 'hebei_s', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_s', 'shandong', 'henan', 'shaanxi_n', 'shaanxi_s', 'gansu', 'ningxia', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'xinjiang', 'xizang', 'qinghai', 'yunnan', 'guizhou', 'jiangsu_n', 'anhui_n'], capital: '大都' },
+    attacker: { id: 'yuan', name: '元', cells: ['hebei_n', 'hebei_south', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_south', 'shandong', 'henan', 'shaanxi_north', 'shaanxi_s', 'gansu', 'ningxia', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'xinjiang', 'xizang', 'qinghai', 'yunnan', 'guizhou', 'jiangsu_n', 'anhui_n'], capital: '大都' },
     regions: [
       { id: 'sichuan', name: '四川', cells: ['sichuan', 'chongqing'], capital: '重庆' },
       { id: 'jinghu', name: '荆湖', cells: ['hubei', 'hunan'], capital: '江陵' },
@@ -184,8 +188,8 @@ const MAPS = {
       '版图按今省界示意：关中是元将李思齐、张良弼所据，仍系于元（旧版单列「关中」为无意义模块，已并入）。',
     attacker: { id: 'ming', name: '明', cells: ['jiangsu_n', 'jiangsu_s', 'anhui_n', 'anhui_s', 'zhejiang', 'jiangxi', 'shanghai', 'fujian', 'guangdong', 'guangxi', 'hubei', 'hunan'], capital: '应天' },
     regions: [
-      { id: 'yuan', name: '元', cells: ['hebei_n', 'hebei_s', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_s', 'shandong', 'henan', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang'], capital: '大都' },
-      { id: 'shaanxi', name: '陕甘', cells: ['shaanxi_n', 'shaanxi_s', 'gansu', 'ningxia'], capital: '奉元' },
+      { id: 'yuan', name: '元', cells: ['hebei_n', 'hebei_south', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_south', 'shandong', 'henan', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang'], capital: '大都' },
+      { id: 'shaanxi', name: '陕甘', cells: ['shaanxi_north', 'shaanxi_s', 'gansu', 'ningxia'], capital: '奉元' },
       { id: 'xifan', name: '西番诸部', cells: ['xinjiang', 'qinghai', 'xizang'], backdrop: true },
       { id: 'xia', name: '夏', cells: ['sichuan', 'chongqing'], capital: '重庆' },
       { id: 'liang', name: '梁王', cells: ['yunnan', 'guizhou'], capital: '中庆' },
@@ -208,7 +212,7 @@ const MAPS = {
       '版图按今省界示意：清据东北与漠南，大顺据华北关中，南明据江淮以南，大西据巴蜀，卫拉特诸部为背景。',
     attacker: { id: 'qing', name: '清', cells: ['liaoning', 'jilin', 'heilongjiang', 'neimenggu'], capital: '盛京' },
     regions: [
-      { id: 'dashun', name: '大顺', cells: ['shaanxi_n', 'shaanxi_s', 'shanxi_n', 'shanxi_s', 'henan', 'hebei_s', 'hebei_n', 'beijing', 'tianjin', 'shandong', 'gansu', 'ningxia'], capital: '西安' },
+      { id: 'dashun', name: '大顺', cells: ['shaanxi_north', 'shaanxi_s', 'shanxi_n', 'shanxi_south', 'henan', 'hebei_south', 'hebei_n', 'beijing', 'tianjin', 'shandong', 'gansu', 'ningxia'], capital: '西安' },
       { id: 'nanming', name: '南明', cells: ['jiangsu_n', 'jiangsu_s', 'anhui_n', 'anhui_s', 'zhejiang', 'jiangxi', 'fujian', 'shanghai', 'hubei', 'hunan', 'guangdong', 'guangxi', 'yunnan', 'guizhou'], capital: '南京' },
       { id: 'daxi', name: '大西', cells: ['sichuan', 'chongqing'], capital: '成都' },
       { id: 'weila', name: '卫拉特', cells: ['xinjiang', 'qinghai', 'xizang'], backdrop: true },
@@ -231,7 +235,7 @@ const MAPS = {
       '版图按今省界示意：革命军据长江以南，北洋据豫鲁，清廷据华北、西北与东北，川滇单列（旧版「独立各省」语义含混，已并入革命军）。',
     attacker: { id: 'geming', name: '革命军', cells: ['hubei', 'hunan', 'jiangxi'], capital: '武昌' },
     regions: [
-      { id: 'qingting', name: '清廷', cells: ['hebei_n', 'hebei_s', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_s', 'shaanxi_n', 'gansu', 'ningxia', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'xinjiang', 'xizang', 'qinghai'], capital: '北京' },
+      { id: 'qingting', name: '清廷', cells: ['hebei_n', 'hebei_south', 'beijing', 'tianjin', 'shanxi_n', 'shanxi_south', 'shaanxi_north', 'gansu', 'ningxia', 'neimenggu', 'liaoning', 'jilin', 'heilongjiang', 'xinjiang', 'xizang', 'qinghai'], capital: '北京' },
       { id: 'dongnan', name: '东南', cells: ['jiangsu_n', 'jiangsu_s', 'anhui_n', 'anhui_s', 'zhejiang', 'shanghai', 'fujian', 'guangdong', 'guangxi'], capital: '南京' },
       { id: 'beiyang', name: '北洋', cells: ['henan', 'shandong'], capital: '彰德' },
       { id: 'chuandian', name: '川滇', cells: ['sichuan', 'chongqing', 'yunnan', 'guizhou', 'shaanxi_s'], capital: '成都' },
@@ -256,6 +260,9 @@ const fmtRivers = (names) => names.map((n) => {
   return riverPath(RIVERS[n])
 })
 
+/* 四个古战场（周/秦/汉/晋）：与七盘同一套生成流程，只是疆域来自 ancient-maps.mjs */
+Object.assign(MAPS, ANCIENT_MAPS)
+
 const wanted = process.argv.slice(2)
 const todo = wanted.length ? wanted : Object.keys(MAPS)
 
@@ -271,6 +278,7 @@ for (const id of todo) {
   /* 1. 单元必须不重不漏 */
   const used = new Map()
   for (const r of [spec.attacker, ...spec.regions]) {
+    r.cells = expand(r.cells)
     for (const c of r.cells) {
       if (!CELL[c]) throw new Error(`${id}: 未知单元 ${c}`)
       if (used.has(c)) throw new Error(`${id}: 单元 ${c} 被 ${used.get(c)} 与 ${r.id} 重复占用`)
@@ -293,7 +301,8 @@ for (const id of todo) {
     const area = ringArea(ring)
     // 背景势力不标国都：它们不参与推演；太小的小国（如定杨只有雁门以北）也只留国名，
     // 否则「国名 + 国都」两块文字必然压在一起
-    const capital = r.capital && !r.backdrop && area >= 1400 ? city(r.capital) : null
+    // 单元切细之后（韩只剩河南西 883、魏只剩大梁 1360）门槛要放低，否则小国没有国都
+    const capital = r.capital && !r.backdrop && area >= 700 ? city(r.capital) : null
     return {
       id: r.id,
       name: r.name,
@@ -408,6 +417,9 @@ for (const id of todo) {
       labelSize: r.labelSize,
       ...(r._capital ? { capital: r._capital } : {}),
       ...(spec.regions.find((x) => x.id === r.id)?.backdrop ? { neutral: true } : {}),
+      ...(spec.regions.find((x) => x.id === r.id)?.aliveTo
+        ? { aliveTo: spec.regions.find((x) => x.id === r.id).aliveTo }
+        : {}),
     })),
     rivers: fmtRivers(spec.rivers),
     points,

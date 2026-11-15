@@ -36,7 +36,12 @@ try {
     rails: [...document.querySelectorAll('.rail-node')].map((n) => n.innerText.trim()),
   }))
   console.log('[SHELL]', JSON.stringify(shell))
-  check('标准大一统沙盘：4 个区域（周/齐/陈/突厥）', shell.regions.length === 4 && shell.regions.includes('tujue'), shell.regions.join(','))
+  // 第三轮换底板后多了两块背景势力（西域·高原诸部 / 爨氏·西南夷）
+  check(
+    '标准大一统沙盘：周/齐/陈/突厥 + 2 背景势力',
+    ['beizhou', 'qi', 'chen', 'tujue'].every((id) => shell.regions.includes(id)) && shell.regions.length === 6,
+    shell.regions.join(','),
+  )
   check('突厥不可点击（pointer-events:none）', shell.neutralPE === 'none', shell.neutralPE)
   check('底部无「北周/隋」重复容器，且陈只出现一次', shell.rails.join('|').includes('北齐') && shell.rails.filter((x) => x.includes('陈')).length === 1, shell.rails.join(' / '))
   const defaultNote = await page.evaluate(() => ({

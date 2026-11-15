@@ -115,6 +115,31 @@ import ming_3 from '../../assets/ming_3.jpg'
 import qing_1 from '../../assets/qing_1.jpg'
 import qing_2 from '../../assets/qing_2.jpg'
 import qing_3 from '../../assets/qing_3.jpg'
+// 第三轮：八章段间过渡页的器物图（豆包生成，裁角标后压 1600×900）
+import tang_wuzhou_1 from '../../assets/tang_wuzhou_1.jpg'
+import tang_wuzhou_2 from '../../assets/tang_wuzhou_2.jpg'
+import tang_wuzhou_3 from '../../assets/tang_wuzhou_3.jpg'
+import tang_shenlong_1 from '../../assets/tang_shenlong_1.jpg'
+import tang_shenlong_2 from '../../assets/tang_shenlong_2.jpg'
+import tang_shenlong_3 from '../../assets/tang_shenlong_3.jpg'
+import fd_houtang_1 from '../../assets/fd_houtang_1.jpg'
+import fd_houtang_2 from '../../assets/fd_houtang_2.jpg'
+import fd_houtang_3 from '../../assets/fd_houtang_3.jpg'
+import fd_shijin_1 from '../../assets/fd_shijin_1.jpg'
+import fd_shijin_2 from '../../assets/fd_shijin_2.jpg'
+import fd_shijin_3 from '../../assets/fd_shijin_3.jpg'
+import fd_qidan_1 from '../../assets/fd_qidan_1.jpg'
+import fd_qidan_2 from '../../assets/fd_qidan_2.jpg'
+import fd_qidan_3 from '../../assets/fd_qidan_3.jpg'
+import fd_houzhou_1 from '../../assets/fd_houzhou_1.jpg'
+import fd_houzhou_2 from '../../assets/fd_houzhou_2.jpg'
+import fd_houzhou_3 from '../../assets/fd_houzhou_3.jpg'
+import song_jingkang_1 from '../../assets/song_jingkang_1.jpg'
+import song_jingkang_2 from '../../assets/song_jingkang_2.jpg'
+import song_jingkang_3 from '../../assets/song_jingkang_3.jpg'
+import qing_ruquan_1 from '../../assets/qing_ruquan_1.jpg'
+import qing_ruquan_2 from '../../assets/qing_ruquan_2.jpg'
+import qing_ruquan_3 from '../../assets/qing_ruquan_3.jpg'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -188,6 +213,30 @@ const ART: Record<string, string> = {
   qing_1,
   qing_2,
   qing_3,
+  tang_wuzhou_1,
+  tang_wuzhou_2,
+  tang_wuzhou_3,
+  tang_shenlong_1,
+  tang_shenlong_2,
+  tang_shenlong_3,
+  fd_houtang_1,
+  fd_houtang_2,
+  fd_houtang_3,
+  fd_shijin_1,
+  fd_shijin_2,
+  fd_shijin_3,
+  fd_qidan_1,
+  fd_qidan_2,
+  fd_qidan_3,
+  fd_houzhou_1,
+  fd_houzhou_2,
+  fd_houzhou_3,
+  song_jingkang_1,
+  song_jingkang_2,
+  song_jingkang_3,
+  qing_ruquan_1,
+  qing_ruquan_2,
+  qing_ruquan_3,
 }
 
 const ART_ALT: Record<string, string> = {
@@ -260,6 +309,30 @@ const ART_ALT: Record<string, string> = {
   qing_1: '自强求富·黄铜炮闩、望远镜与机器铭牌',
   qing_2: '变法与庚子·奏折、铜印与烧焦书册',
   qing_3: '清帝退位·诏书卷轴、铜印与纪念铜章',
+  tang_wuzhou_1: '二圣临朝的鎏金铜镜与奏表木匣',
+  tang_wuzhou_2: '则天金简与玉册残片',
+  tang_wuzhou_3: '铜匦与殿试试卷',
+  tang_shenlong_1: '武周晚期的描金屏风与香炉',
+  tang_shenlong_2: '神龙政变之夜的羽林兵甲',
+  tang_shenlong_3: '复国号唐的玉册与铜印',
+  fd_houtang_1: '魏州称帝的黄旗与诏书',
+  fd_houtang_2: '夜渡黄河的浮桥与铁枪',
+  fd_houtang_3: '汴梁城破的焦土与断戟',
+  fd_shijin_1: '河东军府的虎符与削爵诏书',
+  fd_shijin_2: '燕云十六州的盟约文书',
+  fd_shijin_3: '穹庐中的金杯与蜡封书信',
+  fd_qidan_1: '契丹铁骑的马鞍与狼头旗',
+  fd_qidan_2: '契丹主入汴的毡帐与礼器',
+  fd_qidan_3: '后汉代晋的新印与箭架',
+  fd_houzhou_1: '隐帝诛臣的裂诏与横刀',
+  fd_houzhou_2: '澶州兵变的黄袍与断旗',
+  fd_houzhou_3: '郭威建周的铜印与律令',
+  song_jingkang_1: '金人南下的铁浮屠马甲',
+  song_jingkang_2: '汴京陷落的铜鼎与焦梁',
+  song_jingkang_3: '南宋行在的官印与梅花',
+  qing_ruquan_1: '山海关的红衣大炮与箭囊',
+  qing_ruquan_2: '迁都北京的铜鹤与卤簿',
+  qing_ruquan_3: '定鼎中原的玉玺与登极诏书',
 }
 
 interface FallAct {

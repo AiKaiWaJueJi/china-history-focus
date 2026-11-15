@@ -183,7 +183,13 @@ function splitByHalfPlane(rings, a, b) {
       [ax - dy * FAR, ay + dx * FAR],
     ],
   ]
-  const src = rings.length === 1 ? [[rings[0]]] : [rings]
+  /*
+    允许两种输入：省刚读进来时是「环数组」（[[x,y],…][]），
+    一次切分之后拿到的是 polygonClipping 的 MultiPolygon（[[[x,y],…]][][]），
+    多级切割（陕北→关中→陕南）会连着调，这里统一一下。
+  */
+  const isRingArray = typeof rings[0]?.[0]?.[0] === 'number'
+  const src = isRingArray ? [[rings[0]]] : rings
   const south = polygonClipping.intersection(src, semi)
   const north = polygonClipping.difference(src, semi)
   return { north, south }
@@ -214,29 +220,62 @@ const pushCell = (id, name, rings) => {
   cells.push({ id, name, rings })
 }
 
+/* 纬向切线：north = 线北，south = 线南 */
+function cutLat(rings, lat, lonA = 96, lonB = 126) {
+  return splitByHalfPlane(rings, project(lonA, lat), project(lonB, lat))
+}
+
+/** 经向切线（由北向南画线）：west = 线西，east = 线东 */
+function cutLon(rings, lon, latA = 50, latB = 18) {
+  const r = splitByHalfPlane(rings, project(lon, latA), project(lon, latB))
+  // 由北向南画线时，半平面落在**西**侧（见 splitByHalfPlane 的构造），故 west = south
+  return { west: r.south, east: r.north }
+}
+
 for (const code of Object.keys(provRings)) {
   const p = provRings[code]
-  /* 陕西：秦岭南北分开（陕北+关中 / 陕南）。秦岭在投影 y 约 350（lat 34） */
+  /*
+    第三轮把四个省切细：战国/楚汉/三国的疆域按「河内、上党、大梁、南阳、晋阳、邯郸」
+    这种古地理分界走，一省一刀已经不够。切法都取真实山河：
+      陕西  北纬 35.6（陕北高原 / 关中）、33.95（秦岭）
+      山西  39.1（雁门）、37.2（临汾盆地北缘）、东经 112.6（上党）
+      河北  39.4（燕山）、37.7（滹沱河）
+      河南  33.4（淮河上游 / 南阳盆地）、东经 113.15（洛阳以西）、115.0（宋卫）
+  */
   if (code === 'shaanxi') {
-    const { north, south } = splitByHalfPlane(p.rings, [project(106.6, 34.0)[0], project(106.6, 34.0)[1]], [project(111.5, 33.95)[0], project(111.5, 33.95)[1]])
-    pushCell('shaanxi_n', '关中·陕北', toRings(north))
-    pushCell('shaanxi_s', '陕南（汉中）', toRings(south))
+    const t = cutLat(p.rings, 35.6)
+    const m = cutLat(t.south, 33.95)
+    pushCell('shaanxi_bei', '陕北（上郡）', toRings(t.north))
+    pushCell('shaanxi_n', '关中', toRings(m.north))
+    pushCell('shaanxi_s', '陕南（汉中）', toRings(m.south))
     continue
   }
-  /* 山西：雁门以北（代北）/ 雁门以南（河东） */
   if (code === 'shanxi') {
-    const lat = 39.1
-    const { north, south } = splitByHalfPlane(p.rings, [project(110.5, lat)[0], project(110.5, lat)[1]], [project(114.0, lat)[0], project(114.0, lat)[1]])
-    pushCell('shanxi_n', '代北', toRings(north))
-    pushCell('shanxi_s', '河东', toRings(south))
+    const t = cutLat(p.rings, 39.1)
+    const u = cutLat(t.south, 37.2)
+    const v = cutLon(u.south, 112.6)
+    pushCell('shanxi_n', '代北', toRings(t.north))
+    pushCell('shanxi_c', '晋中（太原）', toRings(u.north))
+    pushCell('shanxi_s', '晋南（河东）', toRings(v.west))
+    pushCell('shanxi_se', '晋东南（上党）', toRings(v.east))
     continue
   }
-  /* 河北：燕山南北（幽燕 / 河北） */
   if (code === 'hebei') {
-    const lat = 39.4
-    const { north, south } = splitByHalfPlane(p.rings, [project(113.5, lat)[0], project(113.5, lat)[1]], [project(120.0, lat)[0], project(120.0, lat)[1]])
-    pushCell('hebei_n', '河北北部', toRings(north))
-    pushCell('hebei_s', '河北南部', toRings(south))
+    const t = cutLat(p.rings, 39.4)
+    const u = cutLat(t.south, 37.7)
+    pushCell('hebei_n', '燕北（幽州）', toRings(t.north))
+    pushCell('hebei_c', '中山（真定·保定）', toRings(u.north))
+    pushCell('hebei_s', '邯郸（邢洺）', toRings(u.south))
+    continue
+  }
+  if (code === 'henan') {
+    const t = cutLat(p.rings, 33.4)
+    const u = cutLon(t.north, 113.85)
+    const v = cutLon(u.east, 115.0)
+    pushCell('henan_w', '河南西（洛阳）', toRings(u.west))
+    pushCell('henan_c', '河南中（大梁）', toRings(v.west))
+    pushCell('henan_e', '河南东（宋卫）', toRings(v.east))
+    pushCell('henan_n', '河南南（南阳）', toRings(t.south))
     continue
   }
   /* 江苏：淮河以北 / 以南（淮河在苏约北纬 33.0，取 33.05，淮安、清江浦在淮南） */
@@ -285,9 +324,24 @@ for (let i = 0; i < 60000; i++) {
   if (hits > 1) multi++
 }
 
+/*
+  单元组：老七盘与老四盘的一些政权是按「省」写的（cells: ['henan']），
+  省已经被切细了，这里给出展开表——写作省名时自动展开成它的所有子单元。
+  注意展开是**一层**的，子单元不再套娃。
+*/
+const GROUPS = {
+  henan: ['henan_w', 'henan_c', 'henan_e', 'henan_n'],
+  hebei: ['hebei_n', 'hebei_c', 'hebei_s'],
+  hebei_south: ['hebei_c', 'hebei_s'],
+  shanxi: ['shanxi_n', 'shanxi_c', 'shanxi_s', 'shanxi_se'],
+  shanxi_south: ['shanxi_c', 'shanxi_s', 'shanxi_se'],
+  shaanxi: ['shaanxi_bei', 'shaanxi_n', 'shaanxi_s'],
+  shaanxi_north: ['shaanxi_bei', 'shaanxi_n'],
+}
+
 writeFileSync(
   'scripts/data/china-cells.json',
-  JSON.stringify({ viewBox: `0 0 ${W} ${H}`, cells, total }, null, 0) + '\n',
+  JSON.stringify({ viewBox: `0 0 ${W} ${H}`, cells, groups: GROUPS, total }, null, 0) + '\n',
   'utf8',
 )
 

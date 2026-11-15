@@ -75,18 +75,20 @@ node verify-sandbox.mjs      # 91   七朝沙盘（底板/疆域/要地/路线 +
 node verify-segment-intro.mjs # 84   段间过渡（周秦汉晋唐五代宋清：下滚进页 / 上滚返回 / 演完落点）
 
 # 几何：4 套 28 条（离线，不需要 dev server）
-node check-zhanguo-geo.mjs   # 5   战国七雄
-node check-chuhan-geo.mjs    # 7   楚漢八块
-node check-sanguo-geo.mjs    # 9   三国四块
-node check-sui-geo.mjs       # 7   南北朝四块
+node check-zhanguo-geo.mjs   # 9   战国七雄
+node check-chuhan-geo.mjs    # 9   楚漢八国
+node check-sanguo-geo.mjs    # 9   三国鼎立
+node check-sui-geo.mjs       # 9   南北朝收尾
 ```
 
 **面积守恒**是最狠的一条，而且现在有两套底板，别混用：
 
-- **战国 / 楚汉 / 三国 / 南北朝**（周秦汉晋那四盘）：同一块手工剖分的大陆轮廓，面积和 == **433135**；
-- **唐 / 五代 / 宋 / 元 / 明 / 清**（七盘）：真实省界底板，面积和 == **208772**，35 个地理单元平铺整块中国，
-  政权 = 单元并集。改疆域只改 `scripts/make-sandbox-geo.mjs` 的 `MAPS[id].cells`，生成链是
-  `build-china-base.mjs → make-sandbox-geo.mjs → fix-campaign-geo.mjs`（详见 HANDOFF §3.13）。
+**十一盘沙盘共用一块底板**（第三轮统一）：真实省界简化出的 **42 个古地理单元**
+  （河南切洛阳 / 大梁 / 宋卫 / 南阳，山西切代北 / 晋中 / 晋南 / 上党，河北切燕北 / 中山 / 邯郸，陕西切陕北 / 关中 / 汉中），
+  政权 = 单元并集，面积和 == **208736**。
+  - 七朝（隋唐五代宋元明清）的疆域写在 `scripts/make-sandbox-geo.mjs` 的 `MAPS`；
+  - 四朝（周秦漢晋）的疆域写在 `scripts/lib/ancient-maps.mjs`；
+  - 生成链：`build-china-base.mjs → make-sandbox-geo.mjs → fix-campaign-geo.mjs`（详见 HANDOFF §3.13）。
 
 截图：puppeteer-core + 本机 Edge，headless，输出到 `shots/vNN/`（已在 `.gitignore`）。
 

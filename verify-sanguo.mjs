@@ -36,7 +36,11 @@ try {
   check('沙盘标题为「三国归晋」', start.title === '三国归晋', start.title)
   check('战前为 229 年（孙权称帝、三国鼎立）', (start.rail[0] ?? '').includes('229'), start.rail[0])
   check('节点为 辽东/蜀/吴 三幕', (start.rail.slice(1).join(',')).includes('辽东238,蜀263,吴280'), start.rail.slice(1).join(','))
-  check('战前即显示魏蜀吴辽东四块', start.regions.length === 4, JSON.stringify(start.regions))
+  check(
+    '战前即显示魏蜀吴辽东（+ 2 个背景势力）',
+    ['wei', 'shu', 'wu', 'liaodong'].every((id) => start.regions.includes(id)) && start.regions.length === 6,
+    JSON.stringify(start.regions),
+  )
   check('战前没有未登场幽灵块', start.unborn === 0, String(start.unborn))
   check('三国地图 aria-label 生效', start.label === '三国鼎立版图', String(start.label))
   check('战前攻方国号为魏', start.attackerLabel === '魏', String(start.attackerLabel))
@@ -51,13 +55,18 @@ try {
   }))
   console.log('[LIAODONG]', JSON.stringify(liao))
   check('辽东在 238 幕归魏', liao.captured === 'true', JSON.stringify(liao))
-  check('辽东幕地图为四块', liao.regions === 4, String(liao.regions))
+  check('辽东幕地图仍为六块', liao.regions === 6, String(liao.regions))
 
   /* 悬停攻方「魏」：应出现回到战前的提示 */
   await page.keyboard.press('Escape')
   await sleep(500)
+  /*
+    魏是攻方，国名画在独立的 .qin-label-layer 里（不在地区块内）；
+    而且魏是环抱南方的 C 形，包围盒中心会落到别国。直接悬停攻方的大国名。
+  */
   const weiBox = await page.evaluate(() => {
-    const r = document.querySelector('[data-nation="wei"] .region-hit').getBoundingClientRect()
+    const el = document.querySelector('.region-label--qin')
+    const r = el.getBoundingClientRect()
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
   })
   await page.mouse.move(weiBox.x, weiBox.y)

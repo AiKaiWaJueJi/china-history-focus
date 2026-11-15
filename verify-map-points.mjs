@@ -40,7 +40,7 @@ try {
 
   const zhou = await readPoints('/dynasty/zhou/endgame')
   console.log('[ZHOU]', JSON.stringify(zhou.names))
-  check('战国图标出 5 处要地', zhou.names.length === 5, JSON.stringify(zhou.names))
+  check('战国图标出 8 处要地', zhou.names.length === 8, JSON.stringify(zhou.names))
   check('战国图含函谷关与井陉', zhou.names.includes('函谷关') && zhou.names.includes('井陉'), zhou.names.join(','))
 
   const qin = await readPoints('/dynasty/qin/endgame')
@@ -51,7 +51,8 @@ try {
   const han = await readPoints('/dynasty/han/endgame')
   console.log('[HAN]', JSON.stringify(han.names))
   check('三国图标出 7 处要地', han.names.length === 7, String(han.names.length))
-  check('三国图含剑阁、阴平、江陵', ['剑阁', '阴平', '江陵'].every((n) => han.names.includes(n)), han.names.join(','))
+  // 换底板后阴平（甘肃文县）落在魏境，改标阳平关（汉中属蜀）；合肥在淮南属吴，改标寿春
+  check('三国图含剑阁、阳平关、江陵', ['剑阁', '阳平关', '江陵'].every((n) => han.names.includes(n)), han.names.join(','))
 
   await browser.close()
 } catch (err) {
