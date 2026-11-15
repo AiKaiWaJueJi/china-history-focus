@@ -58,26 +58,51 @@ for (const kind of ['battle', 'character', 'emperor', 'lord']) {
   check(`${kind} 条目都有正文`, empty.length === 0, `${list.length} 条，空 ${empty.length}`)
 }
 
-/* ---------- 4. 模拟一次无限下钻 ---------- */
+/* ---------- 4. 模拟无限下钻（BFS：只要存在长度 ≥ 2 的路径就算通） ---------- */
+const linksOf = (entry) => {
+  const out = []
+  marker.lastIndex = 0
+  for (let m = marker.exec(entry.body); m; m = marker.exec(entry.body)) {
+    const target = byId.get(m[2] || m[1])
+    if (target && target.id !== entry.id) out.push(target)
+  }
+  return out
+}
+
 const start = bySource.get('qin_shi') // 秦始皇（帝王卡点进来）
 check('帝王卡可反查到条目', Boolean(start), start?.id ?? '无')
+check('帝王正文里有可下钻的链', start ? linksOf(start).length > 0 : false, start ? linksOf(start).map((n) => n.name).join(',') : '无')
 
-const firstLink = start?.body.match(/\[\[([^\]|]+?)\|([^\]]+)\]\]/)
-check('帝王正文里有可下钻的链', Boolean(firstLink), firstLink?.[1] ?? '无')
-
-let chain = []
-let cursor = start
-const seen = new Set([start?.id])
-while (cursor && chain.length < 4) {
-  const m = cursor.body.match(/\[\[([^\]|]+?)\|([^\]]+)\]\]/)
-  if (!m) break
-  const next = byId.get(m[2])
-  if (!next || seen.has(next.id)) break
-  seen.add(next.id)
-  chain.push(`${cursor.name} → ${next.name}`)
-  cursor = next
+/* 从秦始皇出发，不回头地走到 3 层 */
+const paths = []
+const walk = (node, trail) => {
+  if (trail.length >= 3) return
+  for (const next of linksOf(node)) {
+    if (trail.some((t) => t.id === next.id)) continue
+    paths.push([...trail, next])
+    walk(next, [...trail, next])
+  }
 }
-check('能从帝王一路下钻至少 2 层', chain.length >= 2, chain.join(' | ') || '断了')
+walk(start, [start])
+const deepest = paths.filter((p) => p.length >= 3).sort((a, b) => b.length - a.length)[0]
+check(
+  '能从帝王一路下钻至少 2 层',
+  paths.some((p) => p.length >= 3),
+  deepest ? deepest.map((n) => n.name).join(' → ') : paths.map((p) => p.map((n) => n.name).join('→')).slice(0, 3).join(' | '),
+)
+
+/* ---------- 4b. 补充词条与帝王原文 ---------- */
+const extras = entries.filter((e) => e.kind === 'extra')
+check('补充词条（典制/典故）有正文', extras.every((e) => e.body && e.body.length > 20), `${extras.length} 条`)
+check('补充词条都有出链', extras.every((e) => e.related.length > 0), extras.filter((e) => !e.related.length).map((e) => e.name).join(','))
+
+const quoted = entries.filter((e) => e.kind === 'emperor' && e.quotes.length > 0)
+check('有帝王带文言原文', quoted.length >= 6, `${quoted.length} 位`)
+check(
+  '帝王原文都带出处与译文',
+  quoted.every((e) => e.quotes.every((q) => q.work && q.text && q.translation)),
+  quoted.map((e) => e.name).join(','),
+)
 
 /* ---------- 5. 统计 ---------- */
 console.log('\n条目构成：', JSON.stringify(doc.counts))

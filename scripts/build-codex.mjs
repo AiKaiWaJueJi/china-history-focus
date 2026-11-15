@@ -143,16 +143,32 @@ for (const file of emperorFiles) {
       lines.push('【要事】')
       for (const ev of e.events) lines.push(`— ${ev.name}${ev.year ? `（${ev.year}）` : ''}`)
     }
-    // 在位前后（放宽 20 年，覆盖即位前以「秦王」「晋王」身份打的仗）的战事，最多 4 条
+    /*
+      在位期间的战事：**严格按在位年**，不宽放。
+      早先放宽 20 年想把「即位居藩时打的仗」带上，结果漢惠帝（前195—前188）
+      连前 202 年的垓下都链了进来——「同期」就不成立了，宁严勿滥。
+    */
     const near = battles
       .filter((b) => Number.isFinite(b._year))
-      .filter((b) => b._year >= e.startYear - 20 && b._year <= e.endYear)
-      .sort((a, b) => Math.abs(a._year - e.startYear) - Math.abs(b._year - e.startYear))
+      .filter((b) => b._year >= e.startYear && b._year <= e.endYear)
+      .sort((a, b) => b._year - a._year)
       .slice(0, 4)
 
     if (near.length) {
-      lines.push('【同期战事】')
+      lines.push('【在位战事】')
       for (const b of near) lines.push(`— [[${b.name}|${b.id}]]`)
+    }
+
+    /* 同朝前后主：保证每位帝王至少有一条出链，也方便顺着朝代往下读 */
+    const siblings = (doc.emperors ?? []).map((x) => x.id)
+    const pos = siblings.indexOf(e.id)
+    const neighbours = [siblings[pos - 1], siblings[pos + 1]].filter(Boolean)
+    if (neighbours.length) {
+      lines.push('【同朝】')
+      for (const nid of neighbours) {
+        const sib = (doc.emperors ?? []).find((x) => x.id === nid)
+        if (sib) lines.push(`— [[${sib.posthumousTitle}|${nid}]]`)
+      }
     }
 
     emperors.push({
@@ -166,7 +182,7 @@ for (const file of emperorFiles) {
       dynastyId,
       body: lines.join('\n'),
       quotes: [],
-      related: near.map((b) => b.id),
+      related: [...near.map((b) => b.id), ...neighbours],
       tags: ['帝王'],
     })
   }
@@ -217,6 +233,25 @@ if (existsSync('scripts/data/codex.extra.json')) {
   }
   extras = extras.filter((e) => !usedIds.has(e.id))
   for (const e of extras) usedIds.add(e.id)
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5b. 帝王原文（人工查证过的几条，按条目 id 并入 quotes）                        */
+/* -------------------------------------------------------------------------- */
+if (existsSync('scripts/data/codex.emperor-quotes.json')) {
+  const quotes = readJson('scripts/data/codex.emperor-quotes.json')
+  const byId = new Map(emperors.map((e) => [e.id, e]))
+  let merged = 0
+  for (const q of quotes) {
+    const target = byId.get(q.id)
+    if (!target) {
+      console.warn(`⚠ 帝王原文找不到条目：${q.id}`)
+      continue
+    }
+    target.quotes = [{ work: q.work, text: q.text, translation: q.translation }, ...(target.quotes ?? [])]
+    merged += 1
+  }
+  console.log(`✓ 帝王原文并入 ${merged} 条`)
 }
 
 /* -------------------------------------------------------------------------- */
