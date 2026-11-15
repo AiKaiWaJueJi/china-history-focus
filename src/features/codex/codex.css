@@ -1,0 +1,391 @@
+/**
+ * codex.css —— 历史档案抽屉的样式
+ * ===========================================================================
+ * 视觉口径：
+ *   · 原文：楷体 + 泛黄纸底（做旧，但只用低饱和的暖色，不抢正文）；
+ *   · 译文：系统无衬线，字号小一档、颜色暗一档；
+ *   · 词条：暗金，hover 出虚线下划线与微弱光，明确「可点」。
+ * 背景压暗只动 opacity，不做 blur —— 地图与时间轴的大 DOM 一 blur 就掉帧。
+ */
+
+.codex-root {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* 很淡的一层：让点击能落在"空白处关闭"，但绝不遮黑整个屏幕 */
+.codex-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  background: rgba(4, 6, 8, 0.26);
+}
+
+/* 页面本体压暗（不 blur，见文件头说明） */
+body:has(.codex-drawer) .app-shell {
+  opacity: 0.5;
+  transition: opacity 260ms ease;
+}
+
+.app-shell {
+  transition: opacity 260ms ease;
+}
+
+.codex-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  min-width: 440px;
+  max-width: 720px;
+  height: 100%;
+  box-sizing: border-box;
+  pointer-events: auto;
+  outline: none;
+  background:
+    radial-gradient(120% 60% at 100% 0%, rgba(201, 162, 39, 0.07), transparent 60%),
+    linear-gradient(180deg, #0c0e11 0%, #080a0c 100%);
+  border-left: 1px solid rgba(201, 162, 39, 0.28);
+  box-shadow: -30px 0 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------------- 顶部：返回 / 面包屑 / 关闭 ---------------- */
+
+.codex-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex: 0 0 auto;
+}
+
+.codex-back {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 6px;
+  background: rgba(201, 162, 39, 0.08);
+  color: #e2cd93;
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.codex-back:hover:not(:disabled) {
+  background: rgba(201, 162, 39, 0.18);
+  border-color: rgba(201, 162, 39, 0.6);
+  color: #f4e3b4;
+}
+
+.codex-back:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.codex-crumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.codex-crumb-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.codex-crumb {
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(226, 214, 190, 0.62);
+  font-family: var(--font-thin);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14em;
+}
+
+.codex-crumb:hover {
+  color: #e9d29a;
+  text-decoration: underline dotted rgba(201, 162, 39, 0.6);
+}
+
+.codex-crumb.is-current {
+  color: #f0e2bb;
+  cursor: default;
+}
+
+.codex-crumb-sep {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.22);
+  font-size: 11px;
+}
+
+.codex-close {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.codex-close:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------------- 标题 ---------------- */
+
+.codex-head {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex: 0 0 auto;
+}
+
+.codex-kind {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 4px;
+  color: #d9c48d;
+  font-family: var(--font-thin);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+}
+
+.codex-name {
+  margin: 0;
+  font-family: var(--font-brush), 'STKaiti', serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: #f0e6d2;
+}
+
+.codex-subtitle {
+  margin: 6px 0 0;
+  font-family: var(--font-thin);
+  font-size: 12.5px;
+  color: rgba(214, 205, 188, 0.66);
+  letter-spacing: 0.06em;
+}
+
+.codex-years {
+  margin: 4px 0 0;
+  font-family: var(--font-thin);
+  font-size: 12px;
+  color: rgba(201, 162, 39, 0.8);
+  letter-spacing: 0.1em;
+}
+
+/* ---------------- 正文 ---------------- */
+
+.codex-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 22px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 162, 39, 0.35) transparent;
+}
+
+.codex-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.codex-scroll::-webkit-scrollbar-thumb {
+  background: rgba(201, 162, 39, 0.32);
+  border-radius: 3px;
+}
+
+/* 原文：楷体 + 泛黄纸底 */
+.codex-quote {
+  margin: 0 0 18px;
+  padding: 14px 16px 14px 18px;
+  border-left: 2px solid rgba(201, 162, 39, 0.55);
+  border-radius: 2px 8px 8px 2px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(226, 208, 164, 0.028) 0px,
+      rgba(226, 208, 164, 0.028) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(180deg, rgba(226, 208, 164, 0.1), rgba(226, 208, 164, 0.045));
+}
+
+.codex-quote-work {
+  margin-bottom: 8px;
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  color: rgba(201, 162, 39, 0.85);
+}
+
+.codex-quote-text {
+  margin: 0;
+  font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+  font-size: 16.5px;
+  line-height: 1.95;
+  letter-spacing: 0.05em;
+  color: #ede2c8;
+  text-align: justify;
+}
+
+.codex-quote-translation {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(201, 162, 39, 0.22);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
+  color: rgba(214, 205, 188, 0.7);
+  text-align: justify;
+}
+
+.codex-body {
+  font-family: var(--font-thin);
+}
+
+.codex-line {
+  margin: 0 0 12px;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: rgba(236, 230, 218, 0.86);
+  text-align: justify;
+}
+
+.codex-line--bullet {
+  position: relative;
+  margin: 0 0 8px;
+  padding-left: 14px;
+}
+
+.codex-line--bullet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 5px;
+  height: 1px;
+  background: rgba(201, 162, 39, 0.6);
+}
+
+/* 可点词条：暗金 + hover 虚线下划线/微光 */
+.codex-link {
+  display: inline;
+  padding: 0 1px;
+  border: none;
+  background: none;
+  color: #cba64a;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(203, 166, 74, 0.0);
+  text-underline-offset: 3px;
+  transition: color 160ms ease, text-decoration-color 200ms ease, text-shadow 200ms ease;
+}
+
+.codex-link:hover {
+  color: #f0d27a;
+  text-decoration-color: rgba(240, 210, 122, 0.75);
+  text-shadow: 0 0 8px rgba(240, 210, 122, 0.35);
+}
+
+.codex-link[data-dead] {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+  text-decoration: none;
+}
+
+/* ---------------- 底部关联 ---------------- */
+
+.codex-foot {
+  flex: 0 0 auto;
+  padding: 12px 22px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.codex-foot-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-thin);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  color: rgba(201, 162, 39, 0.75);
+}
+
+.codex-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.codex-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(236, 230, 218, 0.82);
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.codex-chip em {
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: rgba(201, 162, 39, 0.75);
+}
+
+.codex-chip:hover {
+  border-color: rgba(201, 162, 39, 0.5);
+  background: rgba(201, 162, 39, 0.1);
+  color: #f0e2bb;
+}
+
+/* 窄屏：抽屉改成整宽，避免 40% 挤成一条缝 */
+@media (max-width: 900px) {
+  .codex-drawer {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.codex-drawer) .app-shell {
+    transition: none;
+  }
+}

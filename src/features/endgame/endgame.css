@@ -3551,3 +3551,29 @@
     transition-duration: 1ms !important;
   }
 }
+
+/* 战报标题右侧：史料 / 关闭 */
+.battle-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.battle-codex {
+  padding: 4px 10px;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 6px;
+  background: rgba(201, 162, 39, 0.08);
+  color: #ddc78e;
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.battle-codex:hover {
+  background: rgba(201, 162, 39, 0.2);
+  border-color: rgba(201, 162, 39, 0.75);
+  color: #f4e3b4;
+}

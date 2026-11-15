@@ -24,6 +24,7 @@ const UI = [
   'verify-nanbei.mjs',
   'verify-nanbei-end.mjs',
   'verify-frame.mjs',
+  'verify-codex-ui.mjs',
   'verify-wudai.mjs',
   'verify-sandbox.mjs',
   'verify-segment-intro.mjs',

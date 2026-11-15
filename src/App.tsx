@@ -18,6 +18,7 @@ import { WuDaiTimeline } from './features/emperor-timeline/WuDaiTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
+import { CodexDrawer } from './features/codex/CodexDrawer'
 import { RouterBridge } from './router/RouterBridge'
 
 /** 南北朝、五代十国都是多行并行时间轴，不复用单行帝王分页 */
@@ -54,7 +55,8 @@ function Shell() {
   }, [atGallery])
 
   return (
-    <div className="app-shell">
+    <>
+      <div className="app-shell">
       <header className="app-bar">
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 14 }}>
           <h1 className="app-title">中国历史 · 多维学习</h1>
@@ -75,8 +77,12 @@ function Shell() {
           <Route path="/dynasty/:dynastyId/endgame" element={<EndgameRoute />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </main>
-    </div>
+        </main>
+      </div>
+
+      {/* 历史档案抽屉：浮在任意页面之上，压暗 .app-shell 但不遮黑 */}
+      <CodexDrawer />
+    </>
   )
 }
 

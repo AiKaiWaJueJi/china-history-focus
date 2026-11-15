@@ -23,6 +23,8 @@
 import type { CSSProperties } from 'react'
 import type { EmperorRecord } from '../../core/emperorTypes'
 import { EventMindMap } from './EventMindMap'
+import { useCodexStore } from '../../store/useCodexStore'
+import { getEntryBySource } from '../../data/codex'
 
 export type EmperorCardLayout = 'split' | 'stacked-top' | 'stacked-bottom'
 
@@ -44,6 +46,9 @@ export function EmperorCard({
   layout = 'split',
   compact = false,
 }: EmperorCardProps) {
+  const openCodex = useCodexStore((s) => s.open)
+  /* 帝王 / 诸侯的 sourceId 就是自己的 id；取不到条目就不出按钮 */
+  const codexId = getEntryBySource(emperor.id)?.id ?? null
   const style: CardStyle = {
     '--portrait': `url("${emperor.portrait}")`,
   }
@@ -71,6 +76,21 @@ export function EmperorCard({
             <p className="emp-rule">谥法 · {emperor.posthumousRule}</p>
           ) : null}
         </div>
+        {codexId ? (
+          <button
+            type="button"
+            className="emp-codex"
+            aria-label={`查看${emperor.posthumousTitle}的档案`}
+            title="查看档案"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation()
+              openCodex(codexId)
+            }}
+          >
+            档
+          </button>
+        ) : null}
         <span className="emp-corner" aria-hidden="true" />
       </div>
 

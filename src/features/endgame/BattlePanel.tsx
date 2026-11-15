@@ -50,12 +50,14 @@ interface BattlePanelProps {
   /** 正在播出场动画（父级 240ms 后才真正卸载） */
   closing?: boolean
   onFigureClick: (figureId: string) => void
+  /** 打开当前这一页的史料档案（右侧抽屉） */
+  onCodex?: () => void
   onClose: () => void
   /** 当前战报页变化（父级据此把地图年份切到该页，例如 581 页要显示「隋」） */
   onActiveChange?: (yearValue: number) => void
 }
 
-export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaignHover, onActiveChange }: BattlePanelProps) {
+export function BattlePanel({ event, closing, onFigureClick, onCodex, onClose, onCampaignHover, onActiveChange }: BattlePanelProps) {
   const pages = event.battlePages?.length ? [event, ...event.battlePages] : [event]
   const [page, setPage] = useState(0)
   useEffect(() => setPage(0), [event.id])
@@ -78,9 +80,16 @@ export function BattlePanel({ event, closing, onFigureClick, onClose, onCampaign
           <span className="battle-year">{active.year}</span>
           <h2 className="battle-title">{active.desc}</h2>
         </div>
-        <button type="button" className="battle-close" onClick={onClose} aria-label="关闭战报">
-          ×
-        </button>
+        <div className="battle-head-actions">
+          {onCodex ? (
+            <button type="button" className="battle-codex" onClick={onCodex} title="查看这一战的史料档案">
+              史料
+            </button>
+          ) : null}
+          <button type="button" className="battle-close" onClick={onClose} aria-label="关闭战报">
+            ×
+          </button>
+        </div>
       </header>
 
       <div className="battle-section">

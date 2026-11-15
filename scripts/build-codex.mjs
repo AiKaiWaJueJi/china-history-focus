@@ -137,8 +137,8 @@ for (const file of emperorFiles) {
     if (usedIds.has(e.id)) continue
     usedIds.add(e.id)
     const lines = []
+    // 在位年已经在标题下的 years 里，正文不再重复
     lines.push(`【谥法】${e.posthumousRule}`)
-    lines.push(`【在位】${e.reign}`)
     if (e.events?.length) {
       lines.push('【要事】')
       for (const ev of e.events) lines.push(`— ${ev.name}${ev.year ? `（${ev.year}）` : ''}`)
@@ -183,7 +183,6 @@ if (existsSync(`${DATA}/lords.zhou.json`)) {
     usedIds.add(l.id)
     const lines = [
       `【国】${l.state}`,
-      `【在位】${l.reign}`,
       l.hegemonyNote ? `【霸业】${l.hegemonyNote}（前 ${Math.abs(l.hegemonyStart)} — 前 ${Math.abs(l.hegemonyEnd)}）` : '',
     ].filter(Boolean)
     if (l.events?.length) {

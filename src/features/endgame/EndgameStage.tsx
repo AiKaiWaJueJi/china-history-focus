@@ -16,7 +16,6 @@ import { dynastyById } from '../../data'
 import { getDynastyEndgame } from '../../data/emperorData'
 import { playBell, warmUpAudio } from './audio'
 import { BattlePanel } from './BattlePanel'
-import { FigureModal } from './FigureModal'
 import { StepRail } from './StepRail'
 import { WarringStatesMap } from './WarringStatesMap'
 import { MAPS } from './mapGeometry'
@@ -25,6 +24,8 @@ import { CHUHAN_MAP } from './chuhanMap'
 import { SANGUO_MAP } from './sanguoMap'
 import { SANDBOX_MAPS } from './sandboxMaps'
 import { useEndgameStore } from './useEndgameStore'
+import { useCodexStore } from '../../store/useCodexStore'
+import { getEntryBySource } from '../../data/codex'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
 
@@ -38,11 +39,11 @@ export function EndgameStage() {
 
   const index = useEndgameStore((s) => s.index)
   const focusedNation = useEndgameStore((s) => s.focusedNation)
-  const profileId = useEndgameStore((s) => s.profileId)
   const muted = useEndgameStore((s) => s.muted)
   const setIndex = useEndgameStore((s) => s.setIndex)
   const resetAll = useEndgameStore((s) => s.resetAll)
-  const openProfile = useEndgameStore((s) => s.openProfile)
+  /* 打开百科档案（右侧抽屉）：人名与战报标题都走这里 */
+  const openCodex = useCodexStore((s) => s.open)
   const toggleMute = useEndgameStore((s) => s.toggleMute)
 
   /* ---------------- 战役序列（行军路线） ---------------- */
@@ -102,10 +103,6 @@ export function EndgameStage() {
   useCampaignPlayer(activeCampaigns, openReportAfterCampaign)
 
   const focusedEvent = events.find((event) => event.nationId === focusedNation) ?? null
-  const profile =
-    profileId === null
-      ? null
-      : (events.flatMap((event) => event.figures).find((figure) => figure.id === profileId) ?? null)
 
   const isFinished = index === events.length && events.length > 0
   /* 终章要等战报关闭后再播：点「齐」先看战报，退出后才演一统 */
@@ -288,13 +285,12 @@ export function EndgameStage() {
       }
       if (event.key !== 'Escape') return
       event.preventDefault()
-      if (profileId) openProfile(null)
-      else if (focusedNation) closePanel()
+      if (focusedNation) closePanel()
       else if (dynastyId) navigate(`/dynasty/${dynastyId}`)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [index, setIndex, profileId, focusedNation, openProfile, closePanel, dynastyId, navigate])
+  }, [index, setIndex, focusedNation, closePanel, dynastyId, navigate])
 
   if (!dynasty || !endgame) {
     return (
@@ -371,7 +367,15 @@ export function EndgameStage() {
           <BattlePanel
             event={focusedEvent}
             closing={closing}
-            onFigureClick={openProfile}
+            onFigureClick={(figureId) => {
+              const entry = getEntryBySource(figureId)
+              if (entry) openCodex(entry.id)
+            }}
+            onCodex={() => {
+              // 战报事件 id 只在各自文件内唯一，所以带上 dynastyId 查
+              const entry = getEntryBySource(focusedEvent.id, endgame.dynastyId)
+              if (entry) openCodex(entry.id)
+            }}
             onClose={closePanel}
             onCampaignHover={(phase) => useCampaignStore.getState().setHoveredCampaign(phase)}
             onActiveChange={onReportPage}
@@ -466,9 +470,6 @@ export function EndgameStage() {
 
       <StepRail
           preYear={endgame.preYear ?? '前230'} events={events} index={index} onSelect={handleStep} />
-
-
-      <FigureModal figure={profile} onClose={() => openProfile(null)} />
     </div>
   )
 }

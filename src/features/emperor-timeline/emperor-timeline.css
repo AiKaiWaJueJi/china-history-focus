@@ -1172,3 +1172,38 @@
 .emp-card:focus-visible .emp-clip {
   border-color: var(--eval-bright);
 }
+
+
+/* 帝王卡右上角的「档案」按钮：点开右侧历史档案抽屉 */
+.emp-codex {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgba(201, 162, 39, 0.42);
+  border-radius: 50%;
+  background: rgba(6, 8, 10, 0.72);
+  color: #d8c48c;
+  font-family: var(--font-thin);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  /* 平时半隐：触屏没有 hover，不能做成「悬停才出现」 */
+  opacity: 0.55;
+  transition: opacity 180ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.emp-card:hover .emp-codex,
+.emp-card:focus-within .emp-codex,
+.emp-codex:focus-visible {
+  opacity: 1;
+}
+
+.emp-codex:hover {
+  background: rgba(201, 162, 39, 0.22);
+  border-color: rgba(201, 162, 39, 0.8);
+  color: #f4e3b4;
+}

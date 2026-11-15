@@ -815,20 +815,29 @@ try {
   await page.mouse.move(800, 60, { steps: 2 })
   await sleep(300)
 
-  /* ---------- 6) 人物 Modal ---------- */
+  /* ---------- 6) 人物档案（第四轮：旧 FigureModal 已换成右侧历史档案抽屉） ---------- */
   await page.click('.battle-panel .figure-tag')
-  await sleep(500)
-  const modal = await page.evaluate(() => ({
-    open: Boolean(document.querySelector('.figure-modal')),
-    name: document.querySelector('.figure-modal-name')?.textContent?.trim(),
-    deeds: document.querySelectorAll('.figure-modal-deeds li').length,
-  }))
-  check('点击人物标签打开 Modal', modal.open, modal.name)
-  check('Modal 有生平事迹', modal.deeds >= 1, `${modal.deeds}`)
-  await page.screenshot({ path: `${OUT}\\05-figure.png` })
+  await sleep(600)
+  const modal = await page.evaluate(() => {
+    const drawer = document.querySelector('.codex-drawer')
+    return {
+      open: Boolean(drawer),
+      name: drawer?.querySelector('.codex-name')?.textContent?.trim() ?? '',
+      lines: drawer?.querySelectorAll('.codex-line, .codex-line--bullet').length ?? 0,
+      oldModal: Boolean(document.querySelector('.figure-modal')),
+      crumbs: drawer?.querySelectorAll('.codex-crumb').length ?? 0,
+    }
+  })
+  check('点击人物标签打开历史档案抽屉', modal.open && !modal.oldModal, modal.name)
+  check('档案有生平正文', modal.lines >= 1, `${modal.lines} 段`)
+  check('档案栈已建立（有当前条目）', modal.crumbs >= 1, `${modal.crumbs} 级`)
   await page.keyboard.press('Escape')
   await sleep(400)
-  check('ESC 关闭 Modal 且保留战报', !(await page.$('.figure-modal')) && Boolean(await page.$('.battle-panel')))
+  await page.screenshot({ path: `${OUT}\\05-figure.png` })
+  check(
+    'ESC 关闭档案抽屉且保留战报',
+    !(await page.$('.codex-drawer')) && Boolean(await page.$('.battle-panel')),
+  )
 
   /* ---------- 7) 点击外部关闭战报 ---------- */
   await page.evaluate(() => {

@@ -36,6 +36,8 @@ npm install
 npm run dev -- --port 5180      # http://localhost:5180
 npm run build                   # 先跑 tsc -b，再 vite build
 npx tsc -b --pretty false       # 只做类型检查
+node verify-codex.mjs      # 13  百科库数据层
+node verify-codex-ui.mjs   # 22  档案抽屉交互
 ```
 
 > dev server 是普通后台进程，**机器/DSH 重启后要重新起**。端口 5180 是各验收脚本的默认地址，
