@@ -328,6 +328,8 @@
   flex: 1 1 0;
   min-width: 0;
   outline: none;
+  /* 整卡就是档案入口（role=button），鼠标要给出可点的暗示 */
+  cursor: pointer;
   /* 只改透明度，不做整体缩放 —— 缩放会让卡片内文字重新采样而发虚 */
   transition: opacity 300ms ease;
 }
@@ -543,6 +545,8 @@
   flex: 1 1 0;
   min-width: 0;
   outline: none;
+  /* 整卡即档案入口（春秋五霸/战国七雄才是东周的主角） */
+  cursor: pointer;
   transition:
     flex-grow 420ms var(--ease-out),
     opacity 300ms ease;
@@ -1067,13 +1071,14 @@
   }
 }
 
-/* 谥法本义：极小的一行，像注脚 */
+/* 谥法本义：注脚大小，但不能小到看不清 —— 它才是「谥号」二字的解释 */
 .emp-rule {
   margin: 2px 0 0;
   font-family: var(--font-thin);
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  color: rgba(226, 200, 125, 0.5);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: rgba(230, 206, 138, 0.82);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
   opacity: 0;
   transition: opacity 260ms ease;
 }
@@ -1174,36 +1179,4 @@
 }
 
 
-/* 帝王卡右上角的「档案」按钮：点开右侧历史档案抽屉 */
-.emp-codex {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 1px solid rgba(201, 162, 39, 0.42);
-  border-radius: 50%;
-  background: rgba(6, 8, 10, 0.72);
-  color: #d8c48c;
-  font-family: var(--font-thin);
-  font-size: 11px;
-  line-height: 1;
-  cursor: pointer;
-  /* 平时半隐：触屏没有 hover，不能做成「悬停才出现」 */
-  opacity: 0.55;
-  transition: opacity 180ms ease, background 160ms ease, border-color 160ms ease;
-}
-
-.emp-card:hover .emp-codex,
-.emp-card:focus-within .emp-codex,
-.emp-codex:focus-visible {
-  opacity: 1;
-}
-
-.emp-codex:hover {
-  background: rgba(201, 162, 39, 0.22);
-  border-color: rgba(201, 162, 39, 0.8);
-  color: #f4e3b4;
-}
+/* 帝王卡右上角只留一个装饰点（原先的「档」按钮已改为整卡点击） */

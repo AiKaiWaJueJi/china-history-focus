@@ -343,7 +343,11 @@ interface FallAct {
   year: string
   heading: string
   lines: string[]
-  source: { book: string; text: string }
+  /**
+   * 史料引文：**上译文、下原文**。
+   * translation 是逐条对照原文译的白话，缺省时只显示原文（不会留一个空块）。
+   */
+  source: { book: string; text: string; translation?: string }
   note?: string
 }
 
@@ -702,6 +706,10 @@ export function FallStage() {
 
             <blockquote className={`fall-source${typingDone ? ' is-in' : ''}`}>
               <span className="fall-source-book">{act.source.book}</span>
+              {/* 上：白话译文；下：文言原文。读得懂的那一层放前面，原文留给愿意逐字看的人 */}
+              {act.source.translation ? (
+                <p className="fall-source-translation">{act.source.translation}</p>
+              ) : null}
               <p className="fall-source-text">{act.source.text}</p>
             </blockquote>
 

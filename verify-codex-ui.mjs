@@ -1,13 +1,14 @@
 /**
  * verify-codex-ui.mjs —— 历史档案抽屉（无限下钻）的交互验收
  * ===========================================================================
- * 验六件事：
+ * 验七件事：
  *   1. 从战报标题打开档案：抽屉从右侧出现，且**只有一个**抽屉（不是弹窗叠弹窗）；
  *   2. 正文词条下钻：面包屑变两层、返回可用、内容换成下一层；
  *   3. 面包屑跳级：点第一级回到根；
  *   4. ESC 关闭，且**不会**把页面退回上一级（捕获阶段拦下）；
  *   5. 背景只压暗（.app-shell opacity ≈ 0.5），没有全屏黑底遮罩；
- *   6. 帝王卡的「档」按钮、战报里的人名都能开档案；旧的 FigureModal 已不再出现。
+ *   6. 帝王卡（整卡）与战报里的人名都能开档案；旧的 FigureModal 已不再出现；
+ *   7. 帝王档案是结构化的（生平 / 全量要事 / 在位位置），事件注解里的人名能继续下钻。
  */
 import puppeteer from 'puppeteer-core'
 
@@ -141,34 +142,60 @@ try {
   await page.keyboard.press('Escape')
   await sleep(400)
 
-  /* ---------- 6. 帝王卡「档」按钮 ---------- */
+  /* ---------- 6. 帝王卡整卡入口（不再有独立的「档」按钮） ---------- */
   await page.goto(`${BASE}/dynasty/zhou`, { waitUntil: 'networkidle2', timeout: 60000 })
   await page.waitForSelector('.emp-card', { timeout: 15000 })
   await sleep(900)
-  const btnCount = await page.evaluate(() => document.querySelectorAll('.emp-codex').length)
-  check('帝王卡上有「档」按钮', btnCount > 0, `${btnCount} 个`)
+  const entry = await page.evaluate(() => ({
+    cards: document.querySelectorAll('.emp-card[role="button"]').length,
+    legacyBtns: document.querySelectorAll('.emp-codex').length,
+  }))
+  check(
+    '帝王卡整卡即入口（旧「档」按钮已移除）',
+    entry.cards > 0 && entry.legacyBtns === 0,
+    `${entry.cards} 张可点 / ${entry.legacyBtns} 个旧按钮`,
+  )
   await page.evaluate(() => {
-    document.querySelector('.emp-codex')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    document.querySelector('.emp-card')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
   await sleep(700)
   const d6 = await drawerState(page)
   check('帝王卡能开档案', d6.count === 1 && d6.kind === '帝王', `${d6.kind}/${d6.name}`)
   check('帝王档案有正文', d6.name.length > 0 && d6.crumbs.length === 1)
 
+  /* ---------- 6b. 结构化档案：生平 / 全量要事 / 在位年数 ---------- */
+  const d6b = await page.evaluate(() => ({
+    bio: document.querySelector('.codex-drawer .codex-archive-bio')?.textContent?.trim().length ?? 0,
+    events: document.querySelectorAll('.codex-drawer .codex-event').length,
+    pos: document.querySelector('.codex-drawer .codex-archive-reign')?.textContent?.trim() ?? '',
+  }))
+  check('帝王档案有「生平」叙述', d6b.bio > 40, `${d6b.bio} 字`)
+  check('帝王档案列出全部要事', d6b.events >= 2, `${d6b.events} 条`)
+  check('档案标出在位年数与本朝位置', /本朝第/.test(d6b.pos), d6b.pos)
+
   /* ---------- 7. 典制条目下钻：没有文言原文的条目也必须能渲染 ---------- */
-  /* 回归用例：曾经点「秦始皇 档 → 书同文」整页黑屏（典制条目缺 quotes 字段，
-     .map() 抛错 → React 卸掉整棵树）。这里从帝王卡真的点进去，验抽屉还在、内容是典制。 */
+  /* 回归用例：曾经点「秦始皇 → 书同文」整页黑屏（典制条目缺 quotes 字段，
+     .map() 抛错 → React 卸掉整棵树）。
+     帝王档案改成结构化时间线后，路径变为：点帝王卡 → 展开「书同文·车同轨」事件
+     → 点详情里的「相关档案 · 书同文」。验抽屉还在、内容是典制，回归点不变。 */
   await page.goto(`${BASE}/dynasty/qin`, { waitUntil: 'networkidle2', timeout: 60000 })
   await page.waitForSelector('.emp-card', { timeout: 15000 })
   await sleep(900)
   await page.evaluate(() => {
     const card = [...document.querySelectorAll('.emp-card')].find((c) => c.textContent?.includes('秦始皇'))
-    card?.querySelector('.emp-codex')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    card?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
   await sleep(700)
   await page.evaluate(() => {
-    const link = [...document.querySelectorAll('.codex-drawer .codex-link')].find((n) =>
+    const row = [...document.querySelectorAll('.codex-drawer .codex-event')].find((n) =>
       n.textContent?.includes('书同文'),
+    )
+    row?.click()
+  })
+  await sleep(400)
+  await page.evaluate(() => {
+    const link = [...document.querySelectorAll('.codex-drawer .codex-event-detail .codex-link')].find(
+      (n) => n.textContent?.includes('书同文'),
     )
     link?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
@@ -186,6 +213,45 @@ try {
   check('点典制词条后抽屉仍在（不是整页黑屏）', d7.drawers === 1 && d7.appShell && d7.rootChildren > 0, JSON.stringify(d7))
   check('典制条目正常渲染', d7.kind === '典制' && d7.name === '书同文' && d7.bodyLen > 40, `${d7.kind}/${d7.name} body=${d7.bodyLen}`)
   check('典制条目面包屑为两层', d7.crumbs.join('›') === '秦始皇›书同文', d7.crumbs.join('›'))
+
+  /* ---------- 8. 事件详情里的人名可下钻（「五路诸侯都是谁」） ---------- */
+  await page.goto(`${BASE}/dynasty/han`, { waitUntil: 'networkidle2', timeout: 60000 })
+  await page.waitForSelector('.emp-card', { timeout: 15000 })
+  await sleep(900)
+  await page.evaluate(() => {
+    const card = [...document.querySelectorAll('.emp-card')].find((c) => c.textContent?.includes('漢高祖'))
+    card?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(700)
+  await page.evaluate(() => {
+    const row = [...document.querySelectorAll('.codex-drawer .codex-event')].find((n) =>
+      n.textContent?.includes('垓下'),
+    )
+    row?.click()
+  })
+  await sleep(450)
+  const d8 = await page.evaluate(() => ({
+    links: [...document.querySelectorAll('.codex-event-note-wrap .codex-link')].map((n) =>
+      n.textContent?.trim(),
+    ),
+  }))
+  check(
+    '事件注解里的人名可点（垓下 → 韩信 / 彭越 / 英布）',
+    ['韩信', '彭越', '英布'].every((n) => d8.links.includes(n)),
+    d8.links.join('/'),
+  )
+  await page.evaluate(() => {
+    const link = [...document.querySelectorAll('.codex-event-note-wrap .codex-link')].find(
+      (n) => n.textContent?.trim() === '彭越',
+    )
+    link?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(700)
+  const d8b = await page.evaluate(() => ({
+    name: document.querySelector('.codex-drawer .codex-name')?.textContent?.trim() ?? '',
+    crumbs: [...document.querySelectorAll('.codex-drawer .codex-crumb')].map((n) => n.textContent?.trim()),
+  }))
+  check('点人名能下钻到人物档案', d8b.name === '彭越', d8b.crumbs.join('›'))
 
   /* 最后一条：上面每个动作都不许留下页面级异常（黑屏的本质就是异常没被拦下） */
   check('全程没有页面级 JS 异常', pageErrors.length === 0, pageErrors.join(' | '))

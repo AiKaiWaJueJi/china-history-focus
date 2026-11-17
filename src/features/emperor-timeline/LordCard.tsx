@@ -7,10 +7,15 @@
  *   · 同时标出**在位**与**称霸**两个区间 —— 前者是人的任期，后者才是时代主线；
  *   · 悬浮挤压由 CSS :has() 完成（与阶段一同一套思路），React 不重渲染；
  *   · 悬浮时向**下方**弹出事迹（上方是天子区，不能占用）。
+ *
+ * 交互：**整卡即档案入口**（与帝王卡同口径）。东周这一屏，诸侯才是主角，
+ * 不该只有天子能点开档案。
  */
 import type { CSSProperties } from 'react'
 import type { Lord } from '../../core/emperorTypes'
 import { formatYear } from '../../data/emperorData'
+import { getEntryBySource } from '../../data/codex'
+import { useCodexStore } from '../../store/useCodexStore'
 import { EventMindMap } from './EventMindMap'
 
 interface LordCardProps {
@@ -23,13 +28,29 @@ type LordStyle = CSSProperties & {
 }
 
 export function LordCard({ lord }: LordCardProps) {
+  const openCodex = useCodexStore((s) => s.open)
+  const codexId = getEntryBySource(lord.id)?.id ?? null
+  const openArchive = codexId ? () => openCodex(codexId) : undefined
   const style: LordStyle = {
     '--portrait': `url("${lord.portrait}")`,
     '--accent': lord.accent,
   }
 
   return (
-    <article className="lord-card" style={style} tabIndex={0}>
+    <article
+      className="lord-card"
+      style={style}
+      tabIndex={0}
+      role={openArchive ? 'button' : undefined}
+      aria-label={openArchive ? `打开${lord.state}${lord.title}的历史档案` : undefined}
+      onClick={openArchive}
+      onKeyDown={(event) => {
+        if (!openArchive) return
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        openArchive()
+      }}
+    >
       <div className="lord-clip">
         <div className="lord-media" />
         <div className="lord-shade" />

@@ -375,6 +375,313 @@ body:has(.codex-drawer) .app-shell {
   color: #f0e2bb;
 }
 
+/* ---------------- 帝王 / 诸侯：结构化档案 ---------------- */
+
+.codex-archive {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.codex-archive-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.codex-archive-dynasty {
+  font-family: var(--font-thin);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: rgba(226, 214, 190, 0.8);
+}
+
+.codex-archive-reign {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(201, 162, 39, 0.82);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 谥法评价：美 / 平 / 恶，与卡片边框同一套色 */
+.codex-eval {
+  padding: 1px 7px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+}
+
+.codex-eval.is-good {
+  color: #e6c883;
+  border-color: rgba(201, 162, 39, 0.55);
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.codex-eval.is-neutral {
+  color: #a9c6be;
+  border-color: rgba(111, 139, 131, 0.6);
+  background: rgba(111, 139, 131, 0.12);
+}
+
+.codex-eval.is-bad {
+  color: #e5a08e;
+  border-color: rgba(168, 68, 58, 0.6);
+  background: rgba(168, 68, 58, 0.12);
+}
+
+.codex-archive-rule {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: rgba(236, 230, 218, 0.86);
+}
+
+.codex-archive-rule span {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: rgba(201, 162, 39, 0.14);
+  color: #dfc98f;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  vertical-align: 1px;
+}
+
+/* 时代一行：比谥法弱一档，作用是给初学者一个「这是什么时代」的坐标 */
+.codex-archive-era {
+  color: rgba(226, 214, 190, 0.76);
+}
+
+.codex-archive-era span {
+  background: rgba(148, 196, 176, 0.14);
+  color: #a9d3c5;
+}
+
+.codex-archive-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.codex-sec {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-thin);
+  font-size: 12.5px;
+  letter-spacing: 0.2em;
+  color: rgba(201, 162, 39, 0.85);
+}
+
+.codex-sec em {
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.codex-sec i {
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(148, 196, 176, 0.75);
+}
+
+/* 事件时间线：一行一条，点开详情 */
+.codex-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.codex-event-item {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.022);
+  overflow: hidden;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+
+.codex-event-item.is-open {
+  border-color: rgba(201, 162, 39, 0.4);
+  background: rgba(201, 162, 39, 0.05);
+}
+
+.codex-event {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.codex-event:hover {
+  background: rgba(201, 162, 39, 0.07);
+}
+
+.codex-event-year {
+  flex: 0 0 auto;
+  min-width: 4.4em;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgba(201, 162, 39, 0.8);
+  font-variant-numeric: tabular-nums;
+}
+
+.codex-event-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94c4b0;
+}
+
+.codex-event[data-dimension='military'] .codex-event-dot {
+  background: #e09a6a;
+}
+
+.codex-event-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14.5px;
+  letter-spacing: 0.03em;
+  color: rgba(240, 235, 224, 0.95);
+}
+
+.codex-event-dim {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.codex-event-caret {
+  flex: 0 0 auto;
+  width: 16px;
+  text-align: center;
+  color: rgba(201, 162, 39, 0.6);
+}
+
+.codex-event-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 12px 12px 30px;
+}
+
+/* 一句话记忆点：比评价更醒目一点，像书页边上贴的标签 */
+.codex-archive-tag {
+  padding: 1px 8px;
+  border: 1px dashed rgba(201, 162, 39, 0.45);
+  border-radius: 4px;
+  font-family: var(--font-thin);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: #e6cd91;
+  background: rgba(201, 162, 39, 0.07);
+}
+
+/* 生平 / 事件注解：走 RichText（段落 + 可点词条），字号比要事略大、行距更松 */
+.codex-archive-bio .codex-line {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.95;
+  color: rgba(236, 230, 218, 0.9);
+}
+
+.codex-archive-bio .codex-line:last-child {
+  margin-bottom: 0;
+}
+
+.codex-event-note-wrap .codex-line {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: rgba(236, 230, 218, 0.88);
+}
+
+.codex-event-note-wrap .codex-line:last-child {
+  margin-bottom: 0;
+}
+
+/* 注解 / 生平里的词条链接沿用暗金，字号跟随段落 */
+.codex-event-note-wrap .codex-link,
+.codex-archive-bio .codex-link {
+  font-size: inherit;
+  /* 正文段落里的链接必须「看起来能点」：常显虚线下划线，不能等 hover */
+  color: #e3bd63;
+  text-decoration-color: rgba(227, 189, 99, 0.55);
+  text-decoration-thickness: 1px;
+}
+
+.codex-event-note-wrap .codex-link:hover,
+.codex-archive-bio .codex-link:hover {
+  color: #f6d98d;
+  text-decoration-color: rgba(246, 217, 141, 0.9);
+}
+
+.codex-event-note {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.9;
+  color: rgba(236, 230, 218, 0.86);
+  text-align: justify;
+}
+
+.codex-event-note--empty {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.codex-event-meta {
+  display: flex;
+  gap: 22px;
+  margin: 0;
+}
+
+.codex-event-meta dt {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(201, 162, 39, 0.7);
+}
+
+.codex-event-meta dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: rgba(236, 230, 218, 0.78);
+}
+
+.codex-event-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.codex-event-block-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(201, 162, 39, 0.72);
+}
+
+.codex-event-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 /* 窄屏：抽屉改成整宽，避免 40% 挤成一条缝 */
 @media (max-width: 900px) {
   .codex-drawer {

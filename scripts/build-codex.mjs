@@ -123,6 +123,8 @@ for (const file of endgameFiles) {
 
 for (const ch of characters.values()) {
   ch.related = (figureToBattles.get(ch.id) ?? []).slice(0, 6)
+  /* 人物 id 也要登记：否则 5c 追加条目撞上同一个 id 时不会告警，直接产出重复条目 */
+  usedIds.add(ch.id)
 }
 
 /* -------------------------------------------------------------------------- */
@@ -236,6 +238,29 @@ if (existsSync('scripts/data/codex.extra.json')) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* 5c. 手写追加条目（人物 / 部族 / 战役补遗，可缺省）                             */
+/* -------------------------------------------------------------------------- */
+/*
+  extras 是 kind:'extra' 的「典制」词条；这里允许**任意 kind**。
+  用武之地：战报数据里只会出现「该战出场的人物」，而像冒顿单于、张良、魏徵
+  这种贯穿型人物只能手写。body 里可以手写 [[显示名|id]]，也会参与后面的自动织链。
+  原则不变：**一条一查，别批量造**。
+*/
+let appended = []
+if (existsSync('scripts/data/codex.append.json')) {
+  const raw = readJson('scripts/data/codex.append.json')
+  for (const e of raw) {
+    if (usedIds.has(e.id)) {
+      console.warn(`⚠ 追加条目 id 重复，已跳过：${e.id}`)
+      continue
+    }
+    usedIds.add(e.id)
+    appended.push(e)
+  }
+  console.log(`✓ 追加条目并入 ${appended.length} 条`)
+}
+
+/* -------------------------------------------------------------------------- */
 /* 5b. 帝王原文（人工查证过的几条，按条目 id 并入 quotes）                        */
 /* -------------------------------------------------------------------------- */
 if (existsSync('scripts/data/codex.emperor-quotes.json')) {
@@ -257,7 +282,7 @@ if (existsSync('scripts/data/codex.emperor-quotes.json')) {
 /* -------------------------------------------------------------------------- */
 /* 6. 自动织链：长名优先，已带标记的段落跳过                                      */
 /* -------------------------------------------------------------------------- */
-const all = [...battles, ...characters.values(), ...emperors, ...lords, ...extras]
+const all = [...battles, ...characters.values(), ...emperors, ...lords, ...extras, ...appended]
 /*
   织链白名单：
     · 人物 / 战役 —— 直接用人名、战役名；
@@ -319,14 +344,17 @@ for (const e of all) {
   e.related = e.related.filter((rid) => rid !== e.id)
 }
 
+const countBy = (kind) => all.filter((e) => e.kind === kind).length
+
 const payload = {
   generatedAt: 'scripts/build-codex.mjs',
   counts: {
-    battle: battles.length,
-    character: characters.size,
-    emperor: emperors.length,
-    lord: lords.length,
-    extra: extras.length,
+    /* 按最终条目统计（含 5c 追加的人物），别用中间变量，否则 counts 会和 entries 对不上 */
+    battle: countBy('battle'),
+    character: countBy('character'),
+    emperor: countBy('emperor'),
+    lord: countBy('lord'),
+    extra: countBy('extra'),
     total: all.length,
   },
   entries: all,

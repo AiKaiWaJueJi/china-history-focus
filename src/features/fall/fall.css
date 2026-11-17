@@ -244,6 +244,19 @@
   color: rgba(201, 162, 39, 0.8);
 }
 
+/* 引文的上层：白话译文（读得懂的一层放前面，原文在下） */
+.fall-source-translation {
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(176, 141, 63, 0.24);
+  font-family: var(--font-ui, system-ui), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.95;
+  letter-spacing: 0.01em;
+  color: rgba(226, 219, 204, 0.82);
+  text-align: justify;
+}
+
 .fall-source-text {
   margin: 0;
   font-family: 'KaiTi', '楷体', 'STKaiti', serif;

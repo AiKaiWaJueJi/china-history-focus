@@ -1,7 +1,7 @@
 /**
  * CodexDrawer —— 右侧「历史档案」抽屉（无限下钻）
  * ===========================================================================
- * 全局只有一个抽屉：点帝王 / 点战报人名 / 点战报标题，都从这里滑出。
+ * 全局只有一个抽屉：点帝王 / 点诸侯 / 点战报人名 / 点战报标题，都从这里滑出。
  * 正文里的高亮词条不会开新弹窗，而是把当前档案换成下一层——
  * 方向由 store 的 direction 决定：下钻从右滑入，返回从左滑回。
  *
@@ -11,18 +11,23 @@
  *   2. **不加 blur**：背景是 SVG 地图与时间轴大 DOM，blur 会整棵树重栅格化，
  *      这一轮沙盘刚为此踩过坑（见 HANDOFF §3.13b）。
  *   3. **面包屑**：无限下钻最容易迷路，顶部把路径摊开来，点任一级直接跳回。
+ *
+ * 帝王 / 诸侯走 ArchiveBody（结构化时间线），其余类型仍走纯文本 BodyBlocks。
  */
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import type { CodexEntry } from '../../core/codex'
-import { parseBody, KIND_LABEL } from '../../core/codex'
+import { KIND_LABEL } from '../../core/codex'
 import { codexById, relatedEntries } from '../../data/codex'
+import { hasStructuredArchive } from '../../data/archive'
 import {
   useCodexCurrentId,
   useCodexDirection,
   useCodexStack,
   useCodexStore,
 } from '../../store/useCodexStore'
+import { ArchiveBody } from './ArchiveBody'
+import { RichText } from './RichText'
 import './codex.css'
 
 /** 方向 1：新档案从右滑入、旧档案向左淡出；方向 -1：反过来 */
@@ -42,55 +47,10 @@ function QuoteBlock({ quote }: { quote: CodexEntry['quotes'][number] }) {
   )
 }
 
-function BodyBlocks({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string) => void }) {
-  const blocks = parseBody(entry.body)
-  return (
-    <div className="codex-body">
-      {blocks.map((block, i) =>
-        block.bullet ? (
-          <p key={i} className="codex-line codex-line--bullet">
-            {block.segments.map((seg, k) =>
-              seg.type === 'link' ? (
-                <button
-                  key={k}
-                  type="button"
-                  className="codex-link"
-                  onClick={() => onDrill(seg.id)}
-                  data-dead={codexById.has(seg.id) ? undefined : ''}
-                >
-                  {codexById.get(seg.id)?.name ?? seg.text}
-                </button>
-              ) : (
-                <span key={k}>{seg.text}</span>
-              ),
-            )}
-          </p>
-        ) : (
-          <p key={i} className="codex-line">
-            {block.segments.map((seg, k) =>
-              seg.type === 'link' ? (
-                <button
-                  key={k}
-                  type="button"
-                  className="codex-link"
-                  onClick={() => onDrill(seg.id)}
-                  data-dead={codexById.has(seg.id) ? undefined : ''}
-                >
-                  {codexById.get(seg.id)?.name ?? seg.text}
-                </button>
-              ) : (
-                <span key={k}>{seg.text}</span>
-              ),
-            )}
-          </p>
-        ),
-      )}
-    </div>
-  )
-}
-
 function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string) => void }) {
   const related = relatedEntries(entry).slice(0, 8)
+  /* 帝王 / 诸侯：结构化时间线（全量事件 + 点开详情）；其余类型仍是纯文本正文 */
+  const structured = hasStructuredArchive(entry)
   return (
     <>
       <header className="codex-head">
@@ -106,7 +66,11 @@ function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string
         {entry.quotes.map((quote, i) => (
           <QuoteBlock key={i} quote={quote} />
         ))}
-        <BodyBlocks entry={entry} onDrill={onDrill} />
+        {structured ? (
+          <ArchiveBody entry={entry} onDrill={onDrill} />
+        ) : (
+          <RichText text={entry.body} onDrill={onDrill} />
+        )}
       </div>
 
       {related.length ? (

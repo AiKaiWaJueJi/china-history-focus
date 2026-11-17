@@ -47,7 +47,7 @@ export function EmperorCard({
   compact = false,
 }: EmperorCardProps) {
   const openCodex = useCodexStore((s) => s.open)
-  /* 帝王 / 诸侯的 sourceId 就是自己的 id；取不到条目就不出按钮 */
+  /* 帝王 / 诸侯的 sourceId 就是自己的 id；取不到条目时卡片退化为纯展示 */
   const codexId = getEntryBySource(emperor.id)?.id ?? null
   const style: CardStyle = {
     '--portrait': `url("${emperor.portrait}")`,
@@ -55,6 +55,9 @@ export function EmperorCard({
 
   const military = emperor.events.filter((event) => event.dimension === 'military')
   const civic = emperor.events.filter((event) => event.dimension !== 'military')
+
+  /* 整卡即入口：不再单设右上角 24px 的「档」按钮 */
+  const openArchive = codexId ? () => openCodex(codexId) : undefined
 
   return (
     <article
@@ -64,6 +67,15 @@ export function EmperorCard({
       data-index={index}
       data-layout={layout}
       data-evaluation={emperor.evaluation}
+      role={openArchive ? 'button' : undefined}
+      aria-label={openArchive ? `打开${emperor.posthumousTitle}的历史档案` : undefined}
+      onClick={openArchive}
+      onKeyDown={(event) => {
+        if (!openArchive) return
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        openArchive()
+      }}
     >
       <div className="emp-clip">
         <div className="emp-media" />
@@ -76,21 +88,6 @@ export function EmperorCard({
             <p className="emp-rule">谥法 · {emperor.posthumousRule}</p>
           ) : null}
         </div>
-        {codexId ? (
-          <button
-            type="button"
-            className="emp-codex"
-            aria-label={`查看${emperor.posthumousTitle}的档案`}
-            title="查看档案"
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation()
-              openCodex(codexId)
-            }}
-          >
-            档
-          </button>
-        ) : null}
         <span className="emp-corner" aria-hidden="true" />
       </div>
 

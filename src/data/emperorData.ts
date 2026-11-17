@@ -58,6 +58,9 @@ import type {
   DynastyEndgame,
   DynastyLords,
   DynastySegments,
+  EmperorRecord,
+  Lord,
+  TimelineSegment,
 } from '../core/emperorTypes'
 
 const EMPERORS: Record<string, DynastyEmperors> = {
@@ -185,3 +188,70 @@ export function hasDynastyEmperors(dynastyId: string | undefined): boolean {
 export function formatYear(year: number): string {
   return year < 0 ? `前${Math.abs(year)}` : `${year}`
 }
+
+/* -------------------------------------------------------------------------- */
+/* 档案抽屉（帝王 / 诸侯）—— 按 id 反查，补齐「同朝 / 同期」这些渲染所需上下文    */
+/* -------------------------------------------------------------------------- */
+
+export interface EmperorArchiveRef {
+  emperor: EmperorRecord
+  dynastyId: string
+  dynastyName: string
+  /** 同朝上一位 / 下一位（保底出链，也方便顺着朝代连续读） */
+  prev?: EmperorRecord
+  next?: EmperorRecord
+  /** 本朝分段表，用来把事件挂回「西周 / 春秋 / 战国」这种时代坐标 */
+  segments: TimelineSegment[]
+  /** 在本朝帝王序列中的序号（1 起）与总数——让读者知道"这是第几位" */
+  index: number
+  total: number
+}
+
+const EMPEROR_ARCHIVE = new Map<string, EmperorArchiveRef>()
+for (const [dynastyId, doc] of Object.entries(EMPERORS)) {
+  const segments = SEGMENTS[dynastyId]?.segments ?? []
+  doc.emperors.forEach((emperor, index) => {
+    EMPEROR_ARCHIVE.set(emperor.id, {
+      emperor,
+      dynastyId,
+      dynastyName: doc.name,
+      prev: index > 0 ? doc.emperors[index - 1] : undefined,
+      next: index < doc.emperors.length - 1 ? doc.emperors[index + 1] : undefined,
+      segments,
+      index: index + 1,
+      total: doc.emperors.length,
+    })
+  })
+}
+
+export function getEmperorArchive(id: string): EmperorArchiveRef | null {
+  return EMPEROR_ARCHIVE.get(id) ?? null
+}
+
+export interface LordArchiveRef {
+  lord: Lord
+  dynastyId: string
+  /** 同朝诸侯（东周同一批），用于「同期诸侯」横向跳转 */
+  siblings: Lord[]
+}
+
+const LORD_ARCHIVE = new Map<string, LordArchiveRef>()
+for (const [dynastyId, doc] of Object.entries(LORDS)) {
+  for (const lord of doc.lords) LORD_ARCHIVE.set(lord.id, { lord, dynastyId, siblings: doc.lords })
+}
+
+export function getLordArchive(id: string): LordArchiveRef | null {
+  return LORD_ARCHIVE.get(id) ?? null
+}
+
+/**
+ * 某一年「在任称霸」的诸侯。
+ * 口径与时间轴联动一致：用**称霸期**求交，而不是在位期——
+ * 齐桓公前685 即位、前679 鄄之会才始霸。
+ */
+export function lordsRulingAt(year: number): Lord[] {
+  const doc = LORDS.zhou
+  if (!doc) return []
+  return doc.lords.filter((lord) => year >= lord.hegemonyStart && year <= lord.hegemonyEnd)
+}
+

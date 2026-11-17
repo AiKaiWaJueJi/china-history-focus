@@ -1,0 +1,552 @@
+[
+  {
+    "id": "f_maodun",
+    "kind": "character",
+    "name": "冒顿单于",
+    "subtitle": "匈奴 · 头曼单于之子",
+    "body": "匈奴单于头曼之子，鸣镝弑父自立。东破东胡、西击月氏、南并楼烦白羊，控弦之士号称三十万，匈奴自此强盛。\n\n前 200 年围[[汉高祖|han_gao]]于白登七日，漢遂定和亲之策。此后数十年，漢匈以和亲、通关市维持局面。",
+    "related": [
+      "han_gao"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_pengyue",
+    "kind": "character",
+    "name": "彭越",
+    "subtitle": "漢 · 昌邑人，梁王",
+    "body": "秦末起于巨野泽，收散卒为游击，往来梁地，专绝楚军粮道——[[项羽|f_xiangyu]]前后受其扰。\n\n垓下之役，彭越自梁地会师，与[[韩信|f_hanxin]]、[[英布|f_yingbu]]等合围。漢初封梁王，后被告谋反，诛死。",
+    "related": [
+      "f_hanxin",
+      "f_yingbu",
+      "f_xiangyu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_yingbu",
+    "kind": "character",
+    "name": "英布",
+    "subtitle": "漢 · 六县人，淮南王",
+    "body": "少时受黥刑，故又称黥布。骊山刑徒出身，从项梁、[[项羽|f_xiangyu]]破秦，常为军锋。\n\n后归漢，封淮南王，垓下会师。漢初见[[韩信|f_hanxin]]、[[彭越|f_pengyue]]相继被诛，遂反，兵败被杀。",
+    "related": [
+      "f_xiangyu",
+      "f_hanxin",
+      "f_pengyue"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhangliang",
+    "kind": "character",
+    "name": "张良",
+    "subtitle": "漢 · 城父人，留侯",
+    "body": "韩国贵族之后。秦灭韩，散家财求刺客，博浪沙狙击秦始皇不中，亡匿下邳。\n\n后佐[[汉高祖|han_gao]]：鸿门宴上周旋、下邑画策定韩信彭越英布之约。漢立，功成身退，学辟谷导引。",
+    "related": [
+      "han_gao",
+      "f_hanxin"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_xiaohe",
+    "kind": "character",
+    "name": "萧何",
+    "subtitle": "漢 · 沛县人，相国",
+    "body": "沛县主吏。[[汉高祖|han_gao]]入咸阳，诸将争金帛，萧何独收秦丞相府律令图书，天下形势由此可知。\n\n楚漢相争时镇守关中，转漕给军。漢初为相国，定律令、次律令，与曹参并为漢初功臣之首。",
+    "related": [
+      "han_gao"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_chenping",
+    "kind": "character",
+    "name": "陈平",
+    "subtitle": "漢 · 阳武人，曲逆侯",
+    "body": "少家贫，好读书。先从魏王咎、[[项羽|f_xiangyu]]，后归[[汉高祖|han_gao]]，数出奇计：离间项羽与[[范增|f_fanzeng]]、解荥阳之围、伪游云梦擒[[韩信|f_hanxin]]。\n\n白登之围，其秘计得脱（事秘，世莫能闻）。漢初为丞相，与[[周勃|f_zhoubo]]共诛诸吕。",
+    "related": [
+      "han_gao",
+      "f_xiangyu",
+      "f_fanzeng"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhoubo",
+    "kind": "character",
+    "name": "周勃",
+    "subtitle": "漢 · 沛县人，绛侯",
+    "body": "以织薄曲、为人吹箫办丧事为生，从[[汉高祖|han_gao]]起兵，战功卓著。高祖以为「安刘氏者必勃」。\n\n吕后死，与[[陈平|f_chenping]]定计诛诸吕，迎立[[漢文帝|han_wen]]。后以谋反下狱，出狱叹「吾尝将百万军，然安知狱吏之贵乎」。",
+    "related": [
+      "han_gao",
+      "f_chenping",
+      "han_wen"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_chensheng",
+    "kind": "character",
+    "name": "陈胜",
+    "subtitle": "秦 · 阳城人，字涉",
+    "body": "少时佣耕，尝语「苟富贵，无相忘」。秦二世元年，与[[吴广|f_wuguang]]同为戍卒，失期当斩，遂揭竿于大泽乡，号「张楚」。\n\n一时郡县多杀长吏响应。后为车夫庄贾所害。",
+    "related": [
+      "f_wuguang",
+      "qin_er"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_wuguang",
+    "kind": "character",
+    "name": "吴广",
+    "subtitle": "秦 · 阳夏人，字叔",
+    "body": "与[[陈胜|f_chensheng]]同戍渔阳，遇雨失期，共谋起事。为假王，督诸将攻荥阳。\n\n后为部将田臧所杀——田臧以「假王骄，不知兵权」为辞。",
+    "related": [
+      "f_chensheng"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_xiangliang",
+    "kind": "character",
+    "name": "项梁",
+    "subtitle": "秦 · 下相人",
+    "body": "楚将项燕之子，[[项羽|f_xiangyu]]之叔父。陈胜起兵后，与项羽起于吴中，立楚怀王之孙心为王，号楚怀王。\n\n定陶之战，轻秦兵而败于[[章邯|f_zhanghan]]，战死。",
+    "related": [
+      "f_xiangyu",
+      "f_zhanghan"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_fanzeng",
+    "kind": "character",
+    "name": "范增",
+    "subtitle": "秦末 · 居鄛人，号亚父",
+    "body": "年七十，好奇计，投[[项梁|f_xiangliang]]，劝立楚后。[[项羽|f_xiangyu]]尊为亚父。\n\n鸿门宴力主杀[[汉高祖|han_gao]]，不听。后[[陈平|f_chenping]]用离间计，项羽疑之，范增怒而辞归，疽发背死。",
+    "related": [
+      "f_xiangyu",
+      "f_xiangliang",
+      "f_chenping"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_weiqing",
+    "kind": "character",
+    "name": "卫青",
+    "subtitle": "漢 · 河东平阳人，大将军",
+    "body": "骑奴出身，以姊卫子夫贵。[[漢武帝|han_wu]]时七击匈奴，收河南地、置朔方郡，官至大将军。\n\n漠北之战与[[霍去病|f_huoqubing]]各将五万骑出塞，匈奴远遁，「漠南无王庭」。为人仁善退让，士卒乐为用。",
+    "related": [
+      "han_wu",
+      "f_huoqubing"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_huoqubing",
+    "kind": "character",
+    "name": "霍去病",
+    "subtitle": "漢 · 河东平阳人，骠骑将军",
+    "body": "[[卫青|f_weiqing]]之甥。十八岁为剽姚校尉，率八百骑深入，功冠全军。\n\n河西之战开河西四郡；漠北大捷，封狼居胥。武帝为治第，对曰「匈奴未灭，无以家为」。年二十四卒。",
+    "related": [
+      "f_weiqing",
+      "han_wu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhangqian",
+    "kind": "character",
+    "name": "张骞",
+    "subtitle": "漢 · 漢中人，博望侯",
+    "body": "[[漢武帝|han_wu]]时以郎应募出使月氏，为匈奴所得，留十余年，持漢节不失。\n\n归后具言西域诸国情形，史称「凿空」。第二次出使乌孙，副使分遣大宛、康居、月氏、大夏，丝路自此通。",
+    "related": [
+      "han_wu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_liguang",
+    "kind": "character",
+    "name": "李广",
+    "subtitle": "漢 · 陇西成纪人，飞将军",
+    "body": "秦将李信之后。文帝时从军击匈奴，历景帝、武帝三朝，与匈奴大小七十余战。\n\n匈奴畏之，称「飞将军」，避之数岁。元狩四年随卫青出塞，失道后期，不愿对簿，自刎。",
+    "related": [
+      "f_weiqing",
+      "han_wu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_dongzhongshu",
+    "kind": "character",
+    "name": "董仲舒",
+    "subtitle": "漢 · 广川人",
+    "body": "治《春秋》公羊学。[[漢武帝|han_wu]]举贤良对策，上「天人三策」，倡「诸不在六艺之科、孔子之术者，皆绝其道」。\n\n此后儒学渐为官学，太学、五经博士之制由此而立。",
+    "related": [
+      "han_wu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_caocao",
+    "kind": "character",
+    "name": "曹操",
+    "subtitle": "漢 · 沛国谯人，字孟德",
+    "body": "举孝廉入仕，讨黄巾起家。[[漢献帝|han_xian]]时奉迎帝都许，挟天子以令诸侯。\n\n官渡破[[袁绍|f_yuanshao]]，定河北；赤壁败于孙刘。封魏王，卒谥武，子丕代漢建魏。",
+    "related": [
+      "han_xian",
+      "f_yuanshao"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_liubei",
+    "kind": "character",
+    "name": "刘备",
+    "subtitle": "漢 · 涿郡人，字玄德",
+    "body": "漢室远支，少孤贫，与关羽、张飞相友善。依陶谦、投袁绍、附刘表，颠沛半生。\n\n三顾[[诸葛亮|f_zhugeliang]]于隆中，得「跨有荆益」之策；取荆、益，称帝于成都，国号漢。夷陵败后卒于白帝。",
+    "related": [
+      "f_zhugeliang",
+      "han_xian"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhugeliang",
+    "kind": "character",
+    "name": "诸葛亮",
+    "subtitle": "漢 · 琅琊阳都人，字孔明",
+    "body": "隐居隆中，自比管仲、乐毅。[[刘备|f_liubei]]三顾，遂定三分之计。\n\n受托孤之重，事无巨细咸决于己；六出祁山，与司马懿相持于渭南，卒于五丈原。谥忠武。",
+    "related": [
+      "f_liubei",
+      "f_simayi"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_sunquan",
+    "kind": "character",
+    "name": "孙权",
+    "subtitle": "吴 · 吴郡富春人，字仲谋",
+    "body": "承父[[孙坚|f_sunjian]]、兄孙策之业据江东。[[曹操|f_caocao]]南下，与[[刘备|f_liubei]]合兵，赤壁大破之。\n\n后袭取荆州、杀关羽；称帝建吴，都建业。晚年猜忌，二宫之争伤及国本。",
+    "related": [
+      "f_caocao",
+      "f_liubei"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_yuanshao",
+    "kind": "character",
+    "name": "袁绍",
+    "subtitle": "漢 · 汝南汝阳人，字本初",
+    "body": "四世三公之后。何进谋诛宦官事泄，袁绍尽诛宦官；董卓入京，出为渤海太守。\n\n据冀、青、幽、并四州，为河北之雄。官渡一败，势力转衰，发病而死。",
+    "related": [
+      "f_caocao",
+      "f_caocao"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_weizheng",
+    "kind": "character",
+    "name": "魏徵",
+    "subtitle": "唐 · 巨鹿下曲阳人",
+    "body": "初为李密、[[窦建德|f_doujiande]]臣，后归唐，为[[唐太宗|tang_taizong]]谏臣。前后陈谏二百余事，太宗多所嘉纳。\n\n卒后太宗叹「以铜为镜，可以正衣冠；以古为镜，可以知兴替；以人为镜，可以明得失」，即为此人。",
+    "related": [
+      "tang_taizong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_anlushan",
+    "kind": "character",
+    "name": "安禄山",
+    "subtitle": "唐 · 营州柳城胡人",
+    "body": "通六蕃语，先为互市牙郎，后以骁勇得[[唐玄宗|tang_xuanzong]]宠信，身兼平卢、范阳、河东三镇节度使。\n\n天宝十四载（755）反于范阳，陷洛阳、长安，称大燕皇帝。后为子安庆绪所杀。",
+    "related": [
+      "tang_xuanzong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_guoziyi",
+    "kind": "character",
+    "name": "郭子仪",
+    "subtitle": "唐 · 华州郑县人",
+    "body": "以武举异等补官。安史之乱起，与李光弼收复两京。代宗时吐蕃入长安，以数十骑退敌，单骑见回纥，劝其倒戈。\n\n历仕四朝，功盖天下而主不疑，位极人臣而众不嫉，卒年八十五。",
+    "related": [
+      "f_anlushan",
+      "tang_daizong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_huangchao",
+    "kind": "character",
+    "name": "黄巢",
+    "subtitle": "唐 · 曹州冤句人",
+    "body": "善骑射，粗涉书传，屡举进士不第。乾符年间响应王仙芝起兵，转战南北，号「冲天大将军」。\n\n广明元年（880）破长安，称帝，国号大齐。后为唐军所败，死于狼虎谷（一说自刎，一说为外甥所杀）。",
+    "related": [
+      "tang_xizong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_yuefei",
+    "kind": "character",
+    "name": "岳飞",
+    "subtitle": "宋 · 相州汤阴人，字鹏举",
+    "body": "少年习武，投军抗金。绍兴十年郾城大捷，破金兀术拐子马，进军朱仙镇，中原豪杰响应。\n\n高宗、[[秦桧|f_qinhui]]决意议和，一日降十二金牌召还。下狱，以「莫须有」三字被杀于风波亭。孝宗时追谥武穆。",
+    "related": [
+      "f_qinhui",
+      "song_gaozong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_qinhui",
+    "kind": "character",
+    "name": "秦桧",
+    "subtitle": "宋 · 江宁人，字会之",
+    "body": "靖康中随徽钦二帝北迁，后南归，自称逃还，时人多疑。两度为相，力主和议。\n\n绍兴十一年与金成（绍兴和议），旋即构陷[[岳飞|f_yuefei]]，促成其死。后世铸像跪于岳王庙前。",
+    "related": [
+      "f_yuefei",
+      "song_gaozong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_wentianxiang",
+    "kind": "character",
+    "name": "文天祥",
+    "subtitle": "宋 · 吉州庐陵人，字宋瑞",
+    "body": "宝祐四年状元。元军南下，散尽家财起兵勤王。德祐二年使元营被拘，脱归，转战闽广。\n\n五坡岭被俘，囚燕京四年，作《正气歌》。临刑从容南向而拜，年四十七。",
+    "related": [
+      "song_duanzong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhaopu",
+    "kind": "character",
+    "name": "赵普",
+    "subtitle": "宋 · 幽州蓟人，字则平",
+    "body": "[[宋太祖|song_taizu]]幕僚，陈桥兵变多预其谋。乾德二年拜相。\n\n曾言「半部《论语》治天下」。杯酒释兵权、先南后北之策，皆与之相关。太宗朝再相。",
+    "related": [
+      "song_taizu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_wanganshi",
+    "kind": "character",
+    "name": "王安石",
+    "subtitle": "宋 · 抚州临川人，字介甫",
+    "body": "庆历二年进士。上万言书，主张变法。[[宋神宗|song_shenzong]]时拜参知政事，行青苗、免役、保甲、市易诸法。\n\n新法触犯既得利益，新旧党争自此起，至北宋亡而未已。",
+    "related": [
+      "song_shenzong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhangjuzheng",
+    "kind": "character",
+    "name": "张居正",
+    "subtitle": "明 · 江陵人，字叔大",
+    "body": "嘉靖进士，万历初为首辅，掌国政十年。行考成法核吏治，清丈田亩，推[[一条鞭法|cx_yitiao]]。\n\n[[明神宗|ming_shenzong]]幼年即位，颇受其约束；张居正卒后即被抄家，诸子或死或戍。",
+    "related": [
+      "ming_shenzong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_lizicheng",
+    "kind": "character",
+    "name": "李自成",
+    "subtitle": "明 · 陕西米脂人",
+    "body": "驿卒出身，崇祯初参加农民军，号「闯王」。提出「均田免赋」，饥民从之如流。\n\n崇祯十七年（1644）在西安建大顺，旋破北京，[[明思宗|ming_sizong]]自缢。山海关败于[[吴三桂|f_wusangui]]与清军，退走陕西，次年为地主武装所害。",
+    "related": [
+      "ming_sizong",
+      "f_wusangui"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_wusangui",
+    "kind": "character",
+    "name": "吴三桂",
+    "subtitle": "明末清初 · 辽东人，字长伯",
+    "body": "明辽东总兵，封平西伯，镇山海关。李自成破北京，其引清兵入关，合击农民军。\n\n清封平西王，镇云南。康熙十二年举兵反清，称「周」帝于衡州，两年后病死，三藩之乱旋平。",
+    "related": [
+      "f_lizicheng",
+      "qing_shengzu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_zhengchenggong",
+    "kind": "character",
+    "name": "郑成功",
+    "subtitle": "明末 · 福建南安人，本名森",
+    "body": "郑芝龙之子，隆武帝赐姓朱，号「国姓爷」。父降清，成功不从而起兵，据金厦与清相持。\n\n1661 年率军渡海攻台湾，逐荷兰东印度公司，改称东都。次年病卒于台湾。",
+    "related": [
+      "qing_shizu"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_shilang",
+    "kind": "character",
+    "name": "施琅",
+    "subtitle": "清 · 福建晋江人",
+    "body": "原为郑芝龙部将，后随郑成功，因故失和降清，隶汉军镶黄旗。\n\n康熙二十二年（1683）任福建水师提督，澎湖一战破郑军刘国轩，郑克塽归降。台湾纳入版图，设台湾府。",
+    "related": [
+      "qing_shengzu",
+      "f_zhengchenggong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_linzexu",
+    "kind": "character",
+    "name": "林则徐",
+    "subtitle": "清 · 福建侯官人，字元抚",
+    "body": "嘉庆进士，历官按察使、巡抚、总督。道光十八年（1838）以钦差大臣赴粤查禁鸦片，次年虎门销烟二百余万斤。\n\n英舰来犯，廷议归咎，被革职遣戍伊犁。后复起，历陕甘云贵。",
+    "related": [
+      "qing_xuanzong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_lihongzhang",
+    "kind": "character",
+    "name": "李鸿章",
+    "subtitle": "清 · 安徽合肥人，字少荃",
+    "body": "道光进士，以淮军平太平天国、捻军起家，官至直隶总督兼北洋大臣。\n\n办洋务，创北洋水师、轮船招商局。甲午战败，赴日签《马关条约》；庚子后再签《辛丑条约》。毁誉集于一身。",
+    "related": [
+      "qing_dezong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_cixi",
+    "kind": "character",
+    "name": "慈禧太后",
+    "subtitle": "清 · 满洲镶蓝旗人，叶赫那拉氏",
+    "body": "咸丰妃。1861 年咸丰崩于热河，与慈安太后、恭亲王奕訢发动辛酉政变，两宫垂帘。\n\n甲午、戊戌间权柄极重，戊戌政变后复训政；庚子后推行新政。光绪三十四年崩。",
+    "related": [
+      "qing_dezong",
+      "qing_xuantong"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_sunjian",
+    "kind": "character",
+    "name": "孙坚",
+    "subtitle": "漢 · 吴郡富春人，字文台",
+    "body": "长沙太守，讨董卓时先入洛阳。相传获漢传国玺。后征刘表，为黄祖部卒射杀。\n\n其子[[孙策|f_sunce]]、[[孙权|f_sunquan]]定江东，孙权称帝后追尊为武烈皇帝。",
+    "related": [
+      "f_sunquan",
+      "f_sunquan"
+    ],
+    "tags": [
+      "人物"
+    ]
+  },
+  {
+    "id": "f_sunce",
+    "kind": "character",
+    "name": "孙策",
+    "subtitle": "漢 · 吴郡富春人，字伯符",
+    "body": "[[孙坚|f_sunjian]]长子。以玉玺向袁术借兵，渡江降服江东诸郡，号「小霸王」。\n\n为刺客所伤，临终以弟[[孙权|f_sunquan]]托于张昭、周瑜。弟称帝后追尊长沙桓王。",
+    "related": [
+      "f_sunjian",
+      "f_sunquan"
+    ],
+    "tags": [
+      "人物"
+    ]
+  }
+]
