@@ -26,6 +26,24 @@ const check = (name, ok, detail = '') => {
 check('条目 id 唯一', new Set(entries.map((e) => e.id)).size === entries.length, `${entries.length} 条`)
 check('sourceId 唯一', new Set(entries.filter((e) => e.sourceId).map((e) => e.sourceId)).size === entries.filter((e) => e.sourceId).length)
 
+/*
+  形状完整：渲染层把 quotes / related 直接 .map()，缺字段 = 整棵树卸载 = 黑屏。
+  第一版生成器漏给 22 条典制条目写 quotes，点「书同文」就是这么黑掉的，
+  所以这条断言比任何内容断言都靠前——先证明每一条都能渲染，再谈内容。
+*/
+const shapeBad = []
+for (const e of entries) {
+  const bad = []
+  if (typeof e.id !== 'string' || !e.id) bad.push('id')
+  if (typeof e.name !== 'string' || !e.name) bad.push('name')
+  if (typeof e.kind !== 'string') bad.push('kind')
+  if (typeof e.body !== 'string') bad.push('body')
+  if (!Array.isArray(e.quotes)) bad.push('quotes')
+  if (!Array.isArray(e.related)) bad.push('related')
+  if (bad.length) shapeBad.push(`${e.id}(${bad.join('/')})`)
+}
+check('每条条目都具备渲染所需字段（quotes/related 必须是数组）', shapeBad.length === 0, shapeBad.slice(0, 5).join(','))
+
 const badRelated = []
 for (const e of entries) for (const rid of e.related) if (!byId.has(rid)) badRelated.push(`${e.id}->${rid}`)
 check('关联 id 不悬空', badRelated.length === 0, badRelated.slice(0, 4).join(','))

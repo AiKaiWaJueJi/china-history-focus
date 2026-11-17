@@ -24,7 +24,7 @@ import { CHUHAN_MAP } from './chuhanMap'
 import { SANGUO_MAP } from './sanguoMap'
 import { SANDBOX_MAPS } from './sandboxMaps'
 import { useEndgameStore } from './useEndgameStore'
-import { useCodexStore } from '../../store/useCodexStore'
+import { isCodexOpen, useCodexStore } from '../../store/useCodexStore'
 import { getEntryBySource } from '../../data/codex'
 import { useCampaignPlayer, useCampaignStore } from './useCampaignPlayer'
 import './endgame.css'
@@ -275,6 +275,8 @@ export function EndgameStage() {
   /* 键盘：ESC 逐层退出；← → 逐级推移 */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      // 档案抽屉开着时，← → 属于抽屉（读档案不该把沙盘推进一步）
+      if (isCodexOpen()) return
       if (event.key === 'ArrowRight') {
         setIndex(index + 1)
         return

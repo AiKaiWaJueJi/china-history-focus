@@ -36,8 +36,9 @@ npm install
 npm run dev -- --port 5180      # http://localhost:5180
 npm run build                   # 先跑 tsc -b，再 vite build
 npx tsc -b --pretty false       # 只做类型检查
-node verify-codex.mjs      # 17  百科库数据层（id/关联/标记/原文/BFS 下钻）
-node verify-codex-ui.mjs   # 22  档案抽屉交互
+node verify-codex.mjs      # 18  百科库数据层（id/关联/标记/原文/BFS 下钻/字段形状）
+node verify-codex-ui.mjs   # 26  档案抽屉交互（含「秦始皇 → 书同文」这条黑屏回归）
+node verify-journey.mjs    # 402 全链路冒烟：十二朝从周走到清，约 8 分钟
 ```
 
 > dev server 是普通后台进程，**机器/DSH 重启后要重新起**。端口 5180 是各验收脚本的默认地址，
@@ -47,13 +48,15 @@ node verify-codex-ui.mjs   # 22  档案抽屉交互
 
 ## 验收
 
-29 个脚本、约 725 条断言，全部跑一遍约 10 分钟（需要 dev server 在跑）：
+29 套脚本、756 条断言，全部跑一遍约 10 分钟（需要 dev server 在跑）；
+另有一份**不进 run-all** 的全链路冒烟 `verify-journey.mjs`（402 条，约 8 分钟，改路由/结构/抽屉后必跑）。
 
-> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + UI 25 套，逐套汇总；时间敏感的用例失败会自动重试一次并打印首次结果）。
+> 一条命令跑全量：`node scripts/run-all-verify.mjs`（几何 4 套 + 数据层 1 套 + UI 24 套，逐套汇总；时间敏感的用例失败会自动重试一次并打印首次结果）。
 
 ```bash
-# UI：25 套 约 645 条
+# UI：24 套 702 条
 node verify-gallery.mjs      # 24   主页
+node verify-bounds.mjs       #  4   主页 12 模块挤压边界
 node verify-dwell.mjs        #  8   悬停驻留
 node verify-timeline.mjs     # 20   时间轴
 node verify-dual.mjs         # 33   天子 + 诸侯双层
@@ -75,12 +78,19 @@ node verify-frame.mjs        # 60   七朝骨架（隋唐宋元明清）
 node verify-wudai.mjs        # 15   五代十国并行时间轴
 node verify-sandbox.mjs      # 91   七朝沙盘（底板/疆域/要地/路线 + UI）
 node verify-segment-intro.mjs # 84   段间过渡（周秦汉晋唐五代宋清：下滚进页 / 上滚返回 / 演完落点）
+node verify-codex-ui.mjs     # 26   档案抽屉交互（含「秦始皇 → 书同文」黑屏回归）
 
-# 几何：4 套 28 条（离线，不需要 dev server）
+# 数据层：1 套 18 条
+node verify-codex.mjs        # 18   百科库（字段形状 / 关联不悬空 / 战役必有原文+译文 / BFS 下钻）
+
+# 几何：4 套 36 条（离线，不需要 dev server）
 node check-zhanguo-geo.mjs   # 9   战国七雄
 node check-chuhan-geo.mjs    # 9   楚漢八国
 node check-sanguo-geo.mjs    # 9   三国鼎立
 node check-sui-geo.mjs       # 9   南北朝收尾
+
+# 全链路冒烟：1 套 402 条（约 8 分钟）
+node verify-journey.mjs      # 主页 → 12 朝时间轴 → 22 章过渡页 → 12 盘沙盘 → 抽屉 → 十二朝接力
 ```
 
 **面积守恒**是最狠的一条，而且现在有两套底板，别混用：
@@ -126,7 +136,8 @@ docs/                     HANDOFF.md（施工图）、CHANGELOG.md（更新日�
 1. **先读 [docs/HANDOFF.md](docs/HANDOFF.md)**：架构约定、口径红线、目录地图、验收清单、待办都在里面；
    本仓库的"不许改回去"清单在 §7。
 2. 再扫一眼 [docs/CHANGELOG.md](docs/CHANGELOG.md) 了解这一路怎么演进过来的。
-3. 动手前先跑 `npx tsc -b` 与相关 `verify-*.mjs`，确认基线；改完再跑一次全量。
+3. 动手前先跑 `npx tsc -b` 与相关 `verify-*.mjs`，确认基线；改完再跑一次全量
+   （改路由 / 页面结构 / 档案抽屉时，额外跑 `node verify-journey.mjs`，它会把十二朝从头走到尾）。
 4. 加一个朝代的标准流程见 HANDOFF §4（数据 → 注册 → 过渡页 → 沙盘 → 验收）。
 
 ---
@@ -142,3 +153,6 @@ docs/                     HANDOFF.md（施工图）、CHANGELOG.md（更新日�
 - **画像不是史料**：漢以外全是程序化占位 SVG（颜色 + 冠式 + 袍形），别当历史写真用。
 - **五代十国只有中原行挂帝王卡**：十国君主多为国主/王，不入帝系，用「政权带」表达，与南北朝「十六国余部」同一口径。
 - **过渡页无图时自动降级**：`FallStage.ART` 里查不到 `art` 键就改单栏居中排版，**不要拿无关图兜底**。
+- **档案抽屉打开时，底层页面冻住**：滚轮与 ← → 只作用在抽屉上（`isCodexOpen()` 守卫）。这是刻意行为，不是滚轮失灵。
+- **没有文言原文的条目照样能读**：22 条典制词条只有正文，抽屉不显示原文块；缺 `quotes` 曾经导致整页黑屏，
+  现在生成器与读取层两头都兜、外面还有 ErrorBoundary 拦，别把这三层拆了。

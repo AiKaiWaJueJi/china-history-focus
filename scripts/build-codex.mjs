@@ -304,7 +304,17 @@ for (const e of all) {
   delete e._file
   delete e._atlas
   delete e._deeds
-  if (!e.related) e.related = []
+  /*
+    形状兜底：渲染层把 quotes / related 当数组直接 .map()。
+    人工补充条目（codex.extra.json）本来只写 id/kind/name/body/related/tags，
+    没有 quotes —— 第一版生成器漏了这一步，结果点「书同文」整棵树崩成黑屏。
+    生成物必须**每条都齐四件**，缺一个字段就是一次白屏。
+  */
+  if (!Array.isArray(e.quotes)) e.quotes = []
+  if (!Array.isArray(e.related)) e.related = []
+  if (!Array.isArray(e.tags)) e.tags = []
+  if (Array.isArray(e.alias) && e.alias.length === 0) delete e.alias
+  if (typeof e.body !== 'string') e.body = ''
   // 只保留真实存在的关联
   e.related = e.related.filter((rid) => rid !== e.id)
 }

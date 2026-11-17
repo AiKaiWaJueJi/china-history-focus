@@ -140,6 +140,7 @@ import song_jingkang_3 from '../../assets/song_jingkang_3.jpg'
 import qing_ruquan_1 from '../../assets/qing_ruquan_1.jpg'
 import qing_ruquan_2 from '../../assets/qing_ruquan_2.jpg'
 import qing_ruquan_3 from '../../assets/qing_ruquan_3.jpg'
+import { isCodexOpen } from '../../store/useCodexStore'
 import './fall.css'
 
 /** 每一幕的影像代号 —— 数据里指定，组件只负责映射到文件 */
@@ -521,6 +522,8 @@ export function FallStage() {
     if (!data) return
     const onWheel = (event: WheelEvent) => {
       if (confirmBack || leaving) return
+      // 档案抽屉开着时滚轮属于抽屉：不能在底下偷偷翻幕
+      if (isCodexOpen()) return
       if (Math.abs(event.deltaY) < 24) return
 
       const now = performance.now()

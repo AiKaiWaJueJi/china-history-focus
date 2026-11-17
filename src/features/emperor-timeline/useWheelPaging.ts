@@ -13,6 +13,7 @@
  *   5. 同时支持键盘（←/→/PgUp/PgDn），保证可达性。
  */
 import { useEffect, useRef } from 'react'
+import { isCodexOpen } from '../../store/useCodexStore'
 
 export interface WheelPagingOptions {
   pageCount: number
@@ -84,6 +85,8 @@ export function useWheelPaging({
     }
 
     const onWheel = (event: WheelEvent) => {
+      // 档案抽屉开着时，滚轮只属于抽屉（读长档案不该把底下那一页翻掉）
+      if (isCodexOpen()) return
       // 只处理纵向滚动
       if (Math.abs(event.deltaY) < Math.abs(event.deltaX)) return
       acc.current += event.deltaY
@@ -95,6 +98,7 @@ export function useWheelPaging({
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (isCodexOpen()) return
       const target = event.target as HTMLElement | null
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return
       if (event.key === 'ArrowRight' || event.key === 'PageDown') {

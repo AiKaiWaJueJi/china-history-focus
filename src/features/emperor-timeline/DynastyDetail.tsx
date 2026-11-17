@@ -333,9 +333,7 @@ export function DynastyDetail() {
         {emperors.length === 0 ? (
           <div className="timeline-empty">
             <p className="timeline-empty-text">「{dynasty.name}」的帝王数据尚未导入</p>
-            <p className="timeline-empty-sub">
-              阶段二目前只提供「周」作为样例，其余朝代将在批量导入后开放
-            </p>
+            <p className="timeline-empty-sub">可以先按 ESC 回主页，从别的朝代进去；这一朝的数据补上后会出现在这里。</p>
           </div>
         ) : isDual ? (
           <>

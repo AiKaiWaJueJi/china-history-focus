@@ -111,3 +111,10 @@ export const useCodexDirection = () => useCodexStore((s) => s.direction)
 
 /** 面包屑：栈里的全部 id（只在栈变化时更新） */
 export const useCodexStack = () => useCodexStore((s) => s.navigationStack)
+
+/**
+ * 抽屉是否开着（非 hook，给 window 级滚轮/键盘处理器用）。
+ * 抽屉是浮层，但页面级的「滚轮翻页 / ← → 推演」监听挂在 window 上，
+ * 不判断这一下就会在用户读档案时把底下那一屏偷偷翻掉。
+ */
+export const isCodexOpen = () => useCodexStore.getState().navigationStack.length > 0

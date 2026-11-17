@@ -21,6 +21,7 @@ const browser = await puppeteer.launch({
 })
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const results = []
+const pageErrors = []
 const check = (name, pass, detail = '') => {
   results.push({ name, pass })
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? ' :: ' + detail : ''}`)
@@ -60,7 +61,10 @@ const drawerState = (page) =>
 try {
   const page = await browser.newPage()
   await page.setCacheEnabled(false)
-  page.on('pageerror', (e) => console.log('[PAGEERROR]', String(e).slice(0, 160)))
+  page.on('pageerror', (e) => {
+    pageErrors.push(String(e).slice(0, 200))
+    console.log('[PAGEERROR]', String(e).slice(0, 160))
+  })
 
   /* ---------- 1. 战报标题 → 史料抽屉 ---------- */
   await page.goto(`${BASE}/dynasty/zhou/endgame`, { waitUntil: 'networkidle2', timeout: 60000 })
@@ -150,6 +154,41 @@ try {
   const d6 = await drawerState(page)
   check('帝王卡能开档案', d6.count === 1 && d6.kind === '帝王', `${d6.kind}/${d6.name}`)
   check('帝王档案有正文', d6.name.length > 0 && d6.crumbs.length === 1)
+
+  /* ---------- 7. 典制条目下钻：没有文言原文的条目也必须能渲染 ---------- */
+  /* 回归用例：曾经点「秦始皇 档 → 书同文」整页黑屏（典制条目缺 quotes 字段，
+     .map() 抛错 → React 卸掉整棵树）。这里从帝王卡真的点进去，验抽屉还在、内容是典制。 */
+  await page.goto(`${BASE}/dynasty/qin`, { waitUntil: 'networkidle2', timeout: 60000 })
+  await page.waitForSelector('.emp-card', { timeout: 15000 })
+  await sleep(900)
+  await page.evaluate(() => {
+    const card = [...document.querySelectorAll('.emp-card')].find((c) => c.textContent?.includes('秦始皇'))
+    card?.querySelector('.emp-codex')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(700)
+  await page.evaluate(() => {
+    const link = [...document.querySelectorAll('.codex-drawer .codex-link')].find((n) =>
+      n.textContent?.includes('书同文'),
+    )
+    link?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(800)
+  const d7 = await page.evaluate(() => ({
+    drawers: document.querySelectorAll('.codex-drawer').length,
+    name: document.querySelector('.codex-drawer .codex-name')?.textContent?.trim() ?? '',
+    kind: document.querySelector('.codex-drawer .codex-kind')?.textContent?.trim() ?? '',
+    bodyLen: document.querySelector('.codex-drawer .codex-body')?.textContent?.trim().length ?? 0,
+    crumbs: [...document.querySelectorAll('.codex-drawer .codex-crumb')].map((n) => n.textContent?.trim()),
+    appShell: Boolean(document.querySelector('.app-shell')),
+    rootChildren: document.getElementById('root')?.children.length ?? -1,
+  }))
+  console.log('[D7]', JSON.stringify(d7))
+  check('点典制词条后抽屉仍在（不是整页黑屏）', d7.drawers === 1 && d7.appShell && d7.rootChildren > 0, JSON.stringify(d7))
+  check('典制条目正常渲染', d7.kind === '典制' && d7.name === '书同文' && d7.bodyLen > 40, `${d7.kind}/${d7.name} body=${d7.bodyLen}`)
+  check('典制条目面包屑为两层', d7.crumbs.join('›') === '秦始皇›书同文', d7.crumbs.join('›'))
+
+  /* 最后一条：上面每个动作都不许留下页面级异常（黑屏的本质就是异常没被拦下） */
+  check('全程没有页面级 JS 异常', pageErrors.length === 0, pageErrors.join(' | '))
 
   const passed = results.filter((r) => r.pass).length
   console.log(`\n===== ${passed}/${results.length} passed =====`)

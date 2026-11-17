@@ -10,7 +10,21 @@
 import raw from './codex.entries.json'
 import type { CodexEntry, CodexKind } from '../core/codex'
 
-export const codexEntries = raw.entries as unknown as CodexEntry[]
+/**
+ * 形状兜底：JSON 是生成物（scripts/build-codex.mjs），但生成器漏字段时前端不能跟着崩。
+ * 渲染层把 quotes / related 直接 .map()，缺一个就是「整棵树卸载 → 黑屏」，
+ * 所以**在读取层补齐**，不指望每个调用方都记得 ?? []。
+ */
+const normalizeEntry = (entry: CodexEntry): CodexEntry => ({
+  ...entry,
+  body: typeof entry.body === 'string' ? entry.body : '',
+  quotes: Array.isArray(entry.quotes) ? entry.quotes.filter((q) => q && typeof q.text === 'string') : [],
+  related: Array.isArray(entry.related) ? entry.related.filter((id) => typeof id === 'string') : [],
+  alias: Array.isArray(entry.alias) ? entry.alias : undefined,
+  tags: Array.isArray(entry.tags) ? entry.tags : undefined,
+})
+
+export const codexEntries = (raw.entries as unknown as CodexEntry[]).map(normalizeEntry)
 export const codexCounts = raw.counts
 
 export const codexById = new Map<string, CodexEntry>()

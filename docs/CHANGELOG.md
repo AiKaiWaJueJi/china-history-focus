@@ -5,6 +5,34 @@
 
 ---
 
+### 2026-11-15 · 第七轮（修复轮：档案黑屏 / 抽屉抢滚动 / 全链路冒烟）
+
+**P0 修复：点「书同文」整页黑屏**
+- 根因：22 条典制条目（`codex.extra.json`）没有 `quotes` 字段，抽屉 `entry.quotes.map()` 抛 `TypeError`，
+  React 19 卸载整棵根树 → 全黑、连返回都点不到。不是 CSS，也不是遮罩；`verify-codex` 当时只查内容、没查形状，所以漏了。
+- `scripts/build-codex.mjs` 输出前统一兜底 `quotes / related / tags`（缺字段即白屏，不指望调用方 `?? []`）；
+- 新增 `normalizeEntry`（`src/data/codex.ts`）：旧生成物 / 手改 JSON 也不会崩；
+- 新增 `src/lib/ErrorBoundary.tsx`：包住「页面」与「抽屉」，真崩也只牺牲一块，面板给「重试 / 关闭档案」。
+
+**P1 修复：读档案时底层页面被翻走**
+- 翻页 / 推进的监听都挂在 `window` 上，抽屉打开时滚轮与 ← → 照样生效，能把底下那页翻掉，滚够了还会送进过渡页。
+- 新增 `isCodexOpen()`，守卫 `useWheelPaging`（DynastyDetail / NanBeiTimeline / WuDaiTimeline）、`FallStage`、
+  `EndgameStage`、`JinChronicleStage`：抽屉开着时这些页面不响应滚轮与 ← →。
+
+**新增验收：`verify-journey.mjs`（402 条）**
+- 用户视角全链路：主页 12 模块悬停挤压 → 12 朝时间轴逐页翻完 → 22 章过渡页（三幕 + 入口落点）→
+  12 盘沙盘（点国 / 战报 / 史料 / 下钻）→ 抽屉三入口 → **十二朝接力**（周→秦→…→清→主页，只点屏幕上看得见的东西）。
+- 全程记录 `pageerror` / `console.error` / HTTP 404，一条都不许有；一遍约 8 分钟，**不进 run-all**。
+
+**顺手修**
+- 顶栏副标题与右侧提示按页面走（过渡页/沙盘不再一律写「ESC 返回朝代主页」，那与实际落点不符）；
+- 帝王时间轴的空数据文案去掉「阶段二目前只提供周」这句过期货。
+
+**验收**：`run-all-verify` **29/29 套、756 条**（其中 `verify-codex` 17→18、`verify-codex-ui` 22→26）；
+`verify-journey` **402/402**；`tsc -b` / `npm run build` 通过。
+
+---
+
 ### 2026-11-15 · 第六轮（历史档案抽屉：百科库 + 无限下钻）
 
 **数据（296 条，全部来自既有已核对数据，不新造史料）**

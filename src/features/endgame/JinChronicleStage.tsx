@@ -13,6 +13,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import chronicle from '../../data/jin.chronicle.json'
+import { isCodexOpen } from '../../store/useCodexStore'
 import './jin-chronicle.css'
 
 interface ChronicleRegion {
@@ -81,6 +82,7 @@ export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (isCodexOpen()) return
       const target = event.target as HTMLElement | null
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return
       if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
@@ -99,6 +101,7 @@ export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?
 
   const onWheel = (event: React.WheelEvent) => {
     if (!event.deltaY) return
+    if (isCodexOpen()) return
     const now = performance.now()
     if (now - lastWheel.current < 420) return
     lastWheel.current = now
