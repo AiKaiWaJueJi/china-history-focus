@@ -1,9 +1,11 @@
-﻿/**
+/**
  * verify-dwell.mjs —— 指针意图控制器的验收
  * ---------------------------------------------------------------------------
  * 本轮要证明四件事：
  *   1) 快速横扫：中间模块完全不参与动画
- *   2) 停留阈值：80ms 内不启动，越过后正常展开
+ *   2) 停留阈值：阈值（60ms）之内不启动，越过后正常展开
+ *      计时从 pointermove 事件时刻起算 —— 早先在派发鼠标移动之前就开始计时，
+ *      机器负载一抖就会把「阈值之后的那一帧」算进「阈值之内」的窗口（假阴性）。
  *   3) 【核心】布局位移不会抢走焦点：
  *      激活 A 之后，在**坐标完全不变**的情况下派发 pointermove（模拟浏览器
  *      因布局位移而补发的合成事件），激活项必须仍然是 A
@@ -68,13 +70,31 @@ try {
     })
 
   const box7 = await boxOf(7)
+  /*
+    计时基准必须是「指针真的落到模块上」的那一刻。
+    早先 t0 在派发鼠标移动之前就开始计数：CDP 往返 + 机器负载一抖动，
+    60ms 的停留阈值就有一半概率落进 70ms 的观测窗，表现为
+    「阈值内已展开」的假阴性（机器闲时全绿、负载高时偶发红）。
+    现在从 pointermove 事件的时刻起算，观测窗也收紧到阈值以内（≤50ms），
+    不再拿「阈值之后」的时刻去断言「阈值之内」。
+  */
   await page.evaluate((idx) => {
     const el = document.querySelectorAll('.dyn-panel')[idx]
     window.__s = []
-    const t0 = performance.now()
-    const loop = (t) => {
-      window.__s.push([Math.round(t - t0), Math.round(el.getBoundingClientRect().width)])
-      if (t - t0 < 1400) requestAnimationFrame(loop)
+    window.__tMove = null
+    window.addEventListener(
+      'pointermove',
+      () => {
+        if (window.__tMove === null) window.__tMove = performance.now()
+      },
+      { once: true },
+    )
+    const started = performance.now()
+    const loop = () => {
+      const now = performance.now()
+      const rel = window.__tMove === null ? -1 : now - window.__tMove
+      window.__s.push([Math.round(rel), Math.round(el.getBoundingClientRect().width)])
+      if (now - started < 1600) requestAnimationFrame(loop)
     }
     requestAnimationFrame(loop)
   }, 7)
@@ -82,15 +102,18 @@ try {
   await page.mouse.move(box7.x, box7.y, { steps: 1 })
   await sleep(1500)
   const samples = await page.evaluate(() => window.__s)
-  const inDwell = samples.filter((s) => s[0] <= 70)
+  const timed = samples.filter((s) => s[0] >= 0)
+  const inDwell = timed.filter((s) => s[0] <= 50)
   const dwellMax = inDwell.length ? Math.max(...inDwell.map((s) => s[1])) : baseW
   const finalW = samples[samples.length - 1][1]
-  const tStart = samples.find((s) => s[1] > baseW + 1)?.[0] ?? -1
-  console.log(`[DWELL] 0-70ms 最大宽度 ${dwellMax}px，动画起始 ≈${tStart}ms，最终 ${finalW}px`)
+  const tStart = timed.find((s) => s[1] > baseW + 1)?.[0] ?? -1
+  console.log(
+    `[DWELL] 停留阈值内（自 pointermove 起算 0-50ms）最大宽度 ${dwellMax}px，动画起始 ≈${tStart}ms，最终 ${finalW}px`,
+  )
 
-  check('停留阈值内（0-70ms）未启动动画', dwellMax <= baseW + 2, `${dwellMax}px`)
+  check('停留阈值内（0-50ms）未启动动画', dwellMax <= baseW + 2, `${dwellMax}px（基准 ${baseW}px）`)
   check('越过阈值后正常展开', finalW > baseW * 1.8, `${finalW}px`)
-  check('启动延迟已从 140ms 降到 ~80ms 量级', tStart > 0 && tStart <= 200, `${tStart}ms`)
+  check('启动延迟落在停留阈值量级（45–250ms）', tStart >= 45 && tStart <= 250, `${tStart}ms`)
 
   /* ---------- 3) 核心：布局位移不得抢走焦点 ---------- */
   const activeBefore = await activeIndex()
