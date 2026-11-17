@@ -114,9 +114,14 @@ function Shell() {
   )
 }
 
+// GitHub Pages 部署在 /<repo>/ 子路径下，BrowserRouter 必须知道这个前缀，
+// 否则 /china-history-focus/dynasty/tang 匹配不上 /dynasty/:dynastyId 这条路由。
+// dev 时 BASE_URL 是 '/'，去掉尾斜杠后为空字符串，退回 undefined（即根路径）。
+const BASENAME = import.meta.env.BASE_URL.replace(/\/+$/, '')
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASENAME || undefined}>
       <RouterBridge />
       <Shell />
     </BrowserRouter>
