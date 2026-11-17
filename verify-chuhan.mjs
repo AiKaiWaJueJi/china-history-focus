@@ -10,6 +10,7 @@
  *   6) 战国沙盘未受影响：周仍是六国、仍是「秦」为攻方
  */
 import puppeteer from 'puppeteer-core'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -58,9 +59,9 @@ try {
   check('地图上不再以「秦」为攻方标签', !/^\s*秦\s*$/.test(mapText), 'ok')
 
   /* ---------- 3) 点节点展开战报 ---------- */
-  const nodes = await page.$$('.rail-node')
-  await nodes[1].click() // 三秦
-  await sleep(1400)
+  /* 未打过的节点会先播行军（跳步先弹补齐确认），统一走 clickRailNode */
+  await clickRailNode(page, 1, sleep) // 三秦
+  await sleep(500)
   const report1 = await page.evaluate(() => ({
     year: document.querySelector('.battle-year, .panel-year, .endgame-panel h3')?.textContent?.trim(),
     headings: [...document.querySelectorAll('.source-book, .battle-label, .panel-section-title')].map((n) => n.textContent?.trim()).slice(0, 6),
@@ -71,9 +72,9 @@ try {
   check('战报含《史记》引文', report1.headings.some((h) => (h ?? '').includes('史记')), report1.headings.join('|'))
 
   /* ---------- 4) 推进到最后一节 ---------- */
-  const nodes2 = await page.$$('.rail-node')
-  await nodes2[nodes2.length - 1].click()
-  await sleep(1600)
+  const railCount = await page.evaluate(() => document.querySelectorAll('.rail-node').length)
+  await clickRailNode(page, railCount - 1, sleep)
+  await sleep(600)
   const last = await page.evaluate(() => {
     const t = document.querySelector('.endgame-panel, .battle-panel')?.textContent ?? ''
     return { hasGaixia: t.includes('垓下'), hasXiangyu: t.includes('项羽') || t.includes('项王') }

@@ -3,6 +3,7 @@
  * 577 周灭齐（战报两页：周灭齐 / 隋代周）→ 588 渡江 → 589 灭陈
  */
 import puppeteer from 'puppeteer-core'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -52,8 +53,8 @@ try {
   check('默认状态没有居中「隋」大字', defaultNote.empireName === 0, JSON.stringify(defaultNote))
   check('默认状态没有易代提示浮标，攻方仍为北周', defaultNote.usurp === 0 && defaultNote.qin === '北周', JSON.stringify(defaultNote))
 
-  await page.click('.rail-node:nth-child(2)')
-  await sleep(1200)
+  await clickRailNode(page, 1, sleep)
+  await sleep(500)
   const report1 = await page.evaluate(() => ({
     panel: Boolean(document.querySelector('.battle-panel')),
     title: document.querySelector('.battle-title')?.textContent?.trim(),

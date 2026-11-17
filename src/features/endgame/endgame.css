@@ -88,6 +88,21 @@
   color: #f3dfae;
 }
 
+/* 跳过沙盘：比「返回时间轴」更轻，放在右侧提示行里，不抢主标题 */
+.endgame-skip {
+  padding: 5px 12px;
+  border-color: rgba(201, 162, 39, 0.35);
+  background: rgba(201, 162, 39, 0.08);
+  color: #e2cd93;
+  font-size: 12.5px;
+}
+
+.endgame-skip:hover {
+  background: rgba(201, 162, 39, 0.18);
+  border-color: rgba(201, 162, 39, 0.66);
+  color: #f7e7b8;
+}
+
 .endgame-mute {
   width: 38px;
   height: 34px;
@@ -2483,24 +2498,36 @@
   stroke-dashoffset: 0;
 }
 
-/* 秦军：赤金 */
+/* 三色路线：攻方赤金 / 守军幽蓝 / 援军青玉。
+   色相、明度、粗细三重区分——原先援军没有 stroke，整条线根本不显示。 */
 .side-qin .campaign-line {
-  stroke: #c0762a;
+  stroke: #e59a3c;
+  stroke-width: 2.4;
 }
 
 .side-qin.is-current .campaign-line,
 .side-qin.is-hovered .campaign-line {
-  filter: drop-shadow(0 0 6px rgba(192, 118, 42, 0.75));
+  filter: drop-shadow(0 0 8px rgba(229, 154, 60, 0.85));
 }
 
-/* 敌国反击：幽蓝 */
 .side-enemy .campaign-line {
-  stroke: #3f7f9c;
+  stroke: #56a8d8;
+  stroke-width: 2.2;
 }
 
 .side-enemy.is-current .campaign-line,
 .side-enemy.is-hovered .campaign-line {
-  filter: drop-shadow(0 0 6px rgba(63, 127, 156, 0.7));
+  filter: drop-shadow(0 0 8px rgba(86, 168, 216, 0.8));
+}
+
+.campaign-ally .campaign-line {
+  stroke: #74c6a4;
+  stroke-width: 1.9;
+}
+
+.campaign-ally.is-current .campaign-line,
+.campaign-ally.is-hovered .campaign-line {
+  filter: drop-shadow(0 0 8px rgba(116, 198, 164, 0.8));
 }
 
 /* 箭头：路线快画完才浮现，避免一开始就钉在终点 */
@@ -2510,11 +2537,15 @@
 }
 
 .side-qin .campaign-arrow {
-  fill: #d98b3a;
+  fill: #f0ab52;
 }
 
 .side-enemy .campaign-arrow {
-  fill: #4a90b8;
+  fill: #6cbbe6;
+}
+
+.campaign-ally .campaign-arrow {
+  fill: #8ad7b8;
 }
 
 .campaign-route.is-current .campaign-arrow {
@@ -2583,28 +2614,44 @@
   opacity: 1;
 }
 
-.campaign-route.is-played .campaign-caption,
-.campaign-route.is-hovered .campaign-caption {
-  opacity: 0;
+/*
+  已播段的文字**保留半透明**：每段只亮 2 秒，读完就没了，用户抓不住整场战役的脉络。
+  战报打开（campaign-layer[data-settled]）时才全部隐藏——那时左侧有完整进军序列。
+*/
+.campaign-route.is-played .campaign-caption {
+  opacity: 0.5;
   transition-delay: 0ms;
 }
 
-.campaign-general {
-  fill: #f2ddb0;
-  font-family: '方正小标简宋', var(--font-thin), serif;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  paint-order: stroke;
-  stroke: rgba(0, 0, 0, 0.9);
-  stroke-width: 3px;
+.campaign-layer[data-settled='true'] .campaign-route .campaign-caption {
+  opacity: 0;
 }
 
-.campaign-result {
-  fill: rgba(255, 255, 255, 0.62);
-  font-size: 11px;
+.campaign-route.is-hovered .campaign-caption {
+  opacity: 0.85;
+  transition-delay: 0ms;
+}
+
+/* 将名：金色、加粗、厚黑边——压在任何底图上都要一眼读到 */
+.campaign-general {
+  fill: #ffe4ac;
+  font-family: '方正小标简宋', var(--font-thin), serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   paint-order: stroke;
-  stroke: rgba(0, 0, 0, 0.85);
-  stroke-width: 3px;
+  stroke: rgba(0, 0, 0, 0.96);
+  stroke-width: 4.5px;
+}
+
+/* 战果/动向：白色常规，比将名低一级 */
+.campaign-result {
+  fill: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.92);
+  stroke-width: 4px;
 }
 
 /* ---------- 战报里的「进军序列」 ---------- */
@@ -3576,4 +3623,54 @@
   background: rgba(201, 162, 39, 0.2);
   border-color: rgba(201, 162, 39, 0.75);
   color: #f4e3b4;
+}
+
+/* ---------- 行军图例：播放中显示，告诉用户三种颜色各是谁 ---------- */
+.campaign-legend {
+  position: absolute;
+  left: 18px;
+  bottom: 42px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(6, 8, 10, 0.82);
+  backdrop-filter: none;
+  font-family: var(--font-thin);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(236, 230, 218, 0.82);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.campaign-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.campaign-legend-item i {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: #e59a3c;
+}
+
+.campaign-legend-item.is-attacker i {
+  background: #e59a3c;
+}
+
+.campaign-legend-item.is-defender i {
+  background: #56a8d8;
+}
+
+.campaign-legend-item.is-ally i {
+  background: #74c6a4;
+  height: 2px;
+  background-image: linear-gradient(90deg, #74c6a4 55%, transparent 55%);
+  background-size: 6px 2px;
+  background-repeat: repeat-x;
 }

@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-core'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -46,9 +47,8 @@ try {
   check('战前攻方国号为魏', start.attackerLabel === '魏', String(start.attackerLabel))
 
   /* 点「辽东」节点：辽东应在 238 幕被吞并，且魏蜀吴仍在图上 */
-  const nodes1 = await page.$$('.rail-node')
-  await nodes1[1].click()
-  await sleep(1400)
+  await clickRailNode(page, 1, sleep)
+  await sleep(500)
   const liao = await page.evaluate(() => ({
     captured: document.querySelector('[data-nation="liaodong"]')?.getAttribute('data-captured'),
     regions: [...document.querySelectorAll('.region-hit')].length,
@@ -75,9 +75,8 @@ try {
   check('三国悬停「魏」出现回到战前提示', weiTip.includes('三国复其疆'), weiTip)
 
   /* 点「蜀」节点 → 战报 */
-  const nodes = await page.$$('.rail-node')
-  await nodes[2].click()
-  await sleep(1500)
+  await clickRailNode(page, 2, sleep)
+  await sleep(500)
   const report = await page.evaluate(() => {
     const t = document.querySelector('.battle-panel')?.textContent ?? ''
     return {
@@ -96,9 +95,9 @@ try {
   /* 推到最后：一统者应为「晋」 */
   await page.keyboard.press('Escape')
   await sleep(500)
-  const nodes2 = await page.$$('.rail-node')
-  await nodes2[nodes2.length - 1].click()
-  await sleep(1600)
+  const railCount = await page.evaluate(() => document.querySelectorAll('.rail-node').length)
+  await clickRailNode(page, railCount - 1, sleep)
+  await sleep(600)
   const jinLabel = await page.evaluate(() => document.querySelector('.region-label--qin')?.textContent?.trim())
   check('灭吴时攻方国号为晋（265 已代魏）', jinLabel === '晋', String(jinLabel))
   await page.keyboard.press('Escape')

@@ -462,10 +462,10 @@ try {
   await page.waitForSelector('.emp-card', { timeout: 15000 })
   await sleep(900)
 
-  /* 入口一：帝王卡「档」 → 下钻典制词条（这条曾经整页黑屏） */
+  /* 入口一：点帝王卡本身 → 下钻典制词条（这条曾经整页黑屏） */
   await page.evaluate(() => {
     const card = [...document.querySelectorAll('.emp-card')].find((c) => c.textContent?.includes('秦始皇'))
-    card?.querySelector('.emp-codex')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    card?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
   await sleep(700)
   const drawer1 = await page.evaluate(() => ({
@@ -474,11 +474,21 @@ try {
     veil: getComputedStyle(document.querySelector('.codex-veil')).backgroundColor,
     shell: Number(getComputedStyle(document.querySelector('.app-shell')).opacity),
   }))
-  check('帝王卡「档」能开抽屉', drawer1.open && drawer1.name === '秦始皇', drawer1.name)
+  check('点帝王卡能开抽屉', drawer1.open && drawer1.name === '秦始皇', drawer1.name)
   check('抽屉压暗但不遮黑（背景仍可见）', drawer1.shell > 0.3 && drawer1.shell < 0.7, `shell=${drawer1.shell} veil=${drawer1.veil}`)
 
+  /* 入口一：点帝王卡本身 → 展开「书同文·车同轨」→ 点相关档案下钻（这条曾经整页黑屏） */
   await page.evaluate(() => {
-    const link = [...document.querySelectorAll('.codex-drawer .codex-link')].find((n) => n.textContent?.includes('书同文'))
+    const row = [...document.querySelectorAll('.codex-drawer .codex-event')].find((n) =>
+      n.textContent?.includes('书同文'),
+    )
+    row?.click()
+  })
+  await sleep(400)
+  await page.evaluate(() => {
+    const link = [...document.querySelectorAll('.codex-drawer .codex-event-detail .codex-link')].find((n) =>
+      n.textContent?.includes('书同文'),
+    )
     link?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   })
   await sleep(800)
@@ -605,11 +615,25 @@ try {
         .then(() => page.click('.jc-primary'))
         .catch(() => null)
     } else {
+      /*
+        点最后一个节点 = 点一个"还没打过"的国家：先弹补齐确认，
+        确认后才播行军序列，播完才弹战报。所以要先确认、再跳过动画、再关战报。
+      */
       await page.evaluate(() => {
         const nodes = [...document.querySelectorAll('.rail-node')]
         nodes[nodes.length - 1]?.click()
       })
-      await sleep(1000)
+      await sleep(500)
+      await page.evaluate(() => document.querySelector('.conquer-confirm-primary')?.click())
+      await sleep(400)
+      for (let i = 0; i < 24; i += 1) {
+        if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
+        await page.evaluate(() =>
+          document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 160 })),
+        )
+        await sleep(280)
+      }
+      await sleep(300)
       if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
         await page.keyboard.press('Escape')
         await sleep(500)

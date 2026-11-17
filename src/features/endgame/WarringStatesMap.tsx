@@ -580,6 +580,30 @@ export function WarringStatesMap({
         </div>
       ) : null}
 
+      {/*
+        行军图例：只在播放中显示。
+        三条线三种颜色，不解释的话用户只会看到"一堆线"；
+        援军那一项按本场是否真有援军来决定显不显示。
+      */}
+      {campaigns.length > 0 && !campaignDone ? (
+        <div className="campaign-legend" aria-hidden="true">
+          <span className="campaign-legend-item is-attacker">
+            <i />
+            {attackerName}军
+          </span>
+          <span className="campaign-legend-item is-defender">
+            <i />
+            守军反击
+          </span>
+          {campaigns.some((c) => (c.allies?.length ?? 0) > 0) ? (
+            <span className="campaign-legend-item is-ally">
+              <i />
+              援军
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
       {overlay}
 
       <p className="map-footnote">示意版图 · 悬停看要点 · 点击国家看战报 · 点「{attackerName}」回到战前</p>

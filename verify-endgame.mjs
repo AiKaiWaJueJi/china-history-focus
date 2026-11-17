@@ -54,10 +54,29 @@ try {
     if (clicked) await sleep(280)
   }
 
-  /* 点底部节点：会同时展开该场战报，测试里顺手关掉以便继续观察版图 */
+  /*
+    点底部节点。本轮起它的语义与"点地图上的国家"一致：
+      · 已打过的国家 → 直接展开战报（无行军）；
+      · 还没打过的国家 → 先播行军序列（跳步会先弹补齐确认），播完才弹战报。
+    所以这里要像点地图一样：确认补齐 → 派发 wheel 跳过动画 → 出现战报再关掉。
+  */
   const railTo = async (value) => {
     await page.evaluate((v) => document.querySelectorAll('.rail-node')[v].click(), value)
-    await sleep(500)
+    await sleep(400)
+    await confirmJump()
+    for (let i = 0; i < 24; i += 1) {
+      if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
+      const playing = await page.evaluate(() => document.querySelectorAll('.campaign-route').length > 0)
+      if (!playing) {
+        await sleep(200)
+        break
+      }
+      await page.evaluate(() =>
+        document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 160 })),
+      )
+      await sleep(280)
+    }
+    await sleep(300)
     if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
       await page.keyboard.press('Escape')
       await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
@@ -379,12 +398,35 @@ try {
   await railTo(0)
   await sleep(600)
   /* ---------- 3) 正推 / 逆推 ---------- */
+  /*
+    点最后一个节点（齐）：齐还没打过，所以先弹「补齐推演」→ 播完整序列 → 再弹战报。
+    这条断言因此拆成两段：先证"先播行军"，再证"播完弹战报"。
+  */
   await page.evaluate(() => {
     const nodes = [...document.querySelectorAll('.rail-node')]
     nodes[nodes.length - 1].click()
   })
-  await sleep(900)
-  // 点底部节点现在会展开该场战报；终章要等战报关掉才演
+  await sleep(420)
+  await confirmJump()
+  await sleep(320)
+  const railStartedCampaign = await page.evaluate(() => ({
+    routes: document.querySelectorAll('.campaign-route').length,
+    panel: Boolean(document.querySelector('.battle-panel')),
+  }))
+  check(
+    '点未打过的底部节点会先播行军（而不是直接弹战报）',
+    railStartedCampaign.routes > 0 && !railStartedCampaign.panel,
+    `routes=${railStartedCampaign.routes} panel=${railStartedCampaign.panel}`,
+  )
+  for (let i = 0; i < 24; i += 1) {
+    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
+    await page.evaluate(() =>
+      document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 160 })),
+    )
+    await sleep(280)
+  }
+  await sleep(400)
+  // 点底部节点最终会展开该场战报；终章要等战报关掉才演
   const railOpenedReport = await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))
   check('点底部最后节点会展开对应战报', railOpenedReport)
   await page.keyboard.press('Escape')

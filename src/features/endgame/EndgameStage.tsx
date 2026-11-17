@@ -254,22 +254,43 @@ export function EndgameStage() {
   const handleStep = useCallback(
     (value: number) => {
       /*
-        底部国家容器优先级最高：一旦点它，正在播的行军序列立即作废。
-        并且点节点 = 跳到该节点 + 展开对应战报：这排节点是"各国被吞并的次序"
-        （前230、前228…），不是等距时间轴，点谁就该看谁那场仗。
+        底部国家容器与地图走**同一套**逻辑（这是本轮的要求）：
+          · 点「战前」= 复位到战前；
+          · 点**已打过**的国家 = 直接展开它的战报（用户要的是"再看一眼那场仗"）；
+          · 点**还没打过**的国家 = 先演示行军路线，播完再弹战报。
+
+        早先这里是「点谁就 setIndex + 直接弹战报」：进度瞬间跳到该节点，
+        整段行军动画被吃掉，地图上的版图也一跳而过 —— 与点地图的手感完全不同。
       */
-      useCampaignStore.getState().clearCampaign()
-      setClosing(false)
-      setIndex(value)
-      const ev = events.find((e) => e.order === value)
-      if (ev) {
-        useEndgameStore.setState({ focusedNation: ev.nationId })
-      } else {
-        closePanel()
+      if (value === 0) {
+        handleReset()
+        return
       }
-      if (value > 0 && !muted) playBell(value === events.length ? 1 : 0.7)
+      const ev = events.find((e) => e.order === value)
+      if (!ev) {
+        handleReset()
+        return
+      }
+      /*
+        已打过的国家：**回到那一幕**并展开战报（沙盘的可逆性不能丢——
+        底部节点就是这条时间线的定位器，往回点要能退回去）。
+        还没打过的：交给 handleConquer，与点地图完全同一套逻辑。
+      */
+      if (ev.order <= useEndgameStore.getState().index) {
+        if (closeTimer.current) {
+          window.clearTimeout(closeTimer.current)
+          closeTimer.current = null
+        }
+        useCampaignStore.getState().clearCampaign()
+        setClosing(false)
+        setIndex(ev.order)
+        useEndgameStore.setState({ focusedNation: ev.nationId })
+        if (!muted) playBell(0.7)
+        return
+      }
+      handleConquer(ev)
     },
-    [setIndex, closePanel, events, muted],
+    [events, handleConquer, handleReset, setIndex, muted],
   )
 
   /* 键盘：ESC 逐层退出；← → 逐级推移 */
@@ -353,6 +374,20 @@ export function EndgameStage() {
 
         <div className="endgame-head-right">
           <span className="endgame-step-hint">悬停看要点 · 点击看详情 · ← → 逐级推移</span>
+          {/*
+            跳过沙盘：不想看推演的用户直接进下一朝的时间轴。
+            地图/战报都是"可跳过"的内容，入口不该藏在终章后面。
+          */}
+          <button
+            type="button"
+            className="endgame-skip"
+            onClick={() =>
+              navigate(endgame.next.dynastyId === 'home' ? '/' : `/dynasty/${endgame.next.dynastyId}`)
+            }
+            title={endgame.next.hint ?? `进入${endgame.next.label}`}
+          >
+            {endgame.next.dynastyId === 'home' ? '回主页' : `下一章 · ${endgame.next.label}`} →
+          </button>
           <button
             type="button"
             className={`endgame-mute${muted ? ' is-muted' : ''}`}

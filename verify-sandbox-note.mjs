@@ -1,4 +1,5 @@
-﻿import puppeteer from 'puppeteer-core'
+import puppeteer from 'puppeteer-core'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -43,9 +44,8 @@ try {
   await page.goto(`${BASE}/dynasty/zhou/endgame`, { waitUntil: 'networkidle2' })
   await page.waitForSelector('.map-stage')
   await sleep(800)
-  const nodes = await page.$$('.rail-node')
-  await nodes[4].click() // 楚
-  await sleep(1400)
+  await clickRailNode(page, 4, sleep) // 楚
+  await sleep(500)
   const note = await page.evaluate(() => {
     const el = document.querySelector('.battle-note')
     return { exists: Boolean(el), text: el?.textContent?.trim() ?? '' }
@@ -58,9 +58,8 @@ try {
   await page.goto(`${BASE}/dynasty/qin/endgame`, { waitUntil: 'networkidle2' })
   await page.waitForSelector('.map-stage')
   await sleep(800)
-  const nodes2 = await page.$$('.rail-node')
-  await nodes2[1].click()
-  await sleep(1400)
+  await clickRailNode(page, 1, sleep)
+  await sleep(500)
   const note2 = await page.evaluate(() => document.querySelector('.battle-note')?.textContent?.trim() ?? '')
   check('楚汉战报注明「图仅示其要者」', note2.includes('图仅示其要者'), note2.slice(0, 80))
 
