@@ -37,12 +37,26 @@ const slideVariants = {
   exit: (direction: number) => ({ x: direction > 0 ? '-46%' : '100%', opacity: 0 }),
 }
 
+/**
+ * 一段史料。
+ * 出处层级小签（2026-11-18 批次 1 引入）：
+ *   · 一手 —— 正史本纪/列传/志、先秦两汉文献；
+ *   · 转引 —— 原书亡佚，靠类书/后人注疏留下来；**必须把转引链一并写出来**，
+ *     否则读者会以为这是原书原文（那正是本项目最不肯让步的一条）。
+ */
 function QuoteBlock({ quote }: { quote: CodexEntry['quotes'][number] }) {
+  const tier = quote.tier ?? 'primary'
   return (
-    <figure className="codex-quote">
-      {quote.work ? <figcaption className="codex-quote-work">{quote.work}</figcaption> : null}
+    <figure className="codex-quote" data-tier={tier}>
+      <figcaption className="codex-quote-work">
+        {quote.work ? <span className="codex-quote-source">{quote.work}</span> : null}
+        <span className="codex-quote-tier" title={tier === 'secondary' ? '原书已佚，此为转引' : '正史/先秦文献原文'}>
+          {tier === 'secondary' ? '转引' : '一手'}
+        </span>
+      </figcaption>
       <blockquote className="codex-quote-text">{quote.text}</blockquote>
       {quote.translation ? <p className="codex-quote-translation">{quote.translation}</p> : null}
+      {tier === 'secondary' && quote.via ? <p className="codex-quote-via">转引：{quote.via}</p> : null}
     </figure>
   )
 }

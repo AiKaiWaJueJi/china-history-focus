@@ -122,6 +122,32 @@ check(
   quoted.map((e) => e.name).join(','),
 )
 
+/* ---------- 4c. 原文的「出处层级」（2026-11-18 批次 1） ---------- */
+/*
+  这一组守的是**引文的诚实度**，不是内容量：
+  · 每条原文都要有出处（work）、原文（text）、译文（translation）；
+  · tier 只能是 primary / secondary；
+  · 转引（secondary）必须写 via —— 只标「转引」不交代经过谁，等于没交代。
+*/
+const allQuotes = entries.flatMap((e) => e.quotes.map((q) => ({ id: e.id, q })))
+const badTier = allQuotes.filter(({ q }) => q.tier !== 'primary' && q.tier !== 'secondary')
+check('每条原文的出处层级只有「一手 / 转引」两种', badTier.length === 0, `${allQuotes.length} 条原文，非法 ${badTier.length}`)
+
+const badQuoteShape = allQuotes.filter(({ q }) => !q.work || !q.text || !q.translation)
+check('每条原文都有出处 + 原文 + 译文', badQuoteShape.length === 0, badQuoteShape.slice(0, 4).map((x) => x.id).join(','))
+
+const badVia = allQuotes.filter(({ q }) => q.tier === 'secondary' && !q.via)
+check('转引原文都写明了转引链（via）', badVia.length === 0, badVia.slice(0, 4).map((x) => x.id).join(','))
+console.log(`     原文 ${allQuotes.length} 条：一手 ${allQuotes.filter(({ q }) => q.tier === 'primary').length} / 转引 ${allQuotes.filter(({ q }) => q.tier === 'secondary').length}`)
+
+/* ---------- 4d. 典制与诸侯：这一轮补的原文覆盖 ---------- */
+const extrasNoQuote = extras.filter((e) => !e.quotes.length)
+check('每条典制/典故词条都有一段文言原文', extrasNoQuote.length === 0, `${extras.length} 条，缺 ${extrasNoQuote.length}：${extrasNoQuote.slice(0, 4).map((e) => e.name).join(',')}`)
+
+const lords = entries.filter((e) => e.kind === 'lord')
+const lordsNoQuote = lords.filter((e) => !e.quotes.length)
+check('每位诸侯都有一段文言原文', lordsNoQuote.length === 0, `${lords.length} 位，缺 ${lordsNoQuote.length}：${lordsNoQuote.slice(0, 4).map((e) => e.name).join(',')}`)
+
 /* ---------- 5. 统计 ---------- */
 console.log('\n条目构成：', JSON.stringify(doc.counts))
 console.log(`\n===== ${pass}/${pass + fail} passed =====`)

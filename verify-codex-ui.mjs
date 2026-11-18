@@ -208,11 +208,27 @@ try {
     crumbs: [...document.querySelectorAll('.codex-drawer .codex-crumb')].map((n) => n.textContent?.trim()),
     appShell: Boolean(document.querySelector('.app-shell')),
     rootChildren: document.getElementById('root')?.children.length ?? -1,
+    /* 2026-11-18 批次 1：典制条目补了文言原文，并带上「一手 / 转引」层级小签 */
+    quoteCount: document.querySelectorAll('.codex-drawer .codex-quote').length,
+    quoteTier: document.querySelector('.codex-drawer .codex-quote-tier')?.textContent?.trim() ?? '',
+    quoteSource: document.querySelector('.codex-drawer .codex-quote-source')?.textContent?.trim() ?? '',
+    hasVia: Boolean(document.querySelector('.codex-drawer .codex-quote-via')),
+    quoteTierData: document.querySelector('.codex-drawer .codex-quote')?.getAttribute('data-tier') ?? '',
   }))
   console.log('[D7]', JSON.stringify(d7))
   check('点典制词条后抽屉仍在（不是整页黑屏）', d7.drawers === 1 && d7.appShell && d7.rootChildren > 0, JSON.stringify(d7))
   check('典制条目正常渲染', d7.kind === '典制' && d7.name === '书同文' && d7.bodyLen > 40, `${d7.kind}/${d7.name} body=${d7.bodyLen}`)
   check('典制条目面包屑为两层', d7.crumbs.join('›') === '秦始皇›书同文', d7.crumbs.join('›'))
+  check(
+    '典制条目带文言原文 + 出处',
+    d7.quoteCount > 0 && /《.+》/.test(d7.quoteSource),
+    `${d7.quoteCount} 段，出处「${d7.quoteSource}」`,
+  )
+  check(
+    '原文标了出处层级（一手 / 转引），一手不显示转引链',
+    d7.quoteTier === '一手' && d7.quoteTierData === 'primary' && !d7.hasVia,
+    `tier=${d7.quoteTier}/${d7.quoteTierData} via=${d7.hasVia}`,
+  )
 
   /* ---------- 8. 事件详情里的人名可下钻（「五路诸侯都是谁」） ---------- */
   await page.goto(`${BASE}/dynasty/han`, { waitUntil: 'networkidle2', timeout: 60000 })

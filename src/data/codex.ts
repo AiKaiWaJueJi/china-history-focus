@@ -18,7 +18,12 @@ import type { CodexEntry, CodexKind } from '../core/codex'
 const normalizeEntry = (entry: CodexEntry): CodexEntry => ({
   ...entry,
   body: typeof entry.body === 'string' ? entry.body : '',
-  quotes: Array.isArray(entry.quotes) ? entry.quotes.filter((q) => q && typeof q.text === 'string') : [],
+  quotes: Array.isArray(entry.quotes)
+    ? entry.quotes
+        .filter((q) => q && typeof q.text === 'string')
+        /* tier 缺省 = 一手；写成别的值也降级成一手，不让脏数据影响「层级小签」的判断 */
+        .map((q) => ({ ...q, tier: q.tier === 'secondary' ? 'secondary' : 'primary' }))
+    : [],
   related: Array.isArray(entry.related) ? entry.related.filter((id) => typeof id === 'string') : [],
   alias: Array.isArray(entry.alias) ? entry.alias : undefined,
   tags: Array.isArray(entry.tags) ? entry.tags : undefined,

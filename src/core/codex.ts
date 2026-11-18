@@ -18,6 +18,15 @@
 
 export type CodexKind = 'battle' | 'character' | 'emperor' | 'lord' | 'extra'
 
+/**
+ * 史料的出处层级。
+ * primary   = 一手：正史本纪/列传/志、先秦两汉文献本身；
+ * secondary = 转引：类书（《太平御览》《册府元龟》）、后人注疏辑本、纪事本末之类。
+ * 为什么要这个字段：有些条目的一手出处确实亡佚了，只剩类书转引。
+ * 收，但**必须标明经过谁转引**（via），不能让人误以为这是原书原文。
+ */
+export type CodexQuoteTier = 'primary' | 'secondary'
+
 /** 一段史料：文言原文 + 白话译文 */
 export interface CodexQuote {
   /** 出处，如《史记·白起王翦列传》 */
@@ -26,6 +35,10 @@ export interface CodexQuote {
   text: string
   /** 白话译文 */
   translation: string
+  /** 出处层级；缺省按 primary 处理（老数据没有这个字段） */
+  tier?: CodexQuoteTier
+  /** 仅 secondary 使用：转引链，如「《太平御览》卷四三八引，原书已佚」 */
+  via?: string
 }
 
 export interface CodexEntry {

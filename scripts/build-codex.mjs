@@ -261,22 +261,45 @@ if (existsSync('scripts/data/codex.append.json')) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 5b. 帝王原文（人工查证过的几条，按条目 id 并入 quotes）                        */
+/* 5b. 文言原文（人工逐条查证，按条目 id 并入任意 kind）                          */
 /* -------------------------------------------------------------------------- */
-if (existsSync('scripts/data/codex.emperor-quotes.json')) {
-  const quotes = readJson('scripts/data/codex.emperor-quotes.json')
-  const byId = new Map(emperors.map((e) => [e.id, e]))
+/*
+  真源：scripts/data/codex.quotes.json（2026-11-18 起，取代只服务帝王的
+  codex.emperor-quotes.json）。现在帝王 / 诸侯 / 典制共用这一个文件，
+  将来人物原文也往这里加。
+
+  为什么这里要**硬校验**（抛错而不是 warn）：原文是整个百科库最容易被编造的地方。
+  「看起来像真的」的引文比没有更糟（docs/交接文档.md §9），所以：
+    · work / text / translation 三件套缺一不可，缺了宁可生成不出来；
+    · tier 只能是 primary（一手）或 secondary（类书/后世转引）；
+    · secondary 必须写 via（转引链，如「《太平御览》卷 X 引，原书已佚」）——
+      只写「转引」而不交代经过谁，等于没交代。
+*/
+const QUOTE_TIERS = new Set(['primary', 'secondary'])
+if (existsSync('scripts/data/codex.quotes.json')) {
+  const quotes = readJson('scripts/data/codex.quotes.json')
+  const targets = new Map()
+  for (const list of [battles, [...characters.values()], emperors, lords, extras, appended]) {
+    for (const e of list) targets.set(e.id, e)
+  }
   let merged = 0
   for (const q of quotes) {
-    const target = byId.get(q.id)
+    const target = targets.get(q.id)
     if (!target) {
-      console.warn(`⚠ 帝王原文找不到条目：${q.id}`)
+      console.warn(`⚠ 原文找不到条目，已跳过：${q.id}`)
       continue
     }
-    target.quotes = [{ work: q.work, text: q.text, translation: q.translation }, ...(target.quotes ?? [])]
+    const missing = ['work', 'text', 'translation'].filter((f) => !q[f])
+    if (missing.length) throw new Error(`原文缺字段 ${q.id}：${missing.join('/')}`)
+    const tier = q.tier ?? 'primary'
+    if (!QUOTE_TIERS.has(tier)) throw new Error(`原文 tier 非法 ${q.id}：${tier}`)
+    if (tier === 'secondary' && !q.via) throw new Error(`转引原文必须写 via（转引链）：${q.id}`)
+    const quote = { work: q.work, text: q.text, translation: q.translation, tier }
+    if (q.via) quote.via = q.via
+    target.quotes = [quote, ...(target.quotes ?? [])]
     merged += 1
   }
-  console.log(`✓ 帝王原文并入 ${merged} 条`)
+  console.log(`✓ 文言原文并入 ${merged} 条`)
 }
 
 /* -------------------------------------------------------------------------- */
@@ -336,6 +359,8 @@ for (const e of all) {
     生成物必须**每条都齐四件**，缺一个字段就是一次白屏。
   */
   if (!Array.isArray(e.quotes)) e.quotes = []
+  /* 老数据（战报的 sourceText）没有 tier，按一手处理；层级只决定 UI 小签 */
+  for (const q of e.quotes) if (!q.tier) q.tier = 'primary'
   if (!Array.isArray(e.related)) e.related = []
   if (!Array.isArray(e.tags)) e.tags = []
   if (Array.isArray(e.alias) && e.alias.length === 0) delete e.alias
