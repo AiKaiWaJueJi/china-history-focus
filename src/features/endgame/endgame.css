@@ -2770,50 +2770,11 @@
   padding-top: 4px;
 }
 /* ==========================================================================
-   v19：三势三色 + 战报打开即隐 + 墨汁吞并
+   v19：战报打开即隐 + 墨汁吞并
+   （三势颜色已经统一在上方「三色路线」那一组里：.side-qin / .side-enemy / .campaign-ally
+    的 stroke / stroke-width / filter 是一整套。这里原先重复定义了一套暗金/赤铜/青玉，
+    同特异性后出现会把新配色盖回去，导致图例是新色、线条是旧色 —— 已删除。）
    ========================================================================== */
-
-/* ---------- 颜色：秦军暗金、守军赤铜、援军青玉 ---------- */
-.side-qin .campaign-line {
-  stroke: #c9a227;
-}
-
-.side-enemy .campaign-line {
-  stroke: #a6402f;
-}
-
-.campaign-ally .campaign-line {
-  stroke: #7a9e8f;
-  stroke-width: 1.5;
-  opacity: 0.85;
-}
-
-.side-qin .campaign-arrow {
-  fill: #c9a227;
-}
-
-.side-enemy .campaign-arrow {
-  fill: #a6402f;
-}
-
-.campaign-ally .campaign-arrow {
-  fill: #7a9e8f;
-}
-
-.side-qin.is-current .campaign-line,
-.side-qin.is-hovered .campaign-line {
-  filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.8));
-}
-
-.side-enemy.is-current .campaign-line,
-.side-enemy.is-hovered .campaign-line {
-  filter: drop-shadow(0 0 6px rgba(166, 64, 47, 0.75));
-}
-
-.campaign-ally.is-current .campaign-line,
-.campaign-ally.is-hovered .campaign-line {
-  filter: drop-shadow(0 0 6px rgba(122, 158, 143, 0.7));
-}
 
 /* ---------- 战报打开后：路线全部隐藏，只留版图与文字 ---------- */
 .campaign-layer[data-settled='true'] .campaign-route {

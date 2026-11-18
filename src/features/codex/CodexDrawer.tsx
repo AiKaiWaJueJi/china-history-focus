@@ -12,7 +12,7 @@
  *      这一轮沙盘刚为此踩过坑（见 HANDOFF §3.13b）。
  *   3. **面包屑**：无限下钻最容易迷路，顶部把路径摊开来，点任一级直接跳回。
  *
- * 帝王 / 诸侯走 ArchiveBody（结构化时间线），其余类型仍走纯文本 BodyBlocks。
+ * 帝王 / 诸侯走 ArchiveBody（结构化时间线），其余类型仍走纯文本 RichText。
  */
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'

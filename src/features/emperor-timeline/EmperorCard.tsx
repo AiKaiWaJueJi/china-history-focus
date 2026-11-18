@@ -63,7 +63,7 @@ export function EmperorCard({
     <article
       className={`emp-card${compact ? ' emp-card--compact' : ''}`}
       style={style}
-      tabIndex={0}
+      tabIndex={openArchive ? 0 : undefined}
       data-index={index}
       data-layout={layout}
       data-evaluation={emperor.evaluation}

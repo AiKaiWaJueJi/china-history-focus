@@ -40,7 +40,7 @@ export function LordCard({ lord }: LordCardProps) {
     <article
       className="lord-card"
       style={style}
-      tabIndex={0}
+      tabIndex={openArchive ? 0 : undefined}
       role={openArchive ? 'button' : undefined}
       aria-label={openArchive ? `打开${lord.state}${lord.title}的历史档案` : undefined}
       onClick={openArchive}
