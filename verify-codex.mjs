@@ -148,6 +148,29 @@ const lords = entries.filter((e) => e.kind === 'lord')
 const lordsNoQuote = lords.filter((e) => !e.quotes.length)
 check('每位诸侯都有一段文言原文', lordsNoQuote.length === 0, `${lords.length} 位，缺 ${lordsNoQuote.length}：${lordsNoQuote.slice(0, 4).map((e) => e.name).join(',')}`)
 
+/*
+  帝王原文覆盖（批次 2 起分批补）：
+  这里只**报告**不设阈值——「查不到就留白」是本项目的口径，用覆盖率卡阈值等于逼后人编造。
+  想做进度看这行输出即可。
+*/
+const emperors = entries.filter((e) => e.kind === 'emperor')
+const empCover = new Map()
+for (const e of emperors) {
+  const key = e.dynastyId ?? '?'
+  const slot = empCover.get(key) ?? { total: 0, quoted: 0 }
+  slot.total += 1
+  if (e.quotes.length) slot.quoted += 1
+  empCover.set(key, slot)
+}
+console.log(
+  '     帝王原文覆盖：' +
+    [...empCover.entries()]
+      .sort((a, b) => b[1].total - a[1].total)
+      .map(([k, v]) => `${k} ${v.quoted}/${v.total}`)
+      .join(' · ') +
+    `　合计 ${emperors.filter((e) => e.quotes.length).length}/${emperors.length}`,
+)
+
 /* ---------- 5. 统计 ---------- */
 console.log('\n条目构成：', JSON.stringify(doc.counts))
 console.log(`\n===== ${pass}/${pass + fail} passed =====`)
