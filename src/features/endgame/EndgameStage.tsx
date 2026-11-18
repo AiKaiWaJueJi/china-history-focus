@@ -187,6 +187,33 @@ export function EndgameStage() {
   )
 
   /*
+    已进入版图的势力：只展开战报，不重演征服过程。
+    用户此刻要的是"再看一眼这场仗"，不是"再看一遍它怎么亡的"；
+    顺带解决"关掉战报想回顾、却被迫重看 4 秒行军"。
+
+    两个入口共用这一份，差别只在 syncIndex（**不是重复代码，是两种意图**）：
+      · 点地图上已归入的势力 —— 只回顾战报，**不动时间轴进度**（index 停在原处）；
+      · 点底部节点（时间线定位器）—— 要真的退回到那一幕，所以 index 跟着走。
+    铃声音量也按这两种意图分开：导航 0.7 / 顺手点开战报 0.45（历史行为，别再合并成一个值）。
+  */
+  const revealBattle = useCallback(
+    (event: (typeof events)[number], opts: { syncIndex: boolean }) => {
+      if (closeTimer.current) {
+        window.clearTimeout(closeTimer.current)
+        closeTimer.current = null
+      }
+      useCampaignStore.getState().clearCampaign()
+      if (opts.syncIndex) {
+        setClosing(false)
+        setIndex(event.order)
+      }
+      useEndgameStore.setState({ focusedNation: event.nationId })
+      if (!muted) playBell(opts.syncIndex ? 0.7 : 0.45)
+    },
+    [muted, setIndex],
+  )
+
+  /*
     点国家：沙盘是线性时间轴，点后面的国家必须先补齐中间几场。
     补齐这件事不能"静默发生"，所以先在界面上问一句，用户确认后再快进。
   */
@@ -194,19 +221,9 @@ export function EndgameStage() {
     (event: (typeof events)[number]) => {
       const state = useEndgameStore.getState()
 
-      /*
-        已灭国（order ≤ 当前 index）：只展开战报，不重演征服过程。
-        用户此刻要的是"再看一眼这场仗"，不是"再看一遍它怎么亡的"；
-        顺带解决"关掉战报想回顾、却被迫重看 4 秒行军"。
-      */
+      // 已灭国（order ≤ 当前 index）：只展开战报，不重演征服过程，也不倒退进度
       if (event.order <= state.index) {
-        if (closeTimer.current) {
-          window.clearTimeout(closeTimer.current)
-          closeTimer.current = null
-        }
-        useCampaignStore.getState().clearCampaign()
-        useEndgameStore.setState({ focusedNation: event.nationId })
-        if (!muted) playBell(0.45)
+        revealBattle(event, { syncIndex: false })
         return
       }
 
@@ -218,7 +235,7 @@ export function EndgameStage() {
       }
       startConquer(event)
     },
-    [startConquer, muted],
+    [revealBattle, startConquer],
   )
 
   /* 确认跳步：补齐前置后开始这场推演 */
@@ -277,20 +294,12 @@ export function EndgameStage() {
         还没打过的：交给 handleConquer，与点地图完全同一套逻辑。
       */
       if (ev.order <= useEndgameStore.getState().index) {
-        if (closeTimer.current) {
-          window.clearTimeout(closeTimer.current)
-          closeTimer.current = null
-        }
-        useCampaignStore.getState().clearCampaign()
-        setClosing(false)
-        setIndex(ev.order)
-        useEndgameStore.setState({ focusedNation: ev.nationId })
-        if (!muted) playBell(0.7)
+        revealBattle(ev, { syncIndex: true })
         return
       }
       handleConquer(ev)
     },
-    [events, handleConquer, handleReset, setIndex, muted],
+    [events, handleConquer, handleReset, revealBattle],
   )
 
   /* 键盘：ESC 逐层退出；← → 逐级推移 */

@@ -11,6 +11,7 @@
  */
 import puppeteer from 'puppeteer-core'
 import { mkdirSync } from 'node:fs'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const URL = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -43,10 +44,10 @@ try {
     点击国家会先播战役序列（约 2s/段），战报在播完后才出现。
     测试里用"单击启动 + 派发 wheel 向下滚动"来快速到达战报。
   */
-  /* 跳步会先弹「补齐推演」确认卡，有就点继续（DOM click，避免被覆盖层挡住） */
+  /* 点地图上的国家时，跳步会先弹「补齐推演」确认卡，有就点继续（DOM click，避免被覆盖层挡住） */
   const confirmJump = async () => {
     const clicked = await page.evaluate(() => {
-      const btn = document.querySelector(".conquer-confirm-primary")
+      const btn = document.querySelector('.conquer-confirm-primary')
       if (!btn) return false
       btn.click()
       return true
@@ -55,33 +56,12 @@ try {
   }
 
   /*
-    点底部节点。本轮起它的语义与"点地图上的国家"一致：
-      · 已打过的国家 → 直接展开战报（无行军）；
-      · 还没打过的国家 → 先播行军序列（跳步会先弹补齐确认），播完才弹战报。
-    所以这里要像点地图一样：确认补齐 → 派发 wheel 跳过动画 → 出现战报再关掉。
+    点底部节点：语义与"点地图上的国家"一致，实现走 scripts/lib/verify-rail.mjs
+    （原先这里自带一份 railTo，与 verify-rail 第三次重复；已合并）。
+    本脚本读完战报要接着点终章按钮，所以 closePanel: true。
   */
   const railTo = async (value) => {
-    await page.evaluate((v) => document.querySelectorAll('.rail-node')[v].click(), value)
-    await sleep(400)
-    await confirmJump()
-    for (let i = 0; i < 24; i += 1) {
-      if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
-      const playing = await page.evaluate(() => document.querySelectorAll('.campaign-route').length > 0)
-      if (!playing) {
-        await sleep(200)
-        break
-      }
-      await page.evaluate(() =>
-        document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 160 })),
-      )
-      await sleep(280)
-    }
-    await sleep(300)
-    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
-      await page.keyboard.press('Escape')
-      await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
-      await sleep(400)
-    }
+    await clickRailNode(page, value, sleep, { closePanel: true })
   }
   const openReportByClick = async (box) => {
     await page.mouse.click(box.x, box.y)

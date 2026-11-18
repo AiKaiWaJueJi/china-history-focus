@@ -8,9 +8,18 @@
  * 早先验收脚本都是"点一下、睡 1.4s、读战报"，新逻辑下战报根本还没出来。
  * 所以统一走这一个函数：关掉残留战报 → 点节点 → 若有确认卡就确认 →
  * 派发 wheel 跳过动画 → 等**新**战报出现。
- * 各脚本把自己的 sleep 传进来（它们各自定义了一份）。
+ *
+ * 这是**唯一一份**实现：verify-endgame（原先自带 railTo）与 verify-journey
+ * （原先内联一段）都已改为调用这里，别再造第四份。
+ *
+ * @param {import('puppeteer-core').Page} page
+ * @param {number} index  .rail-node 的 0 基序号（0 = 战前）
+ * @param {(ms:number)=>Promise<void>} sleep  各脚本自己那份 sleep
+ * @param {{ closePanel?: boolean }} [opts]
+ *        closePanel=true 时收尾把关掉的战报关干净（verify-endgame / verify-journey 要这个）
+ * @returns {Promise<boolean>} false = 根本没找到该节点
  */
-export async function clickRailNode(page, index, sleep) {
+export async function clickRailNode(page, index, sleep, { closePanel = false } = {}) {
   /*
     先把残留战报关掉。
     否则下面的「等到 battle-panel 出现」会立刻命中上一场战报，
@@ -49,7 +58,7 @@ export async function clickRailNode(page, index, sleep) {
   */
   let idle = 0
   for (let i = 0; i < 40; i += 1) {
-    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) return true
+    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
     const playing = await page.evaluate(() => document.querySelectorAll('.campaign-route').length > 0)
     if (playing) {
       idle = 0
@@ -65,6 +74,16 @@ export async function clickRailNode(page, index, sleep) {
     idle += 1
     if (idle >= 6) break
     await sleep(280)
+  }
+
+  /* 只读断言用（读战报内容）就留着；要接着点终章按钮的那两个脚本需要先关掉 */
+  if (closePanel) {
+    await sleep(300)
+    if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
+      await page.keyboard.press('Escape')
+      await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+      await sleep(400)
+    }
   }
   return true
 }

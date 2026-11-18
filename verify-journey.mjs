@@ -13,6 +13,7 @@
  */
 import puppeteer from 'puppeteer-core'
 import { mkdirSync, readFileSync } from 'node:fs'
+import { clickRailNode } from './scripts/lib/verify-rail.mjs'
 
 const BASE = process.env.APP_URL ?? 'http://localhost:5180'
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -617,27 +618,11 @@ try {
     } else {
       /*
         点最后一个节点 = 点一个"还没打过"的国家：先弹补齐确认，
-        确认后才播行军序列，播完才弹战报。所以要先确认、再跳过动画、再关战报。
+        确认后才播行军序列，播完才弹战报。
+        实现统一走 scripts/lib/verify-rail.mjs（原先这里内联了一份，第三份副本已合并）。
       */
-      await page.evaluate(() => {
-        const nodes = [...document.querySelectorAll('.rail-node')]
-        nodes[nodes.length - 1]?.click()
-      })
-      await sleep(500)
-      await page.evaluate(() => document.querySelector('.conquer-confirm-primary')?.click())
-      await sleep(400)
-      for (let i = 0; i < 24; i += 1) {
-        if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) break
-        await page.evaluate(() =>
-          document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 160 })),
-        )
-        await sleep(280)
-      }
-      await sleep(300)
-      if (await page.evaluate(() => Boolean(document.querySelector('.battle-panel')))) {
-        await page.keyboard.press('Escape')
-        await sleep(500)
-      }
+      const railCount = await page.evaluate(() => document.querySelectorAll('.rail-node').length)
+      await clickRailNode(page, railCount - 1, sleep, { closePanel: true })
       const finale = await page
         .waitForSelector('.qin-entry', { timeout: 8000 })
         .then(() => true)

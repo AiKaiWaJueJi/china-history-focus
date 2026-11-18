@@ -2632,26 +2632,24 @@
   transition-delay: 0ms;
 }
 
-/* 将名：金色、加粗、厚黑边——压在任何底图上都要一眼读到 */
+/* 将名：金色、加粗、厚黑边——压在任何底图上都要一眼读到。
+   ⚠ 字号与描边宽度**只在「镜头推近」那段定义一次**（16px / 2.4px，按 --map-zoom 反算），
+   这里再写会被 `.map-svg .campaign-caption text`（特异性更高、位置更靠后）覆盖，等于死声明。 */
 .campaign-general {
   fill: #ffe4ac;
   font-family: '方正小标简宋', var(--font-thin), serif;
-  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.12em;
   paint-order: stroke;
   stroke: rgba(0, 0, 0, 0.96);
-  stroke-width: 4.5px;
 }
 
 /* 战果/动向：白色常规，比将名低一级 */
 .campaign-result {
   fill: rgba(255, 255, 255, 0.86);
-  font-size: 13px;
   letter-spacing: 0.02em;
   paint-order: stroke;
   stroke: rgba(0, 0, 0, 0.92);
-  stroke-width: 4px;
 }
 
 /* ---------- 战报里的「进军序列」 ---------- */
@@ -2923,14 +2921,8 @@
   font-size: 13px;
 }
 
-/* 行军解释字号放大 */
-.campaign-general {
-  font-size: 15px;
-}
-
-.campaign-result {
-  font-size: 12.5px;
-}
+/* 行军解释字号：已并入下面「镜头推近」那一处，此处不再重复定义
+   （早先这里写 15px / 12.5px，被后面的 calc(.../--map-zoom) 全量覆盖，是死声明） */
 /* ==========================================================================
    v22：史书原文不再横向溢出
    --------------------------------------------------------------------------
@@ -3464,7 +3456,14 @@
    ========================================================================== */
 
 
-/* 镜头推近时文字不跟着放大：字号除以 --map-zoom，位置仍贴着地理点 */
+/*
+  镜头推近时文字不跟着放大：字号除以 --map-zoom，位置仍贴着地理点。
+
+  ⚠ 这里是将名 / 动向字号的**唯一真源**（16px / 13px）。
+  描边宽度在下面 `.map-svg .campaign-caption text`（2.4px，同理唯一）。
+  别在前面再补一份 15px / 4.5px 之类的数值：特异性更低，写了也不生效，
+  只会让下一个人以为「设定是 4.5px、只是没生效」而把正确的 2.4px 改坏。
+*/
 .campaign-general {
   font-size: calc(16px / var(--map-zoom, 1));
 }
