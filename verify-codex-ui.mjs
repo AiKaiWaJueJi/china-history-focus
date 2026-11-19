@@ -269,6 +269,33 @@ try {
   }))
   check('点人名能下钻到人物档案', d8b.name === '彭越', d8b.crumbs.join('›'))
 
+  /* ---------- 9. 转引条目：层级小签 + 转引链都要真的显示（2026-11-19） ---------- */
+  /*
+    此前只有「一手」这条有数据走过，转引分支等于没验过。
+    现在《尚书·泰誓中》是唯一一条 secondary —— 周武王，正好拿它当真人用例：
+    签要写「转引」、via 要露出来、且不能和「一手」串味。
+  */
+  await page.goto(`${BASE}/dynasty/zhou`, { waitUntil: 'networkidle2', timeout: 60000 })
+  await page.waitForSelector('.emp-card', { timeout: 15000 })
+  await sleep(900)
+  await page.evaluate(() => {
+    const card = [...document.querySelectorAll('.emp-card')].find((c) => c.textContent?.includes('周武王'))
+    card?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await sleep(800)
+  const d9 = await page.evaluate(() => ({
+    name: document.querySelector('.codex-drawer .codex-name')?.textContent?.trim() ?? '',
+    tier: document.querySelector('.codex-drawer .codex-quote-tier')?.textContent?.trim() ?? '',
+    tierData: document.querySelector('.codex-drawer .codex-quote')?.getAttribute('data-tier') ?? '',
+    via: document.querySelector('.codex-drawer .codex-quote-via')?.textContent?.trim() ?? '',
+    text: document.querySelector('.codex-drawer .codex-quote-text')?.textContent?.trim() ?? '',
+  }))
+  console.log('[D9]', JSON.stringify(d9))
+  check('周武王档案能打开（转引用例）', d9.name === '周武王', d9.name)
+  check('转引原文的层级签写「转引」', d9.tier === '转引' && d9.tierData === 'secondary', `${d9.tier}/${d9.tierData}`)
+  check('转引链（via）可见且写明伪古文', /转引：/.test(d9.via) && /伪古文/.test(d9.via), d9.via.slice(0, 40))
+  check('转引原文文本正确', d9.text.includes('天视自我民视'), d9.text.slice(0, 20))
+
   /* 最后一条：上面每个动作都不许留下页面级异常（黑屏的本质就是异常没被拦下） */
   check('全程没有页面级 JS 异常', pageErrors.length === 0, pageErrors.join(' | '))
 

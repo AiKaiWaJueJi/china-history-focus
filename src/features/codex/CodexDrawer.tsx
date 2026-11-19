@@ -56,7 +56,14 @@ function QuoteBlock({ quote }: { quote: CodexEntry['quotes'][number] }) {
       </figcaption>
       <blockquote className="codex-quote-text">{quote.text}</blockquote>
       {quote.translation ? <p className="codex-quote-translation">{quote.translation}</p> : null}
-      {tier === 'secondary' && quote.via ? <p className="codex-quote-via">转引：{quote.via}</p> : null}
+      {/* 转引链只要写了就显示：层级标签讲「是不是同时代文献」，via 讲「经过谁 / 何以存疑」，
+          两者可以并存（如《泰誓》标转引、via 说明它是伪古文）。 */}
+      {quote.via ? (
+        <p className="codex-quote-via">
+          {tier === 'secondary' ? '转引：' : ''}
+          {quote.via}
+        </p>
+      ) : null}
     </figure>
   )
 }
