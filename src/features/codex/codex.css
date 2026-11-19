@@ -304,6 +304,25 @@ body:has(.codex-drawer) .app-shell {
   text-align: justify;
 }
 
+/* 留白登记：查证过确实没有原文时的说明，语气要平，不要像报错 */
+.codex-noquote {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border-left: 2px solid rgba(140, 168, 160, 0.4);
+  border-radius: 2px 6px 6px 2px;
+  background: rgba(140, 168, 160, 0.06);
+  font-family: var(--font-thin);
+  font-size: 12px;
+  line-height: 1.75;
+  color: rgba(178, 202, 194, 0.72);
+}
+
+.codex-noquote-label {
+  margin-right: 6px;
+  letter-spacing: 0.14em;
+  color: rgba(201, 162, 39, 0.8);
+}
+
 .codex-body {
   font-family: var(--font-thin);
 }

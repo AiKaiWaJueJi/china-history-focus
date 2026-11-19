@@ -345,6 +345,32 @@ for (const e of all) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* 6b. 留白登记（codex.no-quote.json）                                          */
+/* -------------------------------------------------------------------------- */
+/*
+  「查过、确实没有」和「还没查」在数据里长得一样，下一个人（或下一个 AI 会话）会把
+  同一批帝王重查一遍。这里给前者发个牌子：noQuote + 理由。
+  两条硬规矩：必须写理由；必须与 quotes 互斥（两边都写必然有一边是错的）。
+*/
+if (existsSync('scripts/data/codex.no-quote.json')) {
+  const blanks = readJson('scripts/data/codex.no-quote.json')
+  const byId = new Map(all.map((e) => [e.id, e]))
+  let marked = 0
+  for (const b of blanks) {
+    const target = byId.get(b.id)
+    if (!target) {
+      console.warn(`⚠ 留白登记找不到条目：${b.id}`)
+      continue
+    }
+    if (!b.reason || b.reason.length < 8) throw new Error(`留白登记必须写清理由：${b.id}`)
+    if ((target.quotes ?? []).length) throw new Error(`留白登记与已有原文矛盾：${b.id}`)
+    target.noQuote = b.reason
+    marked += 1
+  }
+  console.log(`✓ 留白登记 ${marked} 位（查证过确实没有原文）`)
+}
+
+/* -------------------------------------------------------------------------- */
 /* 7. 输出                                                                     */
 /* -------------------------------------------------------------------------- */
 for (const e of all) {
@@ -365,6 +391,7 @@ for (const e of all) {
   if (!Array.isArray(e.tags)) e.tags = []
   if (Array.isArray(e.alias) && e.alias.length === 0) delete e.alias
   if (typeof e.body !== 'string') e.body = ''
+  if (typeof e.noQuote !== 'string' || !e.noQuote) delete e.noQuote
   // 只保留真实存在的关联
   e.related = e.related.filter((rid) => rid !== e.id)
 }

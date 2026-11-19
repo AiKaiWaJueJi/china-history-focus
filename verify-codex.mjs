@@ -171,6 +171,16 @@ console.log(
     `　合计 ${emperors.filter((e) => e.quotes.length).length}/${emperors.length}`,
 )
 
+/* ---------- 4e. 留白登记：查证过「确实没有」的条目要留痕 ---------- */
+const blanks = entries.filter((e) => typeof e.noQuote === 'string' && e.noQuote)
+check('留白登记都写了理由（≥8 字）', blanks.every((e) => e.noQuote.length >= 8), blanks.filter((e) => e.noQuote.length < 8).slice(0, 3).map((e) => e.id).join(','))
+check(
+  '留白登记与原文互斥（登记了就不能同时有原文）',
+  blanks.every((e) => e.quotes.length === 0),
+  blanks.filter((e) => e.quotes.length).slice(0, 3).map((e) => e.id).join(','),
+)
+console.log(`     已查证无语录：${blanks.length} 位（${blanks.map((e) => e.name).slice(0, 6).join('/')}${blanks.length > 6 ? '…' : ''}）`)
+
 /* ---------- 5. 统计 ---------- */
 console.log('\n条目构成：', JSON.stringify(doc.counts))
 console.log(`\n===== ${pass}/${pass + fail} passed =====`)

@@ -61,6 +61,11 @@ export interface CodexEntry {
   body: string
   /** 史料原文 + 译文，可为空（帝王/诸侯多数只有正文） */
   quotes: CodexQuote[]
+  /**
+   * 留白登记：**查证过「确实没有可靠语录」**时写理由（如「本纪无诏令口吻文字」）。
+   * 与 quotes 互斥。存在这个字段 = 不是漏做，是做完的结论——防止下一个人重复劳动。
+   */
+  noQuote?: string
   /** 关联条目 id */
   related: string[]
   tags?: string[]

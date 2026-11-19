@@ -30,3 +30,6 @@ shots
 *.docx
 shots/
 .dsh-office-*/
+
+# 查证工具的卷级缓存（scripts/check-source.mjs），不提交
+.cache/

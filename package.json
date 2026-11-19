@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "verify:quotes": "node scripts/check-source.mjs --quotes=scripts/data/codex.quotes.json",
+    "verify:data": "node verify-codex.mjs && node scripts/check-source.mjs --quotes=scripts/data/codex.quotes.json",
     "preview": "vite preview"
   },
   "dependencies": {

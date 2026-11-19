@@ -87,6 +87,13 @@ function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string
         {entry.quotes.map((quote, i) => (
           <QuoteBlock key={i} quote={quote} />
         ))}
+        {/* 留白登记：不是「还没来得及写」，是查过确实没有。写出来比空着诚实。 */}
+        {!entry.quotes.length && entry.noQuote ? (
+          <p className="codex-noquote">
+            <span className="codex-noquote-label">暂无可靠语录</span>
+            {entry.noQuote}
+          </p>
+        ) : null}
         {structured ? (
           <ArchiveBody entry={entry} onDrill={onDrill} />
         ) : (
