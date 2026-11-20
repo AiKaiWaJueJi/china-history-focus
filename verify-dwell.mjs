@@ -161,9 +161,15 @@ try {
   /* ---------- 5) 键盘可达 ---------- */
   await page.mouse.move(800, 12, { steps: 2 })
   await sleep(600)
-  await page.keyboard.press('Tab')
-  await sleep(400)
-  const activeByFocus = await activeIndex()
+  /* 顶栏现在有可聚焦的「档案总目」入口（2026-11-20 加），从 body 起算第一次 Tab 落在它上面。
+     这条断言要守的是「模块能靠键盘到达」，不是「第一个 Tab 就必须是模块」——所以最多按三次，
+     第一次命中即算通过；三次都不命中才说明键盘路径真的断了。 */
+  let activeByFocus = -1
+  for (let i = 0; i < 3 && activeByFocus < 0; i += 1) {
+    await page.keyboard.press('Tab')
+    await sleep(260)
+    activeByFocus = await activeIndex()
+  }
   check('Tab 聚焦可激活模块（键盘可达）', activeByFocus >= 0, `active=${activeByFocus}`)
 
   await browser.close()
