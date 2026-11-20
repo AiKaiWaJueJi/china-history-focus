@@ -190,6 +190,61 @@ for (const file of emperorFiles) {
   }
 }
 
+/* 南北朝 54 帝：数据源是 nanbei.json（五行并行时间轴），不在 emperors.*.json。
+   2026-11-21 加：此前这 54 位没有百科条目，帝王卡点了没反应（十二朝那边是整卡入口）。
+   原文线（codex.quotes.json）只覆盖十二朝正史本纪，所以这里标 quoteState='out-of-scope'——
+   与「还没查完」（pending）区分开，UI 才不会把"没收录"说成"查过了没有"。 */
+if (existsSync(`${DATA}/nanbei.json`)) {
+  const nb = readJson(`${DATA}/nanbei.json`)
+  const polityName = new Map((nb.polities ?? []).map((p) => [p.id, p.name]))
+  const byPolity = new Map()
+  for (const e of nb.emperors ?? []) {
+    if (usedIds.has(e.id)) continue
+    usedIds.add(e.id)
+    const lines = [`【谥法】${e.posthumousRule ?? '（无）'}`]
+    if (e.events?.length) {
+      lines.push('【要事】')
+      for (const ev of e.events) lines.push(`— ${ev.name}（${ev.year}）`)
+    }
+    const list = byPolity.get(e.polity) ?? []
+    list.push(e)
+    byPolity.set(e.polity, list)
+  }
+  for (const [polity, list] of byPolity) {
+    list.forEach((e, i) => {
+      const near = battles
+        .filter((b) => Number.isFinite(b._year))
+        .filter((b) => b._year >= e.start && b._year <= e.end)
+        .slice(0, 3)
+      const lines = [`【谥法】${e.posthumousRule ?? '（无）'}`, `【政权】${polityName.get(polity) ?? polity}`]
+      if (e.events?.length) {
+        lines.push('【要事】')
+        for (const ev of e.events) lines.push(`— ${ev.name}（${ev.year}）`)
+      }
+      const neigh = [list[i - 1], list[i + 1]].filter(Boolean)
+      if (neigh.length) {
+        lines.push('【同政权】')
+        for (const n of neigh) lines.push(`— [[${n.title}|${n.id}]]`)
+      }
+      emperors.push({
+        id: e.id,
+        sourceId: e.id,
+        kind: 'emperor',
+        name: e.title,
+        subtitle: `${polityName.get(polity) ?? polity} · 本名 ${e.name}`,
+        alias: [e.name].filter(Boolean),
+        years: e.reign,
+        dynastyId: 'southern_northern',
+        body: lines.join('\n'),
+        quotes: [],
+        quoteState: 'out-of-scope',
+        related: [...neigh.map((n) => n.id), ...near.map((b) => b.id)],
+        tags: ['帝王', '南北朝'],
+      })
+    })
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /* 4. 诸侯                                                                     */
 /* -------------------------------------------------------------------------- */
