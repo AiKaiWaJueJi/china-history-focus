@@ -97,11 +97,11 @@ function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string
         {/* 第三种状态：既无原文、也没登记留白。两种原因必须分开说——
             南北朝 54 帝是"不在收录范围"（原文线只覆盖十二朝正史本纪），
             后梁郢王那种是"还没查完"。把两者混成一句，等于骗读者。 */}
-        {!entry.quotes.length && !entry.noQuote && structured && entry.kind === 'emperor' ? (
+        {!entry.quotes.length && !entry.noQuote && structured && (entry.kind === 'emperor' || entry.kind === 'ruler') ? (
           entry.quoteState === 'out-of-scope' ? (
             <p className="codex-noquote codex-noquote--scope">
               <span className="codex-noquote-label">未收录原文</span>
-              帝王原文线覆盖十二朝正史本纪（177 位），南北朝的五十四位不在其中。这一条档案由「在位要事」的时间线承担。
+              帝王原文线覆盖十二朝正史本纪（177 位）；南北朝 54 帝与十国 41 位君主不在其中。这一条档案由「在位要事」的时间线承担。
             </p>
           ) : (
             <p className="codex-noquote codex-noquote--pending">

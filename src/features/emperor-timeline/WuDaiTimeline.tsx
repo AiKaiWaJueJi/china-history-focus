@@ -19,6 +19,8 @@ import empFile from '../../data/emperors.five_dynasties.json'
 import type { EmperorRecord } from '../../core/emperorTypes'
 import { EmperorCard } from './EmperorCard'
 import { useWheelPaging } from './useWheelPaging'
+import { getEntryBySource } from '../../data/codex'
+import { useCodexStore } from '../../store/useCodexStore'
 import './wudai.css'
 
 interface Row {
@@ -145,6 +147,8 @@ export function WuDaiTimeline() {
   const [pageIndex, setPageIndex] = useState(0)
   /* 十国政权带的悬停档案卡；切页时清掉，避免卡片留在旧位置 */
   const [archive, setArchive] = useState<ArchiveAnchor | null>(null)
+  /* 政权带点击 → 抽屉（十国政权条目，正文列君主，可继续下钻） */
+  const openEntry = useCodexStore((s2) => s2.open)
   const [laneW, setLaneW] = useState(1000)
   const laneRef = useRef<HTMLDivElement | null>(null)
   const pageAt = useRef(0)
@@ -275,7 +279,7 @@ export function WuDaiTimeline() {
           五代 14 帝 · 十国 {POLITIES.filter((p) => p.row !== 'r_zhongyuan').length} 政权 · 第{' '}
           {pageIndex + 1} / {PAGES.length} 页
         </span>
-        <span className="wdc-hint">滚轮 / ← → 翻页 · ESC 返回</span>
+        <span className="wdc-hint">点政权带看该国君主 · 滚轮 / ← → 翻页 · ESC 返回</span>
       </header>
 
       <div className="wdc-axis">
@@ -319,12 +323,26 @@ export function WuDaiTimeline() {
                           width: clampWidth(p.start, p.end),
                           borderColor: row.accent,
                         }}
-                        aria-label={`${p.name} ${p.start}—${p.end} · ${p.note}`}
+                        /* 政权带从「只看信息卡」升级成入口：点开抽屉读该国君主谱系。
+                           悬停仍给一张小卡（都城/开国/亡国/与中原关系），点开才是完整档案。 */
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${p.name} ${p.start}—${p.end} · 打开该国君主档案`}
                         onMouseEnter={(e) => {
                           const r = e.currentTarget.getBoundingClientRect()
                           setArchive({ polity: p, x: r.x, y: r.y, w: r.width, h: r.height })
                         }}
                         onMouseLeave={() => setArchive(null)}
+                        onClick={() => {
+                          const entry = getEntryBySource(p.id)
+                          if (entry) openEntry(entry.id)
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key !== 'Enter' && event.key !== ' ') return
+                          event.preventDefault()
+                          const entry = getEntryBySource(p.id)
+                          if (entry) openEntry(entry.id)
+                        }}
                       >
                         <span className="wdc-polity-name" style={{ color: row.accent }}>
                           {p.name}

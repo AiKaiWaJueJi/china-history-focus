@@ -106,7 +106,8 @@ export function buildEventTimeline(emperorId: string): EventDetail[] {
  */
 export function hasStructuredArchive(entry: CodexEntry): boolean {
   const id = entry.sourceId ?? entry.id
-  if (entry.kind === 'emperor') return Boolean(getEmperorArchive(id))
+  /* 十国君主（ruler）与帝王共用同一套结构化档案，只是标签不同 */
+  if (entry.kind === 'emperor' || entry.kind === 'ruler') return Boolean(getEmperorArchive(id))
   if (entry.kind === 'lord') return Boolean(getLordArchive(id))
   return false
 }

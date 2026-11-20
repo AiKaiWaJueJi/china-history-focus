@@ -158,8 +158,9 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
 
   const id = entry.sourceId ?? entry.id
 
-  /* ---------------- 帝王 ---------------- */
-  const emperorRef = entry.kind === 'emperor' ? getEmperorArchive(id) : null
+  /* ---------------- 帝王 / 十国君主 ---------------- */
+  const emperorRefIsRuler = entry.kind === 'ruler'
+  const emperorRef = entry.kind === 'emperor' || entry.kind === 'ruler' ? getEmperorArchive(id) : null
   if (emperorRef) {
     const { emperor, dynastyName, prev, next, index, total, segments } = emperorRef
     /* 所属时代（西周 / 东周…）与段内标志点（春秋 / 战国）：给初学者一个坐标 */
@@ -172,6 +173,8 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
     const annotated = timeline.filter((item) => item.note).length
     const bio = getEmperorBio(id)
     const tagline = getEmperorTagline(id)
+    /* 十国君主不是「朝」而是「国」——标签上用词必须跟着身份走 */
+    const unit = emperorRefIsRuler ? '本国' : '本朝'
     /* 在位年数：含首尾（前1046—前1043 记作 4 年） */
     const reignYears = emperor.endYear - emperor.startYear + 1
 
@@ -180,7 +183,7 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
         <div className="codex-archive-head">
           <span className="codex-archive-dynasty">{dynastyName}</span>
           <span className="codex-archive-reign">
-            在位 {reignYears} 年 · 本朝第 {index} / {total} 位
+            在位 {reignYears} 年 · {unit}第 {index} / {total} 位
           </span>
           <span className={`codex-eval is-${emperor.evaluation}`}>
             {EVAL_LABEL[emperor.evaluation]}
@@ -227,7 +230,7 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
 
         {prev || next ? (
           <section className="codex-archive-sec">
-            <h3 className="codex-sec">同朝</h3>
+            <h3 className="codex-sec">{unit}</h3>
             <div className="codex-event-chips">
               {prev ? (
                 <button type="button" className="codex-chip" onClick={() => onDrill(prev.id)}>

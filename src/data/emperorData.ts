@@ -34,6 +34,7 @@ import lordsZhouRaw from './lords.zhou.json'
 /* 南北朝 54 帝的数据源（多行并行时间轴）：这里只借它建档案抽屉的反查表，
    时间轴组件本身仍然直接读 nanbei.json，两边不共享状态。 */
 import nanbeiRaw from './nanbei.json'
+import { tenStates } from './tenStates'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
 import endgameHanRaw from './endgame.han.json'
@@ -281,9 +282,56 @@ for (const [polity, list] of NANBEI_BY_POLITY) {
   })
 }
 
+/*
+  十国君主：数据在 ten_states.json。同样接进 EMPEROR_ARCHIVE——档案抽屉的结构化时间线
+  只认「帝王记录」这个形状，不关心它来自哪个朝代文件。
+  分段 = 该国（所以「时代」显示「南唐」）；前后主 = 同国先后君主；
+  序号也是该国之内——「十国第 37 位」没有意义。
+*/
+for (const state of tenStates) {
+  const segments: TimelineSegment[] = [
+    {
+      id: state.polityId,
+      name: state.polityName,
+      startYear: state.monarchs[0]?.start ?? 0,
+      endYear: state.monarchs[state.monarchs.length - 1]?.end ?? 0,
+      accent: '#8d8a7a',
+      desc: '十国之一',
+    },
+  ]
+  /* 先把整国的帝王记录建出来，再挂前后主——比在 set 里互相查表干净 */
+  const records: EmperorRecord[] = state.monarchs.map((m) => ({
+    id: m.id,
+    posthumousTitle: m.title,
+    personalName: m.name,
+    reign: m.reign,
+    startYear: m.start,
+    endYear: m.end,
+    segmentId: state.polityId,
+    /* 十国君主没有画像（页面上也不出卡片），给空串，ArchiveBody 不读这个字段 */
+    portrait: '',
+    events: m.events as EmperorRecord['events'],
+    evaluation: m.evaluation,
+    posthumousRule: m.posthumousRule,
+  }))
+  records.forEach((record, index) => {
+    EMPEROR_ARCHIVE.set(record.id, {
+      emperor: record,
+      dynastyId: 'five_dynasties',
+      dynastyName: `十国 · ${state.polityName}`,
+      prev: index > 0 ? records[index - 1] : undefined,
+      next: index < records.length - 1 ? records[index + 1] : undefined,
+      segments,
+      index: index + 1,
+      total: records.length,
+    })
+  })
+}
+
 export function getEmperorArchive(id: string): EmperorArchiveRef | null {
   return EMPEROR_ARCHIVE.get(id) ?? null
 }
+
 
 export interface LordArchiveRef {
   lord: Lord
