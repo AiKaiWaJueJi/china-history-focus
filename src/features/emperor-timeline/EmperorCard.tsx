@@ -25,6 +25,7 @@ import type { EmperorRecord } from '../../core/emperorTypes'
 import { EventMindMap } from './EventMindMap'
 import { useCodexStore } from '../../store/useCodexStore'
 import { getEntryBySource } from '../../data/codex'
+import { assetUrl } from '../../lib/assetUrl'
 
 export type EmperorCardLayout = 'split' | 'stacked-top' | 'stacked-bottom'
 
@@ -50,7 +51,7 @@ export function EmperorCard({
   /* 帝王 / 诸侯的 sourceId 就是自己的 id；取不到条目时卡片退化为纯展示 */
   const codexId = getEntryBySource(emperor.id)?.id ?? null
   const style: CardStyle = {
-    '--portrait': `url("${emperor.portrait}")`,
+    '--portrait': `url("${assetUrl(emperor.portrait)}")`,
   }
 
   const military = emperor.events.filter((event) => event.dimension === 'military')

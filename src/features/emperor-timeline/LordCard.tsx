@@ -15,6 +15,7 @@ import type { CSSProperties } from 'react'
 import type { Lord } from '../../core/emperorTypes'
 import { formatYear } from '../../data/emperorData'
 import { getEntryBySource } from '../../data/codex'
+import { assetUrl } from '../../lib/assetUrl'
 import { useCodexStore } from '../../store/useCodexStore'
 import { EventMindMap } from './EventMindMap'
 
@@ -32,7 +33,7 @@ export function LordCard({ lord }: LordCardProps) {
   const codexId = getEntryBySource(lord.id)?.id ?? null
   const openArchive = codexId ? () => openCodex(codexId) : undefined
   const style: LordStyle = {
-    '--portrait': `url("${lord.portrait}")`,
+    '--portrait': `url("${assetUrl(lord.portrait)}")`,
     '--accent': lord.accent,
   }
 
