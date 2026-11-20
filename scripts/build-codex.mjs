@@ -316,6 +316,75 @@ if (existsSync(`${DATA}/ten_states.json`)) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* 5c. 宋辽金西夏（政权 + 君主）                                                */
+/* -------------------------------------------------------------------------- */
+/*
+  2026-11-21：宋这一朝同时存在辽、西夏、金。单行时间轴读不出「同时还有谁」，
+  另开一条并行视图（/dynasty/song/parallel）。
+  宋的 18 位帝王仍是 emperor（早就在 emperors.song.json 里）；
+  辽 / 西夏 / 金的 29 位君主是 ruler（不入宋的帝系），三家各一条 regime。
+*/
+const parallelRegimes = []
+if (existsSync(`${DATA}/song_parallel.json`)) {
+  const par = readJson(`${DATA}/song_parallel.json`)
+  for (const p of par.polities ?? []) {
+    const monarchs = (par.rulers ?? []).filter((r) => r.polityId === p.id).sort((a, b) => a.start - b.start)
+    const lines = [`【政权】${p.name}（${p.start}—${p.end}）`]
+    if (p.capital) lines.push(`【都城】${p.capital}`)
+    if (p.leader) lines.push(`【开国】${p.leader}`)
+    if (p.fall) lines.push(`【亡国】${p.fall}`)
+    if (p.relation) lines.push('【与宋】' + p.relation)
+    if (monarchs.length) {
+      lines.push('【君主】')
+      for (const m of monarchs) lines.push(`— [[${m.title}|${m.id}]]（${m.reign}）`)
+    }
+    parallelRegimes.push({
+      id: `regime_${p.id}`,
+      sourceId: p.id,
+      kind: 'regime',
+      name: p.name,
+      subtitle: `宋辽金西夏 · ${monarchs.length} 位君主`,
+      years: `${p.start} — ${p.end}`,
+      dynastyId: 'song',
+      body: lines.join('\n'),
+      quotes: [],
+      related: monarchs.map((m) => m.id),
+      tags: ['宋辽金西夏', '政权'],
+    })
+
+    monarchs.forEach((m, i) => {
+      if (usedIds.has(m.id)) return
+      usedIds.add(m.id)
+      const bodyLines = [`【谥法】${m.posthumousRule || '（无谥法）'}`, `【政权】${p.name}`]
+      if (m.events?.length) {
+        bodyLines.push('【在位要事】')
+        for (const ev of m.events) bodyLines.push(`— ${ev.name}（${ev.year}）`)
+      }
+      const neigh = [monarchs[i - 1], monarchs[i + 1]].filter(Boolean)
+      if (neigh.length) {
+        bodyLines.push('【同国】')
+        for (const n of neigh) bodyLines.push(`— [[${n.title}|${n.id}]]`)
+      }
+      emperors.push({
+        id: m.id,
+        sourceId: m.id,
+        kind: 'ruler',
+        name: m.title,
+        subtitle: `${p.name} · 本名 ${m.name}`,
+        alias: [m.name].filter(Boolean),
+        years: m.reign,
+        dynastyId: 'song',
+        body: bodyLines.join('\n'),
+        quotes: [],
+        quoteState: 'out-of-scope',
+        related: [...neigh.map((n) => n.id), `regime_${p.id}`],
+        tags: ['君主', '宋辽金西夏'],
+      })
+    })
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* 5b. 诸侯                                                                     */
 /* -------------------------------------------------------------------------- */
 const lords = []
@@ -430,7 +499,7 @@ if (existsSync('scripts/data/codex.quotes.json')) {
 /* -------------------------------------------------------------------------- */
 /* 6. 自动织链：长名优先，已带标记的段落跳过                                      */
 /* -------------------------------------------------------------------------- */
-const all = [...battles, ...characters.values(), ...emperors, ...regimes, ...lords, ...extras, ...appended]
+const all = [...battles, ...characters.values(), ...emperors, ...regimes, ...parallelRegimes, ...lords, ...extras, ...appended]
 /*
   织链白名单：
     · 人物 / 战役 —— 直接用人名、战役名；
