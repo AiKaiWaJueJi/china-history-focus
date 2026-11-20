@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "verify:quotes": "node scripts/check-source.mjs --quotes=scripts/data/codex.quotes.json",
     "verify:data": "node verify-codex.mjs && node scripts/check-source.mjs --quotes=scripts/data/codex.quotes.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:doc": "node scripts/check-doc-numbers.mjs"
   },
   "dependencies": {
     "@iconify/react": "^6.0.4",
