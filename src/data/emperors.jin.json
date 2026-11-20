@@ -145,7 +145,7 @@
           "id": "ev_jinyuan_jiankang",
           "name": "建康称帝",
           "dimension": "political",
-          "year": 317
+          "year": 318
         },
         {
           "id": "ev_jinyuan_wangma",
@@ -183,7 +183,7 @@
           "id": "ev_jinming_pingdun",
           "name": "平定王敦",
           "dimension": "military",
-          "year": 325
+          "year": 324
         }
       ],
       "evaluation": "good",
@@ -380,6 +380,12 @@
           "name": "义熙北伐",
           "dimension": "military",
           "year": 409
+        },
+        {
+          "id": "ev_jingong_beifa",
+          "name": "刘裕灭后秦",
+          "dimension": "military",
+          "year": 416
         }
       ],
       "evaluation": "neutral",
@@ -395,12 +401,6 @@
       "segmentId": "seg_dongjin",
       "portrait": "/portraits/jin-gong.svg",
       "events": [
-        {
-          "id": "ev_jingong_beifa",
-          "name": "刘裕北伐",
-          "dimension": "military",
-          "year": 416
-        },
         {
           "id": "ev_jingong_shan",
           "name": "禅宋",

@@ -29,7 +29,7 @@
           "id": "ev_tanggaozu_juntian",
           "name": "定均田租庸调",
           "dimension": "political",
-          "year": 619
+          "year": 624
         }
       ],
       "evaluation": "good",
@@ -87,7 +87,7 @@
           "id": "ev_tanggaozong_lvshu",
           "name": "永徽律疏",
           "dimension": "political",
-          "year": 651
+          "year": 653
         },
         {
           "id": "ev_tanggaozong_feiwang",
@@ -157,7 +157,7 @@
           "id": "ev_tangruizong_xiantian",
           "name": "先天之变",
           "dimension": "political",
-          "year": 712
+          "year": 713
         }
       ],
       "evaluation": "good",
@@ -259,7 +259,7 @@
           "id": "ev_tangsuzong_huanguan",
           "name": "宦官典禁军",
           "dimension": "political",
-          "year": 758
+          "year": 759
         }
       ],
       "evaluation": "good",

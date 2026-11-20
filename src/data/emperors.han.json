@@ -544,16 +544,16 @@
           "year": 89
         },
         {
+          "id": "ev_he_zhengzhong",
+          "name": "宦官封侯",
+          "dimension": "political",
+          "year": 92
+        },
+        {
           "id": "ev_he_cailun",
           "name": "蔡伦造纸",
           "dimension": "culture",
           "year": 105
-        },
-        {
-          "id": "ev_he_zhengzhong",
-          "name": "宦官封侯",
-          "dimension": "political",
-          "year": 102
         }
       ],
       "evaluation": "good",
@@ -660,16 +660,16 @@
           "year": 132
         },
         {
-          "id": "ev_shun_liangji",
-          "name": "梁冀专权",
-          "dimension": "political",
-          "year": 136
-        },
-        {
           "id": "ev_shun_yangjia",
           "name": "阳嘉新制",
           "dimension": "political",
           "year": 133
+        },
+        {
+          "id": "ev_shun_liangji",
+          "name": "梁冀专权",
+          "dimension": "political",
+          "year": 141
         }
       ],
       "evaluation": "neutral",
@@ -780,12 +780,6 @@
           "name": "卖官鬻爵",
           "dimension": "political",
           "year": 178
-        },
-        {
-          "id": "ev_ling_hejin",
-          "name": "何进召董卓",
-          "dimension": "political",
-          "year": 189
         }
       ],
       "evaluation": "bad",
@@ -810,6 +804,12 @@
         {
           "id": "ev_shaobian_dongzhuo",
           "name": "董卓入洛",
+          "dimension": "political",
+          "year": 189
+        },
+        {
+          "id": "ev_ling_hejin",
+          "name": "何进召董卓",
           "dimension": "political",
           "year": 189
         }

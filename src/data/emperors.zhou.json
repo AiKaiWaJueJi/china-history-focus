@@ -189,7 +189,7 @@
           "id": "e_quanrong",
           "name": "犬戎侵扰",
           "dimension": "military",
-          "year": -890
+          "year": -893
         }
       ],
       "segmentId": "seg_xizhou",
@@ -400,10 +400,10 @@
       "portrait": "/portraits/zhou-zhuang.svg",
       "events": [
         {
-          "id": "e_wangzi_tui",
-          "name": "王子颓之乱",
+          "id": "e_wangzi_ke",
+          "name": "王子克之乱",
           "dimension": "military",
-          "year": -675
+          "year": -694
         }
       ],
       "segmentId": "seg_dongzhou",
@@ -446,8 +446,8 @@
       "portrait": "/portraits/zhou-hui.svg",
       "events": [
         {
-          "id": "e_wangzi_dai",
-          "name": "王子带之乱",
+          "id": "e_wangzi_tui",
+          "name": "王子颓之乱",
           "dimension": "military",
           "year": -675
         },
@@ -476,6 +476,12 @@
           "name": "葵丘之会",
           "dimension": "political",
           "year": -651
+        },
+        {
+          "id": "e_wangzi_dai",
+          "name": "王子带之乱",
+          "dimension": "military",
+          "year": -636
         },
         {
           "id": "e_chengpu",
@@ -554,6 +560,12 @@
           "name": "邲之战",
           "dimension": "military",
           "year": -597
+        },
+        {
+          "id": "e_an_zhan",
+          "name": "鞌之战",
+          "dimension": "military",
+          "year": -589
         }
       ],
       "segmentId": "seg_dongzhou",
@@ -569,12 +581,6 @@
       "reign": "前585 — 前572",
       "portrait": "/portraits/zhou-jian.svg",
       "events": [
-        {
-          "id": "e_an_zhan",
-          "name": "鞌之战",
-          "dimension": "military",
-          "year": -589
-        },
         {
           "id": "e_mibing_1",
           "name": "第一次弭兵之会",
@@ -600,12 +606,6 @@
           "name": "第二次弭兵之会",
           "dimension": "political",
           "year": -546
-        },
-        {
-          "id": "e_chu_ling_hui",
-          "name": "楚灵王会盟",
-          "dimension": "political",
-          "year": -538
         }
       ],
       "segmentId": "seg_dongzhou",
@@ -621,6 +621,12 @@
       "reign": "前544 — 前520",
       "portrait": "/portraits/zhou-jing.svg",
       "events": [
+        {
+          "id": "e_chu_ling_hui",
+          "name": "楚灵王会盟",
+          "dimension": "political",
+          "year": -538
+        },
         {
           "id": "e_zhu_daqian",
           "name": "铸大钱",
@@ -833,7 +839,7 @@
           "id": "e_jiuding_zhen",
           "name": "九鼎震",
           "dimension": "political",
-          "year": -402
+          "year": -403
         }
       ],
       "segmentId": "seg_dongzhou",

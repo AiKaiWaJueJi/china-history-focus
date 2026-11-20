@@ -55,7 +55,7 @@
           "id": "ev_mingjianwen_xuefan",
           "name": "削藩",
           "dimension": "political",
-          "year": 1398
+          "year": 1399
         },
         {
           "id": "ev_mingjianwen_jingnan",
@@ -122,16 +122,16 @@
       "portrait": "/portraits/ming-renzong.svg",
       "events": [
         {
-          "id": "ev_mingrenzong_shejianwen",
-          "name": "赦免建文旧臣",
-          "dimension": "political",
-          "year": 1424
-        },
-        {
           "id": "ev_mingrenzong_tingxiaxiyang",
           "name": "停罢下西洋",
           "dimension": "political",
           "year": 1424
+        },
+        {
+          "id": "ev_mingrenzong_shejianwen",
+          "name": "赦免建文旧臣",
+          "dimension": "political",
+          "year": 1425
         }
       ],
       "evaluation": "good",
@@ -189,7 +189,7 @@
           "id": "ev_mingyingzong_caoshi",
           "name": "曹石之乱",
           "dimension": "political",
-          "year": 1460
+          "year": 1461
         }
       ],
       "evaluation": "good",
