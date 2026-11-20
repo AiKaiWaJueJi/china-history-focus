@@ -35,6 +35,7 @@ import lordsZhouRaw from './lords.zhou.json'
    时间轴组件本身仍然直接读 nanbei.json，两边不共享状态。 */
 import nanbeiRaw from './nanbei.json'
 import { tenStates } from './tenStates'
+import { parallelPolities, parallelRulersByPolity } from './songParallel'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
 import endgameHanRaw from './endgame.han.json'
@@ -319,6 +320,51 @@ for (const state of tenStates) {
       emperor: record,
       dynastyId: 'five_dynasties',
       dynastyName: `十国 · ${state.polityName}`,
+      prev: index > 0 ? records[index - 1] : undefined,
+      next: index < records.length - 1 ? records[index + 1] : undefined,
+      segments,
+      index: index + 1,
+      total: records.length,
+    })
+  })
+}
+
+/*
+  宋辽金西夏并立：辽 / 西夏 / 金的 29 位君主（宋的 18 帝已在 emperors.song.json 里）。
+  同一套 EMPEROR_ARCHIVE——抽屉只认「帝王记录」这个形状。
+  分段 = 该国；前后主 = 同国先后；序号也是本国之内。
+*/
+for (const polity of parallelPolities) {
+  const list = parallelRulersByPolity.get(polity.id) ?? []
+  if (!list.length) continue
+  const segments: TimelineSegment[] = [
+    {
+      id: polity.id,
+      name: polity.name,
+      startYear: polity.start,
+      endYear: polity.end,
+      accent: '#8d8a7a',
+      desc: polity.capital,
+    },
+  ]
+  const records: EmperorRecord[] = list.map((r) => ({
+    id: r.id,
+    posthumousTitle: r.title,
+    personalName: r.name,
+    reign: r.reign,
+    startYear: r.start,
+    endYear: r.end,
+    segmentId: polity.id,
+    portrait: '',
+    events: r.events as EmperorRecord['events'],
+    evaluation: r.evaluation,
+    posthumousRule: r.posthumousRule,
+  }))
+  records.forEach((record, index) => {
+    EMPEROR_ARCHIVE.set(record.id, {
+      emperor: record,
+      dynastyId: 'song',
+      dynastyName: polity.name,
       prev: index > 0 ? records[index - 1] : undefined,
       next: index < records.length - 1 ? records[index + 1] : undefined,
       segments,

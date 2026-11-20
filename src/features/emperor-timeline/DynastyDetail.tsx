@@ -314,6 +314,17 @@ export function DynastyDetail() {
         </div>
 
         <div className="timeline-head-right">
+          {/* 宋这一朝同时存在辽、西夏、金：单行时间轴读不出「同时还有谁」，
+              所以给一个并行视图的入口（那条视图另开一行，不动本页的分页与过渡） */}
+          {dynastyId === 'song' ? (
+            <button
+              type="button"
+              className="timeline-btn timeline-btn--parallel"
+              onClick={() => navigate('/dynasty/song/parallel')}
+            >
+              辽 · 西夏 · 金 并立 →
+            </button>
+          ) : null}
           <span className="timeline-count">
             共 {emperors.length} 位帝王 · 第 {pageIndex + 1} / {Math.max(pageCount, 1)} 页
           </span>

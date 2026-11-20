@@ -1,0 +1,260 @@
+/* 宋辽金西夏并立（960—1279）四行并行时间轴
+   与五代十国（wudai.css）同一套视觉语言，但结构更简单：一行 = 一个政权，没有行内政权带，
+   只有一层很淡的「政权存续」底条，让读者一眼看出「辽 1125 之后这一行就空了」。 */
+
+.spt-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 14px clamp(16px, 3vw, 40px) 12px;
+  box-sizing: border-box;
+  gap: 8px;
+}
+
+.spt-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.spt-title {
+  margin: 0;
+  font-family: var(--font-brush);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: #f1e6cc;
+}
+
+.spt-period {
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: rgba(226, 214, 190, 0.5);
+}
+
+.spt-count,
+.spt-hint {
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.42);
+}
+
+.spt-hint {
+  margin-left: auto;
+}
+
+.spt-btn {
+  padding: 6px 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.75);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+
+.spt-btn:hover:not(:disabled) {
+  color: #f1e6cc;
+  border-color: rgba(201, 162, 39, 0.5);
+}
+
+.spt-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.spt-axis {
+  position: relative;
+  height: 20px;
+  margin-left: 96px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spt-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.4);
+}
+
+.spt-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.spt-rows {
+  display: grid;
+  width: 100%;
+  min-height: 0;
+  gap: 6px;
+}
+
+.spt-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  min-height: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.spt-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding-left: 8px;
+  border-left: 2px solid transparent;
+}
+
+.spt-label-name {
+  font-family: var(--font-thin);
+  font-size: 17px;
+  letter-spacing: 0.08em;
+}
+
+.spt-label-note {
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: rgba(226, 214, 190, 0.4);
+}
+
+.spt-lane {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.spt-band {
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  border: 1px solid;
+  border-radius: 3px;
+  opacity: 0.4;
+}
+
+.spt-slot {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 104px;
+}
+
+.spt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  padding: 8px 9px;
+  box-sizing: border-box;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(28, 26, 22, 0.94), rgba(12, 12, 12, 0.96));
+  border: 1px solid rgba(201, 162, 39, 0.22);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+.spt-card:hover,
+.spt-card:focus-visible {
+  border-color: rgba(201, 162, 39, 0.62);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* 谥法三色：与帝王卡同一套口径（美谥金 / 平谥青灰 / 恶谥赤） */
+.spt-card.is-good { border-color: rgba(201, 162, 39, 0.4); }
+.spt-card.is-neutral { border-color: rgba(140, 168, 160, 0.36); }
+.spt-card.is-bad { border-color: rgba(176, 92, 78, 0.44); }
+
+.spt-card-title {
+  font-family: var(--font-thin);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: #efe4cb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spt-card-name {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(226, 214, 190, 0.56);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spt-card-reign {
+  margin-top: auto;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.4);
+}
+
+.spt-card-eval {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: rgba(201, 162, 39, 0.6);
+}
+
+.spt-nodes {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.spt-nodes-label {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(226, 214, 190, 0.4);
+}
+
+.spt-node {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.72);
+}
+
+.spt-node em {
+  margin-right: 6px;
+  font-style: normal;
+  color: rgba(201, 162, 39, 0.85);
+}
+
+.spt-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.spt-alive {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: rgba(226, 214, 190, 0.42);
+}
+
+.spt-pager {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .spt-row { grid-template-columns: 70px 1fr; }
+  .spt-axis { margin-left: 70px; }
+  .spt-hint { display: none; }
+}

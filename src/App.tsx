@@ -15,6 +15,7 @@ import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
 import { WuDaiTimeline } from './features/emperor-timeline/WuDaiTimeline'
+import { SongParallelTimeline } from './features/emperor-timeline/SongParallelTimeline'
 import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
@@ -50,7 +51,9 @@ function Shell() {
   */
   const phase = atCodex
     ? 'codex index'
-    : /\/fall(\/|$)/.test(location.pathname)
+    : /\/parallel$/.test(location.pathname)
+      ? 'parallel timeline'
+      : /\/fall(\/|$)/.test(location.pathname)
       ? 'fall / transition'
       : /\/endgame$/.test(location.pathname)
         ? 'endgame / sandbox'
@@ -59,6 +62,8 @@ function Shell() {
           : 'emperor timeline / phase 2'
   const hint = atCodex
     ? '输入即检索 · ESC 先清空再返回主页'
+    : phase === 'parallel timeline'
+      ? '滚轮 / ← → 翻页 · 点卡片看档案 · ESC 回宋时间轴'
     : atGallery
       ? '悬停查看挤压 · 点击进入朝代'
       : phase === 'fall / transition'
@@ -104,6 +109,7 @@ function Shell() {
           <Routes>
             <Route path="/" element={<DynastyGallery />} />
             <Route path="/dynasty/:dynastyId" element={<DynastyRoute />} />
+            <Route path="/dynasty/:dynastyId/parallel" element={<SongParallelTimeline />} />
             <Route path="/dynasty/:dynastyId/fall/:chapter?" element={<FallStage />} />
             <Route path="/dynasty/:dynastyId/endgame" element={<EndgameRoute />} />
             <Route path="/codex" element={<CodexIndex />} />

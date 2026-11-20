@@ -191,10 +191,14 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
           {tagline ? <span className="codex-archive-tag">{tagline}</span> : null}
         </div>
 
-        <p className="codex-archive-rule">
-          <span>谥法</span>
-          {emperor.posthumousRule}
-        </p>
+        {/* 没有单字谥法就不摆这一行：辽制用尊号，十国与南北朝的多数君主无谥。
+            「谥法 （无谥法）」这种占位自相矛盾，宁可不显示。 */}
+        {emperor.posthumousRule && !emperor.posthumousRule.startsWith('（') ? (
+          <p className="codex-archive-rule">
+            <span>谥法</span>
+            {emperor.posthumousRule}
+          </p>
+        ) : null}
 
         {era ? (
           <p className="codex-archive-rule codex-archive-era">
