@@ -197,7 +197,7 @@
         },
         {
           "id": "ev_song_wen_3",
-          "name": "立国子学",
+          "name": "四学并建",
           "dimension": "culture",
           "year": 438
         }
@@ -229,7 +229,7 @@
         },
         {
           "id": "ev_song_shao2_3",
-          "name": "一月而诛",
+          "name": "劭败伏诛",
           "dimension": "military",
           "year": 453
         }
@@ -313,7 +313,7 @@
         },
         {
           "id": "ev_song_ming_2",
-          "name": "泰始方镇之制",
+          "name": "淮北失陷",
           "dimension": "political",
           "year": 467
         }
@@ -859,7 +859,7 @@
           "id": "ev_chen_houzhu_2",
           "name": "隋军渡江",
           "dimension": "military",
-          "year": 588
+          "year": 589
         },
         {
           "id": "ev_chen_houzhu_3",
@@ -875,17 +875,17 @@
       "polity": "beiwei",
       "title": "明元帝",
       "name": "拓跋嗣",
-      "start": 420,
+      "start": 409,
       "end": 423,
       "evaluation": "good",
-      "reign": "420 — 423",
+      "reign": "409 — 423",
       "portrait": "/portraits/nanbei-wei_mingyuan.svg",
       "events": [
         {
           "id": "ev_wei_mingyuan_1",
           "name": "承拓跋珪基业",
           "dimension": "political",
-          "year": 420
+          "year": 409
         },
         {
           "id": "ev_wei_mingyuan_2",
@@ -909,7 +909,7 @@
       "events": [
         {
           "id": "ev_wei_taiwu_1",
-          "name": "灭赫连夏",
+          "name": "克统万城",
           "dimension": "military",
           "year": 427
         },
@@ -1337,7 +1337,7 @@
           "id": "ev_beiqi_wucheng_1",
           "name": "杀侄自立",
           "dimension": "political",
-          "year": 561
+          "year": 564
         },
         {
           "id": "ev_beiqi_wucheng_2",
