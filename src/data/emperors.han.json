@@ -297,7 +297,7 @@
           "id": "ev_cheng_wangshi",
           "name": "外戚王氏专权",
           "dimension": "political",
-          "year": -20
+          "year": -33
         },
         {
           "id": "ev_cheng_liuxiang",
@@ -663,7 +663,7 @@
           "id": "ev_shun_yangjia",
           "name": "阳嘉新制",
           "dimension": "political",
-          "year": 133
+          "year": 132
         },
         {
           "id": "ev_shun_liangji",

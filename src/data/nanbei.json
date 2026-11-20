@@ -624,9 +624,9 @@
       "title": "豫章王",
       "name": "萧栋",
       "start": 551,
-      "end": 552,
+      "end": 551,
       "evaluation": "neutral",
-      "reign": "551 — 552",
+      "reign": "551",
       "portrait": "/portraits/nanbei-liang_dong.svg",
       "events": [
         {
@@ -639,7 +639,7 @@
           "id": "ev_liang_dong_2",
           "name": "被废",
           "dimension": "political",
-          "year": 552
+          "year": 551
         }
       ],
       "posthumousRule": "无谥，史称豫章王"

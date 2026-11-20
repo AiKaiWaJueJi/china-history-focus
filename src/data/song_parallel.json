@@ -340,7 +340,7 @@
           "id": "ev_liao_18",
           "name": "辽夏河曲之战",
           "dimension": "military",
-          "year": 1049
+          "year": 1044
         }
       ]
     },
@@ -878,12 +878,6 @@
           "year": 1224
         },
         {
-          "id": "ev_xixia_21",
-          "name": "灵州失守",
-          "dimension": "military",
-          "year": 1226
-        },
-        {
           "id": "ev_xixia_22",
           "name": "惊惧而卒",
           "dimension": "political",
@@ -933,6 +927,12 @@
       "evaluation": "neutral",
       "posthumousRule": "（无谥法）",
       "events": [
+        {
+          "id": "ev_xixia_21",
+          "name": "灵州失守",
+          "dimension": "military",
+          "year": 1226
+        },
         {
           "id": "ev_xixia_23",
           "name": "出降蒙古",

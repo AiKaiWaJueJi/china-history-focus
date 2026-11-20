@@ -513,7 +513,7 @@
           "id": "e_wangshi_neiluan",
           "name": "王室内乱",
           "dimension": "military",
-          "year": -615
+          "year": -613
         }
       ],
       "segmentId": "seg_dongzhou",
@@ -979,7 +979,7 @@
         },
         {
           "id": "e_qin_mie_zhou",
-          "name": "秦灭东周",
+          "name": "秦灭西周",
           "dimension": "military",
           "year": -256
         }

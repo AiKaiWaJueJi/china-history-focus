@@ -139,7 +139,7 @@
           "id": "ev_fdtangmingzong_tiancheng",
           "name": "天成之治",
           "dimension": "political",
-          "year": 927
+          "year": 926
         }
       ],
       "evaluation": "good",
@@ -217,7 +217,7 @@
           "id": "ev_fdjingaozu_erhuangdi",
           "name": "称儿皇帝",
           "dimension": "political",
-          "year": 937
+          "year": 936
         }
       ],
       "evaluation": "good",
@@ -237,7 +237,7 @@
           "id": "ev_fdjinchudi_chen",
           "name": "对契丹称孙不称臣",
           "dimension": "political",
-          "year": 944
+          "year": 942
         },
         {
           "id": "ev_fdjinchudi_mie",
@@ -295,7 +295,7 @@
           "id": "ev_fdhanyindi_guowei",
           "name": "郭威起兵",
           "dimension": "military",
-          "year": 951
+          "year": 950
         }
       ],
       "evaluation": "bad",
@@ -321,7 +321,7 @@
           "id": "ev_fdzhoutaizu_gechu",
           "name": "革除弊政",
           "dimension": "political",
-          "year": 951
+          "year": 953
         }
       ],
       "evaluation": "good",
