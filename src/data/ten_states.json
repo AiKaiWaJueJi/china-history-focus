@@ -1,0 +1,1193 @@
+{
+  "_readme": "十国君主（2026-11-21 批次 7）。键 = wudai.json 的 polityId；每位君主有在职年、谥法与 2—3 条在位要事。十国君主不入中原帝系（与十六国余部同口径），但这批数据让「政权带 → 君主 → 档案」这条链路成立。",
+  "states": [
+    {
+      "polityId": "p_wu",
+      "polityName": "吴",
+      "monarchs": [
+        {
+          "id": "ts_wu_yangxingmi",
+          "title": "吴太祖",
+          "name": "杨行密",
+          "reign": "902 — 905",
+          "start": 902,
+          "end": 905,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武",
+          "events": [
+            {
+              "id": "ts_wu_yangxingmi_1",
+              "name": "受封吴王",
+              "dimension": "political",
+              "year": 902
+            },
+            {
+              "id": "ts_wu_yangxingmi_2",
+              "name": "攻取鄂州",
+              "dimension": "military",
+              "year": 905
+            }
+          ]
+        },
+        {
+          "id": "ts_wu_yangwo",
+          "title": "吴烈祖",
+          "name": "杨渥",
+          "reign": "905 — 908",
+          "start": 905,
+          "end": 908,
+          "evaluation": "good",
+          "posthumousRule": "布义行刚曰景",
+          "events": [
+            {
+              "id": "ts_wu_yangwo_1",
+              "name": "不奉梁正朔",
+              "dimension": "political",
+              "year": 907
+            },
+            {
+              "id": "ts_wu_yangwo_2",
+              "name": "为张颢所弑",
+              "dimension": "political",
+              "year": 908
+            }
+          ]
+        },
+        {
+          "id": "ts_wu_yanglongyan",
+          "title": "吴高祖",
+          "name": "杨隆演",
+          "reign": "908 — 920",
+          "start": 908,
+          "end": 920,
+          "evaluation": "good",
+          "posthumousRule": "圣善周闻曰宣",
+          "events": [
+            {
+              "id": "ts_wu_yanglongyan_1",
+              "name": "徐温诛张颢",
+              "dimension": "political",
+              "year": 908
+            },
+            {
+              "id": "ts_wu_yanglongyan_2",
+              "name": "称吴国王",
+              "dimension": "political",
+              "year": 919
+            },
+            {
+              "id": "ts_wu_yanglongyan_3",
+              "name": "败吴越于无锡",
+              "dimension": "military",
+              "year": 919
+            }
+          ]
+        },
+        {
+          "id": "ts_wu_yangpu",
+          "title": "吴睿帝",
+          "name": "杨溥",
+          "reign": "920 — 937",
+          "start": 920,
+          "end": 937,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_wu_yangpu_1",
+              "name": "称帝建号",
+              "dimension": "political",
+              "year": 927
+            },
+            {
+              "id": "ts_wu_yangpu_2",
+              "name": "禅位李昪",
+              "dimension": "political",
+              "year": 937
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_nantang",
+      "polityName": "南唐",
+      "monarchs": [
+        {
+          "id": "ts_nantang_libian",
+          "title": "南唐烈祖",
+          "name": "李昪",
+          "reign": "937 — 943",
+          "start": 937,
+          "end": 943,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武",
+          "events": [
+            {
+              "id": "ts_nantang_libian_1",
+              "name": "代吴称帝",
+              "dimension": "political",
+              "year": 937
+            },
+            {
+              "id": "ts_nantang_libian_2",
+              "name": "复姓改国号",
+              "dimension": "political",
+              "year": 939
+            }
+          ]
+        },
+        {
+          "id": "ts_nantang_lijing",
+          "title": "南唐元宗",
+          "name": "李璟",
+          "reign": "943 — 961",
+          "start": 943,
+          "end": 961,
+          "evaluation": "good",
+          "posthumousRule": "经纬天地曰文",
+          "events": [
+            {
+              "id": "ts_nantang_lijing_1",
+              "name": "乘乱灭闽",
+              "dimension": "military",
+              "year": 945
+            },
+            {
+              "id": "ts_nantang_lijing_2",
+              "name": "乘乱灭楚",
+              "dimension": "military",
+              "year": 951
+            },
+            {
+              "id": "ts_nantang_lijing_3",
+              "name": "割淮南十四州",
+              "dimension": "political",
+              "year": 958
+            }
+          ]
+        },
+        {
+          "id": "ts_nantang_liyu",
+          "title": "南唐后主",
+          "name": "李煜",
+          "reign": "961 — 975",
+          "start": 961,
+          "end": 975,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_nantang_liyu_1",
+              "name": "去唐国号",
+              "dimension": "political",
+              "year": 971
+            },
+            {
+              "id": "ts_nantang_liyu_2",
+              "name": "宋师南下",
+              "dimension": "military",
+              "year": 974
+            },
+            {
+              "id": "ts_nantang_liyu_3",
+              "name": "国亡降宋",
+              "dimension": "political",
+              "year": 975
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_wuyue",
+      "polityName": "吴越",
+      "monarchs": [
+        {
+          "id": "ts_wuyue_qianliu",
+          "title": "吴越武肃王",
+          "name": "钱镠",
+          "reign": "907 — 932",
+          "start": 907,
+          "end": 932,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武，执心决断曰肃",
+          "events": [
+            {
+              "id": "ts_wuyue_qianliu_1",
+              "name": "受梁封吴越王",
+              "dimension": "political",
+              "year": 907
+            },
+            {
+              "id": "ts_wuyue_qianliu_2",
+              "name": "筑捍海石塘",
+              "dimension": "political",
+              "year": 910
+            },
+            {
+              "id": "ts_wuyue_qianliu_3",
+              "name": "晋封吴越国王",
+              "dimension": "political",
+              "year": 923
+            }
+          ]
+        },
+        {
+          "id": "ts_wuyue_qianyuanguan",
+          "title": "吴越文穆王",
+          "name": "钱元瓘",
+          "reign": "932 — 941",
+          "start": 932,
+          "end": 941,
+          "evaluation": "good",
+          "posthumousRule": "经纬天地曰文，布德执义曰穆",
+          "events": [
+            {
+              "id": "ts_wuyue_qianyuanguan_1",
+              "name": "嗣吴越王位",
+              "dimension": "political",
+              "year": 932
+            },
+            {
+              "id": "ts_wuyue_qianyuanguan_2",
+              "name": "受晋册封",
+              "dimension": "political",
+              "year": 937
+            },
+            {
+              "id": "ts_wuyue_qianyuanguan_3",
+              "name": "奏置秀州",
+              "dimension": "political",
+              "year": 940
+            }
+          ]
+        },
+        {
+          "id": "ts_wuyue_qianhongzuo",
+          "title": "吴越忠献王",
+          "name": "钱弘佐",
+          "reign": "941 — 947",
+          "start": 941,
+          "end": 947,
+          "evaluation": "good",
+          "posthumousRule": "危身奉上曰忠，聪明睿智曰献",
+          "events": [
+            {
+              "id": "ts_wuyue_qianhongzuo_1",
+              "name": "十四岁嗣位",
+              "dimension": "political",
+              "year": 941
+            },
+            {
+              "id": "ts_wuyue_qianhongzuo_2",
+              "name": "攻取福州",
+              "dimension": "military",
+              "year": 947
+            }
+          ]
+        },
+        {
+          "id": "ts_wuyue_qianhongzong",
+          "title": "吴越忠逊王",
+          "name": "钱弘倧",
+          "reign": "947 — 947",
+          "start": 947,
+          "end": 947,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_wuyue_qianhongzong_1",
+              "name": "嗣吴越王位",
+              "dimension": "political",
+              "year": 947
+            },
+            {
+              "id": "ts_wuyue_qianhongzong_2",
+              "name": "胡进思兵变",
+              "dimension": "political",
+              "year": 947
+            }
+          ]
+        },
+        {
+          "id": "ts_wuyue_qianchu",
+          "title": "吴越忠懿王",
+          "name": "钱俶",
+          "reign": "948 — 978",
+          "start": 948,
+          "end": 978,
+          "evaluation": "good",
+          "posthumousRule": "温柔贤善曰懿",
+          "events": [
+            {
+              "id": "ts_wuyue_qianchu_1",
+              "name": "入继吴越王位",
+              "dimension": "political",
+              "year": 948
+            },
+            {
+              "id": "ts_wuyue_qianchu_2",
+              "name": "助周攻南唐",
+              "dimension": "military",
+              "year": 956
+            },
+            {
+              "id": "ts_wuyue_qianchu_3",
+              "name": "纳土归宋",
+              "dimension": "political",
+              "year": 978
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_min",
+      "polityName": "闽",
+      "monarchs": [
+        {
+          "id": "ts_min_wangshenzhi",
+          "title": "闽太祖",
+          "name": "王审知",
+          "reign": "909 — 925",
+          "start": 909,
+          "end": 925,
+          "evaluation": "good",
+          "posthumousRule": "危身奉上曰忠，温柔贤善曰懿",
+          "events": [
+            {
+              "id": "ts_min_wangshenzhi_1",
+              "name": "受梁封闽王",
+              "dimension": "political",
+              "year": 909
+            },
+            {
+              "id": "ts_min_wangshenzhi_2",
+              "name": "遣使贡后唐",
+              "dimension": "political",
+              "year": 924
+            }
+          ]
+        },
+        {
+          "id": "ts_min_wangyanhan",
+          "title": "闽嗣王",
+          "name": "王延翰",
+          "reign": "925 — 926",
+          "start": 925,
+          "end": 926,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_min_wangyanhan_1",
+              "name": "嗣闽王位",
+              "dimension": "political",
+              "year": 925
+            },
+            {
+              "id": "ts_min_wangyanhan_2",
+              "name": "自称大闽国王",
+              "dimension": "political",
+              "year": 926
+            },
+            {
+              "id": "ts_min_wangyanhan_3",
+              "name": "被延禀延钧所杀",
+              "dimension": "political",
+              "year": 926
+            }
+          ]
+        },
+        {
+          "id": "ts_min_wangyanjun",
+          "title": "闽惠宗",
+          "name": "王延钧",
+          "reign": "926 — 935",
+          "start": 926,
+          "end": 935,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_min_wangyanjun_1",
+              "name": "杀兄自立",
+              "dimension": "political",
+              "year": 926
+            },
+            {
+              "id": "ts_min_wangyanjun_2",
+              "name": "称帝建闽",
+              "dimension": "political",
+              "year": 933
+            },
+            {
+              "id": "ts_min_wangyanjun_3",
+              "name": "为子所弑",
+              "dimension": "political",
+              "year": 935
+            }
+          ]
+        },
+        {
+          "id": "ts_min_wangjipeng",
+          "title": "闽康宗",
+          "name": "王继鹏",
+          "reign": "935 — 939",
+          "start": 935,
+          "end": 939,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_min_wangjipeng_1",
+              "name": "弑父夺位",
+              "dimension": "political",
+              "year": 935
+            },
+            {
+              "id": "ts_min_wangjipeng_2",
+              "name": "为王延羲所杀",
+              "dimension": "political",
+              "year": 939
+            }
+          ]
+        },
+        {
+          "id": "ts_min_wangyanxi",
+          "title": "闽景宗",
+          "name": "王延羲",
+          "reign": "939 — 944",
+          "start": 939,
+          "end": 944,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_min_wangyanxi_1",
+              "name": "杀昶自立",
+              "dimension": "political",
+              "year": 939
+            },
+            {
+              "id": "ts_min_wangyanxi_2",
+              "name": "与建州交兵",
+              "dimension": "military",
+              "year": 943
+            },
+            {
+              "id": "ts_min_wangyanxi_3",
+              "name": "被朱文进所杀",
+              "dimension": "political",
+              "year": 944
+            }
+          ]
+        },
+        {
+          "id": "ts_min_wangyanzheng",
+          "title": "闽天德帝",
+          "name": "王延政",
+          "reign": "943 — 945",
+          "start": 943,
+          "end": 945,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_min_wangyanzheng_1",
+              "name": "称帝建殷",
+              "dimension": "political",
+              "year": 943
+            },
+            {
+              "id": "ts_min_wangyanzheng_2",
+              "name": "遣兵攻福州",
+              "dimension": "military",
+              "year": 944
+            },
+            {
+              "id": "ts_min_wangyanzheng_3",
+              "name": "国亡降南唐",
+              "dimension": "political",
+              "year": 945
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_chu",
+      "polityName": "楚",
+      "monarchs": [
+        {
+          "id": "ts_chu_mayin",
+          "title": "楚武穆王",
+          "name": "马殷",
+          "reign": "907 — 930",
+          "start": 907,
+          "end": 930,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武，布德执义曰穆",
+          "events": [
+            {
+              "id": "ts_chu_mayin_1",
+              "name": "受梁封楚王",
+              "dimension": "political",
+              "year": 907
+            },
+            {
+              "id": "ts_chu_mayin_2",
+              "name": "攻取朗州",
+              "dimension": "military",
+              "year": 908
+            },
+            {
+              "id": "ts_chu_mayin_3",
+              "name": "受封楚国王",
+              "dimension": "political",
+              "year": 927
+            }
+          ]
+        },
+        {
+          "id": "ts_chu_maxisheng",
+          "title": "楚衡阳王",
+          "name": "马希声",
+          "reign": "930 — 932",
+          "start": 930,
+          "end": 932,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_chu_maxisheng_1",
+              "name": "袭位潭州",
+              "dimension": "political",
+              "year": 930
+            },
+            {
+              "id": "ts_chu_maxisheng_2",
+              "name": "请命后唐",
+              "dimension": "political",
+              "year": 931
+            }
+          ]
+        },
+        {
+          "id": "ts_chu_maxifan",
+          "title": "楚文昭王",
+          "name": "马希范",
+          "reign": "932 — 947",
+          "start": 932,
+          "end": 947,
+          "evaluation": "good",
+          "posthumousRule": "经纬天地曰文，昭德有劳曰昭",
+          "events": [
+            {
+              "id": "ts_chu_maxifan_1",
+              "name": "嗣位潭州",
+              "dimension": "political",
+              "year": 932
+            },
+            {
+              "id": "ts_chu_maxifan_2",
+              "name": "溪州立柱",
+              "dimension": "political",
+              "year": 940
+            }
+          ]
+        },
+        {
+          "id": "ts_chu_maxiguang",
+          "title": "楚废王",
+          "name": "马希广",
+          "reign": "947 — 950",
+          "start": 947,
+          "end": 950,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_chu_maxiguang_1",
+              "name": "嗣位潭州",
+              "dimension": "political",
+              "year": 947
+            },
+            {
+              "id": "ts_chu_maxiguang_2",
+              "name": "希萼举兵",
+              "dimension": "military",
+              "year": 949
+            },
+            {
+              "id": "ts_chu_maxiguang_3",
+              "name": "潭州失守",
+              "dimension": "military",
+              "year": 950
+            }
+          ]
+        },
+        {
+          "id": "ts_chu_maxie",
+          "title": "楚恭孝王",
+          "name": "马希萼",
+          "reign": "950 — 951",
+          "start": 950,
+          "end": 951,
+          "evaluation": "neutral",
+          "posthumousRule": "敬事供上曰恭，慈惠爱亲曰孝",
+          "events": [
+            {
+              "id": "ts_chu_maxie_1",
+              "name": "攻入潭州",
+              "dimension": "military",
+              "year": 950
+            },
+            {
+              "id": "ts_chu_maxie_2",
+              "name": "囚于衡山",
+              "dimension": "political",
+              "year": 951
+            }
+          ]
+        },
+        {
+          "id": "ts_chu_maxichong",
+          "title": "楚末王",
+          "name": "马希崇",
+          "reign": "951 — 951",
+          "start": 951,
+          "end": 951,
+          "evaluation": "bad",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_chu_maxichong_1",
+              "name": "逐兄自立",
+              "dimension": "political",
+              "year": 951
+            },
+            {
+              "id": "ts_chu_maxichong_2",
+              "name": "边镐入潭",
+              "dimension": "military",
+              "year": 951
+            },
+            {
+              "id": "ts_chu_maxichong_3",
+              "name": "降唐楚亡",
+              "dimension": "political",
+              "year": 951
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_qianshu",
+      "polityName": "前蜀",
+      "monarchs": [
+        {
+          "id": "ts_qianshu_wangjian",
+          "title": "前蜀高祖",
+          "name": "王建",
+          "reign": "907 — 918",
+          "start": 907,
+          "end": 918,
+          "evaluation": "good",
+          "posthumousRule": "民无能名曰神，克定祸乱曰武",
+          "events": [
+            {
+              "id": "ts_qianshu_wangjian_1",
+              "name": "成都称帝",
+              "dimension": "political",
+              "year": 907
+            },
+            {
+              "id": "ts_qianshu_wangjian_2",
+              "name": "立衍为太子",
+              "dimension": "political",
+              "year": 913
+            },
+            {
+              "id": "ts_qianshu_wangjian_3",
+              "name": "葬于永陵",
+              "dimension": "culture",
+              "year": 918
+            }
+          ]
+        },
+        {
+          "id": "ts_qianshu_wangyan",
+          "title": "前蜀后主",
+          "name": "王衍",
+          "reign": "918 — 925",
+          "start": 918,
+          "end": 925,
+          "evaluation": "bad",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_qianshu_wangyan_1",
+              "name": "即位成都",
+              "dimension": "political",
+              "year": 918
+            },
+            {
+              "id": "ts_qianshu_wangyan_2",
+              "name": "游幸秦州",
+              "dimension": "culture",
+              "year": 925
+            },
+            {
+              "id": "ts_qianshu_wangyan_3",
+              "name": "降唐蜀亡",
+              "dimension": "political",
+              "year": 925
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_houshu",
+      "polityName": "后蜀",
+      "monarchs": [
+        {
+          "id": "ts_houshu_mengzhixiang",
+          "title": "后蜀高祖",
+          "name": "孟知祥",
+          "reign": "933 — 934",
+          "start": 933,
+          "end": 934,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武",
+          "events": [
+            {
+              "id": "ts_houshu_mengzhixiang_1",
+              "name": "兼并东川",
+              "dimension": "military",
+              "year": 932
+            },
+            {
+              "id": "ts_houshu_mengzhixiang_2",
+              "name": "受封蜀王",
+              "dimension": "political",
+              "year": 933
+            },
+            {
+              "id": "ts_houshu_mengzhixiang_3",
+              "name": "成都称帝",
+              "dimension": "political",
+              "year": 934
+            }
+          ]
+        },
+        {
+          "id": "ts_houshu_mengchang",
+          "title": "后蜀后主",
+          "name": "孟昶",
+          "reign": "934 — 965",
+          "start": 934,
+          "end": 965,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_houshu_mengchang_1",
+              "name": "花间集成书",
+              "dimension": "culture",
+              "year": 940
+            },
+            {
+              "id": "ts_houshu_mengchang_2",
+              "name": "后周取秦凤",
+              "dimension": "military",
+              "year": 955
+            },
+            {
+              "id": "ts_houshu_mengchang_3",
+              "name": "成都降宋",
+              "dimension": "military",
+              "year": 965
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_nanhan",
+      "polityName": "南汉",
+      "monarchs": [
+        {
+          "id": "ts_nanhan_liuyan",
+          "title": "南汉高祖",
+          "name": "刘龑",
+          "reign": "917 — 942",
+          "start": 917,
+          "end": 942,
+          "evaluation": "good",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_nanhan_liuyan_1",
+              "name": "称帝改元",
+              "dimension": "political",
+              "year": 917
+            },
+            {
+              "id": "ts_nanhan_liuyan_2",
+              "name": "改国号汉",
+              "dimension": "political",
+              "year": 918
+            },
+            {
+              "id": "ts_nanhan_liuyan_3",
+              "name": "吴权败汉军",
+              "dimension": "military",
+              "year": 938
+            }
+          ]
+        },
+        {
+          "id": "ts_nanhan_liubin",
+          "title": "南汉殇帝",
+          "name": "刘玢",
+          "reign": "942 — 943",
+          "start": 942,
+          "end": 943,
+          "evaluation": "neutral",
+          "posthumousRule": "短折不成曰殇",
+          "events": [
+            {
+              "id": "ts_nanhan_liubin_1",
+              "name": "即位改元",
+              "dimension": "political",
+              "year": 942
+            },
+            {
+              "id": "ts_nanhan_liubin_2",
+              "name": "为弟所弑",
+              "dimension": "political",
+              "year": 943
+            }
+          ]
+        },
+        {
+          "id": "ts_nanhan_liusheng",
+          "title": "南汉中宗",
+          "name": "刘晟",
+          "reign": "943 — 958",
+          "start": 943,
+          "end": 958,
+          "evaluation": "bad",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_nanhan_liusheng_1",
+              "name": "弑兄自立",
+              "dimension": "political",
+              "year": 943
+            },
+            {
+              "id": "ts_nanhan_liusheng_2",
+              "name": "卒于兴王府",
+              "dimension": "political",
+              "year": 958
+            }
+          ]
+        },
+        {
+          "id": "ts_nanhan_liuchang",
+          "title": "南汉后主",
+          "name": "刘鋹",
+          "reign": "958 — 971",
+          "start": 958,
+          "end": 971,
+          "evaluation": "bad",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_nanhan_liuchang_1",
+              "name": "宦官用事",
+              "dimension": "political",
+              "year": 958
+            },
+            {
+              "id": "ts_nanhan_liuchang_2",
+              "name": "宋师南伐",
+              "dimension": "military",
+              "year": 970
+            },
+            {
+              "id": "ts_nanhan_liuchang_3",
+              "name": "出降宋军",
+              "dimension": "political",
+              "year": 971
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_jingnan",
+      "polityName": "荆南",
+      "monarchs": [
+        {
+          "id": "ts_jingnan_gaojixing",
+          "title": "南平武信王",
+          "name": "高季兴",
+          "reign": "924 — 929",
+          "start": 924,
+          "end": 929,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武，守命共时曰信",
+          "events": [
+            {
+              "id": "ts_jingnan_gaojixing_1",
+              "name": "受封南平王",
+              "dimension": "political",
+              "year": 924
+            },
+            {
+              "id": "ts_jingnan_gaojixing_2",
+              "name": "截留蜀中贡物",
+              "dimension": "political",
+              "year": 926
+            },
+            {
+              "id": "ts_jingnan_gaojixing_3",
+              "name": "附吴受封秦王",
+              "dimension": "political",
+              "year": 928
+            }
+          ]
+        },
+        {
+          "id": "ts_jingnan_gaoconghui",
+          "title": "南平文献王",
+          "name": "高从诲",
+          "reign": "929 — 948",
+          "start": 929,
+          "end": 948,
+          "evaluation": "good",
+          "posthumousRule": "经纬天地曰文，聪明睿智曰献",
+          "events": [
+            {
+              "id": "ts_jingnan_gaoconghui_1",
+              "name": "嗣位江陵",
+              "dimension": "political",
+              "year": 929
+            },
+            {
+              "id": "ts_jingnan_gaoconghui_2",
+              "name": "四向称臣",
+              "dimension": "political",
+              "year": 937
+            }
+          ]
+        },
+        {
+          "id": "ts_jingnan_gaobaorong",
+          "title": "南平贞懿王",
+          "name": "高保融",
+          "reign": "948 — 960",
+          "start": 948,
+          "end": 960,
+          "evaluation": "good",
+          "posthumousRule": "清白守节曰贞，温柔圣善曰懿",
+          "events": [
+            {
+              "id": "ts_jingnan_gaobaorong_1",
+              "name": "嗣立江陵",
+              "dimension": "political",
+              "year": 948
+            },
+            {
+              "id": "ts_jingnan_gaobaorong_2",
+              "name": "入贡后周",
+              "dimension": "political",
+              "year": 951
+            }
+          ]
+        },
+        {
+          "id": "ts_jingnan_gaobaoxu",
+          "title": "南平王",
+          "name": "高保勖",
+          "reign": "960 — 962",
+          "start": 960,
+          "end": 962,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_jingnan_gaobaoxu_1",
+              "name": "兄终弟及",
+              "dimension": "political",
+              "year": 960
+            },
+            {
+              "id": "ts_jingnan_gaobaoxu_2",
+              "name": "病卒江陵",
+              "dimension": "political",
+              "year": 962
+            }
+          ]
+        },
+        {
+          "id": "ts_jingnan_gaojichong",
+          "title": "荆南末主",
+          "name": "高继冲",
+          "reign": "962 — 963",
+          "start": 962,
+          "end": 963,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_jingnan_gaojichong_1",
+              "name": "嗣位江陵",
+              "dimension": "political",
+              "year": 962
+            },
+            {
+              "id": "ts_jingnan_gaojichong_2",
+              "name": "宋师假道",
+              "dimension": "military",
+              "year": 963
+            },
+            {
+              "id": "ts_jingnan_gaojichong_3",
+              "name": "纳土归宋",
+              "dimension": "political",
+              "year": 963
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "polityId": "p_beihan",
+      "polityName": "北汉",
+      "monarchs": [
+        {
+          "id": "ts_beihan_liumin",
+          "title": "北汉世祖",
+          "name": "刘旻",
+          "reign": "951 — 954",
+          "start": 951,
+          "end": 954,
+          "evaluation": "good",
+          "posthumousRule": "克定祸乱曰武",
+          "events": [
+            {
+              "id": "ts_beihan_liumin_1",
+              "name": "太原称帝",
+              "dimension": "political",
+              "year": 951
+            },
+            {
+              "id": "ts_beihan_liumin_2",
+              "name": "辽册神武皇帝",
+              "dimension": "political",
+              "year": 951
+            },
+            {
+              "id": "ts_beihan_liumin_3",
+              "name": "高平之战大败",
+              "dimension": "military",
+              "year": 954
+            }
+          ]
+        },
+        {
+          "id": "ts_beihan_liuchengjun",
+          "title": "北汉睿宗",
+          "name": "刘承钧",
+          "reign": "954 — 968",
+          "start": 954,
+          "end": 968,
+          "evaluation": "good",
+          "posthumousRule": "慈惠爱亲曰孝，不刚不柔曰和",
+          "events": [
+            {
+              "id": "ts_beihan_liuchengjun_1",
+              "name": "嗣位晋阳",
+              "dimension": "political",
+              "year": 954
+            },
+            {
+              "id": "ts_beihan_liuchengjun_2",
+              "name": "援李筠抗宋",
+              "dimension": "military",
+              "year": 960
+            },
+            {
+              "id": "ts_beihan_liuchengjun_3",
+              "name": "养子继恩嗣立",
+              "dimension": "political",
+              "year": 968
+            }
+          ]
+        },
+        {
+          "id": "ts_beihan_liujien",
+          "title": "北汉少主",
+          "name": "刘继恩",
+          "reign": "968 — 968",
+          "start": 968,
+          "end": 968,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_beihan_liujien_1",
+              "name": "少主嗣位",
+              "dimension": "political",
+              "year": 968
+            },
+            {
+              "id": "ts_beihan_liujien_2",
+              "name": "侯霸荣弑君",
+              "dimension": "political",
+              "year": 968
+            }
+          ]
+        },
+        {
+          "id": "ts_beihan_liujiyuan",
+          "title": "北汉末主",
+          "name": "刘继元",
+          "reign": "968 — 979",
+          "start": 968,
+          "end": 979,
+          "evaluation": "neutral",
+          "posthumousRule": "（无谥法）",
+          "events": [
+            {
+              "id": "ts_beihan_liujiyuan_1",
+              "name": "继兄即位",
+              "dimension": "political",
+              "year": 968
+            },
+            {
+              "id": "ts_beihan_liujiyuan_2",
+              "name": "宋祖亲征太原",
+              "dimension": "military",
+              "year": 969
+            },
+            {
+              "id": "ts_beihan_liujiyuan_3",
+              "name": "太宗亲征出降",
+              "dimension": "political",
+              "year": 979
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

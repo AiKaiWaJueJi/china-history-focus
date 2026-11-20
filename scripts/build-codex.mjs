@@ -246,7 +246,77 @@ if (existsSync(`${DATA}/nanbei.json`)) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 4. 诸侯                                                                     */
+/* 5. 十国（政权 + 君主）                                                       */
+/* -------------------------------------------------------------------------- */
+/*
+  2026-11-21：十国原来只有「政权带」，读者点不出任何东西。
+  现在一个政权一条 regime 条目（正文列该国君主，可继续下钻），
+  每位君主一条 ruler 条目（不入中原帝系，所以不是 emperor）。
+  原文线只覆盖十二朝正史本纪，所以君主条目标 quoteState='out-of-scope'。
+*/
+const regimes = []
+if (existsSync(`${DATA}/ten_states.json`)) {
+  const ten = readJson(`${DATA}/ten_states.json`)
+  const wudai = existsSync(`${DATA}/wudai.json`) ? readJson(`${DATA}/wudai.json`) : { polities: [] }
+  const polityById = new Map((wudai.polities ?? []).map((p) => [p.id, p]))
+
+  for (const st of ten.states ?? []) {
+    const p = polityById.get(st.polityId) ?? {}
+    const lines = ['【十国】' + (p.note ?? st.polityName)]
+    if (p.capital) lines.push(`【都城】${p.capital}`)
+    if (p.fall) lines.push(`【亡国】${p.fall}`)
+    lines.push('【君主】')
+    for (const m of st.monarchs) lines.push(`— [[${m.title}|${m.id}]]（${m.reign}）`)
+    if (p.relation) lines.push('【与中原】' + p.relation)
+
+    regimes.push({
+      id: `regime_${st.polityId}`,
+      sourceId: st.polityId,
+      kind: 'regime',
+      name: st.polityName,
+      subtitle: `十国 · ${st.monarchs.length} 位君主`,
+      years: p.start && p.end ? `${p.start} — ${p.end}` : undefined,
+      dynastyId: 'five_dynasties',
+      body: lines.join('\n'),
+      quotes: [],
+      related: st.monarchs.map((m) => m.id),
+      tags: ['十国', '政权'],
+    })
+
+    st.monarchs.forEach((m, i) => {
+      if (usedIds.has(m.id)) return
+      usedIds.add(m.id)
+      const bodyLines = [`【谥法】${m.posthumousRule || '（无谥法）'}`, `【政权】${st.polityName}`]
+      if (m.events?.length) {
+        bodyLines.push('【在位要事】')
+        for (const ev of m.events) bodyLines.push(`— ${ev.name}（${ev.year}）`)
+      }
+      const neigh = [st.monarchs[i - 1], st.monarchs[i + 1]].filter(Boolean)
+      if (neigh.length) {
+        bodyLines.push('【同国】')
+        for (const n of neigh) bodyLines.push(`— [[${n.title}|${n.id}]]`)
+      }
+      emperors.push({
+        id: m.id,
+        sourceId: m.id,
+        kind: 'ruler',
+        name: m.title,
+        subtitle: `${st.polityName} · 本名 ${m.name}`,
+        alias: [m.name].filter(Boolean),
+        years: m.reign,
+        dynastyId: 'five_dynasties',
+        body: bodyLines.join('\n'),
+        quotes: [],
+        quoteState: 'out-of-scope',
+        related: [...neigh.map((n) => n.id), `regime_${st.polityId}`],
+        tags: ['君主', '十国'],
+      })
+    })
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5b. 诸侯                                                                     */
 /* -------------------------------------------------------------------------- */
 const lords = []
 if (existsSync(`${DATA}/lords.zhou.json`)) {
@@ -360,7 +430,7 @@ if (existsSync('scripts/data/codex.quotes.json')) {
 /* -------------------------------------------------------------------------- */
 /* 6. 自动织链：长名优先，已带标记的段落跳过                                      */
 /* -------------------------------------------------------------------------- */
-const all = [...battles, ...characters.values(), ...emperors, ...lords, ...extras, ...appended]
+const all = [...battles, ...characters.values(), ...emperors, ...regimes, ...lords, ...extras, ...appended]
 /*
   织链白名单：
     · 人物 / 战役 —— 直接用人名、战役名；
@@ -460,6 +530,8 @@ const payload = {
     battle: countBy('battle'),
     character: countBy('character'),
     emperor: countBy('emperor'),
+    ruler: countBy('ruler'),
+    regime: countBy('regime'),
     lord: countBy('lord'),
     extra: countBy('extra'),
     total: all.length,
@@ -468,5 +540,5 @@ const payload = {
 }
 writeFileSync(OUT, JSON.stringify(payload) + '\n', 'utf8')
 console.log(
-  `✓ ${OUT}\n  战役 ${payload.counts.battle} / 人物 ${payload.counts.character} / 帝王 ${payload.counts.emperor} / 诸侯 ${payload.counts.lord} / 补充 ${payload.counts.extra}\n  合计 ${payload.counts.total} 条，自动织入 ${linkCount} 处链`,
+  `✓ ${OUT}\n  战役 ${payload.counts.battle} / 人物 ${payload.counts.character} / 帝王 ${payload.counts.emperor} / 君主 ${payload.counts.ruler} / 政权 ${payload.counts.regime} / 诸侯 ${payload.counts.lord} / 补充 ${payload.counts.extra}\n  合计 ${payload.counts.total} 条，自动织入 ${linkCount} 处链`,
 )
