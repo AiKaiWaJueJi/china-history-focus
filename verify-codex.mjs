@@ -79,7 +79,13 @@ for (const kind of ['battle', 'character', 'emperor', 'ruler', 'regime', 'lord']
 /* ---------- 3b. 十国：政权 → 君主 的链路必须成立 ---------- */
 const regimes = entries.filter((e) => e.kind === 'regime')
 const rulers = entries.filter((e) => e.kind === 'ruler')
-check('十国政权条目齐（10 个）', regimes.length === 10, `${regimes.length} 个`)
+check('政权条目齐（十国 10 + 宋辽金西夏 3 = 13）', regimes.length === 13, `${regimes.length} 个`)
+const parallelRegimes = regimes.filter((r) => (r.tags ?? []).includes('宋辽金西夏'))
+check(
+  '宋辽金西夏三家各有一条政权条目',
+  ['辽', '西夏', '金'].every((n) => parallelRegimes.some((r) => r.name === n)),
+  parallelRegimes.map((r) => r.name).join(','),
+)
 const rulerBySource = new Map(rulers.map((e) => [e.sourceId ?? e.id, e]))
 const regimeNoRuler = regimes.filter((r) => {
   const links = [...r.body.matchAll(/\[\[[^\]|]+\|([^\]]+)\]\]/g)].map((m) => m[1])

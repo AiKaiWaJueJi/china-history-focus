@@ -30,6 +30,8 @@ const UI = [
   // 档案总目（/codex）：检索 / 筛选 / 点行开抽屉 / ESC 两级语义（2026-11-20 新增）
   'verify-codex-index.mjs',
   'verify-wudai.mjs',
+  // 宋辽金西夏并立视图（/dynasty/song/parallel）：四行 / 未立国为空 / 翻页节点 / 点卡进君主档案（2026-11-21 新增）
+  'verify-song-parallel.mjs',
   'verify-sandbox.mjs',
   'verify-segment-intro.mjs',
 ]
