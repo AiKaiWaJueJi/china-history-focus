@@ -12,7 +12,7 @@
  *      顺带提了一句秦的条目。
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import type { CodexEntry, CodexKind } from '../../core/codex'
 import { KIND_LABEL } from '../../core/codex'
 import { codexById, codexCounts, codexEntries } from '../../data/codex'
@@ -135,6 +135,11 @@ export function CodexIndex() {
     return scored
   }, [index, kind, dynasty, query, order])
 
+  /* 进页面就把光标放进检索框：这是一个「为检索而生」的页面，不自动聚焦等于多按一次 Tab */
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
+
   /* ESC：先清搜索，再退主页；抽屉开着时不抢（抽屉自己有 listeners） */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -161,6 +166,11 @@ export function CodexIndex() {
     <div className="codex-index">
       <header className="codex-index-head">
         <div>
+          {/* 鼠标用户在这页没有别的出口：顶栏只有「档案总目」自己与 ESC 提示。
+              所以给一个明确的「回朝代主页」，别让人只能按浏览器后退。 */}
+          <Link className="codex-index-back" to="/">
+            ← 朝代主页
+          </Link>
           <h2 className="codex-index-title">档案总目</h2>
           <p className="codex-index-sub">
             全库 {total} 条 · 帝王 {kindCounts.emperor ?? 0} / 诸侯 {kindCounts.lord ?? 0} / 人物{' '}

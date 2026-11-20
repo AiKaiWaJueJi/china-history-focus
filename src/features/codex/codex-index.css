@@ -236,3 +236,21 @@
   .codex-row-meta { display: none; }
   .codex-index-title { font-size: 24px; }
 }
+
+.codex-index-back {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(201, 162, 39, 0.82);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.24);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.codex-index-back:hover,
+.codex-index-back:focus-visible {
+  color: #f1e6cc;
+  border-color: rgba(201, 162, 39, 0.7);
+  outline: none;
+}
