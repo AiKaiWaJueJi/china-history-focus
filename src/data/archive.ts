@@ -69,6 +69,16 @@ export interface EventDetail {
 }
 
 /**
+ * 单条事件的史实注解（没有则 null）。
+ * 帝王与诸侯共用同一张 `event-notes.json`（键 = 事件 id），
+ * 所以诸侯档案也必须走这里——早先诸侯那侧把 note 写死成 null，
+ * 批次 3 补的 30 条诸侯注解一条都显示不出来（2026-11-20 修）。
+ */
+export function getEventNote(eventId: string): string | null {
+  return NOTES[eventId] ?? null
+}
+
+/**
  * 把某位帝王的事件装配成时间线（按年份升序）。
  * 拿不到帝王记录（比如南北朝 / 五代的独立时间轴）时返回空数组，
  * 调用方退回纯文本正文 —— 档案不会因此变空。
@@ -80,7 +90,7 @@ export function buildEventTimeline(emperorId: string): EventDetail[] {
     .sort((a, b) => a.year - b.year)
     .map((event) => ({
       event,
-      note: NOTES[event.id] ?? null,
+      note: getEventNote(event.id),
       entry: entryForEventName(event.name),
       rulers: lordsRulingAt(event.year),
       segment:

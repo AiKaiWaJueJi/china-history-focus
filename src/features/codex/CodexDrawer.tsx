@@ -94,6 +94,16 @@ function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string
             {entry.noQuote}
           </p>
         ) : null}
+        {/* 第三种状态：还没查完（既无原文、也没登记留白）。
+            以前这里什么都没有，读者分不清「查过了没有」与「还没轮到」——
+            这类帝王现在只有 1 位（后梁郢王朱友珪：本纪无独立纪，卷七只有弑父当夜四五字对答，
+            短到不能当语录，又不该替他把四五字凑成一句）。 */}
+        {!entry.quotes.length && !entry.noQuote && structured && entry.kind === 'emperor' ? (
+          <p className="codex-noquote codex-noquote--pending">
+            <span className="codex-noquote-label">原文待补</span>
+            这一位的记言还在查证中。本项目只收能在原书逐字核到的原句，核不到就空着，不拿转述充数。
+          </p>
+        ) : null}
         {structured ? (
           <ArchiveBody entry={entry} onDrill={onDrill} />
         ) : (

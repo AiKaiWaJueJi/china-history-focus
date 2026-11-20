@@ -10,7 +10,7 @@
  * 因此 DynastyGallery / DynastyPanel 一行都没改。
  */
 import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { DynastyGallery } from './features/gallery/DynastyGallery'
 import { DynastyDetail } from './features/emperor-timeline/DynastyDetail'
 import { NanBeiTimeline } from './features/emperor-timeline/NanBeiTimeline'
@@ -19,6 +19,7 @@ import { EndgameStage } from './features/endgame/EndgameStage'
 import { JinChronicleStage } from './features/endgame/JinChronicleStage'
 import { FallStage } from './features/fall/FallStage'
 import { CodexDrawer } from './features/codex/CodexDrawer'
+import { CodexIndex } from './features/codex/CodexIndex'
 import { RouterBridge } from './router/RouterBridge'
 import { ErrorBoundary } from './lib/ErrorBoundary'
 import { useCodexStore } from './store/useCodexStore'
@@ -41,25 +42,30 @@ function EndgameRoute() {
 function Shell() {
   const location = useLocation()
   const atGallery = location.pathname === '/'
+  const atCodex = location.pathname === '/codex'
   /*
     顶栏的两行小字要跟着页面走：
     过渡页与沙盘的 ESC 只退到本朝时间轴（过渡页还会先弹确认），
     早先所有页都写「ESC 返回朝代主页」，是把用户往沟里带。
   */
-  const phase = /\/fall(\/|$)/.test(location.pathname)
-    ? 'fall / transition'
-    : /\/endgame$/.test(location.pathname)
-      ? 'endgame / sandbox'
-      : atGallery
-        ? 'dynasty gallery / phase 1'
-        : 'emperor timeline / phase 2'
-  const hint = atGallery
-    ? '悬停查看挤压 · 点击进入朝代'
-    : phase === 'fall / transition'
-      ? 'ESC 返回帝王时间轴（先确认）'
-      : phase === 'endgame / sandbox'
-        ? 'ESC 返回帝王时间轴'
-        : 'ESC 返回朝代主页'
+  const phase = atCodex
+    ? 'codex index'
+    : /\/fall(\/|$)/.test(location.pathname)
+      ? 'fall / transition'
+      : /\/endgame$/.test(location.pathname)
+        ? 'endgame / sandbox'
+        : atGallery
+          ? 'dynasty gallery / phase 1'
+          : 'emperor timeline / phase 2'
+  const hint = atCodex
+    ? '输入即检索 · ESC 先清空再返回主页'
+    : atGallery
+      ? '悬停查看挤压 · 点击进入朝代'
+      : phase === 'fall / transition'
+        ? 'ESC 返回帝王时间轴（先确认）'
+        : phase === 'endgame / sandbox'
+          ? 'ESC 返回帝王时间轴'
+          : 'ESC 返回朝代主页'
 
   // 主页侧只保留 R 复位；详情页的 ESC 由 DynastyDetail 自己处理
   useEffect(() => {
@@ -83,7 +89,12 @@ function Shell() {
           <h1 className="app-title">中国历史 · 多维学习</h1>
           <span className="app-sub">{phase}</span>
         </div>
-        <span className="app-hint">{hint}</span>
+        <span className="app-hint">
+          <Link className="app-nav" to="/codex">
+            档案总目
+          </Link>
+          {hint}
+        </span>
       </header>
 
       <main className="app-main">
@@ -95,6 +106,7 @@ function Shell() {
             <Route path="/dynasty/:dynastyId" element={<DynastyRoute />} />
             <Route path="/dynasty/:dynastyId/fall/:chapter?" element={<FallStage />} />
             <Route path="/dynasty/:dynastyId/endgame" element={<EndgameRoute />} />
+            <Route path="/codex" element={<CodexIndex />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </ErrorBoundary>

@@ -425,6 +425,28 @@
     color: #565049;
   }
 
+  /* 顶栏左侧的「档案总目」入口：与提示同排，但要是可点的、颜色更亮一档。
+     只在命中它时提亮，避免和 app-hint 的弱对比打架。 */
+  .app-nav {
+    margin-right: 14px;
+    padding: 2px 9px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: #c9a227;
+    text-decoration: none;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 3px;
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .app-nav:hover,
+  .app-nav:focus-visible {
+    color: #14100a;
+    background: rgba(201, 162, 39, 0.86);
+    border-color: rgba(201, 162, 39, 0.86);
+    outline: none;
+  }
+
   .app-main {
     flex: 1 1 auto;
     min-height: 0;

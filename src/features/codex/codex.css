@@ -750,3 +750,13 @@ body:has(.codex-drawer) .app-shell {
     transition: none;
   }
 }
+
+/* 第三种状态：原文待补（还没查完）。比留白那一条更淡——它不是结论，只是进度。 */
+.codex-noquote--pending {
+  border-left-color: rgba(201, 162, 39, 0.28);
+  background: rgba(201, 162, 39, 0.04);
+}
+
+.codex-noquote--pending .codex-noquote-label {
+  color: rgba(201, 162, 39, 0.72);
+}

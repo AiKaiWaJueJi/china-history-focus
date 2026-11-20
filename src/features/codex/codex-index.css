@@ -1,0 +1,238 @@
+/* ---------------- 档案总目（/codex）----------------
+   一页装下 359 条：上方检索 + 两组筛选（类型 / 朝代），下方结果列表。
+   列表滚动区独立（不整页滚），这样筛选条永远在手边。 */
+
+.codex-index {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  padding: 18px clamp(18px, 4vw, 56px) 22px;
+  box-sizing: border-box;
+}
+
+.codex-index-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.codex-index-title {
+  margin: 0;
+  font-family: var(--font-brush);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #f1e6cc;
+}
+
+.codex-index-sub {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.55);
+}
+
+.codex-index-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 380px;
+  max-width: 560px;
+}
+
+.codex-index-search input {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  color: #f1e6cc;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 200ms var(--ease-out), background 200ms var(--ease-out);
+}
+
+.codex-index-search input:focus {
+  border-color: rgba(201, 162, 39, 0.62);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.codex-index-search input::placeholder {
+  color: rgba(226, 214, 190, 0.34);
+}
+
+.codex-index-clear {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: rgba(226, 214, 190, 0.66);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.codex-index-clear:hover {
+  color: #f1e6cc;
+  border-color: rgba(201, 162, 39, 0.4);
+}
+
+.codex-index-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.codex-index-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.codex-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(226, 214, 190, 0.62);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+
+.codex-filter em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(226, 214, 190, 0.34);
+}
+
+.codex-filter:hover {
+  color: #f1e6cc;
+  border-color: rgba(201, 162, 39, 0.36);
+}
+
+.codex-filter.is-active {
+  color: #14100a;
+  background: rgba(201, 162, 39, 0.86);
+  border-color: rgba(201, 162, 39, 0.86);
+}
+
+.codex-filter.is-active em {
+  color: rgba(20, 16, 10, 0.62);
+}
+
+.codex-index-count {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(226, 214, 190, 0.5);
+}
+
+.codex-index-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px 0 0;
+  overflow-y: auto;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.codex-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  width: 100%;
+  padding: 11px 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 180ms var(--ease-out);
+}
+
+.codex-row:hover {
+  background: rgba(201, 162, 39, 0.07);
+}
+
+.codex-row-kind {
+  flex: 0 0 46px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(201, 162, 39, 0.78);
+}
+
+.codex-row-kind.is-battle { color: rgba(196, 118, 96, 0.9); }
+.codex-row-kind.is-character { color: rgba(126, 160, 170, 0.9); }
+.codex-row-kind.is-emperor { color: rgba(201, 162, 39, 0.9); }
+.codex-row-kind.is-lord { color: rgba(150, 170, 130, 0.9); }
+.codex-row-kind.is-extra { color: rgba(176, 156, 196, 0.9); }
+
+.codex-row-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.codex-row-name {
+  font-family: var(--font-thin);
+  font-size: 17px;
+  color: #efe4cb;
+}
+
+.codex-row-sub,
+.codex-row-hit {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(226, 214, 190, 0.5);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.codex-row-hit {
+  color: rgba(201, 162, 39, 0.62);
+}
+
+.codex-row-meta {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 11.5px;
+  color: rgba(226, 214, 190, 0.42);
+}
+
+.codex-row-meta em {
+  font-style: normal;
+  color: rgba(226, 214, 190, 0.6);
+}
+
+.codex-row-quote {
+  padding: 1px 6px;
+  font-size: 10.5px;
+  color: rgba(201, 162, 39, 0.9);
+  border: 1px solid rgba(201, 162, 39, 0.34);
+  border-radius: 3px;
+}
+
+@media (max-width: 760px) {
+  .codex-row { gap: 8px; }
+  .codex-row-meta { display: none; }
+  .codex-index-title { font-size: 24px; }
+}

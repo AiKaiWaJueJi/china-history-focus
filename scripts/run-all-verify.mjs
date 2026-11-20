@@ -27,6 +27,8 @@ const UI = [
   'verify-nanbei-end.mjs',
   'verify-frame.mjs',
   'verify-codex-ui.mjs',
+  // 档案总目（/codex）：检索 / 筛选 / 点行开抽屉 / ESC 两级语义（2026-11-20 新增）
+  'verify-codex-index.mjs',
   'verify-wudai.mjs',
   'verify-sandbox.mjs',
   'verify-segment-intro.mjs',

@@ -16,6 +16,7 @@ import {
   buildEventTimeline,
   entryForEventName,
   getEmperorBio,
+  getEventNote,
   getEmperorTagline,
   linkify,
   type EventDetail,
@@ -256,12 +257,13 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
       .sort((a, b) => a.year - b.year)
       .map((event) => ({
         event,
-        note: null,
+        note: getEventNote(event.id),
         entry: entryForEventName(event.name),
         rulers: [],
         segment: null,
       }))
     const others = siblings.filter((item) => item.id !== lord.id).slice(0, 4)
+    const annotated = details.filter((item) => item.note).length
 
     return (
       <div className="codex-archive">
@@ -284,6 +286,7 @@ export function ArchiveBody({ entry, onDrill }: ArchiveBodyProps) {
             <h3 className="codex-sec">
               重要事迹
               <em>{details.length} 条</em>
+              {annotated ? <i>注解 {annotated}</i> : null}
             </h3>
             <EventTimeline
               details={details}
