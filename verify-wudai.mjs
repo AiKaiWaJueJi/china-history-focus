@@ -72,6 +72,50 @@ try {
   console.log('[P5]', JSON.stringify(p5))
   check('页 5 有 7 行（北汉 951 立）', p5.rows === 7, String(p5.rows))
   check('页 5 中原行为后周三帝', p5.cards.join(',') === '后周太祖,后周世宗,后周恭帝', p5.cards.join(','))
+  /* ---- 十国：政权带 → 政权档案 → 君主档案（批次 7 新增） ---- */
+  await goPage(1)
+  await sleep(400)
+  const bandBefore = await page.evaluate(() => {
+    const b = [...document.querySelectorAll('.wdc-polity')].find((x) => x.getAttribute('aria-label')?.startsWith('吴 '))
+    return { found: Boolean(b), label: b?.getAttribute('aria-label') ?? '', role: b?.getAttribute('role') ?? '' }
+  })
+  check('十国政权带可点（role=button 且有可读标签）', bandBefore.found && bandBefore.role === 'button', bandBefore.label)
+
+  await page.evaluate(() => {
+    const b = [...document.querySelectorAll('.wdc-polity')].find((x) => x.getAttribute('aria-label')?.startsWith('吴 '))
+    b.click()
+  })
+  await sleep(700)
+  const regime = await page.evaluate(() => ({
+    open: Boolean(document.querySelector('.codex-drawer')),
+    kind: document.querySelector('.codex-drawer .codex-kind')?.textContent?.trim() ?? '',
+    name: document.querySelector('.codex-drawer .codex-name')?.textContent?.trim() ?? '',
+    rulers: [...document.querySelectorAll('.codex-drawer .codex-link')].map((n) => n.textContent.trim()),
+  }))
+  check('点政权带打开政权档案', regime.open && regime.kind === '政权' && regime.name === '吴', `${regime.kind}/${regime.name}`)
+  check('政权档案里列出本国君主', regime.rulers.includes('吴太祖') && regime.rulers.length >= 4, regime.rulers.slice(0, 5).join(','))
+
+  /* 点君主 → 下钻到君主档案（结构化时间线） */
+  await page.evaluate(() => {
+    const b = [...document.querySelectorAll('.codex-drawer .codex-link')].find((n) => n.textContent.trim() === '吴太祖')
+    b.click()
+  })
+  await sleep(700)
+  const ruler = await page.evaluate(() => ({
+    kind: document.querySelector('.codex-drawer .codex-kind')?.textContent?.trim() ?? '',
+    name: document.querySelector('.codex-drawer .codex-name')?.textContent?.trim() ?? '',
+    reign: document.querySelector('.codex-archive-reign')?.textContent?.trim() ?? '',
+    hasEvents: document.querySelectorAll('.codex-drawer .codex-event').length > 0,
+  }))
+  check('点君主下钻到君主档案', ruler.kind === '君主' && ruler.name === '吴太祖', `${ruler.kind}/${ruler.name}`)
+  check('君主档案有结构化在位要事', ruler.hasEvents, ruler.reign)
+
+  await page.keyboard.press('Escape')
+  await sleep(500)
+  /* 回末页，接上原有的「陈桥兵变」出口检查 */
+  await goPage(5)
+  await sleep(500)
+
   const fallBtn = await page.$('.wdc-btn--fall')
   check('末页出现「继续下滑 · 陈桥兵变」', Boolean(fallBtn))
 

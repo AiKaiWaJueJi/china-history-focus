@@ -70,11 +70,29 @@ const noWork = battles.filter((e) => !e.quotes[0]?.work)
 check('每条战役都标了出处', noWork.length === 0, noWork.slice(0, 3).map((e) => e.id).join(','))
 
 /* ---------- 3. 各类都有正文 ---------- */
-for (const kind of ['battle', 'character', 'emperor', 'lord']) {
+for (const kind of ['battle', 'character', 'emperor', 'ruler', 'regime', 'lord']) {
   const list = entries.filter((e) => e.kind === kind)
   const empty = list.filter((e) => !e.body || e.body.length < 8)
   check(`${kind} 条目都有正文`, empty.length === 0, `${list.length} 条，空 ${empty.length}`)
 }
+
+/* ---------- 3b. 十国：政权 → 君主 的链路必须成立 ---------- */
+const regimes = entries.filter((e) => e.kind === 'regime')
+const rulers = entries.filter((e) => e.kind === 'ruler')
+check('十国政权条目齐（10 个）', regimes.length === 10, `${regimes.length} 个`)
+const rulerBySource = new Map(rulers.map((e) => [e.sourceId ?? e.id, e]))
+const regimeNoRuler = regimes.filter((r) => {
+  const links = [...r.body.matchAll(/\[\[[^\]|]+\|([^\]]+)\]\]/g)].map((m) => m[1])
+  return !links.some((id) => rulerBySource.has(id))
+})
+check('每个政权条目都链到了本国君主', regimeNoRuler.length === 0, regimeNoRuler.map((r) => r.name).join(','))
+const rulerBadState = rulers.filter((r) => !r.related.some((id) => regimes.some((g) => g.id === id)))
+check('每位君主都能回到所属政权', rulerBadState.length === 0, rulerBadState.slice(0, 3).map((r) => r.name).join(','))
+check(
+  '十国君主不混进帝系（kind 是 ruler 不是 emperor）',
+  entries.filter((e) => e.kind === 'emperor').every((e) => !e.id.startsWith('ts_')),
+  `君主 ${rulers.length} 位`,
+)
 
 /* ---------- 4. 模拟无限下钻（BFS：只要存在长度 ≥ 2 的路径就算通） ---------- */
 const linksOf = (entry) => {

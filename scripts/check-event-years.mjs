@@ -78,6 +78,12 @@ for (const f of files) {
 }
 /* 南北朝 54 帝在 nanbei.json（多行并行时间轴的独立数据源），2026-11-21 起一并检查 */
 if (existsSync(`${DIR}/nanbei.json`)) scan(readJ('nanbei.json').emperors ?? [], 'nanbei.json（南北朝）')
+/* 十国 41 位君主在 ten_states.json（政权带 → 君主 → 档案），同样检查 */
+if (existsSync(`${DIR}/ten_states.json`)) {
+  const ten = readJ('ten_states.json')
+  const rows = (ten.states ?? []).flatMap((st) => st.monarchs ?? [])
+  scan(rows, 'ten_states.json（十国君主）')
+}
 
 console.log(`检查 ${files.length} 份数据、${events} 条事件`)
 if (allowed.length) {
