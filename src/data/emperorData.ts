@@ -31,6 +31,9 @@ import segmentsYuanRaw from './segments.yuan.json'
 import segmentsMingRaw from './segments.ming.json'
 import segmentsQingRaw from './segments.qing.json'
 import lordsZhouRaw from './lords.zhou.json'
+/* 南北朝 54 帝的数据源（多行并行时间轴）：这里只借它建档案抽屉的反查表，
+   时间轴组件本身仍然直接读 nanbei.json，两边不共享状态。 */
+import nanbeiRaw from './nanbei.json'
 import endgameZhouRaw from './endgame.zhou.json'
 import endgameChuhanRaw from './endgame.chuhan.json'
 import endgameHanRaw from './endgame.han.json'
@@ -220,6 +223,60 @@ for (const [dynastyId, doc] of Object.entries(EMPERORS)) {
       segments,
       index: index + 1,
       total: doc.emperors.length,
+    })
+  })
+}
+
+/*
+  南北朝 54 帝：数据在 nanbei.json（五行并行时间轴的独立数据源），不在 emperors.*.json。
+  2026-11-21 之前他们的帝王卡没有档案入口——卡片没有 aria-label、点了什么都不发生，
+  而十二朝那边的卡是整卡入口，这是最容易被读者当成"坏了"的一处不一致。
+  这里把同一份数据接进 EMPEROR_ARCHIVE：
+    · 分段 = 十个政权（十六国余部 / 北魏 / 东魏·北齐 / 西魏·北周 / 南朝四朝），
+      所以档案里的「时代」显示的是政权而不是西周/春秋那种时代；
+    · 前后主限定在**同一政权内**（北魏的下一任不等于东魏的开国）；
+    · 序号也是政权内序号——「本朝第 12 / 54 位」会把三个并行政权的世系混成一条，没有意义。
+*/
+const NANBEI_POLITY_NAME = new Map(nanbeiRaw.polities.map((p) => [p.id, p.name]))
+const NANBEI_SEGMENTS: TimelineSegment[] = nanbeiRaw.polities.map((p) => ({
+  id: p.id,
+  name: p.name,
+  startYear: p.start,
+  endYear: p.end,
+  accent: '#8d8a7a',
+  desc: p.full,
+}))
+const NANBEI_BY_POLITY = new Map<string, EmperorRecord[]>()
+for (const e of nanbeiRaw.emperors) {
+  const record: EmperorRecord = {
+    id: e.id,
+    posthumousTitle: e.title,
+    personalName: e.name,
+    reign: e.reign,
+    startYear: e.start,
+    endYear: e.end,
+    segmentId: e.polity,
+    portrait: e.portrait,
+    /* JSON 里的枚举是字符串字面量的超集：这里显式收窄，越界值在类型层面就该炸 */
+    events: e.events as EmperorRecord['events'],
+    evaluation: e.evaluation as EmperorRecord['evaluation'],
+    posthumousRule: e.posthumousRule,
+  }
+  const list = NANBEI_BY_POLITY.get(e.polity) ?? []
+  list.push(record)
+  NANBEI_BY_POLITY.set(e.polity, list)
+}
+for (const [polity, list] of NANBEI_BY_POLITY) {
+  list.forEach((emperor, index) => {
+    EMPEROR_ARCHIVE.set(emperor.id, {
+      emperor,
+      dynastyId: 'southern_northern',
+      dynastyName: `南北朝 · ${NANBEI_POLITY_NAME.get(polity) ?? polity}`,
+      prev: index > 0 ? list[index - 1] : undefined,
+      next: index < list.length - 1 ? list[index + 1] : undefined,
+      segments: NANBEI_SEGMENTS,
+      index: index + 1,
+      total: list.length,
     })
   })
 }

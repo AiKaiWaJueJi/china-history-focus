@@ -66,6 +66,13 @@ export interface CodexEntry {
    * 与 quotes 互斥。存在这个字段 = 不是漏做，是做完的结论——防止下一个人重复劳动。
    */
   noQuote?: string
+  /**
+   * 原文收录状态（只在「既无 quotes 也无 noQuote」时有意义）：
+   *   pending      = 还没查完（十二朝正史本纪线里剩余的那几位）
+   *   out-of-scope = 不在原文收录范围（南北朝 54 帝：帝王原文线只覆盖十二朝正史本纪）
+   * 两者在数据里长得一样，但意思相反，UI 必须分开说——否则「没查」会被读成「没有」。
+   */
+  quoteState?: 'pending' | 'out-of-scope'
   /** 关联条目 id */
   related: string[]
   tags?: string[]

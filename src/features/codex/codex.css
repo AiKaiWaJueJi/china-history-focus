@@ -760,3 +760,13 @@ body:has(.codex-drawer) .app-shell {
 .codex-noquote--pending .codex-noquote-label {
   color: rgba(201, 162, 39, 0.72);
 }
+
+/* 第四种状态：不在收录范围（南北朝 54 帝）。比「待补」更冷——它不是进度，是范围。 */
+.codex-noquote--scope {
+  border-left-color: rgba(140, 168, 160, 0.22);
+  background: rgba(140, 168, 160, 0.03);
+}
+
+.codex-noquote--scope .codex-noquote-label {
+  color: rgba(140, 168, 160, 0.62);
+}
