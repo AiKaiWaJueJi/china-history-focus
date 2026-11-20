@@ -9,11 +9,19 @@
  *   2. **宋帝复用帝王卡与帝王档案**：他们的百科条目早就在（kind='emperor'），点卡直接进档案。
  *   3. **辽 / 西夏 / 金 用「政权卡」**：这三位不是宋的帝王，出帝王卡会误导；卡片只给谥号、本名、在位年，
  *      点开是 `ruler`（君主）档案——和南北朝、十国君主同一个 kind。
+ *
+ * 两条阅读辅助（2026-11-21 补）：
+ *   · **宋行的分段色带**：北宋 / 南宋本来就写在这一行的注里，但「1127 到底落在哪一页」读不出来。
+ *     现在把 segments.song.json 的两段画成宋行底部的一条色带，边界年份取数据里的段界（不写死 1127），
+ *     并加一道贯穿行高的虚线——翻到第 5 页（1120—1160）就能看见「靖康前后」从蓝转绿。
+ *   · **大事索引可点跳页**：原先只显示「本页大事」，而第 1 页（960—1000）一件大事都没有，
+ *     页脚整块不渲染，读者不知道这条线后面还有什么。现在八件大事常驻，当前页那件高亮，
+ *     点任一事件直接跳到它所在的那一页。
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { EmperorRecord } from '../../core/emperorTypes'
-import { getDynastyEmperors } from '../../data/emperorData'
+import type { EmperorRecord, TimelineSegment } from '../../core/emperorTypes'
+import { getDynastyEmperors, getDynastySegments } from '../../data/emperorData'
 import { getEntryBySource } from '../../data/codex'
 import type { ParallelRuler } from '../../data/songParallel'
 import {
@@ -33,6 +41,10 @@ const CARD_W = 104
 const CARD_GAP = 8
 
 const SONG_EMPERORS = (getDynastyEmperors('song')?.emperors ?? []) as unknown as EmperorRecord[]
+/* 宋行色带用宋自己的分段数据（北宋 960—1127 / 南宋 1127—1279），不在这里另抄一份年份 */
+const SONG_SEGMENTS = (getDynastySegments('song')?.segments ?? []) as TimelineSegment[]
+/** 段与段的接缝（= 后一段的起始年），用它在行里画「靖康」那道分界 */
+const SONG_SEG_BREAKS = SONG_SEGMENTS.slice(1).map((s) => s.startYear)
 
 const EVAL_LABEL = { good: '美谥', neutral: '平谥', bad: '恶谥' } as const
 
@@ -174,7 +186,23 @@ export function SongParallelTimeline() {
     return out
   }, [page, span])
 
-  const pageNodes = parallelNodes.filter((n) => n.year >= page.from && n.year < page.to)
+  /* 大事索引：常驻显示全部节点（原先只显示本页，第 1 页干脆整块不渲染），按年份排好 */
+  const nodeIndex = useMemo(
+    () =>
+      [...parallelNodes]
+        .sort((a, b) => a.year - b.year)
+        .map((n) => {
+          const at = parallelPages.findIndex((p) => n.year >= p.from && n.year < p.to)
+          return { ...n, pageIndex: at >= 0 ? at : Math.max(parallelPages.length - 1, 0) }
+        }),
+    [],
+  )
+
+  const jumpToYear = (year: number) => {
+    const at = parallelPages.findIndex((p) => year >= p.from && year < p.to)
+    if (at >= 0) changePage(at)
+  }
+
   /* 宋不在这份 polities 里（它的帝王读 emperors.song.json），但页面窗口永远落在宋的 960—1279 之内，
      所以「并立」那一行要手动把宋算上——否则第 1 页只写「辽 并立」，读者以为宋不存在 */
   const alive = [
@@ -236,6 +264,36 @@ export function SongParallelTimeline() {
                     />
                   ) : null}
 
+                  {/* 宋行：北宋 / 南宋 的分段色带（贴在行底那 16px 里，不压卡片） */}
+                  {isSong ? (
+                    <div className="spt-segs" aria-hidden="true">
+                      {SONG_SEGMENTS.map((seg) => {
+                        const from = Math.max(seg.startYear, page.from)
+                        const to = Math.min(seg.endYear, page.to)
+                        if (to <= from) return null
+                        const width = clampWidth(from, to)
+                        return (
+                          <div key={seg.id} className="spt-seg" style={{ left: pos(from), width, color: seg.accent }}>
+                            <span className="spt-seg-wash" />
+                            <span className="spt-seg-line" />
+                            <span className="spt-seg-name">
+                              {width >= 150
+                                ? `${seg.name} ${seg.startYear}—${seg.endYear}`
+                                : width >= 56
+                                  ? seg.name
+                                  : ''}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : null}
+                  {isSong
+                    ? SONG_SEG_BREAKS.filter((y) => y > page.from && y < page.to).map((y) => (
+                        <span key={y} className="spt-seg-cut" style={{ left: pos(y) }} aria-hidden="true" />
+                      ))
+                    : null}
+
                   {isSong
                     ? songCards.map((e) => (
                         <div key={e.id} className="spt-slot" style={{ left: e.left }}>
@@ -282,15 +340,28 @@ export function SongParallelTimeline() {
         </div>
       </div>
 
-      {pageNodes.length ? (
+      {nodeIndex.length ? (
         <footer className="spt-nodes">
-          <span className="spt-nodes-label">本页大事</span>
-          {pageNodes.map((n) => (
-            <span key={n.year} className="spt-node" title={n.subtitle ?? ''}>
-              <em>{n.year}</em>
-              {n.title}
-            </span>
-          ))}
+          <span className="spt-nodes-label">大事索引</span>
+          <div className="spt-nodes-rail">
+            {nodeIndex.map((n) => {
+              const current = n.pageIndex === pageIndex
+              return (
+                <button
+                  key={`${n.year}-${n.title}`}
+                  type="button"
+                  className={`spt-node${current ? ' is-current' : ''}`}
+                  aria-current={current ? 'true' : undefined}
+                  aria-label={`跳到第 ${n.pageIndex + 1} 页：${n.year} ${n.title}`}
+                  title={n.subtitle ?? n.title}
+                  onClick={() => jumpToYear(n.year)}
+                >
+                  <em>{n.year}</em>
+                  {n.title}
+                </button>
+              )
+            })}
+          </div>
         </footer>
       ) : null}
 
