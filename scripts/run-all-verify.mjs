@@ -42,6 +42,8 @@ const GEO = [
   'check-sui-geo.mjs',
   // 百科库（无限下钻）的数据层验收
   'verify-codex.mjs',
+  // 生平文本里的「在位N年 / 第N位 / 绝对年份」与数据对账（2026-11-21 新增，纯数据层）
+  'scripts/check-content-claims.mjs',
 ]
 
 const run = (file) => {
