@@ -334,9 +334,15 @@ try {
   check('底部容器点击后行军立即作废', beforeRail.routes > 0 && afterRail.routes === 0)
   check('作废的行军不会再弹战报', afterRail.panel === false && settledAfterRail === false)
 
-  /* ---------- 2d) 战报开着时点另一国：先播退场动画 ---------- */
-  // 直接派发 click，绕开小多边形（韩）包围盒中心的命中误差；
-  // 面板等它自然出现，不依赖"跳过"的时机。
+  /* ---------- 2d) 战报开着时点地图：只关闭，不触发（2026-11-23 两段式） ---------- */
+  /*
+    2026-11-23 改口径：战报打开时版图被压成暗底（regions-layer 0.26 + 灰度 0.85），
+    视觉上它已经不是"可操作层"。这时点地图**只该关闭战报**，
+    不该在同一张暗底上再开一层新战报——否则手感就是"我明明想关掉，却把韩国换成了赵国"。
+    要再推演哪一国，关掉之后再点：地图恢复成可操作层，一次点击一个后果。
+
+    旧口径（点另一国 → 退场 → 直接让位给新战报）由下面这几条反过来守护。
+  */
   await page.goto('http://localhost:5180/dynasty/zhou/endgame', { waitUntil: 'networkidle2' })
   await page.waitForSelector('.map-stage')
   await sleep(1200)
@@ -358,21 +364,48 @@ try {
     await page.waitForSelector('.battle-panel', { timeout: 9000 }).catch(() => null),
   )
 
+  // 第一次点赵：暗底只负责"关掉"，不该同时把韩国战报换成赵国
   await clickNation('zhao')
+  /*
+    退场是 240ms。这里**不能**用 sleep(80) 去赌这个时间窗：
+    page.evaluate 一次往返就要几十毫秒，等它回来往往已经越过 240ms，断言必然假红。
+    改成等 is-closing 选择器（轮询），再把面板消失也等出来。
+  */
+  const closingSeen = Boolean(
+    await page.waitForSelector('.battle-panel.is-closing', { timeout: 1200 }).catch(() => null),
+  )
+  await page.waitForSelector('.battle-panel', { hidden: true, timeout: 3000 }).catch(() => null)
+  await sleep(200)
+  const closedOnly = await page.evaluate(() => ({
+    panel: Boolean(document.querySelector('.battle-panel')),
+    routes: document.querySelectorAll('.campaign-route').length,
+    index: document.querySelector('.endgame-page')?.getAttribute('data-index'),
+  }))
+  console.log(`[CLOSE-ONLY] ${JSON.stringify({ closingSeen, ...closedOnly })}`)
+  check('战报开着时点另一国只关闭战报', opened && !closedOnly.panel, `closingSeen=${closingSeen}`)
+  check('关闭先播退场动画（不瞬间消失）', closingSeen)
+  check('只关闭，不顺手开始新的行军', closedOnly.routes === 0, `routes=${closedOnly.routes}`)
+  check('只关闭，不动时间线进度', closedOnly.index === '1', `index=${closedOnly.index}`)
+
+  // 关掉之后再点，才是「开始推演」
   await clickNation('zhao')
-  // 退场是 240ms：面板不能瞬间消失，先留在原地把动画播完
-  await sleep(80)
-  const stillThere = Boolean(await page.evaluate(() => document.querySelector('.battle-panel')))
-  await sleep(420)
-  const goneAfterAnim = !(await page.evaluate(() => document.querySelector('.battle-panel')))
-  await sleep(700)
-  const afterSwitch = await page.evaluate(() => ({
+  await sleep(600)
+  const secondClick = await page.evaluate(() => ({
     panel: Boolean(document.querySelector('.battle-panel')),
     routes: document.querySelectorAll('.campaign-route').length,
   }))
-  console.log(`[SWITCH] ${JSON.stringify({ opened, stillThere, goneAfterAnim, afterSwitch })}`)
-  check('切换国家时战报先退场再让位给新战报', opened && goneAfterAnim && !afterSwitch.panel, `留=${stillThere} 走=${goneAfterAnim}`)
-  check('退场后才开始新的行军', !afterSwitch.panel && afterSwitch.routes > 0, `${afterSwitch.routes}`)
+  console.log(`[SECOND-CLICK] ${JSON.stringify(secondClick)}`)
+  check(
+    '关掉后再点才触发推演（路线出现）',
+    secondClick.routes > 0 || secondClick.panel,
+    `routes=${secondClick.routes}`,
+  )
+
+  // 跳过剩余动画：这一次推演已经验证过了，别把状态漏给后面的用例
+  await page.evaluate(() =>
+    document.querySelector('.map-stage')?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 120 })),
+  )
+  await sleep(900)
 
   // 收尾
   await railTo(0)

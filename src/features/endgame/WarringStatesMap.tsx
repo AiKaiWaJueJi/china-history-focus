@@ -256,7 +256,6 @@ export function WarringStatesMap({
   return (
     <div
       className="map-stage"
-      data-dimmed={dimmed}
       data-unified={unified}
       // 581「隋代周」：让并集轮廓发光，标出隋的整片疆域
       data-usurp={usurp || undefined}
@@ -367,6 +366,19 @@ export function WarringStatesMap({
               data-nation={region.id}
               data-captured={captured ? 'true' : 'false'}
               onClick={() => {
+                /*
+                  战报打开时，版图已经被压成 0.26 的暗底——视觉上它已经不是"可操作层"。
+                  这时点任何一块领土（含秦）都只该做一件事：关掉战报。
+                  一次点击只有一个后果；要再推演哪一国，关掉之后再点，地图会恢复成可操作层。
+
+                  在此之前，点空白关战报、点国土开新战报，同一张暗底上有两种后果，
+                  手感上就像"我明明想关掉，却把韩国换成了赵国"。
+                */
+                if (dimmed) {
+                  setHovered(null)
+                  onExitFocus()
+                  return
+                }
                 /*
                   点击后立刻收起悬浮卡：指针还压在版图上，那张"秦灭X"的卡
                   会一直挡着刚开播的行军动画，直到鼠标挪开才消失。
