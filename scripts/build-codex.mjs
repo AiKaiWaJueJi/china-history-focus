@@ -327,6 +327,18 @@ if (existsSync(`${DATA}/ten_states.json`)) {
 const parallelRegimes = []
 if (existsSync(`${DATA}/song_parallel.json`)) {
   const par = readJson(`${DATA}/song_parallel.json`)
+  /*
+    三家的原文状态不是一种东西（2026-11-23 从一档拆成三档）：
+      · 辽、金 —— 有正史本纪，该收、只是还没核完 → to-collect（待收录）
+      · 西夏   —— 正史无本纪，只有《宋史·夏国传》《辽史·西夏传》列传，凑一手语录只能转引
+                  清人辑本，与「一手」口径冲突 → no-annals（无本纪，不收）
+    新加政权（若将来再加）必须在这里显式登记；漏登记直接抛错，不许默认成「不在范围」。
+  */
+  const QUOTE_STATE_BY_POLITY = new Map([
+    ['p_liao', 'to-collect'],
+    ['p_jin', 'to-collect'],
+    ['p_xixia', 'no-annals'],
+  ])
   for (const p of par.polities ?? []) {
     const monarchs = (par.rulers ?? []).filter((r) => r.polityId === p.id).sort((a, b) => a.start - b.start)
     const lines = [`【政权】${p.name}（${p.start}—${p.end}）`]
@@ -365,6 +377,8 @@ if (existsSync(`${DATA}/song_parallel.json`)) {
         bodyLines.push('【同国】')
         for (const n of neigh) bodyLines.push(`— [[${n.title}|${n.id}]]`)
       }
+      const quoteState = QUOTE_STATE_BY_POLITY.get(p.id)
+      if (!quoteState) throw new Error(`宋辽金西夏：政权 ${p.id} 未在 QUOTE_STATE_BY_POLITY 登记原文状态`)
       emperors.push({
         id: m.id,
         sourceId: m.id,
@@ -376,7 +390,7 @@ if (existsSync(`${DATA}/song_parallel.json`)) {
         dynastyId: 'song',
         body: bodyLines.join('\n'),
         quotes: [],
-        quoteState: 'out-of-scope',
+        quoteState,
         related: [...neigh.map((n) => n.id), `regime_${p.id}`],
         tags: ['君主', '宋辽金西夏'],
       })
@@ -586,6 +600,11 @@ for (const e of all) {
   if (Array.isArray(e.alias) && e.alias.length === 0) delete e.alias
   if (typeof e.body !== 'string') e.body = ''
   if (typeof e.noQuote !== 'string' || !e.noQuote) delete e.noQuote
+  /*
+    状态与「有原文 / 有留白」互斥：收了原文或登记了留白的条目不该再挂 quoteState
+    （金 10 位清零后若仍留着 out-of-scope，数据就自相矛盾了）。
+  */
+  if (e.noQuote || (Array.isArray(e.quotes) && e.quotes.length)) delete e.quoteState
   // 只保留真实存在的关联
   e.related = e.related.filter((rid) => rid !== e.id)
 }

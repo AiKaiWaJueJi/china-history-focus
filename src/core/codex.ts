@@ -73,12 +73,14 @@ export interface CodexEntry {
    */
   noQuote?: string
   /**
-   * 原文收录状态（只在「既无 quotes 也无 noQuote」时有意义）：
-   *   pending      = 还没查完（十二朝正史本纪线里剩余的那几位）
-   *   out-of-scope = 不在原文收录范围（南北朝 54 帝：帝王原文线只覆盖十二朝正史本纪）
-   * 两者在数据里长得一样，但意思相反，UI 必须分开说——否则「没查」会被读成「没有」。
+   * 原文收录状态（只在「既无 quotes 也无 noQuote」时有意义）。四种状态是四件不同的事，
+   * UI 必须分开说——把「没查」「待做」「体裁没有」「不该做」混成一句，等于骗读者：
+   *   pending      = 还没查完（十二朝正史本纪线里剩余的那一位）
+   *   to-collect   = 有正史本纪、在收录计划内，只是还没核完（辽、金）
+   *   no-annals    = 正史里根本没有本纪，体裁上凑不出一手语录（西夏）
+   *   out-of-scope = 体例上就不收帝王语录（南北朝 54 帝 / 十国 41 君主）
    */
-  quoteState?: 'pending' | 'out-of-scope'
+  quoteState?: 'pending' | 'to-collect' | 'no-annals' | 'out-of-scope'
   /** 关联条目 id */
   related: string[]
   tags?: string[]
