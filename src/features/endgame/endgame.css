@@ -2610,6 +2610,17 @@
   transition: opacity 400ms ease 320ms;
 }
 
+/*
+  说明文字的「压图」处理（2026-11-23）：
+  原先只有 2.4px 黑描边，压在彩色版图上仍然吃力。这里改用「沿字形加粗描边 + 柔化阴影」——
+  描边沿字形走，尺寸天然自适应（不用像矩形暗衬那样按字数估，也就不会在镜头推近的
+  520ms 过渡里错配）。paint-order: stroke 保证描边在填充下面，笔画不会被糊死。
+*/
+.campaign-caption text {
+  /* 外扩靠阴影、收边靠描边：两者分工，字芯才不会被描边吃掉 */
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.85));
+}
+
 .campaign-route.is-current .campaign-caption {
   opacity: 1;
 }
@@ -2619,7 +2630,7 @@
   战报打开（campaign-layer[data-settled]）时才全部隐藏——那时左侧有完整进军序列。
 */
 .campaign-route.is-played .campaign-caption {
-  opacity: 0.5;
+  opacity: 0.4;
   transition-delay: 0ms;
 }
 
@@ -3459,17 +3470,18 @@
 /*
   镜头推近时文字不跟着放大：字号除以 --map-zoom，位置仍贴着地理点。
 
-  ⚠ 这里是将名 / 动向字号的**唯一真源**（16px / 13px）。
+  ⚠ 这里是将名 / 动向字号的**唯一真源**（18px / 13.5px）。
+  2026-11-23 从 16/13 提到 18/13.5：原来的反算只考虑了镜头倍数，
+  没考虑地图容器等比缩小——窗口一窄，1000×640 的 viewBox 被缩到 0.8 倍，
+  16px 就只剩 12.8px 屏幕像素，「行军说明看不清」有一半是这个原因。
   描边宽度在下面 `.map-svg .campaign-caption text`（2.4px，同理唯一）。
-  别在前面再补一份 15px / 4.5px 之类的数值：特异性更低，写了也不生效，
-  只会让下一个人以为「设定是 4.5px、只是没生效」而把正确的 2.4px 改坏。
 */
 .campaign-general {
-  font-size: calc(16px / var(--map-zoom, 1));
+  font-size: calc(18px / var(--map-zoom, 1));
 }
 
 .campaign-result {
-  font-size: calc(13px / var(--map-zoom, 1));
+  font-size: calc(13.5px / var(--map-zoom, 1));
 }
 
 .campaign-place {
@@ -3517,6 +3529,59 @@
   transition: opacity 220ms ease;
 }
 
+/* ==========================================================================
+   2026-11-23：行军态的「退底 + 提主」三层分离
+   --------------------------------------------------------------------------
+   问题：战报态能把版图压到 0.26（那时左边有完整战报，地图只是背景示意图），
+   但**行军播放时**只淡了国名与关隘，版图色块、地形照片、河流全亮着——
+   16px 的行军说明压在全亮的彩色底图上，层级根本没拉开。
+
+   为什么行军态不照抄 0.26：这一刻的观看任务是「看这条路打到了哪」，
+   地图本身是主角。整屏压黑会让人失去「燕在东北、赵在河北」的地理参照，
+   反而看不懂路线在做什么。所以只退到 45% + 轻度去色，底图仍可读。
+
+   ⚠ 必须带 :not(.is-focused)：data-campaign-play 在战报态也成立
+   （那时路线全在），否则这套 45% 会盖掉战报态的 0.26/灰度。 */
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .regions-layer {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+  transition:
+    opacity 320ms ease,
+    filter 320ms ease;
+}
+
+/* 正在被吞并的那块不参与退底：「墨色晕染吞掉敌国」是这一刻的核心叙事，
+   被自己压掉就白演了。 */
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .region.is-annexing {
+  opacity: 1;
+  filter: none;
+}
+
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .region-label {
+  opacity: 0.22;
+}
+
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .capital,
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .strategic-point {
+  opacity: 0.2;
+}
+
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .map-river {
+  opacity: 0.35;
+  transition: opacity 320ms ease;
+}
+
+.endgame-body:not(.is-focused) .map-stage:has(.map-svg[data-campaign-play]) .map-photo {
+  opacity: 0.45;
+  transition: opacity 320ms ease;
+}
+
+/* 已播段再压一档（0.4 → 0.28）：让「此刻正在走的那条」成为唯一亮着的主线。
+   战报态仍走上面那条 0.4（verify-endgame 断言「淡线在 0.2–0.65 之间」）。 */
+.endgame-body:not(.is-focused) .map-svg[data-campaign-play] .campaign-route.is-played {
+  opacity: 0.28;
+}
+
 
 /* 说明文字压在深底上：给文字加一圈不透明描边，任何底色都不糊 */
 /*
@@ -3533,7 +3598,12 @@
 
 .map-svg .campaign-caption text {
   paint-order: stroke;
-  stroke: rgba(4, 6, 8, 0.9);
+  stroke: rgba(3, 5, 7, 0.95);
+  /*
+    ⚠ 不能跟着字号一起加厚：SVG 的 stroke 是**居中**的（一半向内），
+    18px 宋体笔画只有约 1.5px 宽，写到 6px 就会把金芯整个吃掉（实测「内史腾」
+    变成一团暗金）。外扩交给下面的 drop-shadow，描边只负责收边。
+  */
   stroke-width: 2.4px;
   stroke-linejoin: round;
 }

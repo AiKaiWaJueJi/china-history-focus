@@ -95,6 +95,15 @@ function tail(points: MapPoint[]) {
   }
 }
 
+/*
+  说明文字的「压图」问题交给 CSS 解决（沿字形的粗描边 + 柔化阴影，见 endgame.css）。
+
+  这里试过用一块 <rect> 当暗衬，但放弃了：rect 宽度只能按「字数 × 字号」估，
+  而镜头推近是 520ms 的渐变、字号按 --map-zoom 反算——过渡期间 rect 用的是**目标** zoom，
+  文字用的是**当前** zoom，两者必然错配，动画中间那几帧不是溢出就是空一大截。
+  描边沿着字形走，尺寸天然自适应，没有任何时间窗问题。
+*/
+
 export function CampaignRoutes({
   campaigns,
   height = 640,
