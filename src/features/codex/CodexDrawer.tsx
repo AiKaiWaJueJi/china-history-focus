@@ -68,6 +68,49 @@ function QuoteBlock({ quote }: { quote: CodexEntry['quotes'][number] }) {
   )
 }
 
+/**
+ * 原文缺口说明（2026-11-23 从「一句未收录原文」拆成四档）。
+ * 四种「没有原文」的原因完全不同，混成一句，读者分不清是我们懒、是史料没有、还是不该有：
+ *   pending      —— 还没查完（十二朝剩下那一位）
+ *   to-collect   —— 有正史本纪、该收、只是还没核完（辽、金）
+ *   no-annals    —— 正史里没有本纪，体裁上凑不出一手语录（西夏）
+ *   out-of-scope —— 体例上就不收帝王语录（南北朝 54 帝 / 十国 41 君主）
+ */
+type QuoteGapState = NonNullable<CodexEntry['quoteState']>
+
+const GAP_NOTE: Record<QuoteGapState, { label: string; tone: 'pending' | 'scope'; text: string }> = {
+  pending: {
+    label: '原文待补',
+    tone: 'pending',
+    text: '这一位的记言还在查证中。本项目只收能在原书逐字核到的原句，核不到就空着，不拿转述充数。',
+  },
+  'to-collect': {
+    label: '待收录',
+    tone: 'pending',
+    text: '辽、金两朝都有正史本纪，这一位在收录计划内，只是还没核完。一条一查：先在本纪里定位原句、读上下文确认归属，核不到就空着，不拿转述凑数。',
+  },
+  'no-annals': {
+    label: '无本纪，不收原文',
+    tone: 'scope',
+    text: '西夏在正史中没有本纪，只有《宋史·夏国传》《辽史·西夏传》这类列传，夏主几乎不开口；要凑语录只能转引清人辑本《西夏书事》，与「一手」口径冲突。所以本库不收西夏帝王原文。',
+  },
+  'out-of-scope': {
+    label: '不在收录范围',
+    tone: 'scope',
+    text: '帝王原文线只覆盖十二朝正史本纪（177 位）与已开课的辽、金；南北朝 54 帝与十国 41 君主不入此线。这一条档案由「在位要事」的时间线承担。',
+  },
+}
+
+function QuoteGapNote({ state }: { state: QuoteGapState }) {
+  const note = GAP_NOTE[state] ?? GAP_NOTE.pending
+  return (
+    <p className={`codex-noquote codex-noquote--${note.tone}`}>
+      <span className="codex-noquote-label">{note.label}</span>
+      {note.text}
+    </p>
+  )
+}
+
 function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string) => void }) {
   const related = relatedEntries(entry).slice(0, 8)
   /* 帝王 / 诸侯：结构化时间线（全量事件 + 点开详情）；其余类型仍是纯文本正文 */
@@ -94,21 +137,11 @@ function CodexCard({ entry, onDrill }: { entry: CodexEntry; onDrill: (id: string
             {entry.noQuote}
           </p>
         ) : null}
-        {/* 第三种状态：既无原文、也没登记留白。两种原因必须分开说——
-            南北朝 54 帝是"不在收录范围"（原文线只覆盖十二朝正史本纪），
-            后梁郢王那种是"还没查完"。把两者混成一句，等于骗读者。 */}
+        {/* 第三种状态：既无原文、也没登记留白。四种原因必须分开说（见 QuoteGapNote）——
+            南北朝 54 帝是「不在收录范围」，辽金是「待收录」，西夏是「无本纪」，
+            后梁郢王那种是「还没查完」。混成一句，等于骗读者。 */}
         {!entry.quotes.length && !entry.noQuote && structured && (entry.kind === 'emperor' || entry.kind === 'ruler') ? (
-          entry.quoteState === 'out-of-scope' ? (
-            <p className="codex-noquote codex-noquote--scope">
-              <span className="codex-noquote-label">未收录原文</span>
-              帝王原文线覆盖十二朝正史本纪（177 位）；南北朝 54 帝与十国 41 位君主不在其中。这一条档案由「在位要事」的时间线承担。
-            </p>
-          ) : (
-            <p className="codex-noquote codex-noquote--pending">
-              <span className="codex-noquote-label">原文待补</span>
-              这一位的记言还在查证中。本项目只收能在原书逐字核到的原句，核不到就空着，不拿转述充数。
-            </p>
-          )
+          <QuoteGapNote state={entry.quoteState ?? 'pending'} />
         ) : null}
         {structured ? (
           <ArchiveBody entry={entry} onDrill={onDrill} />
