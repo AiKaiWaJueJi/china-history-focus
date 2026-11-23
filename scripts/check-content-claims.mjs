@@ -227,7 +227,8 @@ check('生平里含可计算断言的人数 ≥ 100', bioWithClaim >= 100, `${bi
 check('「在位N年」断言 ≥ 60 处', reignClaims.length >= 60, `${reignClaims.length} 处`)
 check('「第N位」断言 ≥ 40 处', ordinalClaims.length >= 40, `${ordinalClaims.length} 处`)
 check('生平条数 = 301', bioIds.length === 301, `${bioIds.length} 条`)
-check('注解条数 = 764', Object.keys(notes).length - 1 === 764, `${Object.keys(notes).length - 1} 条`)
+/* 覆盖率自证：注解表被清空或被误删时立刻报红。数字随数据走（批次 13 李璟补 952 后 764 → 765）。 */
+check('注解条数 = 765', Object.keys(notes).length - 1 === 765, `${Object.keys(notes).length - 1} 条`)
 
 console.log(
   `\n扫过 ${bioIds.length} 条生平 / ${rulers.length} 位人物：有断言 ${bioWithClaim} 人，「在位N年」${reignClaims.length} 处、「第N位」${ordinalClaims.length} 处、绝对年份 ${yearHits.length} 处`,

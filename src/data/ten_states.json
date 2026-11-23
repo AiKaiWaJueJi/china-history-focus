@@ -160,6 +160,12 @@
               "year": 951
             },
             {
+              "id": "ts_nantang_lijing_4",
+              "name": "湖南复失",
+              "dimension": "military",
+              "year": 952
+            },
+            {
               "id": "ts_nantang_lijing_3",
               "name": "割淮南十四州",
               "dimension": "political",
