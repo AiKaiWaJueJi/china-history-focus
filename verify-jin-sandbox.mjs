@@ -63,6 +63,31 @@ try {
     JSON.stringify(first.regions),
   )
 
+  /*
+    山河参照层（2026-11-24）：不只验「画出来了」，更要验「画在版图之上」。
+    首版把河道放在 regions 之前渲染，被 fillOpacity 0.7 的色块压得几乎看不见——
+    这种问题只有肉眼能发现，所以补一条 DOM 顺序断言守住。
+  */
+  const rivers = await page.evaluate(() => {
+    const layer = document.querySelector('.jc-rivers')
+    const firstRegion = document.querySelector('.jc-region')
+    const all = [...document.querySelectorAll('.jc-river')]
+    return {
+      count: all.length,
+      names: [...document.querySelectorAll('.jc-river-name')].map((n) => n.textContent?.trim()),
+      aboveRegions: Boolean(
+        layer && firstRegion && layer.compareDocumentPosition(firstRegion) & Node.DOCUMENT_POSITION_PRECEDING,
+      ),
+    }
+  })
+  console.log('[RIVERS]', JSON.stringify(rivers))
+  check(
+    '山河参照层画出黄河/长江/淮河三条',
+    rivers.count === 3 && ['黄河', '长江', '淮河'].every((n) => rivers.names.includes(n)),
+    `${rivers.count} 条：${rivers.names.join('/')}`,
+  )
+  check('河道压在版图色块之上（不是被盖住的底层）', rivers.aboveRegions, String(rivers.aboveRegions))
+
   const jump = async (i) => {
     await page.click(`.jc-node[data-step="${i}"]`)
     await sleep(650)

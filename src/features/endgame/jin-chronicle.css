@@ -453,3 +453,32 @@
     font-size: 25px;
   }
 }
+
+
+/* ==========================================================================
+   山河参照层（2026-11-24）
+   --------------------------------------------------------------------------
+   分区本身是示意的，但「边界大致沿哪条河」是可读的地理事实。
+   河道画在版图色块之下、用虚线，表示「这是参照，不是界」。
+   ========================================================================== */
+.jc-rivers {
+  pointer-events: none;
+}
+
+.jc-river polyline {
+  fill: none;
+  stroke: rgba(146, 198, 236, 0.62);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 5;
+}
+
+.jc-river-name {
+  fill: rgba(168, 210, 244, 0.9);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  paint-order: stroke;
+  stroke: rgba(6, 8, 10, 0.9);
+  stroke-width: 1.6px;
+}

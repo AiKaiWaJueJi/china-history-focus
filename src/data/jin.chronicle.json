@@ -750,5 +750,34 @@
     }
   ],
   "finishLabel": "进入南北朝 →",
-  "finishTo": "/dynasty/southern_northern"
+  "finishTo": "/dynasty/southern_northern",
+  "rivers": [
+    {
+      "id": "yellow",
+      "name": "黄河",
+      "points": "150,300 250,180 350,130 470,125 560,150 590,250 528,330 640,370 800,345",
+      "label": [
+        248,
+        196
+      ]
+    },
+    {
+      "id": "yangtze",
+      "name": "长江",
+      "points": "200,470 330,505 470,512 620,506 750,500 830,520",
+      "label": [
+        372,
+        534
+      ]
+    },
+    {
+      "id": "huai",
+      "name": "淮河",
+      "points": "560,455 650,462 722,470",
+      "label": [
+        690,
+        442
+      ]
+    }
+  ]
 }

@@ -23,6 +23,14 @@ interface ChronicleRegion {
   points: string
 }
 
+/** 山河参照线：示意分区的地理骨架（黄河 / 长江 / 淮河） */
+interface ChronicleRiver {
+  id: string
+  name: string
+  points: string
+  label: number[]
+}
+
 interface ChronicleRegime {
   id: string
   name: string
@@ -58,6 +66,7 @@ export interface ChronicleData {
   pre: ChronicleStep
   steps: ChronicleStep[]
   regions: ChronicleRegion[]
+  rivers?: ChronicleRiver[]
   regimes: ChronicleRegime[]
 }
 
@@ -68,6 +77,7 @@ function shortTitle(title: string) {
 export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?: ChronicleData }) {
   const DATA = data
   const STEPS = [DATA.pre, ...DATA.steps]
+  const RIVERS = DATA.rivers ?? []
   const REGIME_BY_ID = new Map(DATA.regimes.map((r) => [r.id, r]))
   const backTo = DATA.dynastyId === 'jin' ? '/dynasty/jin' : '/dynasty/southern_northern'
   const navigate = useNavigate()
@@ -194,6 +204,23 @@ export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?
                 </g>
               )
             })}
+            {/*
+              山河参照层（2026-11-24）：席区域是示意分区、不描精确疆界，
+              但读者需要知道「这条界大致沿哪条河」。河道压在版图色块之上（首版画在底层被盖住了），
+              只作参照、不参与归属着色。
+            */}
+            {RIVERS.length ? (
+              <g className="jc-rivers" aria-hidden="true">
+                {RIVERS.map((river) => (
+                  <g key={river.id} className="jc-river" data-river={river.id}>
+                    <polyline points={river.points} />
+                    <text x={river.label[0]} y={river.label[1]} className="jc-river-name">
+                      {river.name}
+                    </text>
+                  </g>
+                ))}
+              </g>
+            ) : null}
             <g className="jc-routes">
               {(step.routes ?? []).map((route) => {
                 const d = route.points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]} ${p[1]}`).join(' ')
@@ -225,7 +252,7 @@ export function JinChronicleStage({ data = chronicle as ChronicleData }: { data?
           </div>
           <p className="jc-mapnote">
             {DATA.mapNote ??
-              '区域为示意分区，以归属为主，不描精确边界；河西诸凉、河南拉锯见右侧注记。'}
+              '区域为示意分区，以归属为主；河道按山川大势勾画，是参照、不是测绘图。河西诸凉、河南拉锯见右侧注记。'}
           </p>
         </div>
 
