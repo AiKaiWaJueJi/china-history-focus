@@ -528,7 +528,7 @@ const addLinkName = (name, id) => {
   if (!prev || id.length < prev.length) linkable.set(name, id)
 }
 for (const e of all) {
-  if (e.kind === 'character' || e.kind === 'battle' || e.kind === 'extra') addLinkName(e.name, e.id)
+  if (e.kind === 'character' || e.kind === 'battle' || e.kind === 'extra' || e.kind === 'event') addLinkName(e.name, e.id)
   else for (const n of e.alias ?? []) addLinkName(n, e.id)
 }
 const names = [...linkable.keys()].sort((a, b) => b.length - a.length)
@@ -622,11 +622,12 @@ const payload = {
     regime: countBy('regime'),
     lord: countBy('lord'),
     extra: countBy('extra'),
+    event: countBy('event'),
     total: all.length,
   },
   entries: all,
 }
 writeFileSync(OUT, JSON.stringify(payload) + '\n', 'utf8')
 console.log(
-  `✓ ${OUT}\n  战役 ${payload.counts.battle} / 人物 ${payload.counts.character} / 帝王 ${payload.counts.emperor} / 君主 ${payload.counts.ruler} / 政权 ${payload.counts.regime} / 诸侯 ${payload.counts.lord} / 补充 ${payload.counts.extra}\n  合计 ${payload.counts.total} 条，自动织入 ${linkCount} 处链`,
+  `✓ ${OUT}\n  战役 ${payload.counts.battle} / 人物 ${payload.counts.character} / 帝王 ${payload.counts.emperor} / 君主 ${payload.counts.ruler} / 政权 ${payload.counts.regime} / 诸侯 ${payload.counts.lord} / 补充 ${payload.counts.extra}\n  合计 ${payload.counts.total} 条（事件 ${payload.counts.event}），自动织入 ${linkCount} 处链`,
 )

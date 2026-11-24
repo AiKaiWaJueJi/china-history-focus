@@ -69,8 +69,20 @@ check('每条战役都有文言原文 + 白话译文', noQuote.length === 0, `${
 const noWork = battles.filter((e) => !e.quotes[0]?.work)
 check('每条战役都标了出处', noWork.length === 0, noWork.slice(0, 3).map((e) => e.id).join(','))
 
+/* ---------- 2b. 事件条目：与战役同口径，必须有原文 + 译文 + 出处 ---------- */
+const events = entries.filter((e) => e.kind === 'event')
+const badEvents = events.filter(
+  (e) => !e.quotes.length || !e.quotes[0].text || !e.quotes[0].translation || !e.quotes[0].work,
+)
+check(
+  '每条事件条目都有原文 + 译文 + 出处',
+  badEvents.length === 0,
+  `${events.length} 条事件，缺 ${badEvents.length}`,
+)
+check('事件条目都有出链', events.every((e) => e.related.length > 0), events.filter((e) => !e.related.length).map((e) => e.name).join(','))
+
 /* ---------- 3. 各类都有正文 ---------- */
-for (const kind of ['battle', 'character', 'emperor', 'ruler', 'regime', 'lord']) {
+for (const kind of ['battle', 'character', 'emperor', 'ruler', 'regime', 'lord', 'event']) {
   const list = entries.filter((e) => e.kind === kind)
   const empty = list.filter((e) => !e.body || e.body.length < 8)
   check(`${kind} 条目都有正文`, empty.length === 0, `${list.length} 条，空 ${empty.length}`)

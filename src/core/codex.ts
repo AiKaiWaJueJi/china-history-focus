@@ -22,7 +22,7 @@
  * regime = 十国政权（一个政权一条，正文列出该国君主，可继续下钻）。
  * 拆开而不是复用 emperor，是为了让「帝系」与「割据政权的君主」在标签上就分得开。
  */
-export type CodexKind = 'battle' | 'character' | 'emperor' | 'ruler' | 'regime' | 'lord' | 'extra'
+export type CodexKind = 'battle' | 'character' | 'emperor' | 'ruler' | 'regime' | 'lord' | 'extra' | 'event'
 
 /**
  * 史料的出处层级。
@@ -140,4 +140,5 @@ export const KIND_LABEL: Record<CodexKind, string> = {
   regime: '政权',
   lord: '诸侯',
   extra: '典制',
+  event: '事件',
 }

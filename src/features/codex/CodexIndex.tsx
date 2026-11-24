@@ -21,7 +21,7 @@ import { useCodexStore } from '../../store/useCodexStore'
 import './codex-index.css'
 
 /** 类型筛选的展示顺序：先人（帝王/君主/政权/诸侯/人物），再事（战役），最后制度 */
-const KIND_ORDER: CodexKind[] = ['emperor', 'regime', 'ruler', 'lord', 'character', 'battle', 'extra']
+const KIND_ORDER: CodexKind[] = ['emperor', 'regime', 'ruler', 'lord', 'character', 'battle', 'event', 'extra']
 
 const KIND_HINT: Record<CodexKind, string> = {
   emperor: '时间轴上的帝王',
@@ -30,6 +30,7 @@ const KIND_HINT: Record<CodexKind, string> = {
   lord: '春秋诸侯',
   character: '战报里的人名',
   battle: '沙盘上的战役',
+  event: '改变格局的大事',
   extra: '典制与典故',
 }
 
@@ -177,7 +178,7 @@ export function CodexIndex() {
           <p className="codex-index-sub">
             全库 {total} 条 · 帝王 {kindCounts.emperor ?? 0} / 君主 {kindCounts.ruler ?? 0} / 政权{' '}
             {kindCounts.regime ?? 0} / 诸侯 {kindCounts.lord ?? 0} / 人物 {kindCounts.character ?? 0} / 战役{' '}
-            {kindCounts.battle ?? 0} / 典制 {kindCounts.extra ?? 0}
+            {kindCounts.battle ?? 0} / 事件 {kindCounts.event ?? 0} / 典制 {kindCounts.extra ?? 0}
           </p>
         </div>
         <div className="codex-index-search">

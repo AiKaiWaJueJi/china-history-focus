@@ -180,6 +180,7 @@
 .codex-row-kind.is-emperor { color: rgba(201, 162, 39, 0.9); }
 .codex-row-kind.is-lord { color: rgba(150, 170, 130, 0.9); }
 .codex-row-kind.is-extra { color: rgba(176, 156, 196, 0.9); }
+.codex-row-kind.is-event { color: rgba(178, 108, 104, 0.9); }
 
 .codex-row-main {
   display: flex;
